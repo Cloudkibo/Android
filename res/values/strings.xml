@@ -1,5 +1,7 @@
 <resources>
 
     <string name="app_name">CloudKibo</string>
+    <string name="host">www.cloudkibo.com/videocall/sojharo</string>
+    <string name="port">8443</string>
 
 </resources>
