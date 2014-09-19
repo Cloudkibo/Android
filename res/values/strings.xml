@@ -1,7 +1,21 @@
 <resources>
 
-    <string name="app_name">CloudKibo</string>
+    <string name="app_name"></string>
     <string name="host">www.cloudkibo.com/videocall/sojharo</string>
     <string name="port">8443</string>
+    
+    <string name="username_txt">Username</string>
+    <string name="password_txt">Password</string>
+    
+    
+    <string name="email">Email</string>
+    <string name="phone_no">Phone no.</string>
+    <string name="username">Username</string>
+    <string name="firstName">First Name</string>
+    <string name="password">Password</string>
+    <string name="lastName">Last Name</string>
+    
+    <string name="forgotPassword"> Forgot Password</string>
+ 
 
 </resources>
