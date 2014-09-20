@@ -6,18 +6,8 @@
     android:background="@drawable/bg"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="16dp"
-        android:text="Enter Cloudkibo Username/code"
-        android:textSize="15sp" />
-
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/userNameText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -28,11 +18,40 @@
     </EditText>
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/callBtn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/editText1"
-        android:text="Call " />
+        android:layout_below="@+id/userNameText"
+        android:text="Call" />
+    
+    <Button
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:text="Logout"
+            android:id="@+id/logout"
+            android:textSize="13sp"
+            android:textColor="#000000"
+            android:layout_below="@+id/callBtn"
+            android:layout_alignParentLeft="true"/>
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="48dp"
+        android:text="Enter Cloudkibo Username"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/textwelcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="Large Text"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
 
 </RelativeLayout>

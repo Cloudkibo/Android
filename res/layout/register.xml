@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView1"
-        android:layout_below="@+id/editText2"
+        android:layout_below="@+id/passwordText"
         android:layout_gravity="center|left"
         android:text="@string/email" />
 
@@ -32,7 +32,7 @@
         android:text="@string/phone_no" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/passwordText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView1"
@@ -73,12 +73,12 @@
         android:layout_width="89dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/editText1"
+        android:layout_below="@+id/userNameText"
         android:layout_marginTop="16dp"
         android:text="@string/lastName" />
 
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/userNameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -104,7 +104,7 @@
         android:textSize="15sp" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/loginBtn"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/editText6"

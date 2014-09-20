@@ -20,19 +20,19 @@
         android:textSize="15sp" />
 
     <EditText
-        android:id="@+id/editText1"
+        android:id="@+id/userNameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView1"
         android:layout_below="@+id/textView1"
         android:ems="10"
-        android:inputType="textEmailAddress" >
+        android:inputType="text" >
 
         <requestFocus />
     </EditText>
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/passwordText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView2"
@@ -45,39 +45,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/textView1"
-        android:layout_below="@+id/editText1"
+        android:layout_below="@+id/userNameText"
         android:text="@string/password_txt"
         android:textColor="#372c24"
         android:textSize="15sp" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/loginBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/editText2"
+        android:layout_below="@+id/passwordText"
         android:text="Login" />
-
-    <TextView
-        android:id="@+id/TextView01"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/link_to_register"
-        android:layout_alignBottom="@+id/link_to_register"
-        android:layout_marginLeft="40dp"
-        android:layout_toRightOf="@+id/link_to_register"
-        android:gravity="center|left"
-        android:text="Register"
-        android:textColor="#0b84aa"
-        android:textSize="15sp" />
 
     <ImageButton
         android:id="@+id/imageButton1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/button1"
+        android:layout_below="@+id/loginBtn"
         android:scaleType="fitXY"
         android:src="@drawable/ggle" />
 
@@ -87,20 +74,34 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/imageButton1"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/button1"
+        android:layout_below="@+id/loginBtn"
         android:scaleType="fitXY"
         android:src="@drawable/fb" />
 
     <TextView
-        android:id="@+id/link_to_register"
+        android:id="@+id/forgotPass"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/imageButton1"
         android:layout_marginLeft="16dp"
         android:gravity="center"
-        android:text="forgotPassword"
+        android:text="@string/forgotPassword"
         android:textColor="#0b84aa"
         android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/forgotPass"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/forgotPass"
+        android:layout_marginTop="25dp"
+        android:clickable="true"
+        android:gravity="center|left"
+        android:text="Register"
+        android:textColor="#0b84aa"
+        android:textSize="25sp" />
 
 </RelativeLayout>
