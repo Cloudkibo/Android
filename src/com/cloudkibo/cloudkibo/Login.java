@@ -20,9 +20,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cloudkibo.library.DatabaseHandler;
-import com.cloudkibo.library.UserFunctions;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -32,8 +29,8 @@ import java.net.URL;
 public class Login extends Activity {
 	
 	Button loginBtn;
-    Button Btnregister;
-    Button passreset;
+    TextView Btnregister;
+    TextView passreset;
     EditText userNameText;
     EditText passwordText;
     
@@ -55,12 +52,12 @@ public class Login extends Activity {
 
         setContentView(R.layout.login);
         
-        userNameText = (EditText) findViewById(R.id.userNameText);
-        passwordText = (EditText) findViewById(R.id.passwordText);
-        loginBtn = (Button) findViewById(R.id.loginBtn);
+        userNameText = (EditText) findViewById(R.id.firstNameText);
+        passwordText = (EditText) findViewById(R.id.lastNameText);
+        loginBtn = (Button) findViewById(R.id.submitBtn);
         
-        //Btnregister = (Button) findViewById(R.id.registerbtn);
-        //passreset = (Button)findViewById(R.id.passres);
+        Btnregister = (TextView) findViewById(R.id.btnRegister);
+        passreset = (TextView)findViewById(R.id.forgotPass);
         
         /**
          * Login button click event
@@ -91,6 +88,20 @@ public class Login extends Activity {
                 }
             }
         });
+        
+        Btnregister.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent myIntent = new Intent(view.getContext(), Register.class);
+                startActivityForResult(myIntent, 0);
+                finish();
+         }});
+        
+        passreset.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent myIntent = new Intent(view.getContext(), PasswordReset.class);
+                startActivityForResult(myIntent, 0);
+                finish();
+         }});
     }
 
     public void NetAsync(View view){
@@ -174,8 +185,8 @@ public class Login extends Activity {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            userNameText = (EditText) findViewById(R.id.userNameText);
-            passwordText = (EditText) findViewById(R.id.passwordText);
+            userNameText = (EditText) findViewById(R.id.firstNameText);
+            passwordText = (EditText) findViewById(R.id.lastNameText);
             username = userNameText.getText().toString();
             password = passwordText.getText().toString();
             pDialog = new ProgressDialog(Login.this);

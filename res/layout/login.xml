@@ -20,7 +20,7 @@
         android:textSize="15sp" />
 
     <EditText
-        android:id="@+id/userNameText"
+        android:id="@+id/firstNameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView1"
@@ -32,7 +32,7 @@
     </EditText>
 
     <EditText
-        android:id="@+id/passwordText"
+        android:id="@+id/lastNameText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/textView2"
@@ -45,18 +45,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignRight="@+id/textView1"
-        android:layout_below="@+id/userNameText"
+        android:layout_below="@+id/firstNameText"
         android:text="@string/password_txt"
         android:textColor="#372c24"
         android:textSize="15sp" />
 
     <Button
-        android:id="@+id/loginBtn"
+        android:id="@+id/submitBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/passwordText"
+        android:layout_below="@+id/lastNameText"
         android:text="Login" />
 
     <ImageButton
@@ -64,7 +64,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/loginBtn"
+        android:layout_below="@+id/submitBtn"
         android:scaleType="fitXY"
         android:src="@drawable/ggle" />
 
@@ -74,7 +74,7 @@
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/imageButton1"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/loginBtn"
+        android:layout_below="@+id/submitBtn"
         android:scaleType="fitXY"
         android:src="@drawable/fb" />
 
@@ -91,7 +91,7 @@
         android:textSize="15sp" />
 
     <TextView
-        android:id="@+id/TextView01"
+        android:id="@+id/btnRegister"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/forgotPass"
@@ -99,6 +99,7 @@
         android:layout_below="@+id/forgotPass"
         android:layout_marginTop="25dp"
         android:clickable="true"
+        android:onClick="onClick"
         android:gravity="center|left"
         android:text="Register"
         android:textColor="#0b84aa"

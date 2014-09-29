@@ -19,30 +19,38 @@ public final class R {
     }
     public static final class id {
         public static final int RelativeLayout1=0x7f060000;
-        public static final int Space1=0x7f06000e;
-        public static final int TextView01=0x7f06000c;
+        public static final int Space1=0x7f060012;
+        public static final int backToLogin=0x7f06001a;
+        public static final int btnRegister=0x7f06000c;
         public static final int callBtn=0x7f060003;
-        public static final int editText1=0x7f060012;
-        public static final int editText3=0x7f060010;
-        public static final int editText5=0x7f060011;
+        public static final int emailIdtxt=0x7f060014;
+        public static final int email_txt=0x7f06000e;
+        public static final int firstNameText=0x7f060001;
         public static final int forgotPass=0x7f06000b;
         public static final int imageButton1=0x7f060009;
         public static final int imageButton2=0x7f06000a;
-        public static final int loginBtn=0x7f060008;
+        public static final int lastNameText=0x7f060006;
         public static final int logout=0x7f060004;
-        public static final int passwordText=0x7f060006;
+        public static final int passwordText=0x7f060015;
+        public static final int phoneNumberText=0x7f060018;
+        public static final int resetBtn=0x7f060010;
+        public static final int reset_pass=0x7f06000d;
+        public static final int submitBtn=0x7f060008;
+        public static final int textEmail=0x7f06000f;
         public static final int textView1=0x7f060002;
         public static final int textView2=0x7f060007;
-        public static final int textView3=0x7f06000d;
-        public static final int textView4=0x7f06000f;
-        public static final int textView5=0x7f060013;
+        public static final int textView3=0x7f060011;
+        public static final int textView4=0x7f060013;
+        public static final int textView5=0x7f060016;
+        public static final int textView6=0x7f060017;
         public static final int textwelcome=0x7f060005;
-        public static final int userNameText=0x7f060001;
+        public static final int userName=0x7f060019;
     }
     public static final class layout {
         public static final int home=0x7f030000;
         public static final int login=0x7f030001;
-        public static final int register=0x7f030002;
+        public static final int passwordreset=0x7f030002;
+        public static final int register=0x7f030003;
     }
     public static final class string {
         public static final int app_name=0x7f040000;
@@ -55,6 +63,7 @@ public final class R {
         public static final int password_txt=0x7f040004;
         public static final int phone_no=0x7f040006;
         public static final int port=0x7f040002;
+        public static final int rest_pass=0x7f04000c;
         public static final int username=0x7f040007;
         public static final int username_txt=0x7f040003;
     }
