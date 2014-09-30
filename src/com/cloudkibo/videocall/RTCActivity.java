@@ -1,4 +1,4 @@
-package com.cloudkibo.cloudkibo;
+package com.cloudkibo.videocall;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,6 +15,9 @@ import org.json.JSONException;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnectionFactory;
 import org.webrtc.VideoRenderer;
+
+import com.cloudkibo.cloudkibo.R;
+import com.cloudkibo.cloudkibo.R.string;
 
 import java.util.List;
 

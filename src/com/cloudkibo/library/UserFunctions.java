@@ -16,7 +16,7 @@ public class UserFunctions {
     //URL of the PHP API
     private static String loginURL = "https://www.cloudkibo.com/loginApp";
     private static String registerURL = "https://www.cloudkibo.com/registerApp";
-    private static String forpassURL = "https://www.cloudkibo.com/learn2crack_login_api/";
+    private static String forpassURL = "https://www.cloudkibo.com/forgotPasswordRequest";
     private static String chgpassURL = "https://www.cloudkibo.com/learn2crack_login_api/";
 
 
@@ -60,9 +60,9 @@ public class UserFunctions {
      * Function to reset the password
      **/
 
-    public JSONObject forPass(String forgotpassword){
+    public JSONObject forPass(String username){
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("forgotpassword", forgotpassword));
+        params.add(new BasicNameValuePair("username", username));
         JSONObject json = jsonParser.getJSONFromUrl(forpassURL, params);
         return json;
     }
@@ -75,8 +75,8 @@ public class UserFunctions {
     public JSONObject registerUser(String fname, String lname, String email, String uname, String password, String phone){
         // Building Parameters
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("firstname", fname));
-        params.add(new BasicNameValuePair("lastname", lname));
+        params.add(new BasicNameValuePair("fname", fname));
+        params.add(new BasicNameValuePair("lname", lname));
         params.add(new BasicNameValuePair("email", email));
         params.add(new BasicNameValuePair("username", uname));
         params.add(new BasicNameValuePair("password", password));

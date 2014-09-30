@@ -1,4 +1,4 @@
-package com.cloudkibo.cloudkibo;
+package com.cloudkibo.videocall;
 
 import java.util.HashMap;
 import java.util.LinkedList;

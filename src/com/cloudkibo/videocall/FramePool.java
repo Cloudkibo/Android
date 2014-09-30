@@ -1,4 +1,4 @@
-package com.cloudkibo.cloudkibo;
+package com.cloudkibo.videocall;
 
 import org.webrtc.VideoRenderer.I420Frame;
 
