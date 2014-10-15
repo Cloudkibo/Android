@@ -1,23 +1,36 @@
 package com.cloudkibo.cloudkibo;
 
-/**
- * Author :Raj Amal
- * Email  :raj.amalw@learn2crack.com
- * Website:www.learn2crack.com
- **/
-
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.DatabaseHandler;
 
+import com.koushikdutta.async.http.socketio.Acknowledge;
+import com.koushikdutta.async.http.socketio.ConnectCallback;
+import com.koushikdutta.async.http.socketio.EventCallback;
+import com.koushikdutta.async.http.socketio.SocketIOClient;
+
+import fr.pchab.AndroidRTC.WebRtcClient.AddIceCandidateCommand;
+import fr.pchab.AndroidRTC.WebRtcClient.Command;
+import fr.pchab.AndroidRTC.WebRtcClient.CreateAnswerCommand;
+import fr.pchab.AndroidRTC.WebRtcClient.CreateOfferCommand;
+import fr.pchab.AndroidRTC.WebRtcClient.SetRemoteSDPCommand;
+
 import java.util.HashMap;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class Home extends Activity {
+	
+	private SocketIOClient client;
+	
 	Button btnLogout;
 	Button changepas;
 
@@ -29,6 +42,9 @@ public class Home extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.home);
 
+		
+		
+		
 		// changepas = (Button) findViewById(R.id.btchangepass);
 		btnLogout = (Button) findViewById(R.id.logout);
 
@@ -39,21 +55,6 @@ public class Home extends Activity {
 		 **/
 		HashMap<String, String> user = new HashMap<String, String>();
 		user = db.getUserDetails();
-
-		/**
-		 * Change Password Activity Started
-		 **/
-		/*
-		 * changepas.setOnClickListener(new View.OnClickListener(){ public void
-		 * onClick(View arg0){
-		 * 
-		 * // Intent chgpass = new Intent(getApplicationContext(),
-		 * ChangePassword.class);
-		 * 
-		 * // startActivity(chgpass); }
-		 * 
-		 * });
-		 */
 
 		/**
 		 * Logout from the User Panel which clears the data in Sqlite database
@@ -80,4 +81,31 @@ public class Home extends Activity {
 				+ user.get("lastname"));
 
 	}
+
+
+	private class MessageHandler implements EventCallback {
+	    private HashMap<String, Command> commandMap;
+
+	    public MessageHandler() {
+	      this.commandMap = new HashMap<String, Command>();
+	      commandMap.put("init", new CreateOfferCommand());
+	      commandMap.put("offer", new CreateAnswerCommand());
+	      commandMap.put("answer", new SetRemoteSDPCommand());
+	      commandMap.put("candidate", new AddIceCandidateCommand());
+	    }
+
+	    @Override
+	    public void onEvent(String s, JSONArray jsonArray,
+				Acknowledge acknowledge) {
+			try {
+				Log.d(TAG, "MessageHandler.onEvent() "
+						+ (s == null ? "nil" : s));
+
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+	  }
+
+
 }
