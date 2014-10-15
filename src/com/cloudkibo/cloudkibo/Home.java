@@ -3,6 +3,7 @@ package com.cloudkibo.cloudkibo;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,12 +16,6 @@ import com.koushikdutta.async.http.socketio.ConnectCallback;
 import com.koushikdutta.async.http.socketio.EventCallback;
 import com.koushikdutta.async.http.socketio.SocketIOClient;
 
-import fr.pchab.AndroidRTC.WebRtcClient.AddIceCandidateCommand;
-import fr.pchab.AndroidRTC.WebRtcClient.Command;
-import fr.pchab.AndroidRTC.WebRtcClient.CreateAnswerCommand;
-import fr.pchab.AndroidRTC.WebRtcClient.CreateOfferCommand;
-import fr.pchab.AndroidRTC.WebRtcClient.SetRemoteSDPCommand;
-
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -30,13 +25,12 @@ import org.json.JSONObject;
 public class Home extends Activity {
 	
 	private SocketIOClient client;
-	
+	private MessageHandler messageHandler = new MessageHandler();
 	Button btnLogout;
-	Button changepas;
+	String room = "globalchatroom";
+	HashMap<String, String> user;
 
-	/**
-	 * Called when the activity is first created.
-	 */
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -45,17 +39,54 @@ public class Home extends Activity {
 		
 		
 		
-		// changepas = (Button) findViewById(R.id.btchangepass);
 		btnLogout = (Button) findViewById(R.id.logout);
 
 		DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+		
+		
 
 		/**
 		 * Hashmap to load data from the Sqlite database
 		 **/
-		HashMap<String, String> user = new HashMap<String, String>();
+		user = new HashMap<String, String>();
 		user = db.getUserDetails();
+		
+		
+		SocketIOClient.connect("https://www.cloudkibo.com", new ConnectCallback() {
 
+		      @Override
+		      public void onConnectCompleted(Exception ex, SocketIOClient socket) {
+		    	  
+		        if (ex != null) {
+		            Log.e("SOCKET.IO","WebRtcClient connect failed: "+ex.getMessage());
+		          return;
+		        }
+		        
+		        Log.d("SOCKET.IO","WebRtcClient connected.");
+		        
+		        client = socket;
+		        
+		        JSONObject message = new JSONObject();
+		        try {
+		        	
+					message.put("username", user.get("firstname"));
+					message.put("room", room);
+					
+					socket.emit("join global chatroom", new JSONArray().put(message));
+					
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+		        
+
+		        // specify which events you are interested in receiving
+		        client.addListener("id", messageHandler);
+		        client.addListener("message", messageHandler);
+		      }
+		}, new Handler());
+
+		
+		
 		/**
 		 * Logout from the User Panel which clears the data in Sqlite database
 		 **/
@@ -71,6 +102,9 @@ public class Home extends Activity {
 				finish();
 			}
 		});
+		
+		
+		
 
 		/**
 		 * Sets user first name and last name in text view.
@@ -84,26 +118,17 @@ public class Home extends Activity {
 
 
 	private class MessageHandler implements EventCallback {
-	    private HashMap<String, Command> commandMap;
-
-	    public MessageHandler() {
-	      this.commandMap = new HashMap<String, Command>();
-	      commandMap.put("init", new CreateOfferCommand());
-	      commandMap.put("offer", new CreateAnswerCommand());
-	      commandMap.put("answer", new SetRemoteSDPCommand());
-	      commandMap.put("candidate", new AddIceCandidateCommand());
-	    }
+	    
 
 	    @Override
 	    public void onEvent(String s, JSONArray jsonArray,
 				Acknowledge acknowledge) {
-			try {
-				Log.d(TAG, "MessageHandler.onEvent() "
-						+ (s == null ? "nil" : s));
+			//try {
+				
 
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
+			//} catch (JSONException e) {
+				//e.printStackTrace();
+			//}
 		}
 	  }
 
