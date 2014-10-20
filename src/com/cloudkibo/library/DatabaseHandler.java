@@ -9,17 +9,30 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.HashMap;
 
-public class DatabaseHandler extends SQLiteOpenHelper {
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-    // All Static variables
+public class DatabaseHandler extends SQLiteOpenHelper {
+	
+	
+
+	
+	/////////////////////////////////////////////////////////////////////
+	// All Static Variables                                            //
+    /////////////////////////////////////////////////////////////////////
+	
     // Database Version
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
-    private static final String DATABASE_NAME = "cloud_contacts";
+    private static final String DATABASE_NAME = "cloudkibo";
 
-    // Login table name
+    // Table names
     private static final String TABLE_LOGIN = "login";
+    private static final String TABLE_CONTACTS = "contacts";
+    
+    
 
     // Login Table Columns names
     private static final String KEY_ID = "id";
@@ -29,14 +42,47 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_USERNAME = "username";
     private static final String KEY_UID = "_id";
     private static final String KEY_CREATED_AT = "date";
+    
+    // Contacts Table Columns names
+    private static final String CONTACT_ID = "id";
+    private static final String CONTACT_FIRSTNAME = "firstname";
+    private static final String CONTACT_LASTNAME = "lastname";
+    private static final String CONTACT_EMAIL = "email";
+    private static final String CONTACT_USERNAME = "username";
+    private static final String CONTACT_UID = "_id";
+    private static final String SHARED_DETAILS = "detailsshared";
+    
+    
+    
+    
 
+
+    
+    
+	/////////////////////////////////////////////////////////////////////
+	// Constructor                                                     //
+	/////////////////////////////////////////////////////////////////////
+    
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    // Creating Tables
+    
+    
+    
+    
+    
+    
+    
+
+   /////////////////////////////////////////////////////////////////////
+   // Creating Tables                                                 //
+   /////////////////////////////////////////////////////////////////////
+    
+    
     @Override
     public void onCreate(SQLiteDatabase db) {
+    	
         String CREATE_LOGIN_TABLE = "CREATE TABLE " + TABLE_LOGIN + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_FIRSTNAME + " TEXT,"
@@ -46,21 +92,57 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_UID + " TEXT,"
                 + KEY_CREATED_AT + " TEXT" + ")";
         db.execSQL(CREATE_LOGIN_TABLE);
+        
+        String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_CONTACTS + "("
+                + CONTACT_ID + " INTEGER PRIMARY KEY,"
+                + CONTACT_FIRSTNAME + " TEXT,"
+                + CONTACT_LASTNAME + " TEXT,"
+                + CONTACT_EMAIL + " TEXT UNIQUE,"
+                + CONTACT_USERNAME + " TEXT,"
+                + CONTACT_UID + " TEXT,"
+                + SHARED_DETAILS + " TEXT" + ")";
+        db.execSQL(CREATE_CONTACTS_TABLE);
     }
-
-    // Upgrading database
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /////////////////////////////////////////////////////////////////////
+    // Upgrading Tables                                                //
+    /////////////////////////////////////////////////////////////////////
+    
+    
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older table if existed
+        
+    	// Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_LOGIN);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CONTACTS);
 
         // Create tables again
         onCreate(db);
     }
-
-    /**
-     * Storing user details in database
-     * */
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /////////////////////////////////////////////////////////////////////
+    // Storing user details in database                                //
+    /////////////////////////////////////////////////////////////////////
+    
+    
     public void addUser(String fname, String lname, String email, String uname, String uid, String created_at) {
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -76,11 +158,50 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert(TABLE_LOGIN, null, values);
         db.close(); // Closing database connection
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /////////////////////////////////////////////////////////////////////
+    // Storing contact details in database                             //
+    /////////////////////////////////////////////////////////////////////
+    
+    
+    public void addContact(String fname, String lname, String email, String uname, String uid, String shareddetails) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(CONTACT_FIRSTNAME, fname); // FirstName
+        values.put(CONTACT_LASTNAME, lname); // LastName
+        values.put(CONTACT_EMAIL, email); // Email
+        values.put(CONTACT_USERNAME, uname); // UserName
+        values.put(CONTACT_UID, uid); // Email
+        values.put(SHARED_DETAILS, shareddetails); // Created At
+
+        // Inserting Row
+        db.insert(TABLE_CONTACTS, null, values);
+        db.close(); // Closing database connection
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /////////////////////////////////////////////////////////////////////
+    // Getting user data from database                                 //
+    /////////////////////////////////////////////////////////////////////
 
 
-    /**
-     * Getting user data from database
-     * */
     public HashMap<String, String> getUserDetails(){
         HashMap<String,String> user = new HashMap<String,String>();
         String selectQuery = "SELECT  * FROM " + TABLE_LOGIN;
@@ -104,8 +225,66 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /////////////////////////////////////////////////////////////////////
+    // Getting contacts data from database                             //
+    /////////////////////////////////////////////////////////////////////
 
 
+    public JSONArray getContacts() throws JSONException {
+    	JSONArray contacts = new JSONArray();
+        String selectQuery = "SELECT  * FROM " + TABLE_CONTACTS;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+        	
+        	while (cursor.isAfterLast() != true) {
+        		
+        		JSONObject contact = new JSONObject();
+        		contact.put("firstname", cursor.getString(1));
+        		contact.put("lastname", cursor.getString(2));
+        		contact.put("email", cursor.getString(3));
+        		contact.put("username", cursor.getString(4));
+        		contact.put("_id", cursor.getString(5));
+        		contact.put("detailsshared", cursor.getString(6));
+        		
+        		contacts.put(contact);
+        		
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return contacts;
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    /////////////////////////////////////////////////////////////////////
+    // Other functions                                                 //
+    /////////////////////////////////////////////////////////////////////
 
 
     /**

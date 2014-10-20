@@ -10,20 +10,40 @@ import android.content.Context;
 
 
 public class UserFunctions {
+	
+	
+    /////////////////////////////////////////////////////////////////////
+    // VARIABLES                                                       //
+    /////////////////////////////////////////////////////////////////////
 
     private JSONParser jsonParser;
 
-    //URL of the PHP API
+    //URL of the NODEJS API
     private static String loginURL = "https://www.cloudkibo.com/loginApp";
     private static String registerURL = "https://www.cloudkibo.com/registerApp";
     private static String forpassURL = "https://www.cloudkibo.com/forgotPasswordRequest";
     private static String chgpassURL = "https://www.cloudkibo.com/learn2crack_login_api/";
+    private static String getContactsURL = "https://www.cloudkibo.com/getContactsList";
+    
+    
+    
+    
+    
+    
+    
+	/////////////////////////////////////////////////////////////////////
+	// Constructor                                                     //
+	/////////////////////////////////////////////////////////////////////
 
-
-    // constructor
     public UserFunctions(){
         jsonParser = new JSONParser();
     }
+    
+    
+    
+    
+    
+    
 
     /**
      * Function to Login
@@ -37,6 +57,31 @@ public class UserFunctions {
         JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
         return json;
     }
+
+    
+    
+    
+    
+    
+    
+
+    /**
+     * Function to get contacts list
+     **/
+
+    public JSONObject getContacts(){
+        
+        JSONObject json = jsonParser.getJSONFromUrl(getContactsURL);
+        return json;
+        
+    }
+    
+    
+    
+    
+    
+    
+    
 
     /**
      * Function to change password
@@ -54,6 +99,9 @@ public class UserFunctions {
 
 
 
+    
+    
+    
 
 
     /**
@@ -67,6 +115,10 @@ public class UserFunctions {
         return json;
     }
 
+    
+    
+    
+    
 
 
      /**
@@ -84,7 +136,31 @@ public class UserFunctions {
         JSONObject json = jsonParser.getJSONFromUrl(registerURL,params);
         return json;
     }
+    
+    
+    
+    
+    
+    
+    
+    /**
+     * Function get Login status
+     * */
+    public boolean isUserLoggedIn(Context context){
+        DatabaseHandler db = new DatabaseHandler(context);
+        int count = db.getRowCount();
+        if(count > 0){
+            // user logged in
+            return true;
+        }
+        return false;
+    }
+    
 
+    
+    
+    
+    
 
     /**
      * Function to logout user

@@ -36,7 +36,7 @@ public class Login extends Activity {
 	/**
 	 * Called when the activity is first created.
 	 */
-	private static String KEY_SUCCESS = "status";
+	private static String KEY_STATUS = "status";
 	private static String KEY_UID = "_id";
 	private static String KEY_USERNAME = "username";
 	private static String KEY_FIRSTNAME = "firstname";
@@ -99,17 +99,35 @@ public class Login extends Activity {
 			}
 		});
 	}
+	
+	
+	
+	
+	/////////////////////////////////////////////////////////////////////
+	// CHECKING BEFORE CONNECTING TO INTERNET                          //
+    /////////////////////////////////////////////////////////////////////
 
 	public void NetAsync(View view) {
 		new NetCheck().execute();
 	}
-
-	/**
-	 * Async Task to check whether internet connection is working.
-	 **/
+	
+	
+	
+	
+	
+	
+	
+	/////////////////////////////////////////////////////////////////////
+	// ASYNC TASK TO CHECK INTERNET                                    //
+    /////////////////////////////////////////////////////////////////////
 
 	private class NetCheck extends AsyncTask<String, String, Boolean> {
 		private ProgressDialog nDialog;
+		
+		
+		
+		
+		// PRE-EXECUTE
 
 		@Override
 		protected void onPreExecute() {
@@ -121,6 +139,12 @@ public class Login extends Activity {
 			nDialog.setCancelable(true);
 			// nDialog.show();
 		}
+		
+		
+		
+		
+		
+		// DO THIS WORK IN BACKGROUND
 
 		/**
 		 * Gets current device state and checks for working internet connection
@@ -152,6 +176,13 @@ public class Login extends Activity {
 			return false;
 
 		}
+		
+		
+		
+		
+		
+		
+		// POST-EXECUTE
 
 		@Override
 		protected void onPostExecute(Boolean th) {
@@ -166,7 +197,20 @@ public class Login extends Activity {
 						.show();
 			}
 		}
+		
+		
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	/////////////////////////////////////////////////////////////////////
+	// GETTING DATA FROM INTERNET NOW                                  //
+    /////////////////////////////////////////////////////////////////////
 
 	/**
 	 * Async Task to get and send data to My Sql database through JSON respone.
@@ -176,6 +220,12 @@ public class Login extends Activity {
 		private ProgressDialog pDialog;
 
 		String username, password;
+		
+		
+		
+		
+		
+		// PRE-EXECUTE
 
 		@Override
 		protected void onPreExecute() {
@@ -192,6 +242,13 @@ public class Login extends Activity {
 			pDialog.setCancelable(true);
 			pDialog.show();
 		}
+		
+		
+		
+		
+		
+		
+		// DO THIS WORK IN BACKGROUND
 
 		@Override
 		protected JSONObject doInBackground(String... args) {
@@ -200,14 +257,21 @@ public class Login extends Activity {
 			JSONObject json = userFunction.loginUser(username, password);
 			return json;
 		}
+		
+		
+		
+		
+		
+		
+		// POST-EXECUTE
 
 		@Override
 		protected void onPostExecute(JSONObject json) {
 			try {
 
-				if (json.getString(KEY_SUCCESS) != null) {
+				if (json.getString(KEY_STATUS) != null) {
 
-					String res = json.getString(KEY_SUCCESS);
+					String res = json.getString(KEY_STATUS);
 
 					if (res.equals("success")) {
 						pDialog.setMessage("Loading User Space");
@@ -254,5 +318,7 @@ public class Login extends Activity {
 			}
 		}
 	}
+	
+	
 
 }
