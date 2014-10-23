@@ -140,7 +140,7 @@ public class Home extends Activity {
     		        
     		        try {
     		        	
-    					message.put("username", user.get("firstname"));
+    					message.put("user", user);
     					message.put("room", room);
     					
     					socket.emit("join global chatroom", new JSONArray().put(message));
