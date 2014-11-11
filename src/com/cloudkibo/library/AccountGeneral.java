@@ -21,5 +21,5 @@ public class AccountGeneral {
     public static final String AUTHTOKEN_TYPE_FULL_ACCESS = "Full access";
     public static final String AUTHTOKEN_TYPE_FULL_ACCESS_LABEL = "Full access to an Udinic account";
 
-    //public static final ServerAuthenticate sServerAuthenticate = new ParseComServerAuthenticate();
+    public static final ServerAuthenticate sServerAuthenticate = new ParseComServerAuthenticate();
 }

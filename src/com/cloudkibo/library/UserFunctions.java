@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import android.content.Context;
 
@@ -16,14 +17,15 @@ public class UserFunctions {
     // VARIABLES                                                       //
     /////////////////////////////////////////////////////////////////////
 
-    private JSONParser jsonParser;
+    private ConnectionManager connection;
 
     //URL of the NODEJS API
-    private static String loginURL = "https://www.cloudkibo.com/loginApp";
-    private static String registerURL = "https://www.cloudkibo.com/registerApp";
+    private static String loginURL = "https://www.cloudkibo.com/auth/local";
+    private static String registerURL = "https://www.cloudkibo.com/api/users/";
+    private static String userDataURL = "https://www.cloudkibo.com/api/users/me";
     private static String forpassURL = "https://www.cloudkibo.com/forgotPasswordRequest";
     private static String chgpassURL = "https://www.cloudkibo.com/learn2crack_login_api/";
-    private static String getContactsURL = "https://www.cloudkibo.com/getContactsList";
+    private static String getContactsURL = "https://www.cloudkibo.com/api/contactslist/";
     
     
     
@@ -36,7 +38,7 @@ public class UserFunctions {
 	/////////////////////////////////////////////////////////////////////
 
     public UserFunctions(){
-        jsonParser = new JSONParser();
+        connection = new ConnectionManager();
     }
     
     
@@ -47,34 +49,18 @@ public class UserFunctions {
 
     /**
      * Function to Login
+     * @throws Exception 
      **/
 
-    public JSONObject loginUser(String username, String password){
+    public String loginUser(String username, String password) throws Exception{
         // Building Parameters
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("username", username));
         params.add(new BasicNameValuePair("password", password));
-        JSONObject json = jsonParser.getJSONFromUrl(loginURL, params);
-        return json;
+        String authtoken = connection.getTokenFromServer(loginURL, params);
+        return authtoken;
     }
 
-    
-    
-    
-    
-    
-    
-
-    /**
-     * Function to get contacts list
-     **/
-
-    public JSONObject getContacts(){
-        
-        JSONObject json = jsonParser.getJSONFromUrl(getContactsURL);
-        return json;
-        
-    }
     
     
     
@@ -85,34 +71,18 @@ public class UserFunctions {
 
     /**
      * Function to change password
+     * @throws Exception 
      **/
 
-    public JSONObject chgPass(String newpas, String email){
+    public String chgPass(String newpas, String email) throws Exception{
         List<NameValuePair> params = new ArrayList<NameValuePair>();
 
 
         params.add(new BasicNameValuePair("newpas", newpas));
         params.add(new BasicNameValuePair("email", email));
-        JSONObject json = jsonParser.getJSONFromUrl(chgpassURL, params);
-        return json;
-    }
-
-
-
-    
-    
-    
-
-
-    /**
-     * Function to reset the password
-     **/
-
-    public JSONObject forPass(String username){
-        List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("username", username));
-        JSONObject json = jsonParser.getJSONFromUrl(forpassURL, params);
-        return json;
+        String result = connection.getTokenFromServer(chgpassURL, params);
+        return result;
+        // FIX IT LATER IN THE FUTURE
     }
 
     
@@ -122,19 +92,20 @@ public class UserFunctions {
 
 
      /**
-      * Function to  Register
+      * Function to Register
+      * @throws Exception 
       **/
-    public JSONObject registerUser(String fname, String lname, String email, String uname, String password, String phone){
+    public String registerUser(String fname, String lname, String email, String uname, String password, String phone) throws Exception{
         // Building Parameters
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("fname", fname));
-        params.add(new BasicNameValuePair("lname", lname));
+        params.add(new BasicNameValuePair("firstname", fname));
+        params.add(new BasicNameValuePair("lastname", lname));
         params.add(new BasicNameValuePair("email", email));
         params.add(new BasicNameValuePair("username", uname));
         params.add(new BasicNameValuePair("password", password));
         params.add(new BasicNameValuePair("phone", phone));
-        JSONObject json = jsonParser.getJSONFromUrl(registerURL,params);
-        return json;
+        String authtoken = connection.getTokenFromServer(registerURL,params);
+        return authtoken;
     }
     
     
@@ -171,6 +142,28 @@ public class UserFunctions {
         db.resetTables();
         return true;
     }
+
+
+
+
+
+
+
+	public JSONObject getUserData(String authtoken) {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+        JSONObject userdata = connection.getDataFromServer(userDataURL, authtoken);
+        return userdata;
+	}
+	
+	
+	
+	
+	
+	public JSONArray getContactsList(String authtoken) {
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		JSONArray contactslist = connection.getArrayFromServer(getContactsURL, authtoken);
+        return contactslist;
+	}
 
 }
 
