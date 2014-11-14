@@ -77,6 +77,10 @@ public class MainActivity extends CustomActivity
 	private MessageHandler messageHandler = new MessageHandler();
 	
 	private String room = "globalchatroom";
+	
+	UserFunctions userFunction;
+	
+	HashMap<String, String> user;
 
 	/* (non-Javadoc)
 	 * @see com.newsfeeder.custom.CustomActivity#onCreate(android.os.Bundle)
@@ -88,6 +92,11 @@ public class MainActivity extends CustomActivity
 		setContentView(R.layout.activity_main);
 		
 		authtoken = getIntent().getExtras().getString("authtoken");
+		
+		userFunction = new UserFunctions();
+		
+		if(userFunction.isUserLoggedIn(getApplicationContext()));
+			getUserFromSQLiteDatabase();
 
 		setupContainer();
 		setupDrawer();
@@ -150,14 +159,16 @@ public class MainActivity extends CustomActivity
 		});
 		drawerLayout.openDrawer(drawerLeft);
 		
-		DatabaseHandler db = new DatabaseHandler(
-				getApplicationContext());
-		
-		final TextView userFirstName = (TextView)findViewById(R.id.textViewUserNameOnNavigationBar);
-		userFirstName.setText(db.getUserDetails().get("firstname")+" "+db.getUserDetails().get("lastname"));
-		
-		final TextView userEmail = (TextView)findViewById(R.id.textViewUserEmailOnNavigationBar);
-		userEmail.setText(db.getUserDetails().get("email"));
+		if(userFunction.isUserLoggedIn(getApplicationContext())){
+			
+			final TextView userFirstName = (TextView)findViewById(R.id.textViewUserNameOnNavigationBar);
+			userFirstName.setText(user.get("firstname")+" "+user.get("lastname"));
+			
+			final TextView userEmail = (TextView)findViewById(R.id.textViewUserEmailOnNavigationBar);
+			userEmail.setText(user.get("email"));
+			
+		}
+
 		
 		new AsyncTask<String, String, Boolean>() {
 
@@ -190,10 +201,6 @@ public class MainActivity extends CustomActivity
 			protected void onPostExecute(Boolean th) {
 
 				if (th == true) {
-					
-					/**
-					 * Getting the data from the Internet Now.
-					 */
 					
 					new AsyncTask<String, String, JSONObject>() {
 
@@ -230,7 +237,8 @@ public class MainActivity extends CustomActivity
 									
 									final TextView userEmail = (TextView)findViewById(R.id.textViewUserEmailOnNavigationBar);
 									userEmail.setText(db.getUserDetails().get("email"));
-
+									
+									getUserFromSQLiteDatabase();
 									
 								}
 								
@@ -383,11 +391,12 @@ public class MainActivity extends CustomActivity
 
 				try {
 					
-					DatabaseHandler db = new DatabaseHandler(
-							getApplicationContext());
+					JSONObject userInfo = new JSONObject();
+					userInfo.put("username", user.get("username"));
+					userInfo.put("_id", user.get("_id"));
 
 
-					message.put("user", db.getUserDetails().get("username"));
+					message.put("user", userInfo);
 					message.put("room", room);
 
 					socket.emit("join global chatroom", new JSONArray().put(message));
@@ -420,21 +429,27 @@ public class MainActivity extends CustomActivity
 			Log.d("SOCKET.IO", "ID = "+ s);
 			Log.d("SOCKET.IO", "ID = "+ jsonArray.toString());
 			
-			/*try{
-			
+			try{
+				DatabaseHandler db = new DatabaseHandler(
+						getApplicationContext());
 				if(s.equals("youareonline")){
-					if(user.get("username").equals("sojharo")){
+					if(db.getUserDetails().get("username").equals("sojharo")){
 						
 						JSONObject message = new JSONObject();
 	
-						message.put("from", user.get("username"));
+						message.put("from", db.getUserDetails().get("username"));
 						message.put("to", "sabachanna");
-						message.put("from_id", user.get("_id"));
+						message.put("from_id", db.getUserDetails().get("_id"));
 						message.put("to_id", "545af4e27345b48d20845ff0");
-						message.put("fromFullName", user.get("firstname")+" "+ user.get("lastname"));
+						message.put("fromFullName", db.getUserDetails().get("firstname")+" "+ db.getUserDetails().get("lastname"));
 						message.put("msg", "Hello");
+						
+						JSONObject completeMessage = new JSONObject();
+						
+						completeMessage.put("room", room);
+						completeMessage.put("stanza", message);
 	
-						client.emit("im", new JSONArray().put(message));
+						//client.emit("im", new JSONArray().put(completeMessage));
 	
 	
 						
@@ -444,30 +459,60 @@ public class MainActivity extends CustomActivity
 					
 					Toast.makeText(getBaseContext(), jsonArray.getJSONObject(0).getString("msg"), Toast.LENGTH_SHORT).show();
 					
-					if(user.get("username").equals("sojharo")){
+					if(db.getUserDetails().get("username").equals("sojharo")){
 						
 						JSONObject message = new JSONObject();
-	
-						message.put("from", user.get("username"));
+						
+						message.put("from", db.getUserDetails().get("username"));
 						message.put("to", "sabachanna");
-						message.put("from_id", user.get("_id"));
+						message.put("from_id", db.getUserDetails().get("_id"));
 						message.put("to_id", "545af4e27345b48d20845ff0");
-						message.put("fromFullName", user.get("firstname")+" "+ user.get("lastname"));
-						message.put("msg", "Hello! How are you?");
-						
-						JSONObject stanza = new JSONObject();
-						
-						stanza.put("stanza", message);
+						message.put("fromFullName", db.getUserDetails().get("firstname")+" "+ db.getUserDetails().get("lastname"));
+						message.put("msg", "Hello");
 	
-						client.emit("im", new JSONArray().put(stanza));
+						JSONObject completeMessage = new JSONObject();
+						
+						completeMessage.put("room", room);
+						completeMessage.put("stanza", message);
 	
+						//client.emit("im", new JSONArray().put(completeMessage));
+	
+	
+						
+					}
+					else if(db.getUserDetails().get("username").equals("sabachanna")){
+						
+						JSONObject message = new JSONObject();
+						
+						message.put("from", db.getUserDetails().get("username"));
+						message.put("to", "sojharo");
+						message.put("from_id", db.getUserDetails().get("_id"));
+						message.put("to_id", "545af49a7345b48d20845fed");
+						message.put("fromFullName", db.getUserDetails().get("firstname")+" "+ db.getUserDetails().get("lastname"));
+						message.put("msg", "Hello");
+	
+						JSONObject completeMessage = new JSONObject();
+						
+						completeMessage.put("room", room);
+						completeMessage.put("stanza", message);
+	
+						//client.emit("im", new JSONArray().put(completeMessage));
 						
 					}
 				}
 			} catch (JSONException e) {
 				e.printStackTrace();
-			}*/
+			}
 		}
+	}
+	
+	public void getUserFromSQLiteDatabase(){
+		DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+
+		// Hashmap to load data from the Sqlite database
+		user = new HashMap<String, String>();
+		user = db.getUserDetails();
 	}
 
 	/* (non-Javadoc)

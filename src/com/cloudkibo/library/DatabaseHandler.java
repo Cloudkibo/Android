@@ -47,10 +47,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String CONTACT_ID = "id";
     private static final String CONTACT_FIRSTNAME = "firstname";
     private static final String CONTACT_LASTNAME = "lastname";
-    private static final String CONTACT_EMAIL = "email";
+    private static final String CONTACT_PHONE = "email";
     private static final String CONTACT_USERNAME = "username";
     private static final String CONTACT_UID = "_id";
     private static final String SHARED_DETAILS = "detailsshared";
+    private static final String CONTACT_STATUS = "status";
     
     
     
@@ -97,10 +98,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + CONTACT_ID + " INTEGER PRIMARY KEY,"
                 + CONTACT_FIRSTNAME + " TEXT,"
                 + CONTACT_LASTNAME + " TEXT,"
-                + CONTACT_EMAIL + " TEXT UNIQUE,"
+                + CONTACT_PHONE + " TEXT UNIQUE,"
                 + CONTACT_USERNAME + " TEXT,"
                 + CONTACT_UID + " TEXT,"
-                + SHARED_DETAILS + " TEXT" + ")";
+                + SHARED_DETAILS + " TEXT,"
+                + CONTACT_STATUS + " TEXT" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
     
@@ -172,15 +174,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /////////////////////////////////////////////////////////////////////
     
     
-    public void addContact(String fname, String lname, String email, String uname, String uid, String shareddetails) {
+    public void addContact(String fname, String lname, String phone, String uname, String uid, String shareddetails,
+    		String status) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(CONTACT_FIRSTNAME, fname); // FirstName
         values.put(CONTACT_LASTNAME, lname); // LastName
-        values.put(CONTACT_EMAIL, email); // Email
+        values.put(CONTACT_PHONE, phone); // Email
         values.put(CONTACT_USERNAME, uname); // UserName
-        values.put(CONTACT_UID, uid); // Email
+        values.put(CONTACT_UID, uid); // Uid
+        values.put(CONTACT_STATUS, status); // Status
         values.put(SHARED_DETAILS, shareddetails); // Created At
 
         // Inserting Row
@@ -254,10 +258,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         		JSONObject contact = new JSONObject();
         		contact.put("firstname", cursor.getString(1));
         		contact.put("lastname", cursor.getString(2));
-        		contact.put("email", cursor.getString(3));
+        		contact.put("phone", cursor.getString(3));
         		contact.put("username", cursor.getString(4));
         		contact.put("_id", cursor.getString(5));
         		contact.put("detailsshared", cursor.getString(6));
+        		contact.put("status", cursor.getString(7));
         		
         		contacts.put(contact);
         		
@@ -312,6 +317,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         // Delete All Rows
         db.delete(TABLE_LOGIN, null, null);
+        db.close();
+    }
+    
+    /**
+     * Delete all contacts Table
+     * */
+    public void resetContactsTable(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        // Delete All Rows
+        db.delete(TABLE_CONTACTS, null, null);
         db.close();
     }
 

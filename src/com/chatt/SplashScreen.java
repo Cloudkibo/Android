@@ -6,14 +6,18 @@ import com.cloudkibo.library.AccountGeneral;
 import static com.cloudkibo.library.AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS;
 
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 /**
@@ -27,6 +31,9 @@ public class SplashScreen extends Activity
 	/** Check if the app is running. */
 	private boolean isRunning;
 	private AccountManager mAccountManager;
+	
+	private AlertDialog mAlertDialog;
+    private boolean mInvalidate;
 
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)

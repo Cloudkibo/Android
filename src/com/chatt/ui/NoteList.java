@@ -80,11 +80,13 @@ public class NoteList extends CustomFragment
 			public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
 					long arg3)
 			{
+				Log.d("SOJHARO", contactList.get(pos).getUserName());
+				
+				//Intent home = new Intent(getActivity().getApplicationContext(), NewChat.class);
+				//startActivity(home);
 
 			}
 		});
-
-		//getTokenForAccountCreateIfNeeded(AccountGeneral.ACCOUNT_TYPE, AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS);
 
 		setTouchNClick(v.findViewById(R.id.tab1));
 		setTouchNClick(v.findViewById(R.id.tab2));
@@ -122,7 +124,7 @@ public class NoteList extends CustomFragment
 		
 		ArrayList<ContactItem> noteList = new ArrayList<ContactItem>();
 		this.contactList = new ArrayList<ContactItem>(noteList);
-		
+		loadContactsFromDatabase();
 		
 		 
 		 new AsyncTask<String, String, Boolean>() {
@@ -170,7 +172,7 @@ public class NoteList extends CustomFragment
 						protected void onPostExecute(JSONArray jsonA) {
 							try {
 
-								if (jsonA.length() > 0) {
+								if (jsonA != null) {
 
 									//String res = jsonA.get(0).toString();
 
@@ -181,15 +183,19 @@ public class NoteList extends CustomFragment
 									
 									for (int i=0; i < jsonA.length(); i++) {
 										JSONObject row = jsonA.getJSONObject(i);
-										contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("username"),
+										contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
+												row.getJSONObject("contactid").getString("username"),
 												row.getJSONObject("contactid").getString("firstname"),
 												row.getJSONObject("contactid").getString("lastname"),
 												row.getJSONObject("contactid").getString("phone"), 01, 
 												false, "",
-												row.getJSONObject("contactid").getString("status")));
+												row.getJSONObject("contactid").getString("status"),
+												row.getString("detailsshared")
+												));
 									}
 									
 									loadNewContacts(contactList1);
+									insertContactsIntoDB(contactList1);
 									
 								}
 							} catch (JSONException e) {
@@ -212,8 +218,52 @@ public class NoteList extends CustomFragment
 	}
 	
 	public void loadNewContacts(ArrayList<ContactItem> contactList1){
+		contactList.clear();
 		contactList.addAll(contactList1);
 		contactAdapter.notifyDataSetChanged();
+	}
+	
+	public void insertContactsIntoDB(ArrayList<ContactItem> contactList1){
+		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+		
+		db.resetContactsTable();
+		
+		for(int i=0; i<contactList1.size(); i++){
+			db.addContact(contactList1.get(i).firstName(),
+					contactList1.get(i).lastName(), contactList1.get(i).getPhone(),
+					contactList1.get(i).getUserName(), contactList1.get(i).getUserId(),
+					contactList1.get(i).details_shared(), contactList1.get(i).status());
+		}
+	}
+	
+	public void loadContactsFromDatabase(){
+		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+		
+		try {
+			
+			JSONArray jsonA = db.getContacts();
+			
+			ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
+			
+			for (int i=0; i < jsonA.length(); i++) {
+				JSONObject row = jsonA.getJSONObject(i);
+				contactList1.add(new ContactItem(row.getString("_id"),
+						row.getString("username"),
+						row.getString("firstname"),
+						row.getString("lastname"),
+						row.getString("phone"), 01, 
+						false, "",
+						row.getString("status"),
+						row.getString("detailsshared")
+						));
+			}
+			
+			contactList.addAll(contactList1);
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 	/**

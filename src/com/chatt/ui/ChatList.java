@@ -92,44 +92,9 @@ public class ChatList extends CustomFragment
 		chatList.add(new ChatItem("Saba Channa", "Test Subject",
 				"I am testing", "12:10PM", R.drawable.user1, true,
 				false));
-		chatList.add(new ChatItem("Sarang Mangi", "Test Subject 2",
-				"I am testing", "12:10PM", R.drawable.user1, true,
-				false));
-		chatList.add(new ChatItem("Sadaf Channa", "Test Subject 3",
-				"I am testing", "12:10PM", R.drawable.user1, true,
-				false));
-		chatList.add(new ChatItem("Servaich Mangi", "Test Subject 4",
-				"I am testing", "12:10PM", R.drawable.user1, true,
-				false));
-		
-		chatList.add(new ChatItem("Jonathan L@L", "My special project",
-				"Yes, it's very special", "12:10PM", R.drawable.user1, true,
-				false));
-		chatList.add(new ChatItem(
-				"Jonathan L, Matt G, Neha D.",
-				"Friends",
-				"I agree with you and with "
-						+ "your thoughts, you are right! We need some changes in life",
-				"08:20AM", R.drawable.group1, true, true));
-		chatList.add(new ChatItem("Victor Holdings", "Urgent!",
-				"Hey man, long time. Hows your work goin"
-						+ " on and hows your life?", "01/20/2014",
-				R.drawable.user2, false, false));
-		chatList.add(new ChatItem("Linda Hines", "Vacations...",
-				"How are you?", "01/20/2014", R.drawable.user3, false, false));
-		chatList.add(new ChatItem("Nelsy thomas", "Life!",
-				"Hope you and your team is doing great. I know you are"
-						+ " very busy with work", "01/22/2014",
-				R.drawable.user4, true, false));
-		chatList.add(new ChatItem("John E, Matt G., Victor D", "Happy hours",
-				"Yes, it's very good", "01/22/2014", R.drawable.group2, true,
-				true));
-		chatList.add(new ChatItem("Martin K", "Last party",
-				"This is last party...", "01/22/2014", R.drawable.user5, false,
-				false));
 		this.chatList = new ArrayList<ChatItem>(chatList);
-		this.chatList.addAll(chatList);
-		this.chatList.addAll(chatList);
+		//this.chatList.addAll(chatList);
+		//this.chatList.addAll(chatList);
 
 	}
 

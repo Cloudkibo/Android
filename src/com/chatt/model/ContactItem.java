@@ -5,6 +5,9 @@ public class ContactItem {
 
 	/** The username. */
 	private String username;
+	
+	/** The username. */
+	private String userid;
 
 	/** The firstname. */
 	private String firstname;
@@ -26,6 +29,9 @@ public class ContactItem {
 	
 	/** The is status*/
 	private String status;
+	
+	/** The is Details_shared_check*/
+	private String details_shared;
 
 	/**
 	 * Instantiates a new chat item.
@@ -45,9 +51,10 @@ public class ContactItem {
 	 * @param isGroup
 	 *            the is group
 	 */
-	public ContactItem(String username, String firstname, String lastname, String phone,
-			int icon, boolean online, String city, String status)
+	public ContactItem(String userid, String username, String firstname, String lastname, String phone,
+			int icon, boolean online, String city, String status, String details_shared)
 	{
+		this.userid = userid;
 		this.username = username;
 		this.phone = phone;
 		this.icon = icon;
@@ -56,6 +63,17 @@ public class ContactItem {
 		this.online = online;
 		this.lastname = lastname;
 		this.status = status;
+		this.details_shared = details_shared;
+	}
+	
+	/**
+	 * Gets the user id.
+	 * 
+	 * @return the name
+	 */
+	public String getUserId()
+	{
+		return userid;
 	}
 
 	/**
@@ -224,6 +242,27 @@ public class ContactItem {
 	public void setStatus(String status)
 	{
 		this.status = status;
+	}
+	
+	/**
+	 * Checks if details shared
+	 * 
+	 * @return status
+	 */
+	public String details_shared()
+	{
+		return details_shared;
+	}
+
+	/**
+	 * Sets the details_shared
+	 * 
+	 * @param status
+	 *            the new status
+	 */
+	public void setDetails_shared(String details_shared)
+	{
+		this.details_shared = details_shared;
 	}
 
 }
