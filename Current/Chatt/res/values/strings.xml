@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">CloudKibo</string>
+    <string name="host">www.cloudkibo.com</string>
+    <string name="port">8443</string>
+    
+    <string name="type_msg">Type message</string>    
+    
+<string name="drawer_open">Open</string>
+<string name="drawer_close">Close</string>
+    
+    <string name="or">or</string>
+    <string name="email">Username</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="log_in">Log in</string>
+    <string name="forgot_my_pwd">I’ve forgotten my password?</string>
+    <string name="my_chats">My Chats</string>
+    <string name="all_chats">All Chats</string>
+    <string name="search">Search</string>
+    <string name="grp_temp">\@JayL, @damen.miller, @steve.buscemi, @ris.collins, @peterk</string>
+    <string name="to">To:</string>
+    <string name="edit">Edit</string>
+    <string name="new_chat">New Chat</string>
+    <string name="trash">Trash</string>
+    <string name="choose_project">Choose Project</string>
+    <string name="publc">Public</string>
+    <string name="my_notes">My Notes</string>
+    <string name="all_notes">All Notes</string>
+    <string name="fav_contacts">Favorite</string>
+    <string name="all_contacts">All Contacts</string>
+    <string name="my_projects">My Projects</string>
+    <string name="all_projects">All Projects</string>
+    <string name="about_txt">Online chat may refer to any kind of communication over the Internet that offers a real-time transmission of text messages from sender to receiver. Chat messages are generally short in order to enable other participants to respond quickly. Thereby, a feeling similar to a spoken conversation is created, which distinguishes chatting from other text-based online communication forms such as Internet forums and email. Online chat may address point-to-point communications as well as multicast communications from one sender to many receivers and voice and video chat, or may be a feature of a web conferencing service.\\n\\nOnline chat in a less stringent definition may be primarily any direct text-based or video-based (webcams), one-on-one chat or one-to-many group chat (formally also known as synchronous conferencing), using tools such as instant messengers, Internet Relay Chat (IRC), talkers and possibly MUDs. The expression online chat comes from the word chat which means \"informal conversation\". Online chat includes web-based applications that allow communication –often directly addressed, but anonymous between users in a multi-user environment. Web conferencing is a more specific online service, that is often sold as a service, hosted on a web server controlled by the vendor.\n\nThe first online chat system was called Talkomatic, created by Doug Brown and David R. Woolley in 1974 on the PLATO System at the University of Illinois. It offered several channels, each of which could accommodate up to five people, with messages appearing on all users\' screens character-by-character as they were typed. Talkomatic was very popular among PLATO users into the mid-1980s.\n\nThe first dedicated online chat service that was widely available to the public was the CompuServe CB Simulator in 1980,[1][2] created by CompuServe executive Alexander "Sandy" Trevor in Columbus, Ohio. Ancestors include network chat software such as UNIX "talk" used in the 1970s.</string>
+
+</resources>
