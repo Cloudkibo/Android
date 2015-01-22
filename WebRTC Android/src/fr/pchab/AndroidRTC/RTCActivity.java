@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.view.Window;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 import org.json.JSONException;
 import org.webrtc.MediaStream;
@@ -46,6 +47,13 @@ public class RTCActivity extends Activity implements WebRtcClient.RTCListener{
 
     final Intent intent = getIntent();
     final String action = intent.getAction();
+    
+    FrameLayout flRenderer = (FrameLayout) findViewById(R.id.gl_container);
+    flRenderer.addView(vsv);
+    
+    
+    setContentView(R.layout.rendercameraview);
+    
 
     if (Intent.ACTION_VIEW.equals(action)) {
       final List<String> segments = intent.getData().getPathSegments();
@@ -97,7 +105,7 @@ public class RTCActivity extends Activity implements WebRtcClient.RTCListener{
   }*/
 
   public void startCam() {
-    setContentView(vsv);
+    //setContentView(vsv);
     // Camera settings
     client.setCamera("front", "640", "480");
     client.start("android_test", true);
