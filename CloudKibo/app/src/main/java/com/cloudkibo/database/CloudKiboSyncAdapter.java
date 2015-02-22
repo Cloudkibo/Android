@@ -26,16 +26,21 @@ import android.util.Log;
 import com.cloudkibo.database.CloudKiboDatabaseContract.Contacts;
 import com.cloudkibo.database.CloudKiboDatabaseContract.User;
 import com.cloudkibo.library.AccountGeneral;
+import com.cloudkibo.library.KiboAuthenticator;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.model.ContactItem;
 
 public class CloudKiboSyncAdapter extends AbstractThreadedSyncAdapter {
 
 	private final AccountManager mAccountManager;
+
+    private final KiboAuthenticator kiboAuth;
 	 
     public CloudKiboSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
         mAccountManager = AccountManager.get(context);
+
+        kiboAuth = new KiboAuthenticator(context);
     }
 	
 	@Override
@@ -43,14 +48,24 @@ public class CloudKiboSyncAdapter extends AbstractThreadedSyncAdapter {
 			ContentProviderClient provider, SyncResult syncResult) {
 		
 		try {
-			
+
 			String authToken = mAccountManager.blockingGetAuthToken(account, AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS, true);
-			
+
+//            String authToken = kiboAuth.
+
 			UserFunctions userFunction = new UserFunctions();
 			
 			JSONObject remoteUser = userFunction.getUserData(authToken);
 			
 			JSONArray remoteContacts = userFunction.getContactsList(authToken);
+
+            if(remoteUser == null){
+                mAccountManager.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, authToken);
+
+                Log.e("TOKEN", "TOKEN INVALIDATED");
+
+            }
+
 			/*
 			JSONObject localUser = new JSONObject();
 			Cursor curUser = provider.query(User.CONTENT_URI, null, null, null, null);
@@ -65,6 +80,7 @@ public class CloudKiboSyncAdapter extends AbstractThreadedSyncAdapter {
 	        }
 	        curUser.close();
 	        */
+
 	        Log.d("SYNC_ADAPTER", remoteUser.toString());
 	        
 	        provider.delete(User.CONTENT_URI, null, null);
@@ -134,7 +150,9 @@ public class CloudKiboSyncAdapter extends AbstractThreadedSyncAdapter {
 	        }
 			
 			
-		} catch (OperationCanceledException e) {
+		} catch(NullPointerException e) {
+            e.printStackTrace();
+        } catch (OperationCanceledException e) {
 			e.printStackTrace();
 		} catch (AuthenticatorException e) {
 			e.printStackTrace();

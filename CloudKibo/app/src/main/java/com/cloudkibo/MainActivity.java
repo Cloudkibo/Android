@@ -15,8 +15,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.app.Dialog;
-import android.app.ProgressDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -44,19 +48,21 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomActivity;
+import com.cloudkibo.database.CloudKiboDatabaseContract;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.AccountGeneral;
 import com.cloudkibo.library.Login;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.model.Data;
 import com.cloudkibo.ui.AboutChat;
 import com.cloudkibo.ui.ChatList;
+import com.cloudkibo.ui.ContactList;
 import com.cloudkibo.ui.GroupChat;
 import com.cloudkibo.ui.LeftNavAdapter;
-import com.cloudkibo.ui.NoteList;
 import com.cloudkibo.ui.ProjectList;
 import com.cloudkibo.utils.IFragmentName;
+import com.cloudkibo.webrtc.RTCActivity;
 import com.koushikdutta.async.http.socketio.Acknowledge;
 import com.koushikdutta.async.http.socketio.ConnectCallback;
 import com.koushikdutta.async.http.socketio.EventCallback;
@@ -89,14 +95,15 @@ public class MainActivity extends CustomActivity
 	private MessageHandler messageHandler = new MessageHandler();
 	
 	private String room = "globalchatroom";
-	
-	private String room2;
-	
+
 	UserFunctions userFunction;
 	
 	HashMap<String, String> user;
 	
 	List<NameValuePair> msg1;
+
+    AccountManager am;
+    Account account;
 
 	/* (non-Javadoc)
 	 * @see com.newsfeeder.custom.CustomActivity#onCreate(android.os.Bundle)
@@ -113,6 +120,16 @@ public class MainActivity extends CustomActivity
 		
 		if(userFunction.isUserLoggedIn(getApplicationContext()));
 			getUserFromSQLiteDatabase();
+
+        am = AccountManager.get(MainActivity.this);
+        account = am.getAccountsByType(AccountGeneral.ACCOUNT_TYPE)[0];
+
+        if(!ContentResolver.isSyncActive(account, CloudKiboDatabaseContract.AUTHORITY)) {
+            ContentResolver.setSyncAutomatically(account, CloudKiboDatabaseContract.AUTHORITY, true);
+            ContentResolver.requestSync(account, CloudKiboDatabaseContract.AUTHORITY, new Bundle());
+
+            fetchUserFromServerForFirstTime();
+        }
 
 		setupContainer();
 		setupDrawer();
@@ -176,118 +193,16 @@ public class MainActivity extends CustomActivity
 		drawerLayout.openDrawer(drawerLeft);
 		
 		if(userFunction.isUserLoggedIn(getApplicationContext())){
-			
+
 			final TextView userFirstName = (TextView)findViewById(R.id.textViewUserNameOnNavigationBar);
 			userFirstName.setText(user.get("firstname")+" "+user.get("lastname"));
-			
+
 			final TextView userEmail = (TextView)findViewById(R.id.textViewUserEmailOnNavigationBar);
 			userEmail.setText(user.get("email"));
-			
+
 		}
 		
-		
-		
-		
-		
-		/**
-		 * Fetch the user data from the Internet
-		 */
 
-		
-		new AsyncTask<String, String, Boolean>() {
-
-			@Override
-			protected Boolean doInBackground(String... args) {
-
-				ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-				NetworkInfo netInfo = cm.getActiveNetworkInfo();
-				if (netInfo != null && netInfo.isConnected()) {
-					try {
-						URL url = new URL("http://www.google.com");
-						HttpURLConnection urlc = (HttpURLConnection) url
-								.openConnection();
-						urlc.setConnectTimeout(3000);
-						urlc.connect();
-						if (urlc.getResponseCode() == 200) {
-							return true;
-						}
-					} catch (MalformedURLException e1) {
-						e1.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				return false;
-
-			}
-
-			@Override
-			protected void onPostExecute(Boolean th) {
-
-				if (th == true) {
-					
-					new AsyncTask<String, String, JSONObject>() {
-
-						@Override
-						protected JSONObject doInBackground(String... args) {
-							UserFunctions userFunction = new UserFunctions();
-							JSONObject json = userFunction.getUserData(authtoken);
-							return json;
-						}
-
-						@Override
-						protected void onPostExecute(JSONObject json) {
-							try {
-
-								if(json != null){
-									
-									DatabaseHandler db = new DatabaseHandler(
-											getApplicationContext());
-									/**
-									 * Clear all previous data in SQlite database.
-									 **/
-									UserFunctions logout = new UserFunctions();
-									logout.logoutUser(getApplicationContext());
-									
-									db.addUser(json.getString("firstname"),
-											json.getString("lastname"),
-											json.getString("email"),
-											json.getString("username"),
-											json.getString("_id"),
-											json.getString("date"));
-									
-									final TextView userFirstName = (TextView)findViewById(R.id.textViewUserNameOnNavigationBar);
-									userFirstName.setText(db.getUserDetails().get("firstname")+" "+db.getUserDetails().get("lastname"));
-									
-									final TextView userEmail = (TextView)findViewById(R.id.textViewUserEmailOnNavigationBar);
-									userEmail.setText(db.getUserDetails().get("email"));
-									
-
-
-									// Hashmap to load data from the Sqlite database
-									user = new HashMap<String, String>();
-									user = db.getUserDetails();
-									
-									setSocketIOConfig();
-									
-								}
-								
-							} catch (JSONException e) {
-								e.printStackTrace();
-							}
-						}
-			            
-			        }.execute();
-					
-				} else {
-					Toast.makeText(getApplicationContext(),
-							"Could not connect to Internet", Toast.LENGTH_SHORT)
-							.show();
-				}
-			}
-            
-        }.execute();
-        
 	}
 
 	/**
@@ -306,6 +221,7 @@ public class MainActivity extends CustomActivity
 		al.add(new Data("Settings", null, R.drawable.ic_setting));
 		al.add(new Data("About CloudKibo", null, R.drawable.ic_about));
 		al.add(new Data("Logout", null, R.drawable.ic_logout));
+        al.add(new Data("WebRTC", null, R.drawable.group1)); // this is for testing purpose
 		return al;
 	}
 
@@ -328,7 +244,7 @@ public class MainActivity extends CustomActivity
 		else if (pos == 2)
 		{
 			title = "Contacts";
-			f = new NoteList();
+			f = new ContactList();
 		}
 		else if (pos == 3)
 		{
@@ -343,8 +259,28 @@ public class MainActivity extends CustomActivity
 		else if (pos == 6)
 		{
 			startActivity(new Intent(this, Login.class));
+
+            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+            db.resetChatsTable();
+            db.resetContactsTable();
+            db.resetTables();
+
+            am.removeAccount(account, null, null);
+
 			finish();
 		}
+        else if (pos == 7)
+        {
+            Intent i = new Intent(this, RTCActivity.class);
+            i.putExtra("authtoken", authtoken);
+            i.putExtra("username", user.get("username"));
+            i.putExtra("_id", user.get("_id"));
+            i.putExtra("room", room);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(i);
+            finish();
+        }
 		if (f != null)
 		{
 			while (getSupportFragmentManager().getBackStackEntryCount() > 0)
@@ -417,7 +353,6 @@ public class MainActivity extends CustomActivity
 				client = socket;
 
 				JSONObject message = new JSONObject();
-				JSONObject message1 = new JSONObject();
 
 				try {
 					
@@ -430,13 +365,6 @@ public class MainActivity extends CustomActivity
 					message.put("room", room);
 
 					socket.emit("join global chatroom", new JSONArray().put(message));
-					
-					message1.put("room", user.get("username"));
-					message1.put("username", user.get("username"));
-					
-					room2 = user.get("username");
-					
-					socket.emit("create or join", new JSONArray().put(message1));
 					
 
 				} catch (JSONException e) {
@@ -468,7 +396,7 @@ public class MainActivity extends CustomActivity
 		try {
 			
 			message.put("msg", msg);
-			message.put("room", room2);
+			//message.put("room", room2);
 			message.put("username", user.get("username"));
 			
 			client.emit("message", new JSONArray().put(message));
@@ -486,23 +414,13 @@ public class MainActivity extends CustomActivity
 	public void callThisPerson(String contact){
 		
 		try {
-			
+
 			JSONObject message1 = new JSONObject();
-			
-			message1.put("room", user.get("username"));
-			message1.put("username", user.get("username"));
-			
-			client.emit("leave", new JSONArray().put(message1));
-			
-			JSONObject message2 = new JSONObject();
-			
-			message2.put("room", contact);
-			message2.put("username", user.get("username"));
-			
-			room2=contact;
-			
-			client.emit("create or join", new JSONArray().put(message2));
-			
+
+			message1.put("room", room);
+			message1.put("callee", user.get("username"));
+
+			client.emit("callthisperson", new JSONArray().put(message1));
 
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -548,7 +466,7 @@ public class MainActivity extends CustomActivity
 
 			
 			// sending this chat to the server to save
-			/*new AsyncTask<String, String, JSONObject>() {
+			new AsyncTask<String, String, JSONObject>() {
 
 				@Override
 				protected JSONObject doInBackground(String... args) {
@@ -564,7 +482,7 @@ public class MainActivity extends CustomActivity
 						
 				}
 	            
-	        }.execute();*/
+	        }.execute();
 			
 			
 		} catch (JSONException e) {
@@ -661,21 +579,21 @@ public class MainActivity extends CustomActivity
 		      					
 		      					JSONObject message1 = new JSONObject();
 		    					
-		    					message1.put("room", room2);
+		    					//message1.put("room", room2);
 		    					message1.put("username", user.get("username"));
 		    					
 		    					client.emit("leave", new JSONArray().put(message1));
 		    					
-		    					Toast.makeText(getApplicationContext(),
-		    							""+ room2 +" is busy...", Toast.LENGTH_SHORT)
-		    							.show();
+		    					//Toast.makeText(getApplicationContext(),
+		    					//		""+ room2 +" is busy...", Toast.LENGTH_SHORT)
+		    					//		.show();
 		    					
 		    					JSONObject message2 = new JSONObject();
 		    					
 		    					message2.put("room", user.get("username"));
 		    					message2.put("username", user.get("username"));
 		    					
-		    					room2=user.get("username");
+		    					//room2=user.get("username");
 		    					
 		    					client.emit("create or join", new JSONArray().put(message2));
 		      					
@@ -723,21 +641,21 @@ public class MainActivity extends CustomActivity
 				else if(jsonArray.get(0).toString().equals("Reject Call")){
 					JSONObject message1 = new JSONObject();
 					
-					message1.put("room", room2);
+					//message1.put("room", room2);
 					message1.put("username", user.get("username"));
 					
 					client.emit("leave", new JSONArray().put(message1));
 					
-					Toast.makeText(getApplicationContext(),
-							""+ room2 +" is busy...", Toast.LENGTH_SHORT)
-							.show();
+					//Toast.makeText(getApplicationContext(),
+					//		""+ room2 +" is busy...", Toast.LENGTH_SHORT)
+					//		.show();
 					
 					JSONObject message2 = new JSONObject();
 					
 					message2.put("room", user.get("username"));
 					message2.put("username", user.get("username"));
 					
-					room2=user.get("username");
+					//room2=user.get("username");
 					
 					client.emit("create or join", new JSONArray().put(message2));
 					
@@ -745,21 +663,21 @@ public class MainActivity extends CustomActivity
 				else if(s.equals("full")){
 					JSONObject message1 = new JSONObject();
 					
-					message1.put("room", room2);
+					//message1.put("room", room2);
 					message1.put("username", user.get("username"));
 					
 					client.emit("leave", new JSONArray().put(message1));
 					
-					Toast.makeText(getApplicationContext(),
-							""+ room2 +" is busy on another call...", Toast.LENGTH_SHORT)
-							.show();
+					//Toast.makeText(getApplicationContext(),
+					//		""+ room2 +" is busy on another call...", Toast.LENGTH_SHORT)
+					//		.show();
 					
 					JSONObject message2 = new JSONObject();
 					
 					message2.put("room", user.get("username"));
 					message2.put("username", user.get("username"));
 					
-					room2=user.get("username");
+					//room2=user.get("username");
 					
 					client.emit("create or join", new JSONArray().put(message2));
 				}
@@ -768,21 +686,21 @@ public class MainActivity extends CustomActivity
 					if(!jsonArray.getJSONObject(0).getString("room").equals(user.get("username"))){
 						JSONObject message1 = new JSONObject();
 						
-						message1.put("room", room2);
+						//message1.put("room", room2);
 						message1.put("username", user.get("username"));
 						
 						client.emit("leave", new JSONArray().put(message1));
 						
-						Toast.makeText(getApplicationContext(),
-								""+ room2 +" seems offline or is busy....", Toast.LENGTH_SHORT)
-								.show();
+						//Toast.makeText(getApplicationContext(),
+						//		""+ room2 +" seems offline or is busy....", Toast.LENGTH_SHORT)
+						//		.show();
 						
 						JSONObject message2 = new JSONObject();
 						
 						message2.put("room", user.get("username"));
 						message2.put("username", user.get("username"));
 						
-						room2=user.get("username");
+						//room2=user.get("username");
 						
 						client.emit("create or join", new JSONArray().put(message2));
 					}
@@ -793,9 +711,9 @@ public class MainActivity extends CustomActivity
 					
 						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 						Log.d("SOCKET.IO", "ONLINEs = "+ jsonArray.toString());
-						if(myFragment.getFragmentName().equals("NoteList"))
+						if(myFragment.getFragmentName().equals("ContactList"))
 						{
-						   NoteList myContactListFragment = (NoteList) myFragment;
+						   ContactList myContactListFragment = (ContactList) myFragment;
 	
 						   myContactListFragment.setOnlineStatus(jsonArray); //here you call the method of your current Fragment.
 						   
@@ -808,9 +726,9 @@ public class MainActivity extends CustomActivity
 					
 						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 						Log.d("SOCKET.IO", "ONLINEs = "+ jsonArray.toString());
-						if(myFragment.getFragmentName().equals("NoteList"))
+						if(myFragment.getFragmentName().equals("ContactList"))
 						{
-						   NoteList myContactListFragment = (NoteList) myFragment;
+						   ContactList myContactListFragment = (ContactList) myFragment;
 	
 						   myContactListFragment.setOfflineStatusIndividual(jsonArray); //here you call the method of your current Fragment.
 						   
@@ -823,9 +741,9 @@ public class MainActivity extends CustomActivity
 					
 						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 						Log.d("SOCKET.IO", "ONLINEs = "+ jsonArray.toString());
-						if(myFragment.getFragmentName().equals("NoteList"))
+						if(myFragment.getFragmentName().equals("ContactList"))
 						{
-						   NoteList myContactListFragment = (NoteList) myFragment;
+						   ContactList myContactListFragment = (ContactList) myFragment;
 	
 						   myContactListFragment.setOnlineStatusIndividual(jsonArray); //here you call the method of your current Fragment.
 						   
@@ -922,4 +840,102 @@ public class MainActivity extends CustomActivity
 		}
 		return super.onKeyDown(keyCode, event);
 	}
+
+    private void fetchUserFromServerForFirstTime() {
+        new AsyncTask<String, String, Boolean>() {
+
+            @Override
+            protected Boolean doInBackground(String... args) {
+
+                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                NetworkInfo netInfo = cm.getActiveNetworkInfo();
+                if (netInfo != null && netInfo.isConnected()) {
+                    try {
+                        URL url = new URL("http://www.google.com");
+                        HttpURLConnection urlc = (HttpURLConnection) url
+                                .openConnection();
+                        urlc.setConnectTimeout(3000);
+                        urlc.connect();
+                        if (urlc.getResponseCode() == 200) {
+                            return true;
+                        }
+                    } catch (MalformedURLException e1) {
+                        e1.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return false;
+
+            }
+
+            @Override
+            protected void onPostExecute(Boolean th) {
+
+                if (th == true) {
+
+                    new AsyncTask<String, String, JSONObject>() {
+
+                        @Override
+                        protected JSONObject doInBackground(String... args) {
+                            UserFunctions userFunction = new UserFunctions();
+                            JSONObject json = userFunction.getUserData(authtoken);
+                            return json;
+                        }
+
+                        @Override
+                        protected void onPostExecute(JSONObject json) {
+                            try {
+
+                                if(json != null){
+
+                                    DatabaseHandler db = new DatabaseHandler(
+                                            getApplicationContext());
+
+                                    // Clear all previous data in SQlite database.
+
+                                    UserFunctions logout = new UserFunctions();
+                                    logout.logoutUser(getApplicationContext());
+
+                                    db.addUser(json.getString("firstname"),
+                                            json.getString("lastname"),
+                                            json.getString("email"),
+                                            json.getString("username"),
+                                            json.getString("_id"),
+                                            json.getString("date"));
+
+                                    final TextView userFirstName = (TextView)findViewById(R.id.textViewUserNameOnNavigationBar);
+                                    userFirstName.setText(db.getUserDetails().get("firstname")+" "+db.getUserDetails().get("lastname"));
+
+                                    final TextView userEmail = (TextView)findViewById(R.id.textViewUserEmailOnNavigationBar);
+                                    userEmail.setText(db.getUserDetails().get("email"));
+
+
+
+                                    // Hashmap to load data from the Sqlite database
+                                    user = new HashMap<String, String>();
+                                    user = db.getUserDetails();
+
+                                    //setSocketIOConfig();
+
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }.execute();
+
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "Could not connect to Internet", Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+
+        }.execute();
+    }
+
+
 }

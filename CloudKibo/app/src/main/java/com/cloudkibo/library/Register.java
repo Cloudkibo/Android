@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -69,48 +70,28 @@ public class Register extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-//		setContentView(R.layout.register);
+		setContentView(R.layout.register);
 		
 		mAccountType = getIntent().getStringExtra(ARG_ACCOUNT_TYPE);
 
 		/**
 		 * Defining all layout items
 		 **/
-/*		
-		inputFirstName = (EditText) findViewById(R.id.firstNameText);
-		inputLastName = (EditText) findViewById(R.id.lastNameText);
-		inputUsername = (EditText) findViewById(R.id.userName);
-		inputEmail = (EditText) findViewById(R.id.emailIdtxt);
-		inputPassword = (EditText) findViewById(R.id.passwordText);
-		inputPhone = (EditText) findViewById(R.id.phoneNumberText);
-		btnRegister = (Button) findViewById(R.id.submitBtn);
-		// registerErrorMsg = (TextView) findViewById(R.id.register_error);
-*/
-		/**
-		 * Button which Switches back to the login screen on clicked
-		 **/
-/*
-		Button login = (Button) findViewById(R.id.backToLogin);
-		login.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				Intent myIntent = new Intent(view.getContext(), LoginActivity.class);
-				startActivityForResult(myIntent, 0);
-				finish();
-			}
 
-		});
-*/
+		inputFirstName = (EditText) findViewById(R.id.editFirstName);
+		inputLastName = (EditText) findViewById(R.id.editLastName);
+		inputUsername = (EditText) findViewById(R.id.editTextUserName);
+		inputEmail = (EditText) findViewById(R.id.editEmail);
+		inputPassword = (EditText) findViewById(R.id.editTextPassword);
+		inputPhone = (EditText) findViewById(R.id.editPhone);
+		btnRegister = (Button) findViewById(R.id.btnRegister);
+
+
 		/**
 		 * Register Button click event. A Toast is set to alert when the fields
 		 * are empty. Another toast is set to alert Username must be 5
 		 * characters.
 		 **/
-		
-		/*
-		 * @SABACHANNA: Put FORM Validations
-		 * and also put the failure messages
-		 * 
-		 */
 
 		btnRegister.setOnClickListener(new View.OnClickListener() {
 			@Override
@@ -120,15 +101,29 @@ public class Register extends Activity {
 						&& (!inputPassword.getText().toString().equals(""))
 						&& (!inputFirstName.getText().toString().equals(""))
 						&& (!inputLastName.getText().toString().equals(""))
-						&& (!inputEmail.getText().toString().equals(""))) {
-					if (inputUsername.getText().toString().length() > 2) {
-						NetAsync(view);
+						&& (!inputEmail.getText().toString().equals(""))
+                        && (!inputPhone.getText().toString().equals(""))) {
 
-					} else {
-						Toast.makeText(getApplicationContext(),
-								"Username should be minimum 3 characters",
-								Toast.LENGTH_SHORT).show();
+                    if (inputUsername.getText().toString().length() < 3) {
+                        Toast.makeText(getApplicationContext(),
+                                "Username should be minimum 3 characters",
+                                Toast.LENGTH_SHORT).show();
+					} else if(inputPassword.getText().toString().length() < 7){
+                        Toast.makeText(getApplicationContext(),
+                                "Password should be minimum 7 characters",
+                                Toast.LENGTH_SHORT).show();
+                    } else if(inputFirstName.getText().toString().length() < 3){
+                        Toast.makeText(getApplicationContext(),
+                                "First Name is too short",
+                                Toast.LENGTH_SHORT).show();
+                    } else if(inputLastName.getText().toString().length() < 3){
+                        Toast.makeText(getApplicationContext(),
+                                "Last Name is too short",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        NetAsync(view);
 					}
+
 				} else {
 					Toast.makeText(getApplicationContext(),
 							"One or more fields are empty", Toast.LENGTH_SHORT)
@@ -218,9 +213,7 @@ public class Register extends Activity {
 
 		@Override
 		protected void onPreExecute() {
-/*			super.onPreExecute();
-			inputUsername = (EditText) findViewById(R.id.userName);
-			inputPassword = (EditText) findViewById(R.id.passwordText);
+			super.onPreExecute();
 			firstname = inputFirstName.getText().toString();
 			lastname = inputLastName.getText().toString();
 			email = inputEmail.getText().toString();
@@ -232,7 +225,7 @@ public class Register extends Activity {
 			pDialog.setMessage("Registering ...");
 			pDialog.setIndeterminate(false);
 			pDialog.setCancelable(true);
-			pDialog.show();*/
+			pDialog.show();
 		}
 
 		@Override
@@ -247,7 +240,6 @@ public class Register extends Activity {
 			try {
 				String authtoken = userFunction.registerUser(firstname, lastname,
 						email, username, password, phone);
-				
 				data.putString(AccountManager.KEY_ACCOUNT_NAME, username);
 	            data.putString(AccountManager.KEY_ACCOUNT_TYPE, accountType);
 	            data.putString(AccountManager.KEY_AUTHTOKEN, authtoken);
@@ -265,6 +257,7 @@ public class Register extends Activity {
 
 		@Override
 		protected void onPostExecute(Intent intent) {
+            pDialog.dismiss();
 			if (intent.hasExtra(KEY_ERROR_MESSAGE)) {
                 Toast.makeText(getBaseContext(), intent.getStringExtra(KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
             } else {

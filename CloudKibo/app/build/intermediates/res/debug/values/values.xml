@@ -37,14 +37,18 @@
     <string name="all_projects">All Projects</string>
     <string name="app_name">CloudKibo</string>
     <string name="choose_project">Choose Project</string>
+    <string name="credentials">Login Credentials</string>
     <string name="drawer_close">Close</string>
     <string name="drawer_open">Open</string>
     <string name="edit">Edit</string>
-    <string name="email">Username</string>
+    <string name="email">Email Address</string>
     <string name="fav_contacts">Favorite</string>
+    <string name="first_name">First Name</string>
     <string name="forgot_my_pwd">I’ve forgotten my password?</string>
+    <string name="forgot_password_string">Enter your email address</string>
     <string name="grp_temp">\@JayL, @damen.miller, @steve.buscemi, @ris.collins, @peterk</string>
     <string name="host">www.cloudkibo.com</string>
+    <string name="last_name">Last Name</string>
     <string name="log_in">Log in</string>
     <string name="my_chats">My Chats</string>
     <string name="my_notes">My Notes</string>
@@ -52,13 +56,16 @@
     <string name="new_chat">New Chat</string>
     <string name="or">or</string>
     <string name="password">Password</string>
+    <string name="phone">Phone</string>
     <string name="port">8443</string>
     <string name="publc">Public</string>
     <string name="register">Register</string>
     <string name="search">Search</string>
+    <string name="submit">Submit</string>
     <string name="to">To:</string>
     <string name="trash">Trash</string>
     <string name="type_msg">Type message</string>
+    <string name="username">Username</string>
     <!-- From: file:/F:/Android/CloudKibo/app/src/main/res/values/styles.xml -->
     <eat-comment/>
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">

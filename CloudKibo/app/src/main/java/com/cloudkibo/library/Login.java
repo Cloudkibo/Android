@@ -5,6 +5,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import static com.cloudkibo.library.AccountGeneral.KEY_MSG;
+import static com.cloudkibo.library.AccountGeneral.KEY_STATUS;
+
 import android.accounts.AccountAuthenticatorActivity;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -13,7 +16,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -23,7 +25,6 @@ import android.content.Intent;
 
 import com.cloudkibo.R;
 import com.cloudkibo.R.id;
-import com.cloudkibo.R.layout;
 
 /**
  * The Class Login is an Activity class that shows the login screen to users.
@@ -36,8 +37,9 @@ public class Login extends AccountAuthenticatorActivity
 	private AccountManager mAccountManager;
     private String mAuthTokenType;
 	
-	Button loginBtn;
-	Button Btnregister;
+	Button btnLogin;
+	Button btnRegister;
+    Button btnForgot;
 	EditText userNameText;
 	EditText passwordText;
 
@@ -62,6 +64,7 @@ public class Login extends AccountAuthenticatorActivity
     public final static String PARAM_USER_PASS = "USER_PASS";
 
     private final int REQ_SIGNUP = 1;
+    private final int REQ_FORGOT = 2;
 	
 
 	/* (non-Javadoc)
@@ -81,43 +84,54 @@ public class Login extends AccountAuthenticatorActivity
 
 		userNameText = (EditText) findViewById(R.id.editTextUserName);
 		passwordText = (EditText) findViewById(R.id.editTextPassword);
-		loginBtn = (Button) findViewById(R.id.btnLogin);
+		btnLogin = (Button) findViewById(R.id.btnLogin);
 
-		Btnregister = (Button) findViewById(R.id.btnReg);
+		btnRegister = (Button) findViewById(R.id.btnReg);
+        btnForgot = (Button) findViewById(id.btnForgot);
+
 
 		/**
 		 * Login button click event A Toast is set to alert when the Email and
 		 * Password field is empty
 		 **/
-		loginBtn.setOnClickListener(new View.OnClickListener() {
+		btnLogin.setOnClickListener(new View.OnClickListener() {
 
-			public void onClick(View view) {
+            public void onClick(View view) {
 
-				if ((!userNameText.getText().toString().equals(""))
-						&& (!passwordText.getText().toString().equals(""))) {
-					NetAsync(view);
-				} else if ((!userNameText.getText().toString().equals(""))) {
-					Toast.makeText(getApplicationContext(),
-							"Username is required", Toast.LENGTH_SHORT).show();
-				} else if ((!passwordText.getText().toString().equals(""))) {
-					Toast.makeText(getApplicationContext(),
-							"Password is required", Toast.LENGTH_SHORT).show();
-				} else {
-					Toast.makeText(getApplicationContext(),
-							"Username and Password are required",
-							Toast.LENGTH_SHORT).show();
-				}
-			}
-		});
+                if ((!userNameText.getText().toString().equals(""))
+                        && (!passwordText.getText().toString().equals(""))) {
+                    NetAsync(view);
+                } else if ((!userNameText.getText().toString().equals(""))) {
+                    Toast.makeText(getApplicationContext(),
+                            "Username is required", Toast.LENGTH_SHORT).show();
+                } else if ((!passwordText.getText().toString().equals(""))) {
+                    Toast.makeText(getApplicationContext(),
+                            "Password is required", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "Username and Password are required",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
-		Btnregister.setOnClickListener(new View.OnClickListener() {
-			public void onClick(View view) {
-				//Intent myIntent = new Intent(getBaseContext(), Register.class);
-				//myIntent.putExtras(getIntent().getExtras());
-				//startActivityForResult(myIntent, REQ_SIGNUP);
-				//finish(); Don't Finish this activity for now
-			}
-		});
+		btnRegister.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent myIntent = new Intent(getBaseContext(), Register.class);
+                myIntent.putExtras(getIntent().getExtras());
+                startActivityForResult(myIntent, REQ_SIGNUP);
+                //finish(); //Don't Finish this activity for now
+            }
+        });
+
+        btnForgot.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent myIntent = new Intent(getBaseContext(), ForgotPassword.class);
+                myIntent.putExtras(getIntent().getExtras());
+                startActivityForResult(myIntent, REQ_FORGOT);
+                //finish(); //Don't Finish this activity for now
+            }
+        });
 		
 	}
 	
@@ -125,7 +139,7 @@ public class Login extends AccountAuthenticatorActivity
 	
 	
 	/////////////////////////////////////////////////////////////////////
-	// REGISTER ACTIVITY RETURNS RESULT                                //
+	// ACTIVITY RETURNS RESULT                                //
 	/////////////////////////////////////////////////////////////////////
 	
 	@Override
@@ -134,6 +148,11 @@ public class Login extends AccountAuthenticatorActivity
         // The sign up activity returned that the user has successfully created an account
         if (requestCode == REQ_SIGNUP && resultCode == RESULT_OK) {
             finishLogin(data);
+        } else if (requestCode == REQ_FORGOT && resultCode == RESULT_OK) {
+            if(data.getStringExtra(KEY_STATUS).equals("success"))
+                Toast.makeText(getBaseContext(), "Check your email", Toast.LENGTH_SHORT).show();
+            else
+                Toast.makeText(getBaseContext(), data.getStringExtra(KEY_MSG), Toast.LENGTH_SHORT).show();
         } else
             super.onActivityResult(requestCode, resultCode, data);
     }
@@ -270,7 +289,7 @@ public class Login extends AccountAuthenticatorActivity
 			super.onPreExecute();
 
 			userNameText = (EditText) findViewById(R.id.editTextUserName);
-			passwordText = (EditText) findViewById(R.id.editTextUserName);
+			passwordText = (EditText) findViewById(id.editTextPassword);
 			username = userNameText.getText().toString();
 			password = passwordText.getText().toString();
 			pDialog = new ProgressDialog(Login.this);
@@ -323,6 +342,7 @@ public class Login extends AccountAuthenticatorActivity
 
 		@Override
 		protected void onPostExecute(Intent intent) {
+            pDialog.dismiss();
 			if (intent.hasExtra(KEY_ERROR_MESSAGE)) {
                 Toast.makeText(getBaseContext(), intent.getStringExtra(KEY_ERROR_MESSAGE), Toast.LENGTH_SHORT).show();
             } else {
@@ -354,6 +374,9 @@ public class Login extends AccountAuthenticatorActivity
         finish();
     }
 
-
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
 	
 }

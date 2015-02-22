@@ -5,20 +5,14 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.accounts.AccountManager;
-import android.accounts.AccountManagerCallback;
-import android.accounts.AccountManagerFuture;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -29,12 +23,10 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -42,29 +34,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloudkibo.MainActivity;
-import com.cloudkibo.NewChat;
 import com.cloudkibo.R;
-import com.cloudkibo.SplashScreen;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
-import com.cloudkibo.library.AccountGeneral;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.model.ContactItem;
 import com.cloudkibo.utils.IFragmentName;
 
 /**
- * The Class NoteList is the Fragment class that is launched when the user
+ * The Class ContactList is the Fragment class that is launched when the user
  * clicks on Notes option in Left navigation drawer. It simply display a dummy list of notes.
  * You need to write actual implementation for loading and displaying notes
  */
-public class NoteList extends CustomFragment implements IFragmentName
+public class ContactList extends CustomFragment implements IFragmentName
 {
 
 	/** The Note list. */
 	private ArrayList<ContactItem> contactList;
 	//private AccountManager mAccountManager;
 	private String authtoken;
-	private NoteAdapter contactAdapter;
+	private ContactAdapter contactAdapter;
 	
 	UserFunctions userFunction;
 
@@ -86,7 +75,7 @@ public class NoteList extends CustomFragment implements IFragmentName
 		loadContactList();
 		
 		ListView list = (ListView) v.findViewById(R.id.list);
-		contactAdapter = new NoteAdapter();
+		contactAdapter = new ContactAdapter();
 		list.setAdapter(contactAdapter);
 		
 		registerForContextMenu(list);
@@ -426,97 +415,55 @@ public class NoteList extends CustomFragment implements IFragmentName
 	{
 		
 		ArrayList<ContactItem> noteList = new ArrayList<ContactItem>();
-		this.contactList = new ArrayList<ContactItem>(noteList);
+		contactList = new ArrayList<ContactItem>(noteList);
 		loadContactsFromDatabase();
-		/*
-		 
-		 new AsyncTask<String, String, Boolean>() {
 
-			@Override
-			protected Boolean doInBackground(String... args) {
+        new AsyncTask<String, String, JSONArray>() {
 
-				ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-				NetworkInfo netInfo = cm.getActiveNetworkInfo();
-				if (netInfo != null && netInfo.isConnected()) {
-					try {
-						URL url = new URL("http://www.google.com");
-						HttpURLConnection urlc = (HttpURLConnection) url
-								.openConnection();
-						urlc.setConnectTimeout(3000);
-						urlc.connect();
-						if (urlc.getResponseCode() == 200) {
-							return true;
-						}
-					} catch (MalformedURLException e1) {
-						e1.printStackTrace();
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
-				}
-				return false;
+            @Override
+            protected JSONArray doInBackground(String... args) {
+                UserFunctions userFunction = new UserFunctions();
+                JSONArray json = userFunction.getContactsList(authtoken);
+                return json;
+            }
 
-			}
+            @Override
+            protected void onPostExecute(JSONArray jsonA) {
+                try {
 
-			@Override
-			protected void onPostExecute(Boolean th) {
+                    if (jsonA != null) {
 
-				if (th == true) {
-										
-					new AsyncTask<String, String, JSONArray>() {
+                        //String res = jsonA.get(0).toString();
 
-						@Override
-						protected JSONArray doInBackground(String... args) {
-							UserFunctions userFunction = new UserFunctions();
-							JSONArray json = userFunction.getContactsList(authtoken);
-							return json;
-						}
+                        ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 
-						@Override
-						protected void onPostExecute(JSONArray jsonA) {
-							try {
+                        for (int i=0; i < jsonA.length(); i++) {
+                            JSONObject row = jsonA.getJSONObject(i);
+                            contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
+                                    row.getJSONObject("contactid").getString("username"),
+                                    row.getJSONObject("contactid").getString("firstname"),
+                                    row.getJSONObject("contactid").getString("lastname"),
+                                    row.getJSONObject("contactid").getString("phone"), 01,
+                                    false, "",
+                                    row.getJSONObject("contactid").getString("status"),
+                                    row.getString("detailsshared"),
+                                    row.getBoolean("unreadMessage")
+                            ));
+                        }
 
-								if (jsonA != null) {
+                        loadNewContacts(contactList1);
+                        insertContactsIntoDB(contactList1);
 
-									//String res = jsonA.get(0).toString();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
 
-									ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
-									
-									for (int i=0; i < jsonA.length(); i++) {
-										JSONObject row = jsonA.getJSONObject(i);
-										contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
-												row.getJSONObject("contactid").getString("username"),
-												row.getJSONObject("contactid").getString("firstname"),
-												row.getJSONObject("contactid").getString("lastname"),
-												row.getJSONObject("contactid").getString("phone"), 01, 
-												false, "",
-												row.getJSONObject("contactid").getString("status"),
-												row.getString("detailsshared"),
-												row.getBoolean("unreadMessage")
-												));
-									}
-									
-									loadNewContacts(contactList1);
-									insertContactsIntoDB(contactList1);
-									
-								}
-							} catch (JSONException e) {
-								e.printStackTrace();
-							}
-						}
-			            
-			        }.execute();
-					
-				} else {
-					Toast.makeText(getActivity().getApplicationContext(),
-							"Could not connect to Internet", Toast.LENGTH_SHORT)
-							.show();
-				}
-			}
-            
         }.execute();
-		 	
-		 */
-	}
+
+
+    }
 	
 	public void loadNewContacts(ArrayList<ContactItem> contactList1){
 		try{
@@ -611,7 +558,8 @@ public class NoteList extends CustomFragment implements IFragmentName
 						row.getString("username"),
 						row.getString("firstname"),
 						row.getString("lastname"),
-						row.getString("phone"), 01, 
+						"",//row.getString("phone"),
+                        01,
 						false, "",
 						row.getString("status"),
 						row.getString("detailsshared"),
@@ -628,11 +576,11 @@ public class NoteList extends CustomFragment implements IFragmentName
 	}
 
 	/**
-	 * The Class CutsomAdapter is the adapter class for Note ListView. The
+	 * The Class ContactAdapter is the adapter class for Note ListView. The
 	 * currently implementation of this adapter simply display static dummy
 	 * contents. You need to write the code for displaying actual contents.
 	 */
-	private class NoteAdapter extends BaseAdapter
+	private class ContactAdapter extends BaseAdapter
 	{
 
 		/* (non-Javadoc)
@@ -698,7 +646,7 @@ public class NoteList extends CustomFragment implements IFragmentName
 	
 	 public String getFragmentName()
      {
-       return "NoteList";
+       return "ContactList";
      }
 	
 	/**

@@ -21,5 +21,8 @@ public class AccountGeneral {
     public static final String AUTHTOKEN_TYPE_FULL_ACCESS = "Full access";
     public static final String AUTHTOKEN_TYPE_FULL_ACCESS_LABEL = "Full access to a CloudKibo account";
 
+    public static final String KEY_STATUS = "status";
+    public static final String KEY_MSG = "msg";
+
     public static final ServerAuthenticate sServerAuthenticate = new ParseComServerAuthenticate();
 }

@@ -129,7 +129,8 @@ public class SplashScreen extends Activity
 
 				} catch (Exception e) {
 					e.printStackTrace();
-					Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+					//Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                    finish();
 				}
 			}
 		}

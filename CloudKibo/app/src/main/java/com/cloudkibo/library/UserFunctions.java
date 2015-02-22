@@ -31,7 +31,7 @@ public class UserFunctions {
     private static String getChatURL = "https://www.cloudkibo.com/api/userchat";
     private static String markChatReadURL = "https://www.cloudkibo.com/api/userchat/markasread";
     private static String saveContactURL = "https://www.cloudkibo.com/api/contactslist/addbyusername";
-    private static String forpassURL = "https://www.cloudkibo.com/forgotPasswordRequest";
+    private static String forpassURL = "https://www.cloudkibo.com/api/users/resetpasswordrequest";
     private static String chgpassURL = "https://www.cloudkibo.com/learn2crack_login_api/";
     private static String getContactsURL = "https://www.cloudkibo.com/api/contactslist/";
     
@@ -90,9 +90,25 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("email", email));
         String result = connection.getTokenFromServer(chgpassURL, params);
         return result;
-        // FIX IT LATER IN THE FUTURE
+        // Add this feature in future
     }
 
+
+
+
+
+    /**
+     * Function to request server for password reset link. It takes the user email address.
+     * @throws Exception
+     **/
+
+    public JSONObject forgotPass(String email) throws Exception{
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("email", email));
+        JSONObject response = connection.sendObjectToServerNoAuth(forpassURL, params);
+        return response;
+    }
     
     
     

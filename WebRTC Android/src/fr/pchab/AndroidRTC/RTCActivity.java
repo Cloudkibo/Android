@@ -17,6 +17,7 @@ import org.webrtc.VideoRenderer;
 import java.util.List;
 
 public class RTCActivity extends Activity implements WebRtcClient.RTCListener{
+  
   private final static int VIDEO_CALL_SENT = 666;
   private VideoStreamsView vsv;
   private WebRtcClient client;

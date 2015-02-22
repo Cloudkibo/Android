@@ -18,7 +18,7 @@ import com.cloudkibo.model.Data;
 import com.cloudkibo.utils.IFragmentName;
 
 /**
- * The Class NoteList is the Fragment class that is launched when the user
+ * The Class ContactList is the Fragment class that is launched when the user
  * clicks on Projects option in Left navigation drawer. It simply display a
  * dummy list of projects. You need to write actual implementation for loading
  * and displaying projects.

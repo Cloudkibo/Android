@@ -25,6 +25,8 @@ import org.json.JSONObject;
 
 import com.google.gson.Gson;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.util.Log;
 
 public class ConnectionManager {
@@ -38,8 +40,6 @@ public class ConnectionManager {
     static JSONObject jObj = null;
     static JSONArray jArr = null;
     static String json = "";
-    
-    
     
     
     
@@ -75,8 +75,33 @@ public class ConnectionManager {
 
             String responseString = EntityUtils.toString(response.getEntity());
             if (response.getStatusLine().getStatusCode() != 200) {
-                ParseComError error = new Gson().fromJson(responseString, ParseComError.class);
-                throw new Exception("Error signing-in ["+error.code+"] - " + error.error);
+                // try parse the string to a JSON object
+                try {
+                    jObj = new JSONObject(responseString);
+
+                    if(jObj.has("message")){
+                        throw new Exception(jObj.getString("message"));
+                    }
+
+                    if(jObj.has("errors")) {
+                        jObj = jObj.getJSONObject("errors");
+
+                        if(jObj.has("username")){
+                            throw new Exception(jObj.getJSONObject("username").getString("message"));
+                        }
+                        if(jObj.has("phone")){
+                            throw new Exception(jObj.getJSONObject("phone").getString("message"));
+                        }
+                        if(jObj.has("email")){
+                            throw new Exception(jObj.getJSONObject("email").getString("message"));
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    throw new Exception("JSON Error getTokenFromServer");
+                }
+
+                throw new Exception("Error signing-in");
             }
 
             User loggedUser = new Gson().fromJson(responseString, User.class);
@@ -104,6 +129,11 @@ public class ConnectionManager {
             HttpGet httpGet = new HttpGet(userDataURL + "?access_token="+ authtoken);
 
             HttpResponse httpResponse = httpClient.execute(httpGet);
+
+            if(httpResponse.getStatusLine().getStatusCode() == 401){
+                return null;
+            }
+
             HttpEntity httpEntity = httpResponse.getEntity();
             is = httpEntity.getContent();
 
@@ -155,6 +185,11 @@ public class ConnectionManager {
             HttpGet httpGet = new HttpGet(userDataURL + "?access_token="+ authtoken);
 
             HttpResponse httpResponse = httpClient.execute(httpGet);
+
+            if(httpResponse.getStatusLine().getStatusCode() == 401){
+                return null;
+            }
+
             HttpEntity httpEntity = httpResponse.getEntity();
             is = httpEntity.getContent();
 
@@ -208,6 +243,11 @@ public class ConnectionManager {
             httpPost.setEntity(new UrlEncodedFormEntity(params));
 
             HttpResponse httpResponse = httpClient.execute(httpPost);
+
+            if(httpResponse.getStatusLine().getStatusCode() == 401){
+                return null;
+            }
+
             HttpEntity httpEntity = httpResponse.getEntity();
             is = httpEntity.getContent();
 
@@ -262,6 +302,11 @@ public class ConnectionManager {
             httpPost.setEntity(new UrlEncodedFormEntity(params));
 
             HttpResponse httpResponse = httpClient.execute(httpPost);
+
+            if(httpResponse.getStatusLine().getStatusCode() == 401){
+                return null;
+            }
+
             HttpEntity httpEntity = httpResponse.getEntity();
             is = httpEntity.getContent();
 
@@ -304,6 +349,69 @@ public class ConnectionManager {
         // return JSON String
         return jObj;
 	}
+
+
+
+
+
+
+    public JSONObject sendObjectToServerNoAuth(String userDataURL, List<NameValuePair> params) {
+
+        // Making HTTP request
+        try {
+            // defaultHttpClient
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(userDataURL);
+            httpPost.setEntity(new UrlEncodedFormEntity(params));
+
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+
+            if(httpResponse.getStatusLine().getStatusCode() == 401){
+                return null;
+            }
+
+            HttpEntity httpEntity = httpResponse.getEntity();
+            is = httpEntity.getContent();
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            try {
+                return new JSONObject().put("Error", "No Internet");
+            } catch (JSONException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    is, "iso-8859-1"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            is.close();
+            json = sb.toString();
+            Log.d("JSON", json);
+        } catch (Exception e) {
+            Log.d("Buffer Error", "Error converting result " + e.toString());
+        }
+
+        // try parse the string to a JSON object
+        try {
+            jObj = new JSONObject(json);
+        } catch (JSONException e) {
+            Log.d("JSON Parser", "Error parsing data " + e.toString());
+        }
+
+        // return JSON String
+        return jObj;
+    }
     
     
     

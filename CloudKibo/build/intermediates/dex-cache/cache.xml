@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="F:\Android\CloudKibo\app\libs\libjingle_peerconnection.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="97c14e07cdb08b615ed3f1ba10a74c0da69d00d1">
+        <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\libjingle_peerconnection-992d653cb38e6363fb0aea4d1515b344c813fbba.jar" />
+    </item>
+    <item
+        jar="F:\Android\CloudKibo\app\libs\libjingle_so.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="46bd8a3bb660a2eb5179ecb911c947e5b7c6af61">
+        <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\libjingle_so-4a1837b82218a4172f078e952d0e5b0d4e6ebc29.jar" />
+    </item>
+    <item
+        jar="F:\Android\CloudKibo\app\libs\lib_android_websockets.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="3cb9d5095e4795e6a1ac2bb3a3705434fc5063c7">
+        <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\lib_android_websockets-fb0f3ca1ea963cc9655fe2466a0d95becf4268c7.jar" />
+    </item>
+    <item
+        jar="C:\Users\sojharo\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-v4\19.1.0\support-v4-19.1.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67">
+        <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\support-v4-19.1.0-fb29ddbb3afde9743b3aa2faf79410a86847963b.jar" />
+    </item>
+    <item
+        jar="C:\Users\sojharo\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.2.2\1f96456ca233dec780aa224bff076d8e8bca3908\gson-2.2.2.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="1f96456ca233dec780aa224bff076d8e8bca3908">
+        <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\gson-2.2.2-d457f738ae237a77747ca7e93c2d64f7555abec3.jar" />
+    </item>
+
+</items>

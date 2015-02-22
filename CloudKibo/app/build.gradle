@@ -22,4 +22,6 @@ dependencies {
     compile 'com.android.support:support-v4:19.1.0'
     compile 'com.google.code.gson:gson:2.2.2'
     compile files('libs/lib_android_websockets.jar')
+    compile files('libs/libjingle_peerconnection.jar')
+    compile files('libs/libjingle_so.jar')
 }

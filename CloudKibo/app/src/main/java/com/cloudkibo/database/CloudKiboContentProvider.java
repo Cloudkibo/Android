@@ -15,6 +15,7 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
 
+
 public class CloudKiboContentProvider extends ContentProvider {
 	
 	DatabaseHandler databasehelper;

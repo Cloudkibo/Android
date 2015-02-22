@@ -362,4 +362,5 @@ class WebRtcClient {
 
     endPoints[peer.endPoint] = false;
   }
+
 }
