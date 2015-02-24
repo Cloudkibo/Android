@@ -88,6 +88,7 @@
     <orderEntry type="library" exported="" name="gson-2.2.2" level="project" />
     <orderEntry type="library" exported="" name="libjingle_peerconnection" level="project" />
     <orderEntry type="library" exported="" name="libjingle_so" level="project" />
+    <orderEntry type="library" exported="" name="cordovaapp-cordovalib" level="project" />
   </component>
 </module>
 

@@ -44,6 +44,9 @@ public class SplashScreen extends Activity
 
 		super.onCreate(savedInstanceState);
 		mAccountManager = AccountManager.get(this);
+
+
+
 		setContentView(R.layout.splash);
 
 		isRunning = true;
@@ -96,7 +99,14 @@ public class SplashScreen extends Activity
 		if (isRunning)
 		{
 			isRunning = false;
-			getTokenForAccountCreateIfNeeded(AccountGeneral.ACCOUNT_TYPE, AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS);
+
+            if(mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE).length < 1){
+                getTokenForAccountCreateIfNeeded(AccountGeneral.ACCOUNT_TYPE, AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS);
+            }
+            else {
+                getExistingAccountAuthToken(mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE)[0],
+                        AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS);
+            }
 		}
 	}
 	
@@ -136,6 +146,39 @@ public class SplashScreen extends Activity
 		}
 		, null);
 	}
+
+    /**
+     * Get the auth token for an existing account on the AccountManager
+     * @param account
+     * @param authTokenType
+     */
+    private void getExistingAccountAuthToken(Account account, String authTokenType) {
+        final AccountManagerFuture<Bundle> future = mAccountManager.getAuthToken(account, authTokenType, null, this, null, null);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Bundle bnd = future.getResult();
+
+                    final String authtoken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
+                    //showMessage((authtoken != null) ? "SUCCESS!\ntoken: " + authtoken : "FAIL");
+
+                    Intent i = new Intent(SplashScreen.this, MainActivity.class);
+                    i.putExtra("authtoken", authtoken);
+                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
+                    finish();
+
+
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    //showMessage(e.getMessage());
+                }
+            }
+        }).start();
+    }
 
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onKeyDown(int, android.view.KeyEvent)

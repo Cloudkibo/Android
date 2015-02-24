@@ -5,15 +5,15 @@
         jar="F:\Android\CloudKibo\app\libs\libjingle_peerconnection.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="97c14e07cdb08b615ed3f1ba10a74c0da69d00d1">
+        sha1="559131a1edcb5a54f77a55fe9283cd1c585d7ba9">
         <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\libjingle_peerconnection-992d653cb38e6363fb0aea4d1515b344c813fbba.jar" />
     </item>
     <item
-        jar="F:\Android\CloudKibo\app\libs\libjingle_so.jar"
+        jar="F:\Android\CloudKibo\app\libs\cordovaapp-cordovalib.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="46bd8a3bb660a2eb5179ecb911c947e5b7c6af61">
-        <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\libjingle_so-4a1837b82218a4172f078e952d0e5b0d4e6ebc29.jar" />
+        sha1="b8b3b5d2b5be6c4a8f4f0cf7b75982c0b6788f62">
+        <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\cordovaapp-cordovalib-baf77f164e7b3cb94a83374700de266933f8f243.jar" />
     </item>
     <item
         jar="F:\Android\CloudKibo\app\libs\lib_android_websockets.jar"
@@ -21,6 +21,13 @@
         revision="21.1.2"
         sha1="3cb9d5095e4795e6a1ac2bb3a3705434fc5063c7">
         <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\lib_android_websockets-fb0f3ca1ea963cc9655fe2466a0d95becf4268c7.jar" />
+    </item>
+    <item
+        jar="F:\Android\CloudKibo\app\libs\libjingle_so.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="46bd8a3bb660a2eb5179ecb911c947e5b7c6af61">
+        <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\libjingle_so-4a1837b82218a4172f078e952d0e5b0d4e6ebc29.jar" />
     </item>
     <item
         jar="C:\Users\sojharo\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-v4\19.1.0\support-v4-19.1.0.jar"

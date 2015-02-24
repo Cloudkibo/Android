@@ -24,4 +24,5 @@ dependencies {
     compile files('libs/lib_android_websockets.jar')
     compile files('libs/libjingle_peerconnection.jar')
     compile files('libs/libjingle_so.jar')
+    compile files('libs/cordovaapp-cordovalib.jar')
 }

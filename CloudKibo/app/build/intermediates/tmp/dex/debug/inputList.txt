@@ -2,5 +2,6 @@ F:\Android\CloudKibo\app\build\intermediates\classes\debug
 F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\lib_android_websockets-fb0f3ca1ea963cc9655fe2466a0d95becf4268c7.jar
 F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\libjingle_peerconnection-992d653cb38e6363fb0aea4d1515b344c813fbba.jar
 F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\gson-2.2.2-d457f738ae237a77747ca7e93c2d64f7555abec3.jar
+F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\cordovaapp-cordovalib-baf77f164e7b3cb94a83374700de266933f8f243.jar
 F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\support-v4-19.1.0-fb29ddbb3afde9743b3aa2faf79410a86847963b.jar
 F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\libjingle_so-4a1837b82218a4172f078e952d0e5b0d4e6ebc29.jar

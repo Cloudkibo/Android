@@ -55,6 +55,7 @@ import com.cloudkibo.library.AccountGeneral;
 import com.cloudkibo.library.Login;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.model.Data;
+import com.cloudkibo.phonertc.cordova.CordovaApp;
 import com.cloudkibo.ui.AboutChat;
 import com.cloudkibo.ui.ChatList;
 import com.cloudkibo.ui.ContactList;
@@ -62,7 +63,6 @@ import com.cloudkibo.ui.GroupChat;
 import com.cloudkibo.ui.LeftNavAdapter;
 import com.cloudkibo.ui.ProjectList;
 import com.cloudkibo.utils.IFragmentName;
-import com.cloudkibo.webrtc.RTCActivity;
 import com.koushikdutta.async.http.socketio.Acknowledge;
 import com.koushikdutta.async.http.socketio.ConnectCallback;
 import com.koushikdutta.async.http.socketio.EventCallback;
@@ -272,14 +272,9 @@ public class MainActivity extends CustomActivity
 		}
         else if (pos == 7)
         {
-            Intent i = new Intent(this, RTCActivity.class);
-            i.putExtra("authtoken", authtoken);
-            i.putExtra("username", user.get("username"));
-            i.putExtra("_id", user.get("_id"));
-            i.putExtra("room", room);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            Intent i = new Intent(this, CordovaApp.class);
             startActivity(i);
-            finish();
+            //finish();
         }
 		if (f != null)
 		{
