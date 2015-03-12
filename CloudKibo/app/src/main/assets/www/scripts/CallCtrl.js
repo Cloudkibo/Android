@@ -21,7 +21,7 @@ angular.module('phonertcdemo')
     });
 
     function call(isInitiator, contactName) {
-      console.log(new Date().toString() + ': calling to ' + contactName + ', isInitiator: ' + isInitiator);
+      console.log('NO. 1: '+ new Date().toString() + ': calling to ' + contactName + ', isInitiator: ' + isInitiator);
 
       var config = { 
         isInitiator: isInitiator,
@@ -37,6 +37,8 @@ angular.module('phonertcdemo')
       };
 
       var session = new cordova.plugins.phonertc.Session(config);
+      
+      console.log('NO. 2: '+ session);
       
       session.on('sendMessage', function (data) { 
         signaling.emit('sendMessage', contactName, { 
@@ -61,12 +63,15 @@ angular.module('phonertcdemo')
       });
 
       session.call();
+      
+      console.log('NO. 4: session.call() has been called');
 
       $scope.contacts[contactName] = session; 
     }
 
     if ($scope.isCalling) {
       signaling.emit('sendMessage', $stateParams.contactName, { type: 'call' });
+      console.log('NO. 4: Sending to signalling');
     }
 
     $scope.ignore = function () {
