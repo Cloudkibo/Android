@@ -139,6 +139,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		adp.notifyDataSetChanged();
 		
 	}
+	
 
 	/**
 	 * This method currently loads a dummy list of conversations. You can write the

@@ -555,11 +555,12 @@ public class ContactList extends CustomFragment implements IFragmentName
 			
 			for (int i=0; i < jsonA.length(); i++) {
 				JSONObject row = jsonA.getJSONObject(i);
+				
 				contactList1.add(new ContactItem(row.getString("_id"),
 						row.getString("username"),
 						row.getString("firstname"),
 						row.getString("lastname"),
-						"",//row.getString("phone"),
+						row.getString("phone"),
                         01,
 						false, "",
 						row.getString("status"),

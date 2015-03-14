@@ -32,7 +32,7 @@ public class AboutChat extends CustomFragment implements IFragmentName
 	
 	 public String getFragmentName()
      {
-       return "ContactList";
+       return "About Chat";
      }
 
 }

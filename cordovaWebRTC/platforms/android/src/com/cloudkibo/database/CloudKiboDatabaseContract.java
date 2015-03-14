@@ -57,7 +57,7 @@ public final class CloudKiboDatabaseContract {
 	    public static final String CONTACT_ID = "id";
 	    public static final String CONTACT_FIRSTNAME = "firstname";
 	    public static final String CONTACT_LASTNAME = "lastname";
-	    public static final String CONTACT_PHONE = "email";
+	    public static final String CONTACT_PHONE = "phone";
 	    public static final String CONTACT_USERNAME = "username";
 	    public static final String CONTACT_UID = "_id";
 	    public static final String SHARED_DETAILS = "detailsshared";

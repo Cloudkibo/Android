@@ -138,7 +138,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put(Contacts.CONTACT_FIRSTNAME, fname); // FirstName
         values.put(Contacts.CONTACT_LASTNAME, lname); // LastName
-        values.put(Contacts.CONTACT_PHONE, phone); // Email
+        values.put(Contacts.CONTACT_PHONE, phone); // Phone
         values.put(Contacts.CONTACT_USERNAME, uname); // UserName
         values.put(Contacts.CONTACT_UID, uid); // Uid
         values.put(Contacts.CONTACT_STATUS, status); // Status

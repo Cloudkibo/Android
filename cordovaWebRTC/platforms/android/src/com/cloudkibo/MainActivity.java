@@ -233,13 +233,13 @@ public class MainActivity extends CustomActivity
 	private ArrayList<Data> getDummyLeftNavItems()
 	{
 		ArrayList<Data> al = new ArrayList<Data>();
-		al.add(new Data("Chat", null, R.drawable.ic_chat));
+		//al.add(new Data("Chat", null, R.drawable.ic_chat));
 		al.add(new Data("Contacts", null, R.drawable.ic_notes));
-		al.add(new Data("Projects", null, R.drawable.ic_projects));
-		al.add(new Data("Settings", null, R.drawable.ic_setting));
+		//al.add(new Data("Projects", null, R.drawable.ic_projects));
+		//al.add(new Data("Settings", null, R.drawable.ic_setting));
 		al.add(new Data("About CloudKibo", null, R.drawable.ic_about));
 		al.add(new Data("Logout", null, R.drawable.ic_logout));
-        al.add(new Data("WebRTC", null, R.drawable.group1)); // this is for testing purpose
+        //al.add(new Data("WebRTC", null, R.drawable.group1)); // this is for testing purpose
 		return al;
 	}
 
@@ -256,25 +256,15 @@ public class MainActivity extends CustomActivity
 		String title = null;
 		if (pos == 1)
 		{
-			title = "Chat";
-			f = new ChatList();
-		}
-		else if (pos == 2)
-		{
 			title = "Contacts";
 			f = new ContactList();
 		}
-		else if (pos == 3)
-		{
-			title = "Projects";
-			f = new ProjectList();
-		}
-		else if (pos == 5)
+		else if (pos == 2)
 		{
 			title = "About CloudKibo";
 			f = new AboutChat();
 		}
-		else if (pos == 6)
+		else if (pos == 3)
 		{
 			startActivity(new Intent(this, Login.class));
 
@@ -484,29 +474,12 @@ public class MainActivity extends CustomActivity
 			msg1.add(new BasicNameValuePair("msg", msg));
 			msg1.add(new BasicNameValuePair("date", (new Date().toString())));
 
-			
-			// sending this chat to the server to save
-			new AsyncTask<String, String, JSONObject>() {
-
-				@Override
-				protected JSONObject doInBackground(String... args) {
-					
-					return userFunction.saveChat(msg1, authtoken);
-					
-				}
-
-				@Override
-				protected void onPostExecute(JSONObject json) {
-					
-					Log.d("JSON", json.toString());
-						
-				}
-	            
-	        }.execute();
-			
-			
 		} catch (JSONException e) {
 			e.printStackTrace();
+		} catch (NullPointerException e) {
+			Toast.makeText(getApplicationContext(),
+                    "Message not sent. No Internet", Toast.LENGTH_SHORT)
+                    .show();
 		}
 
 
