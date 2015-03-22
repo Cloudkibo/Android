@@ -1,5 +1,6 @@
 package com.cloudkibo;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -26,6 +27,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -53,6 +55,7 @@ import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomActivity;
 import com.cloudkibo.database.CloudKiboDatabaseContract;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.AccountGeneral;
 import com.cloudkibo.library.Login;
 import com.cloudkibo.library.UserFunctions;
@@ -65,10 +68,12 @@ import com.cloudkibo.ui.GroupChat;
 import com.cloudkibo.ui.LeftNavAdapter;
 import com.cloudkibo.ui.ProjectList;
 import com.cloudkibo.utils.IFragmentName;
+import com.cloudkibo.webrtc.filesharing.FileConnection;
 import com.koushikdutta.async.http.socketio.Acknowledge;
 import com.koushikdutta.async.http.socketio.ConnectCallback;
 import com.koushikdutta.async.http.socketio.EventCallback;
 import com.koushikdutta.async.http.socketio.SocketIOClient;
+import com.squareup.okhttp.internal.Base64;
 
 
 /**
@@ -114,12 +119,16 @@ public class MainActivity extends CustomActivity
 	
 	Dialog dialog;;
 	
+	private String filePeer;
+	
 	HashMap<String, String> user;
 	
 	List<NameValuePair> msg1;
 
     AccountManager am;
     Account account;
+    
+    private static final int REQUEST_CHOOSER = 1105;
 
 	/* (non-Javadoc)
 	 * @see com.newsfeeder.custom.CustomActivity#onCreate(android.os.Bundle)
@@ -295,6 +304,48 @@ public class MainActivity extends CustomActivity
 					.commit();
 		}
 	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    switch (requestCode) {
+	        case REQUEST_CHOOSER:   
+	            if (resultCode == RESULT_OK) {
+
+	                final Uri uri = data.getData();
+
+	                // Get the File path from the Uri
+	                String path = FileUtils.getPath(this, uri);
+
+	                // Alternatively, use FileUtils.getFile(Context, Uri)
+	                if (path != null && FileUtils.isLocal(path)) {
+	                    File file = new File(path);
+	                    
+	                    try {
+	                    	
+							String encodedString = Base64.encode(FileUtils.loadFile(file));
+							
+							Bundle bundle = new Bundle();
+					        bundle.putString("contact", filePeer);
+					        bundle.putString("fileString", encodedString);
+					        
+					        FileConnection fileConnectionFragment = new FileConnection();
+					        fileConnectionFragment.setArguments(bundle);
+							
+					        if (!isFinishing()) {
+					        	getSupportFragmentManager().beginTransaction()
+								.replace(R.id.content_frame, fileConnectionFragment)
+								.addToBackStack("File Transferring").commitAllowingStateLoss();
+					        }
+							
+						} catch (IOException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+	                }
+	            }
+	            break;
+	    }
+	}
 
 	/**
 	 * Setup the container fragment for drawer layout. The current
@@ -413,9 +464,26 @@ public class MainActivity extends CustomActivity
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void sendSocketMessageDataChannel(String msg){
 		
+		JSONObject message = new JSONObject();
 		
-		
+		try {
+			
+			message.put("msg", msg);
+			message.put("room", room);
+			message.put("to", filePeer);
+			message.put("username", user.get("username"));
+			
+			client.emit("messagefordatachannel", new JSONArray().put(message));
+			
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void callThisPerson(String contact){
@@ -434,9 +502,22 @@ public class MainActivity extends CustomActivity
 
 		} catch (JSONException e) {
 			e.printStackTrace();
+		} catch (NullPointerException e) {
+			Toast.makeText(getApplicationContext(),
+                    "Could not make this call. No Internet", Toast.LENGTH_SHORT)
+                    .show();
 		}
+	}
+	
+	public void sendFileToThisPerson(String contact){
+		
+		filePeer = contact;
+		
+		Intent getContentIntent = FileUtils.createGetContentIntent();
 
-
+	    Intent intent = Intent.createChooser(getContentIntent, "Select a file");
+	    startActivityForResult(intent, REQUEST_CHOOSER);
+		
 	}
 	
 	public void sendMessage(String contactUserName, String contactId, String msg){

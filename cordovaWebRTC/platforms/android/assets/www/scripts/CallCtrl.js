@@ -99,6 +99,8 @@ angular.module('phonertcdemo')
       });
 
       session.call();
+      
+      $scope.contacts[$scope.peer] = session; 
 
 	}
 
@@ -157,16 +159,12 @@ angular.module('phonertcdemo')
 
     function onMessageReceive (name, message) {
 		
-		console.warn('This is what is inside the name ');
-		console.warn (name);
-		
 		var message2 = {};
 		message2.type = 'phonertc_handshake';
-		message2.data = message;
+		message2.data = JSON.stringify(message);
 		
 		message = message2;
-		
-		console.warn("RECEVING "+ message);
+
       switch (message.type) {
         case 'answer':
           $scope.$apply(function () {
@@ -189,7 +187,7 @@ angular.module('phonertcdemo')
 
         case 'phonertc_handshake':
           if (duplicateMessages.indexOf(message.data) === -1) {
-            $scope.contacts[name].receiveMessage(JSON.parse(message.data));
+            $scope.contacts[$scope.peer].receiveMessage(name);//(JSON.parse(message.data));
             duplicateMessages.push(message.data);
           }
           

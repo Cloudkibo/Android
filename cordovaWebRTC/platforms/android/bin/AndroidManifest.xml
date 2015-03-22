@@ -13,7 +13,7 @@
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="18" />
+        android:targetSdkVersion="19" />
     
         <!-- They are added by me. -->
     <uses-permission android:name="android.permission.CAMERA" />
@@ -23,6 +23,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />   
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     
     <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
     <uses-permission android:name="android.permission.GET_ACCOUNTS"/>
@@ -109,6 +110,34 @@
             android:screenOrientation="portrait" 
             android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
+        
+        <activity
+		    android:name="com.cloudkibo.file.filechooser.FileChooserActivity"
+		    android:icon="@drawable/ic_chooser"
+		    android:enabled="@bool/use_activity"
+		    android:exported="true"
+		    android:label="@string/choose_file" >
+		    <intent-filter>
+		        <action android:name="android.intent.action.GET_CONTENT" />
+		
+		        <category android:name="android.intent.category.DEFAULT" />
+		        <category android:name="android.intent.category.OPENABLE" />
+		
+		        <data android:mimeType="*/*" />
+		    </intent-filter>
+		</activity>
+		
+        <provider
+		    android:name="com.cloudkibo.file.localstorage.LocalStorageProvider"
+		    android:authorities="com.cloudkibo.file.localstorage.documents"
+		    android:enabled="@bool/use_provider"
+		    android:exported="true"
+		    android:grantUriPermissions="true"
+		    android:permission="android.permission.MANAGE_DOCUMENTS" >
+		        <intent-filter>
+		            <action android:name="android.content.action.DOCUMENTS_PROVIDER" />
+		        </intent-filter>
+		</provider>
         
         <provider
             android:name="com.cloudkibo.database.CloudKiboContentProvider"

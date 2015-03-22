@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<sync-adapter xmlns:android="http://schemas.android.com/apk/res/android"
-              android:contentAuthority="com.cloudkibo.database.CloudKiboContentProvider"
-              android:accountType="com.cloudkibo"
-              android:userVisible="true"
-              android:allowParallelSyncs="false"
-              android:isAlwaysSyncable="true"
-              android:supportsUploading="true"/>

@@ -154,9 +154,9 @@ public class ContactList extends CustomFragment implements IFragmentName
 					        }.execute();
 							
 						} else {
-							Toast.makeText(getActivity().getApplicationContext(),
+							/*Toast.makeText(getActivity().getApplicationContext(),
 									"Could not connect to Internet", Toast.LENGTH_SHORT)
-									.show();
+									.show();*/
 						}
 					}
 		            
@@ -191,10 +191,9 @@ public class ContactList extends CustomFragment implements IFragmentName
 	      super.onCreateContextMenu(menu, v, menuInfo);
 	      menu.setHeaderTitle("Select The Action");  
 	      menu.add(0, v.getId(), 0, "Call");  
-	      menu.add(0, v.getId(), 0, "Text"); 
+	      menu.add(0, v.getId(), 0, "Transfer File"); 
 
     } 
-	
 	
 	 @Override  
      public boolean onContextItemSelected(MenuItem item)
@@ -234,9 +233,10 @@ public class ContactList extends CustomFragment implements IFragmentName
          		 
                // Code to execute when clicked on This Item
              }  
-             else if(item.getTitle()=="Text")
+             else if(item.getTitle()=="Transfer File")
              {  
-               // Code to execute when clicked on This Item  
+            	 MainActivity act1 = (MainActivity)getActivity();
+            	 act1.sendFileToThisPerson(contactList.get(info.position).getUserName());
              }  
              else 
              {
@@ -244,6 +244,8 @@ public class ContactList extends CustomFragment implements IFragmentName
              }  
              return true;  
        }  
+	 
+	 
 	
 
 	/* (non-Javadoc)
