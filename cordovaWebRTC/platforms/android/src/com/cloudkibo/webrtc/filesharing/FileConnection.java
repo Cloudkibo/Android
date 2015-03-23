@@ -1,5 +1,6 @@
 package com.cloudkibo.webrtc.filesharing;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.webrtc.DataChannel;
@@ -32,18 +33,32 @@ public class FileConnection extends CustomFragment implements IFragmentName{
 	PeerConnectionFactory factory;
 	FilePeer peer;
 	
+	String peerName;
+	String fileData;
+	
+	
+	
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState)
 	{
 		
 		View v = inflater.inflate(R.layout.fileshare, null);
 		
-		Log.w("FILE", ""+ getActivity().getIntent().getExtras().getString("contact"));
-		Log.w("FILE", ""+ getActivity().getIntent().getExtras().getString("fileString"));
-		
 		factory = new PeerConnectionFactory();
 		
 		peer = new FilePeer();
+		
+		/*
+		MainActivity mainActivity = (MainActivity)getActivity();
+		
+		if(mainActivity.isInitiatorFileTransfer()){
+			
+			peerName = mainActivity.getFilePeerName();
+			fileData = mainActivity.getFileData();
+			
+			createOffer();
+		}
+		*/
 		
 		//peer.dc.send("data will be sent from here");
 		
@@ -145,8 +160,8 @@ public class FileConnection extends CustomFragment implements IFragmentName{
 		        payload.put("id", candidate.sdpMid);
 		        payload.put("candidate", candidate.sdp);
 		        
-		        MainActivity act1 = (MainActivity)getActivity();
-           	 	act1.sendSocketMessageDataChannel(payload.toString());
+		        MainActivity mainActivity = (MainActivity)getActivity();
+           	 	mainActivity.sendSocketMessageDataChannel(payload.toString());
 		        
 		        
 		      } catch (JSONException e) {
@@ -235,6 +250,10 @@ public class FileConnection extends CustomFragment implements IFragmentName{
 			
 		}
 
+	}
+	
+	public void receivedSignallingData(JSONArray data){
+		
 	}
 	
 	@Override

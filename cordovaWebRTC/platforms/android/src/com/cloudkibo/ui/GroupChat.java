@@ -203,6 +203,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					}
 				} catch (JSONException e) {
 					e.printStackTrace();
+				} catch (NullPointerException e){
+					e.printStackTrace();
 				}
 			}
             

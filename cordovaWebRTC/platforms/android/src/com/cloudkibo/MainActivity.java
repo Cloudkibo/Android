@@ -119,7 +119,9 @@ public class MainActivity extends CustomActivity
 	
 	Dialog dialog;;
 	
-	private String filePeer;
+	public String filePeer;
+	public String fileData;
+	public Boolean initiatorFileTransfer;
 	
 	HashMap<String, String> user;
 	
@@ -287,12 +289,6 @@ public class MainActivity extends CustomActivity
 
 			finish();
 		}
-        else if (pos == 7)
-        {
-            Intent i = new Intent(this, CordovaApp.class);
-            startActivity(i);
-            //finish();
-        }
 		if (f != null)
 		{
 			while (getSupportFragmentManager().getBackStackEntryCount() > 0)
@@ -322,19 +318,20 @@ public class MainActivity extends CustomActivity
 	                    
 	                    try {
 	                    	
-							String encodedString = Base64.encode(FileUtils.loadFile(file));
+							fileData = Base64.encode(FileUtils.loadFile(file));
+							
+							initiatorFileTransfer = true;
 							
 							Bundle bundle = new Bundle();
 					        bundle.putString("contact", filePeer);
-					        bundle.putString("fileString", encodedString);
 					        
-					        FileConnection fileConnectionFragment = new FileConnection();
+							Fragment fileConnectionFragment = new FileConnection();
 					        fileConnectionFragment.setArguments(bundle);
-							
+					        
 					        if (!isFinishing()) {
 					        	getSupportFragmentManager().beginTransaction()
 								.replace(R.id.content_frame, fileConnectionFragment)
-								.addToBackStack("File Transferring").commitAllowingStateLoss();
+								.addToBackStack("File Transferring").commit();
 					        }
 							
 						} catch (IOException e) {
@@ -345,6 +342,18 @@ public class MainActivity extends CustomActivity
 	            }
 	            break;
 	    }
+	}
+	
+	public String getFilePeerName(){
+		return filePeer;
+	}
+	
+	public String getFileData(){
+		return fileData;
+	}
+	
+	public Boolean isInitiatorFileTransfer(){
+		return initiatorFileTransfer;
 	}
 
 	/**
@@ -439,7 +448,7 @@ public class MainActivity extends CustomActivity
 				client.addListener("othersideringing", messageHandler);
 				client.addListener("calleeisbusy", messageHandler);
 				client.addListener("calleeisoffline", messageHandler);
-				
+				client.addListener("messagefordatachannel", messageHandler);
 
 			}
 		}, new Handler());
@@ -628,6 +637,21 @@ public class MainActivity extends CustomActivity
 						}
 					}catch(NullPointerException e){}
 										
+				}
+				else if(s.equals("messagefordatachannel")){
+					
+					IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+					
+					if(myFragment.getFragmentName().equals("FileConnection"))
+					{
+						
+						FileConnection myFileConnectionFragment = (FileConnection) myFragment;
+					    myFileConnectionFragment.receivedSignallingData(jsonArray); //here you call the method of your current Fragment.
+					   
+					}
+					else{
+					}
+					
 				}
 				else if(jsonArray.get(0).toString().startsWith("Missed")){
 					
