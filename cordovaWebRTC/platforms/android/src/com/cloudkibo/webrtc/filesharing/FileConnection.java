@@ -25,10 +25,11 @@ import android.widget.Toast;
 
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
+import com.cloudkibo.custom.CustomActivity;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.utils.IFragmentName;
 
-public class FileConnection extends CustomFragment implements IFragmentName{
+public class FileConnection extends CustomActivity {
 
 	PeerConnectionFactory factory;
 	FilePeer peer;
@@ -38,15 +39,19 @@ public class FileConnection extends CustomFragment implements IFragmentName{
 	
 	
 	
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState)
+	protected void onCreate(Bundle savedInstanceState)
 	{
 		
-		View v = inflater.inflate(R.layout.fileshare, null);
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.fileshare);
 		
-		factory = new PeerConnectionFactory();
+		Toast.makeText(getApplicationContext(),
+                "hin mei ayo aa", Toast.LENGTH_SHORT)
+                .show();
 		
-		peer = new FilePeer();
+		//factory = new PeerConnectionFactory();
+		
+		//peer = new FilePeer();
 		
 		/*
 		MainActivity mainActivity = (MainActivity)getActivity();
@@ -62,7 +67,6 @@ public class FileConnection extends CustomFragment implements IFragmentName{
 		
 		//peer.dc.send("data will be sent from here");
 		
-		return v;
 	}
 	
 	public void createOffer(){
@@ -80,7 +84,7 @@ public class FileConnection extends CustomFragment implements IFragmentName{
 			peer.pc.createAnswer(peer, RTCConfig.getMediaConstraints());
 			
 		}catch(JSONException e){
-			Toast.makeText(getActivity().getApplicationContext(),
+			Toast.makeText(getApplicationContext(),
                     e.getMessage(), Toast.LENGTH_SHORT)
                     .show();
 		}
@@ -97,7 +101,7 @@ public class FileConnection extends CustomFragment implements IFragmentName{
 			peer.pc.setRemoteDescription(peer, sdp);
 			
 		}catch(JSONException e){
-			Toast.makeText(getActivity().getApplicationContext(),
+			Toast.makeText(getApplicationContext(),
                     e.getMessage(), Toast.LENGTH_SHORT)
                     .show();
 		}
@@ -117,7 +121,7 @@ public class FileConnection extends CustomFragment implements IFragmentName{
 		      }
 			
 		}catch(JSONException e){
-			Toast.makeText(getActivity().getApplicationContext(),
+			Toast.makeText(getApplicationContext(),
                     e.getMessage(), Toast.LENGTH_SHORT)
                     .show();
 		}
@@ -160,8 +164,8 @@ public class FileConnection extends CustomFragment implements IFragmentName{
 		        payload.put("id", candidate.sdpMid);
 		        payload.put("candidate", candidate.sdp);
 		        
-		        MainActivity mainActivity = (MainActivity)getActivity();
-           	 	mainActivity.sendSocketMessageDataChannel(payload.toString());
+		        //MainActivity mainActivity = (MainActivity)getActivity();
+           	 	//mainActivity.sendSocketMessageDataChannel(payload.toString());
 		        
 		        
 		      } catch (JSONException e) {
@@ -201,7 +205,7 @@ public class FileConnection extends CustomFragment implements IFragmentName{
 
 		@Override
 		public void onCreateFailure(String msg) {
-			Toast.makeText(getActivity().getApplicationContext(),
+			Toast.makeText(getApplicationContext(),
                     msg, Toast.LENGTH_SHORT)
                     .show();
 
@@ -215,8 +219,8 @@ public class FileConnection extends CustomFragment implements IFragmentName{
 		        payload.put("type", sdp.type.canonicalForm());
 		        payload.put("sdp", sdp.description);
 		        
-		        MainActivity act1 = (MainActivity)getActivity();
-           	 	act1.sendSocketMessageDataChannel(payload.toString());
+		        //MainActivity act1 = (MainActivity)getActivity();
+           	 	//act1.sendSocketMessageDataChannel(payload.toString());
 		        
 		        pc.setLocalDescription(FilePeer.this, sdp);
 		        
@@ -255,18 +259,6 @@ public class FileConnection extends CustomFragment implements IFragmentName{
 	public void receivedSignallingData(JSONArray data){
 		
 	}
-	
-	@Override
-	public String getFragmentName() {
-		
-		return "FileConnection";
-	}
 
-	@Override
-	public void onClick(View v) {
-		super.onClick(v);
-		
-	}
-	
 
 }

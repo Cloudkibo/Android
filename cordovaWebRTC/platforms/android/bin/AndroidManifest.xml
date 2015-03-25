@@ -102,6 +102,13 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" >
         </activity>
+        
+        <activity
+            android:name="com.cloudkibo.webrtc.filesharing.FileConnection"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
+        </activity>
 
         <activity
             android:name="com.cloudkibo.NewChat"
@@ -164,6 +171,10 @@
 		            android:name="android.content.SyncAdapter"
 		            android:resource="@xml/sync_adapter" />
 		</service>
+		
+        <service android:name="com.cloudkibo.library.SocketService"
+            android:exported="false"
+            />
 	
 	</application>
 

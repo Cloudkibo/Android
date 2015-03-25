@@ -21,9 +21,11 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Dialog;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -31,6 +33,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.IBinder;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
@@ -58,6 +61,7 @@ import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.AccountGeneral;
 import com.cloudkibo.library.Login;
+import com.cloudkibo.library.SocketService;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.model.Data;
 import io.cordova.hellocordova.CordovaApp;
@@ -75,6 +79,8 @@ import com.koushikdutta.async.http.socketio.EventCallback;
 import com.koushikdutta.async.http.socketio.SocketIOClient;
 import com.squareup.okhttp.internal.Base64;
 
+import com.cloudkibo.library.SocketService.SocketBinder;
+
 
 /**
  * The Class MainActivity is the base activity class of the application. This
@@ -84,6 +90,9 @@ import com.squareup.okhttp.internal.Base64;
 public class MainActivity extends CustomActivity
 {
 
+	SocketService socketService;
+	boolean isBound = false;
+	
 	/** The drawer layout. */
 	private DrawerLayout drawerLayout;
 
@@ -130,6 +139,12 @@ public class MainActivity extends CustomActivity
     AccountManager am;
     Account account;
     
+    public static final long SECONDS_PER_MINUTE = 60L;
+    public static final long SYNC_INTERVAL_IN_MINUTES = 1440L;
+    public static final long SYNC_INTERVAL =
+            SYNC_INTERVAL_IN_MINUTES *
+            SECONDS_PER_MINUTE;
+    
     private static final int REQUEST_CHOOSER = 1105;
 
 	/* (non-Javadoc)
@@ -152,12 +167,21 @@ public class MainActivity extends CustomActivity
         account = am.getAccountsByType(AccountGeneral.ACCOUNT_TYPE)[0];
 
         if(!ContentResolver.isSyncActive(account, CloudKiboDatabaseContract.AUTHORITY)) {
-            
-        	ContentResolver.setSyncAutomatically(account, CloudKiboDatabaseContract.AUTHORITY, true);
-            ContentResolver.requestSync(account, CloudKiboDatabaseContract.AUTHORITY, new Bundle());
+        	
+        	
+        	
+        	//ContentResolver.setSyncAutomatically(account, CloudKiboDatabaseContract.AUTHORITY, true);
+            //ContentResolver.requestSync(account, CloudKiboDatabaseContract.AUTHORITY, new Bundle());
 
+        	ContentResolver.addPeriodicSync(account, CloudKiboDatabaseContract.AUTHORITY, Bundle.EMPTY, SYNC_INTERVAL);
+        	
             fetchUserFromServerForFirstTime();
         }
+        
+        Intent i = new Intent(this, SocketService.class);
+        bindService(i, socketConnection, Context.BIND_AUTO_CREATE);
+        
+        //socketService.set
 
 		setupContainer();
 		setupDrawer();
@@ -322,17 +346,13 @@ public class MainActivity extends CustomActivity
 							
 							initiatorFileTransfer = true;
 							
-							Bundle bundle = new Bundle();
-					        bundle.putString("contact", filePeer);
-					        
-							Fragment fileConnectionFragment = new FileConnection();
-					        fileConnectionFragment.setArguments(bundle);
-					        
-					        if (!isFinishing()) {
-					        	getSupportFragmentManager().beginTransaction()
-								.replace(R.id.content_frame, fileConnectionFragment)
-								.addToBackStack("File Transferring").commit();
-					        }
+							Intent i = new Intent(this, FileConnection.class);
+							i.putExtra("contact", filePeer);
+							i.putExtra("initiator", initiatorFileTransfer);
+							i.putExtra("filepath", path);
+							
+							startActivity(i);
+							
 							
 						} catch (IOException e) {
 							// TODO Auto-generated catch block
@@ -1097,6 +1117,21 @@ public class MainActivity extends CustomActivity
 
         }.execute();
     }
+    
+    private ServiceConnection socketConnection = new ServiceConnection() {
+		
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			isBound = false;
+		}
+		
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			SocketBinder binder = (SocketBinder) service;
+			socketService = binder.getService();
+			isBound = true;
+		}
+	};
 
 
 }
