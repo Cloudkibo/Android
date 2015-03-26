@@ -1,9 +1,13 @@
 package com.cloudkibo.socket;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 
 import io.cordova.hellocordova.CordovaApp;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +38,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+/**
+ * Service for connecting to socket server. This should be alive forever to receive
+ * chat and other updates from server in real-time.
+ * 
+ * Learning Sources:
+ * http://developer.android.com/guide/components/services.html
+ * http://www.vogella.com/tutorials/AndroidServices/article.html
+ * http://stackoverflow.com/questions/10547577/how-can-a-remote-service-send-messages-to-a-bound-activity
+ * 
+ * @author sojharo
+ *
+ */
+
 public class SocketService extends Service {
 	
 	private final IBinder socketBinder = new SocketBinder();
@@ -44,6 +61,13 @@ public class SocketService extends Service {
 	
 	private SocketIOClient client;
 	private MessageHandler messageHandler = new MessageHandler();
+	
+	private Boolean areYouCallingSomeone = false;
+	private Boolean ringing = false;
+	private String amInCallWith;
+	private Boolean amInCall = false;
+	private Boolean otherSideRinging = false;
+	private Boolean isSomeOneCalling = false;
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -126,12 +150,28 @@ public class SocketService extends Service {
 		
 		user = (HashMap) intent.getExtras().get("user");
 		room = intent.getExtras().getString("room");
-				
-		setSocketIOConfig();
 		
 		return Service.START_REDELIVER_INTENT;
 	}
 	
+	/**
+	 * This following part needs some rigorous testing of more than 2 days usage.
+	 * I need to check what happens when this method is not called. Or what happens
+	 * when service is destroyed and started again by the system (not activity)
+	 * 
+	 * Learning Source: http://stackoverflow.com/questions/14182014/android-oncreate-or-onstartcommand-for-starting-service
+	 * 
+	 * @author sojharo
+	 */
+
+	@Override
+	public void onCreate() {
+		
+		setSocketIOConfig();
+		
+		super.onCreate();
+	}
+
 
 	private class MessageHandler implements EventCallback {
 
@@ -139,7 +179,7 @@ public class SocketService extends Service {
 		@Override
 		public void onEvent(String s, JSONArray jsonArray,
 				Acknowledge acknowledge) {
-/*			Log.d("SOCKET.IO", "ID = "+ s);
+			Log.d("SOCKET.IO", "ID = "+ s);
 			Log.d("SOCKET.IO", "MSG = "+ jsonArray.toString());
 			
 			try{
@@ -147,43 +187,32 @@ public class SocketService extends Service {
 				if(s.equals("im")){
 					
 					try{
-					
-						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 						
-						if(myFragment.getFragmentName().equals("GroupChat"))
-						{
-						   GroupChat myGroupChatFragment = (GroupChat) myFragment;
-						   myGroupChatFragment.receiveMessage(jsonArray.getJSONObject(0).getString("msg")); //here you call the method of your current Fragment.
-						   
-						   DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-						   db.addChat(jsonArray.getJSONObject(0).getString("to"), 
-								   jsonArray.getJSONObject(0).getString("from"),
-								   jsonArray.getJSONObject(0).getString("fromFullName"),
-								   jsonArray.getJSONObject(0).getString("msg"),
-								   jsonArray.getJSONObject(0).getString("date")); // DATE THROWS EXCEPTION
-						}
-						else{
-							//NEED TO DO NOTIFICATION LIKE WORK HERE.. IT MAY RING OR DO SOMETHING, CHECK FOR EACH FRAGMENT
-						}
+						mListener.receiveSocketMessage("im", jsonArray.getJSONObject(0).getString("msg"));
+					
+						/* todo Date throws exception */
+						
+						DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+					    
+						db.addChat(jsonArray.getJSONObject(0).getString("to"), 
+							   jsonArray.getJSONObject(0).getString("from"),
+							   jsonArray.getJSONObject(0).getString("fromFullName"),
+							   jsonArray.getJSONObject(0).getString("msg"),
+							   jsonArray.getJSONObject(0).getString("date")); // DATE THROWS EXCEPTION
+					   
 					}catch(NullPointerException e){}
 										
 				}
 				else if(s.equals("messagefordatachannel")){
 					
-					IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-					
-					if(myFragment.getFragmentName().equals("FileConnection"))
-					{
-						
-						FileConnection myFileConnectionFragment = (FileConnection) myFragment;
-					    myFileConnectionFragment.receivedSignallingData(jsonArray); //here you call the method of your current Fragment.
-					   
-					}
-					else{
-					}
+					mListener.receiveSocketArray("messagefordatachannel", jsonArray);
 					
 				}
 				else if(jsonArray.get(0).toString().startsWith("Missed")){
+					
+					/*
+					 * todo Create Notification here for the missed call
+					 */
 					
 					Toast.makeText(getApplicationContext(),
 							jsonArray.get(0).toString(), Toast.LENGTH_SHORT).show();
@@ -192,7 +221,7 @@ public class SocketService extends Service {
 					
 					ringing = false;
 					
-					dialog.dismiss();
+					mListener.receiveSocketMessage("Missed", "");
 					
 					amInCallWith = "";
 					
@@ -205,7 +234,7 @@ public class SocketService extends Service {
 					
 					amInCall = false;
 					
-					dialog.dismiss();
+					mListener.receiveSocketMessage("Reject Call", "");
 					
 					otherSideRinging = false;
 					
@@ -214,85 +243,59 @@ public class SocketService extends Service {
 				}
 				else if(jsonArray.get(0).toString().equals("got user media")){
 					
-					client.disconnect();
+					/* todo not sure about this. check if cordova app can access service run by
+					 * our main app
+					 */
+					
+					//client.disconnect();
   					
-  					Intent i = new Intent(getApplicationContext(), CordovaApp.class);
-  					i.putExtra("username", user.get("username"));
-  					i.putExtra("_id", user.get("_id"));
-  					i.putExtra("peer", amInCallWith);
-  					i.putExtra("lastmessage", "GotUserMedia");
-  					i.putExtra("room", room);
-  		            startActivity(i);
+					mListener.receiveSocketMessage("got user media", amInCallWith);
+					
 					
 				}
 				else if(jsonArray.get(0).toString().equals("Accept Call")){
-					
-					
-					dialog.dismiss();
 					
 					otherSideRinging = false;
 					
 					areYouCallingSomeone = false;
 					
-					client.disconnect();
+					mListener.receiveSocketMessage("Accept Call", amInCallWith);
 					
-					Intent i = new Intent(getApplicationContext(), CordovaApp.class);
-  					i.putExtra("username", user.get("username"));
-  					i.putExtra("_id", user.get("_id"));
-  					i.putExtra("peer", amInCallWith);
-  					i.putExtra("lastmessage", "AcceptCallFromOther");
-  					i.putExtra("room", room);
-  		            startActivity(i);
+					/* todo not sure about this. check if cordova app can access service run by
+					 * our main app
+					 */
+					
+					//client.disconnect();
+					
 					
 				}
 				else if(s.equals("theseareonline")){
-					
-					try{
-					
-						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-						Log.d("SOCKET.IO", "ONLINEs = "+ jsonArray.toString());
-						if(myFragment.getFragmentName().equals("ContactList"))
-						{
-						   ContactList myContactListFragment = (ContactList) myFragment;
-	
-						   myContactListFragment.setOnlineStatus(jsonArray); //here you call the method of your current Fragment.
-						   
-						}
-					}catch(NullPointerException e){}
-					
+					mListener.receiveSocketArray("theseareonline", jsonArray);
 				}
 				else if(s.equals("calleeisoffline")){
 					
-					try{
+					amInCall = false;
 					
-						amInCall = false;
-						
-						amInCallWith = "";
-						
-						dialog.dismiss();
-						
-						Toast.makeText(getApplicationContext(),
-								jsonArray.getString(0) +
-								" is offline", Toast.LENGTH_SHORT).show();
-						
-					}catch(NullPointerException e){}
+					amInCallWith = "";
+					
+					mListener.receiveSocketMessage("calleeisoffline", "");
+					
+					Toast.makeText(getApplicationContext(),
+							jsonArray.getString(0) +
+							" is offline", Toast.LENGTH_SHORT).show();
 					
 				}
 				else if(s.equals("calleeisbusy")){
 					
-					try{
+					amInCall = false;
 					
-						amInCall = false;
-						
-						amInCallWith = "";
-						
-						dialog.dismiss();
-						
-						Toast.makeText(getApplicationContext(),
-								jsonArray.getJSONObject(0).getString("callee") +
-								" is busy", Toast.LENGTH_SHORT).show();
-						
-					}catch(NullPointerException e){}
+					amInCallWith = "";
+					
+					mListener.receiveSocketMessage("calleeisbusy", "");
+					
+					Toast.makeText(getApplicationContext(),
+							jsonArray.getString(0) +
+							" is offline", Toast.LENGTH_SHORT).show();
 					
 				}
 				else if(s.equals("othersideringing")){
@@ -305,149 +308,195 @@ public class SocketService extends Service {
 						
 						amInCallWith = jsonArray.getJSONObject(0).getString("callee");
 						
-						dialog = new Dialog(MainActivity.this);
-		      			dialog.setContentView(R.layout.call_dialog);
-		      			dialog.setTitle(amInCallWith);
-		       
-		      			// set the custom dialog components - text, image and button
-		      			TextView text = (TextView) dialog.findViewById(R.id.textDialog);
-		      			text.setText(amInCallWith);
-		      			ImageView image = (ImageView) dialog.findViewById(R.id.imageDialog);
-		      			image.setImageResource(R.drawable.ic_launcher);
-		       
-		      			Button dialogButton = (Button) dialog.findViewById(R.id.declineButton);
-		      			// if button is clicked, close the custom dialog
-		      			dialogButton.setOnClickListener(new OnClickListener() {
-		      				@Override
-		      				public void onClick(View v) {
-		      				
-		      					sendSocketMessage("Missed Incoming Call: "+ user.get("username"), amInCallWith);
-			      				
-		      					amInCall = false;
-								
-								amInCallWith = "";
-								
-								otherSideRinging = false;
-								
-								areYouCallingSomeone = false;
-			      				
-		      					dialog.dismiss();
-		      				}
-		      			});
-		       
-		      			dialog.show();
+						mListener.receiveSocketMessage("othersideringing", amInCallWith);
 						
 					}catch(NullPointerException e){}
 					
 				}
 				else if(s.equals("areyoufreeforcall")){
+				
+					JSONObject message2 = new JSONObject();
 					
-					try{
+					message2.put("me", user.get("username"));
+					message2.put("mycaller", jsonArray.getJSONObject(0).getString("caller"));
 					
-						JSONObject message2 = new JSONObject();
+					if(!amInCall){
 						
-						message2.put("me", user.get("username"));
-						message2.put("mycaller", jsonArray.getJSONObject(0).getString("caller"));
+						isSomeOneCalling = true;
+						ringing = true;
+						amInCall = true;
 						
-						if(!amInCall){
-							
-							isSomeOneCalling = true;
-							ringing = true;
-							amInCall = true;
-							
-							amInCallWith = jsonArray.getJSONObject(0).getString("caller");
-							
-							client.emit("yesiamfreeforcall", new JSONArray().put(message2));
-
-							dialog = new Dialog(MainActivity.this);
-			      			dialog.setContentView(R.layout.call_dialog2);
-			      			dialog.setTitle(amInCallWith);
-			       
-			      			// set the custom dialog components - text, image and button
-			      			TextView text = (TextView) dialog.findViewById(R.id.textDialog);
-			      			text.setText(amInCallWith);
-			      			ImageView image = (ImageView) dialog.findViewById(R.id.imageDialog);
-			      			image.setImageResource(R.drawable.ic_launcher);
-			       
-			      			Button dialogButton = (Button) dialog.findViewById(R.id.declineButton);
-			      			// if button is clicked, close the custom dialog
-			      			dialogButton.setOnClickListener(new OnClickListener() {
-			      				@Override
-			      				public void onClick(View v) {
-			      					
-			      					sendSocketMessage("Reject Call", amInCallWith);
-			      					
-			      					isSomeOneCalling = false;
-			      					ringing = false;
-			      					amInCall = false;
-			      					amInCallWith = "";
-			      					
-			      					dialog.dismiss();
-			      				}
-			      			});
-			      			
-			      			Button acceptButton = (Button) dialog.findViewById(R.id.acceptButton);
-			      			// if button is clicked, close the custom dialog
-			      			acceptButton.setOnClickListener(new OnClickListener() {
-			      				@Override
-			      				public void onClick(View v) {
-			      					
-			      					sendSocketMessage("Accept Call", amInCallWith);
-			      					
-			      					isSomeOneCalling = false;
-			      					ringing = false;
-			      					
-			      					dialog.dismiss();   
-			      				}
-			      			});
-			       
-			      			dialog.show();
-							
-						}
-						else{
-							
-							client.emit("noiambusy", new JSONArray().put(message2));
-						}
+						amInCallWith = jsonArray.getJSONObject(0).getString("caller");
 						
-					}catch(NullPointerException e){}
-					
+						client.emit("yesiamfreeforcall", new JSONArray().put(message2));
+						
+						mListener.receiveSocketMessage("areyoufreeforcall", amInCallWith);
+						
+					}
+					else{
+						
+						client.emit("noiambusy", new JSONArray().put(message2));
+					}
+				
 				}
 				else if(s.equals("offline")){
-					try{
-					
-						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-						Log.d("SOCKET.IO", "ONLINEs = "+ jsonArray.toString());
-						if(myFragment.getFragmentName().equals("ContactList"))
-						{
-						   ContactList myContactListFragment = (ContactList) myFragment;
-	
-						   myContactListFragment.setOfflineStatusIndividual(jsonArray); //here you call the method of your current Fragment.
-						   
-						}
-					}catch(NullPointerException e){}
+					mListener.receiveSocketArray("offline", jsonArray);
 				}
 				else if(s.equals("online")){
-					
-					try{
-					
-						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-						Log.d("SOCKET.IO", "ONLINEs = "+ jsonArray.toString());
-						if(myFragment.getFragmentName().equals("ContactList"))
-						{
-						   ContactList myContactListFragment = (ContactList) myFragment;
-	
-						   myContactListFragment.setOnlineStatusIndividual(jsonArray); //here you call the method of your current Fragment.
-						   
-						}
-					}catch(NullPointerException e){}
-					
+					mListener.receiveSocketArray("online", jsonArray);
 				}
 				
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
-		*/}
+		}
 	}
 	
+	public void sendSocketMessage(String msg, String peer){
+		
+		JSONObject message = new JSONObject();
+		
+		try {
+			
+			message.put("msg", msg);
+			message.put("room", room);
+			message.put("to", peer);
+			message.put("username", user.get("username"));
+			
+			client.emit("message", new JSONArray().put(message));
+			
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void stopCallMessageToCallee(){
+		
+		sendSocketMessage("Missed Incoming Call: "+ user.get("username"), amInCallWith);
+			
+		amInCall = false;
+		amInCallWith = "";
+		otherSideRinging = false;
+		areYouCallingSomeone = false;
+		
+	}
+	
+	public void acceptCallMessageToCallee(){
+		sendSocketMessage("Reject Call", amInCallWith);
+		
+		isSomeOneCalling = false;
+		ringing = false;
+		amInCall = false;
+		amInCallWith = "";
+	}
+	
+	public void rejectCallMessageToCallee(){
+		sendSocketMessage("Accept Call", amInCallWith);
+		
+		isSomeOneCalling = false;
+		ringing = false;
+	}
+	
+	public void sendSocketMessageDataChannel(String msg, String filePeer){
+		
+		JSONObject message = new JSONObject();
+		
+		try {
+			
+			message.put("msg", msg);
+			message.put("room", room);
+			message.put("to", filePeer);
+			message.put("username", user.get("username"));
+			
+			client.emit("messagefordatachannel", new JSONArray().put(message));
+			
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void callThisPerson(String contact){
+		
+		try {
+
+			JSONObject message1 = new JSONObject();
+
+			message1.put("room", room);
+			message1.put("caller", user.get("username"));
+			message1.put("callee", contact);
+
+			client.emit("callthisperson", new JSONArray().put(message1));
+			
+			areYouCallingSomeone = true;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e) {
+			Toast.makeText(getApplicationContext(),
+                    "Could not make this call. No Internet or behind proxy", Toast.LENGTH_SHORT)
+                    .show();
+		}
+	}
+	
+	public void sendMessage(String contactUserName, String contactId, String msg){
+		
+		try {
+			
+			JSONObject message = new JSONObject();
+			
+			message.put("from", user.get("username"));
+			message.put("to", contactUserName);
+			message.put("from_id", user.get("_id"));
+			message.put("to_id", contactId);
+			message.put("fromFullName", user.get("firstname")+" "+ user.get("lastname"));
+			message.put("msg", msg);
+			message.put("date", (new Date().toString()));
+			
+			JSONObject completeMessage = new JSONObject();
+			
+			completeMessage.put("room", room);
+			completeMessage.put("stanza", message);
+
+			client.emit("im", new JSONArray().put(completeMessage));
+			
+			DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+			db.addChat(contactUserName, user.get("username"), user.get("firstname")+" "+ user.get("lastname"),
+					msg, (new Date().toString()));
+			
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e) {
+			Toast.makeText(getApplicationContext(),
+                    "Message not sent. No Internet", Toast.LENGTH_SHORT)
+                    .show();
+		}
+	}
+	
+	public void askFriendsOnlineStatus(){
+		
+		try {
+			
+			JSONObject message = new JSONObject();
+			
+			message.put("_id", user.get("_id"));
+			
+			JSONObject completeMessage = new JSONObject();
+			
+			completeMessage.put("room", room);
+			completeMessage.put("user", message);
+
+			client.emit("whozonline", new JSONArray().put(completeMessage));
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+
+
+	}
 
 }

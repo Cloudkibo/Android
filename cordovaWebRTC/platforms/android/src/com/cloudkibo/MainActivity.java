@@ -110,21 +110,7 @@ public class MainActivity extends CustomActivity
 	/** Socket.IO Connection Object **/
 	private SocketIOClient client;
 	
-	private MessageHandler messageHandler = new MessageHandler();
-	
 	private String room = "globalchatroom";
-	
-	private Boolean areYouCallingSomeone = false;
-	
-	private Boolean amInCall = false;
-	
-	private Boolean isSomeOneCalling = false;
-	
-	private Boolean ringing = false;
-	
-	private Boolean otherSideRinging = false;
-	
-	private String amInCallWith;
 
 	UserFunctions userFunction;
 	
@@ -170,7 +156,7 @@ public class MainActivity extends CustomActivity
 
         if(!ContentResolver.isSyncActive(account, CloudKiboDatabaseContract.AUTHORITY)) {
         	
-        	
+        	/* todo this starts syncing on very short intervals */
         	
         	//ContentResolver.setSyncAutomatically(account, CloudKiboDatabaseContract.AUTHORITY, true);
             //ContentResolver.requestSync(account, CloudKiboDatabaseContract.AUTHORITY, new Bundle());
@@ -179,6 +165,11 @@ public class MainActivity extends CustomActivity
         	
             fetchUserFromServerForFirstTime();
         }
+        
+        /*
+         * Binding the service to only activity and not fragment
+         * http://stackoverflow.com/questions/24309379/bind-service-to-activity-or-fragment
+         */
         
         Intent i = new Intent(this, SocketService.class);
         i.putExtra("user", user);
@@ -424,67 +415,22 @@ public class MainActivity extends CustomActivity
 		getActionBar().setTitle(title);
 	}
 	
+	/*
+	 * Remove these functions and fragments should be able to directly call the service
+	 * Need to think on it, as fragments are short-lived, this might not be good idea to
+	 * bind fragments to service
+	 */
+	
 	public void sendSocketMessage(String msg, String peer){
-		
-		JSONObject message = new JSONObject();
-		
-		try {
-			
-			message.put("msg", msg);
-			message.put("room", room);
-			message.put("to", peer);
-			message.put("username", user.get("username"));
-			
-			client.emit("message", new JSONArray().put(message));
-			
-			
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		socketService.sendSocketMessage(msg, peer);
 	}
 	
 	public void sendSocketMessageDataChannel(String msg){
-		
-		JSONObject message = new JSONObject();
-		
-		try {
-			
-			message.put("msg", msg);
-			message.put("room", room);
-			message.put("to", filePeer);
-			message.put("username", user.get("username"));
-			
-			client.emit("messagefordatachannel", new JSONArray().put(message));
-			
-			
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		socketService.sendSocketMessageDataChannel(msg, filePeer);
 	}
 	
 	public void callThisPerson(String contact){
-		
-		try {
-
-			JSONObject message1 = new JSONObject();
-
-			message1.put("room", room);
-			message1.put("caller", user.get("username"));
-			message1.put("callee", contact);
-
-			client.emit("callthisperson", new JSONArray().put(message1));
-			
-			areYouCallingSomeone = true;
-
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (NullPointerException e) {
-			Toast.makeText(getApplicationContext(),
-                    "Could not make this call. No Internet", Toast.LENGTH_SHORT)
-                    .show();
-		}
+		socketService.callThisPerson(contact);
 	}
 	
 	public void sendFileToThisPerson(String contact){
@@ -499,393 +445,12 @@ public class MainActivity extends CustomActivity
 	}
 	
 	public void sendMessage(String contactUserName, String contactId, String msg){
-		
-		try {
-			
-			JSONObject message = new JSONObject();
-			
-			message.put("from", user.get("username"));
-			message.put("to", contactUserName);
-			message.put("from_id", user.get("_id"));
-			message.put("to_id", contactId);
-			message.put("fromFullName", user.get("firstname")+" "+ user.get("lastname"));
-			message.put("msg", msg);
-			message.put("date", (new Date().toString()));
-			
-			JSONObject completeMessage = new JSONObject();
-			
-			completeMessage.put("room", room);
-			completeMessage.put("stanza", message);
-
-			client.emit("im", new JSONArray().put(completeMessage));
-			
-			DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-			db.addChat(contactUserName, user.get("username"), user.get("firstname")+" "+ user.get("lastname"),
-					msg, (new Date().toString()));
-			
-			msg1 = new ArrayList<NameValuePair>();
-			
-			msg1.add(new BasicNameValuePair("from", user.get("username")));
-			msg1.add(new BasicNameValuePair("to", contactUserName));
-			msg1.add(new BasicNameValuePair("from_id", user.get("_id")));
-			msg1.add(new BasicNameValuePair("to_id", contactId));
-			msg1.add(new BasicNameValuePair("fromFullName", user.get("firstname")+" "+user.get("lastname")));
-			msg1.add(new BasicNameValuePair("msg", msg));
-			msg1.add(new BasicNameValuePair("date", (new Date().toString())));
-
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (NullPointerException e) {
-			Toast.makeText(getApplicationContext(),
-                    "Message not sent. No Internet", Toast.LENGTH_SHORT)
-                    .show();
-		}
-
-
+		socketService.sendMessage(contactUserName, contactId, msg);
 	}
 	
 	
 	public void askFriendsOnlineStatus(){
-		
-		try {
-			
-			JSONObject message = new JSONObject();
-			
-			message.put("_id", user.get("_id"));
-			
-			JSONObject completeMessage = new JSONObject();
-			
-			completeMessage.put("room", room);
-			completeMessage.put("user", message);
-
-			client.emit("whozonline", new JSONArray().put(completeMessage));
-			
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-
-
-	}
-	
-	
-	/**
-	 * Socket.IO Message Handler
-	 */
-	
-	private class MessageHandler implements EventCallback {
-
-
-		@Override
-		public void onEvent(String s, JSONArray jsonArray,
-				Acknowledge acknowledge) {
-			Log.d("SOCKET.IO", "ID = "+ s);
-			Log.d("SOCKET.IO", "MSG = "+ jsonArray.toString());
-			
-			try{
-				
-				if(s.equals("im")){
-					
-					try{
-					
-						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-						
-						if(myFragment.getFragmentName().equals("GroupChat"))
-						{
-						   GroupChat myGroupChatFragment = (GroupChat) myFragment;
-						   myGroupChatFragment.receiveMessage(jsonArray.getJSONObject(0).getString("msg")); //here you call the method of your current Fragment.
-						   
-						   DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-						   db.addChat(jsonArray.getJSONObject(0).getString("to"), 
-								   jsonArray.getJSONObject(0).getString("from"),
-								   jsonArray.getJSONObject(0).getString("fromFullName"),
-								   jsonArray.getJSONObject(0).getString("msg"),
-								   jsonArray.getJSONObject(0).getString("date")); // DATE THROWS EXCEPTION
-						}
-						else{
-							//NEED TO DO NOTIFICATION LIKE WORK HERE.. IT MAY RING OR DO SOMETHING, CHECK FOR EACH FRAGMENT
-						}
-					}catch(NullPointerException e){}
-										
-				}
-				else if(s.equals("messagefordatachannel")){
-					
-					IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-					
-					if(myFragment.getFragmentName().equals("FileConnection"))
-					{
-						
-						FileConnection myFileConnectionFragment = (FileConnection) myFragment;
-					    myFileConnectionFragment.receivedSignallingData(jsonArray); //here you call the method of your current Fragment.
-					   
-					}
-					else{
-					}
-					
-				}
-				else if(jsonArray.get(0).toString().startsWith("Missed")){
-					
-					Toast.makeText(getApplicationContext(),
-							jsonArray.get(0).toString(), Toast.LENGTH_SHORT).show();
-					
-					amInCall = false;
-					
-					ringing = false;
-					
-					dialog.dismiss();
-					
-					amInCallWith = "";
-					
-				}
-				else if(jsonArray.get(0).toString().equals("Reject Call")){
-					
-					Toast.makeText(getApplicationContext(),
-							amInCallWith +
-							" is busy", Toast.LENGTH_SHORT).show();
-					
-					amInCall = false;
-					
-					dialog.dismiss();
-					
-					otherSideRinging = false;
-					
-					amInCallWith = "";
-					
-				}
-				else if(jsonArray.get(0).toString().equals("got user media")){
-					
-					client.disconnect();
-  					
-  					Intent i = new Intent(getApplicationContext(), CordovaApp.class);
-  					i.putExtra("username", user.get("username"));
-  					i.putExtra("_id", user.get("_id"));
-  					i.putExtra("peer", amInCallWith);
-  					i.putExtra("lastmessage", "GotUserMedia");
-  					i.putExtra("room", room);
-  		            startActivity(i);
-					
-				}
-				else if(jsonArray.get(0).toString().equals("Accept Call")){
-					
-					
-					dialog.dismiss();
-					
-					otherSideRinging = false;
-					
-					areYouCallingSomeone = false;
-					
-					client.disconnect();
-					
-					Intent i = new Intent(getApplicationContext(), CordovaApp.class);
-  					i.putExtra("username", user.get("username"));
-  					i.putExtra("_id", user.get("_id"));
-  					i.putExtra("peer", amInCallWith);
-  					i.putExtra("lastmessage", "AcceptCallFromOther");
-  					i.putExtra("room", room);
-  		            startActivity(i);
-					
-				}
-				else if(s.equals("theseareonline")){
-					
-					try{
-					
-						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-						Log.d("SOCKET.IO", "ONLINEs = "+ jsonArray.toString());
-						if(myFragment.getFragmentName().equals("ContactList"))
-						{
-						   ContactList myContactListFragment = (ContactList) myFragment;
-	
-						   myContactListFragment.setOnlineStatus(jsonArray); //here you call the method of your current Fragment.
-						   
-						}
-					}catch(NullPointerException e){}
-					
-				}
-				else if(s.equals("calleeisoffline")){
-					
-					try{
-					
-						amInCall = false;
-						
-						amInCallWith = "";
-						
-						dialog.dismiss();
-						
-						Toast.makeText(getApplicationContext(),
-								jsonArray.getString(0) +
-								" is offline", Toast.LENGTH_SHORT).show();
-						
-					}catch(NullPointerException e){}
-					
-				}
-				else if(s.equals("calleeisbusy")){
-					
-					try{
-					
-						amInCall = false;
-						
-						amInCallWith = "";
-						
-						dialog.dismiss();
-						
-						Toast.makeText(getApplicationContext(),
-								jsonArray.getJSONObject(0).getString("callee") +
-								" is busy", Toast.LENGTH_SHORT).show();
-						
-					}catch(NullPointerException e){}
-					
-				}
-				else if(s.equals("othersideringing")){
-					
-					try{
-					
-						amInCall = true;
-						
-						otherSideRinging = true;
-						
-						amInCallWith = jsonArray.getJSONObject(0).getString("callee");
-						
-						dialog = new Dialog(MainActivity.this);
-		      			dialog.setContentView(R.layout.call_dialog);
-		      			dialog.setTitle(amInCallWith);
-		       
-		      			// set the custom dialog components - text, image and button
-		      			TextView text = (TextView) dialog.findViewById(R.id.textDialog);
-		      			text.setText(amInCallWith);
-		      			ImageView image = (ImageView) dialog.findViewById(R.id.imageDialog);
-		      			image.setImageResource(R.drawable.ic_launcher);
-		       
-		      			Button dialogButton = (Button) dialog.findViewById(R.id.declineButton);
-		      			// if button is clicked, close the custom dialog
-		      			dialogButton.setOnClickListener(new OnClickListener() {
-		      				@Override
-		      				public void onClick(View v) {
-		      				
-		      					sendSocketMessage("Missed Incoming Call: "+ user.get("username"), amInCallWith);
-			      				
-		      					amInCall = false;
-								
-								amInCallWith = "";
-								
-								otherSideRinging = false;
-								
-								areYouCallingSomeone = false;
-			      				
-		      					dialog.dismiss();
-		      				}
-		      			});
-		       
-		      			dialog.show();
-						
-					}catch(NullPointerException e){}
-					
-				}
-				else if(s.equals("areyoufreeforcall")){
-					
-					try{
-					
-						JSONObject message2 = new JSONObject();
-						
-						message2.put("me", user.get("username"));
-						message2.put("mycaller", jsonArray.getJSONObject(0).getString("caller"));
-						
-						if(!amInCall){
-							
-							isSomeOneCalling = true;
-							ringing = true;
-							amInCall = true;
-							
-							amInCallWith = jsonArray.getJSONObject(0).getString("caller");
-							
-							client.emit("yesiamfreeforcall", new JSONArray().put(message2));
-
-							dialog = new Dialog(MainActivity.this);
-			      			dialog.setContentView(R.layout.call_dialog2);
-			      			dialog.setTitle(amInCallWith);
-			       
-			      			// set the custom dialog components - text, image and button
-			      			TextView text = (TextView) dialog.findViewById(R.id.textDialog);
-			      			text.setText(amInCallWith);
-			      			ImageView image = (ImageView) dialog.findViewById(R.id.imageDialog);
-			      			image.setImageResource(R.drawable.ic_launcher);
-			       
-			      			Button dialogButton = (Button) dialog.findViewById(R.id.declineButton);
-			      			// if button is clicked, close the custom dialog
-			      			dialogButton.setOnClickListener(new OnClickListener() {
-			      				@Override
-			      				public void onClick(View v) {
-			      					
-			      					sendSocketMessage("Reject Call", amInCallWith);
-			      					
-			      					isSomeOneCalling = false;
-			      					ringing = false;
-			      					amInCall = false;
-			      					amInCallWith = "";
-			      					
-			      					dialog.dismiss();
-			      				}
-			      			});
-			      			
-			      			Button acceptButton = (Button) dialog.findViewById(R.id.acceptButton);
-			      			// if button is clicked, close the custom dialog
-			      			acceptButton.setOnClickListener(new OnClickListener() {
-			      				@Override
-			      				public void onClick(View v) {
-			      					
-			      					sendSocketMessage("Accept Call", amInCallWith);
-			      					
-			      					isSomeOneCalling = false;
-			      					ringing = false;
-			      					
-			      					dialog.dismiss();   
-			      				}
-			      			});
-			       
-			      			dialog.show();
-							
-						}
-						else{
-							
-							client.emit("noiambusy", new JSONArray().put(message2));
-						}
-						
-					}catch(NullPointerException e){}
-					
-				}
-				else if(s.equals("offline")){
-					try{
-					
-						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-						Log.d("SOCKET.IO", "ONLINEs = "+ jsonArray.toString());
-						if(myFragment.getFragmentName().equals("ContactList"))
-						{
-						   ContactList myContactListFragment = (ContactList) myFragment;
-	
-						   myContactListFragment.setOfflineStatusIndividual(jsonArray); //here you call the method of your current Fragment.
-						   
-						}
-					}catch(NullPointerException e){}
-				}
-				else if(s.equals("online")){
-					
-					try{
-					
-						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-						Log.d("SOCKET.IO", "ONLINEs = "+ jsonArray.toString());
-						if(myFragment.getFragmentName().equals("ContactList"))
-						{
-						   ContactList myContactListFragment = (ContactList) myFragment;
-	
-						   myContactListFragment.setOnlineStatusIndividual(jsonArray); //here you call the method of your current Fragment.
-						   
-						}
-					}catch(NullPointerException e){}
-					
-				}
-				
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
+		socketService.askFriendsOnlineStatus();
 	}
 	
 	public void getUserFromSQLiteDatabase(){
@@ -1083,10 +648,161 @@ public class MainActivity extends CustomActivity
 			binder.setListener(new BoundServiceListener() {
 				
 				@Override
-				public JSONObject receiveSocketMessage() {
-					// TODO Auto-generated method stub
-					return null;
+				public void receiveSocketMessage(String type, String msg) {
+					
+					if(type.equals("im")){
+						
+						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+						
+						if(myFragment.getFragmentName().equals("GroupChat"))
+						{
+						   GroupChat myGroupChatFragment = (GroupChat) myFragment;
+						   myGroupChatFragment.receiveMessage(msg);
+						}
+						
+					}
+					else if(type.equals("Missed")){
+						dialog.dismiss();
+					}
+					else if(type.equals("Reject Call")){
+						dialog.dismiss();
+					}
+					else if(type.equals("got user media")){
+
+	  					Intent i = new Intent(getApplicationContext(), CordovaApp.class);
+	  					i.putExtra("username", user.get("username"));
+	  					i.putExtra("_id", user.get("_id"));
+	  					i.putExtra("peer", msg);
+	  					i.putExtra("lastmessage", "GotUserMedia");
+	  					i.putExtra("room", room);
+	  		            startActivity(i);
+	  		            
+					}
+					else if(type.equals("Accept Call")){
+						dialog.dismiss();
+						
+						Intent i = new Intent(getApplicationContext(), CordovaApp.class);
+	  					i.putExtra("username", user.get("username"));
+	  					i.putExtra("_id", user.get("_id"));
+	  					i.putExtra("peer", msg);
+	  					i.putExtra("lastmessage", "AcceptCallFromOther");
+	  					i.putExtra("room", room);
+	  		            startActivity(i);
+					}
+					else if(type.equals("calleeisoffline") || type.equals("calleeisbusy")){
+						dialog.dismiss();
+					}
+					else if(type.equals("othersideringing")){
+						dialog = new Dialog(MainActivity.this);
+		      			dialog.setContentView(R.layout.call_dialog);
+		      			dialog.setTitle(msg);
+		       
+		      			// set the custom dialog components - text, image and button
+		      			TextView text = (TextView) dialog.findViewById(R.id.textDialog);
+		      			text.setText(msg);
+		      			ImageView image = (ImageView) dialog.findViewById(R.id.imageDialog);
+		      			image.setImageResource(R.drawable.ic_launcher);
+		       
+		      			Button dialogButton = (Button) dialog.findViewById(R.id.declineButton);
+		      			// if button is clicked, close the custom dialog
+		      			dialogButton.setOnClickListener(new OnClickListener() {
+		      				@Override
+		      				public void onClick(View v) {
+		      				
+		      					socketService.stopCallMessageToCallee();
+			      				
+		      					dialog.dismiss();
+		      				}
+		      			});
+		       
+		      			dialog.show();
+					}
+					else if(type.equals("areyoufreeforcall")){
+						dialog = new Dialog(MainActivity.this);
+		      			dialog.setContentView(R.layout.call_dialog2);
+		      			dialog.setTitle(msg);
+		       
+		      			// set the custom dialog components - text, image and button
+		      			TextView text = (TextView) dialog.findViewById(R.id.textDialog);
+		      			text.setText(msg);
+		      			ImageView image = (ImageView) dialog.findViewById(R.id.imageDialog);
+		      			image.setImageResource(R.drawable.ic_launcher);
+		       
+		      			Button dialogButton = (Button) dialog.findViewById(R.id.declineButton);
+		      			// if button is clicked, close the custom dialog
+		      			dialogButton.setOnClickListener(new OnClickListener() {
+		      				@Override
+		      				public void onClick(View v) {
+		      					
+		      					socketService.acceptCallMessageToCallee();
+		      					
+		      					dialog.dismiss();
+		      				}
+		      			});
+		      			
+		      			Button acceptButton = (Button) dialog.findViewById(R.id.acceptButton);
+		      			// if button is clicked, close the custom dialog
+		      			acceptButton.setOnClickListener(new OnClickListener() {
+		      				@Override
+		      				public void onClick(View v) {
+		      					
+		      					socketService.rejectCallMessageToCallee();
+		      					
+		      					dialog.dismiss();   
+		      				}
+		      			});
+		       
+		      			dialog.show();
+					}
+					
 				}
+
+				@Override
+				public void receiveSocketArray(String type, JSONArray body) {
+
+					if(type.equals("messagefordatachannel")){
+						
+						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+						
+						if(myFragment.getFragmentName().equals("FileConnection"))
+						{
+							FileConnection myFileConnectionFragment = (FileConnection) myFragment;
+						    myFileConnectionFragment.receivedSignallingData(body); //here you call the method of your current Fragment.  
+						}
+						
+					}
+					else if(type.equals("theseareonline")){
+					
+						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+						if(myFragment.getFragmentName().equals("ContactList"))
+						{
+						   ContactList myContactListFragment = (ContactList) myFragment;
+						   myContactListFragment.setOnlineStatus(body); //here you call the method of your current Fragment.  
+						}
+						
+					}
+					else if(type.equals("offline")){
+						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+						if(myFragment.getFragmentName().equals("ContactList"))
+						{
+						   ContactList myContactListFragment = (ContactList) myFragment;
+						   myContactListFragment.setOfflineStatusIndividual(body); //here you call the method of your current Fragment.  
+						}
+					}
+					else if(type.equals("online")){
+						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+						if(myFragment.getFragmentName().equals("ContactList"))
+						{
+						   ContactList myContactListFragment = (ContactList) myFragment;
+						   myContactListFragment.setOfflineStatusIndividual(body); //here you call the method of your current Fragment.  
+						}
+					}
+					
+				}
+				
 			});
 		}
 	};
