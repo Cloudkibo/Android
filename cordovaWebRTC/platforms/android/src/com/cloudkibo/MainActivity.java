@@ -61,10 +61,13 @@ import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.AccountGeneral;
 import com.cloudkibo.library.Login;
-import com.cloudkibo.library.SocketService;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.model.Data;
 import io.cordova.hellocordova.CordovaApp;
+
+import com.cloudkibo.socket.BoundServiceListener;
+import com.cloudkibo.socket.SocketService;
+import com.cloudkibo.socket.SocketService.SocketBinder;
 import com.cloudkibo.ui.AboutChat;
 import com.cloudkibo.ui.ChatList;
 import com.cloudkibo.ui.ContactList;
@@ -79,7 +82,6 @@ import com.koushikdutta.async.http.socketio.EventCallback;
 import com.koushikdutta.async.http.socketio.SocketIOClient;
 import com.squareup.okhttp.internal.Base64;
 
-import com.cloudkibo.library.SocketService.SocketBinder;
 
 
 /**
@@ -179,12 +181,20 @@ public class MainActivity extends CustomActivity
         }
         
         Intent i = new Intent(this, SocketService.class);
+        i.putExtra("user", user);
+        i.putExtra("room", room);
+        startService(i);
         bindService(i, socketConnection, Context.BIND_AUTO_CREATE);
-        
-        //socketService.set
 
 		setupContainer();
 		setupDrawer();
+	}
+
+	@Override
+	protected void onDestroy() {
+		Intent i = new Intent(this, SocketService.class);
+		unbindService(socketConnection);
+		super.onDestroy();
 	}
 
 	/**
@@ -254,7 +264,7 @@ public class MainActivity extends CustomActivity
 
 		}
 		
-		setSocketIOConfig();
+		//setSocketIOConfig();
 
 	}
 
@@ -412,67 +422,6 @@ public class MainActivity extends CustomActivity
 				getSupportFragmentManager().getBackStackEntryCount() - 1)
 				.getName();
 		getActionBar().setTitle(title);
-	}
-	
-	/**
-	 * Set the Configuration of Socket.io Connection
-	 */
-	
-	public void setSocketIOConfig(){
-
-		SocketIOClient.connect("https://www.cloudkibo.com", new ConnectCallback() {
-
-			@Override
-			public void onConnectCompleted(Exception ex, SocketIOClient socket) {
-
-				if (ex != null) {
-					Log.e("SOCKET.IO","WebRtcClient connect failed: "+ex.getMessage());
-					return;
-				}
-
-
-				Log.d("SOCKET.IO","WebRtcClient connected.");
-
-				client = socket;
-
-				JSONObject message = new JSONObject();
-
-				try {
-					
-					JSONObject userInfo = new JSONObject();
-					userInfo.put("username", user.get("username"));
-					userInfo.put("_id", user.get("_id"));
-
-
-					message.put("user", userInfo);
-					message.put("room", room);
-
-					socket.emit("join global chatroom", new JSONArray().put(message));
-					
-
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			// specify which events you are interested in receiving
-
-				client.addListener("id", messageHandler);
-				client.addListener("message", messageHandler);
-				//client.addListener("youareonline", messageHandler);
-				client.addListener("im", messageHandler);
-				client.addListener("theseareonline", messageHandler);
-				client.addListener("offline", messageHandler);
-				client.addListener("online", messageHandler);
-				client.addListener("Reject Call", messageHandler);
-				client.addListener("Accept Call", messageHandler);
-				client.addListener("areyoufreeforcall", messageHandler);
-				client.addListener("othersideringing", messageHandler);
-				client.addListener("calleeisbusy", messageHandler);
-				client.addListener("calleeisoffline", messageHandler);
-				client.addListener("messagefordatachannel", messageHandler);
-
-			}
-		}, new Handler());
-
 	}
 	
 	public void sendSocketMessage(String msg, String peer){
@@ -1130,6 +1079,15 @@ public class MainActivity extends CustomActivity
 			SocketBinder binder = (SocketBinder) service;
 			socketService = binder.getService();
 			isBound = true;
+			
+			binder.setListener(new BoundServiceListener() {
+				
+				@Override
+				public JSONObject receiveSocketMessage() {
+					// TODO Auto-generated method stub
+					return null;
+				}
+			});
 		}
 	};
 

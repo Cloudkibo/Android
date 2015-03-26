@@ -172,7 +172,7 @@
 		            android:resource="@xml/sync_adapter" />
 		</service>
 		
-        <service android:name="com.cloudkibo.library.SocketService"
+        <service android:name="com.cloudkibo.socket.SocketService"
             android:exported="false"
             />
 	
