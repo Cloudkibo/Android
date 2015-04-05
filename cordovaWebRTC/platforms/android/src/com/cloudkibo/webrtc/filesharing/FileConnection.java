@@ -1,5 +1,7 @@
 package com.cloudkibo.webrtc.filesharing;
 
+import java.nio.ByteBuffer;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,12 +48,12 @@ public class FileConnection extends CustomActivity {
 		setContentView(R.layout.fileshare);
 		
 		Toast.makeText(getApplicationContext(),
-                "hin mei ayo aa", Toast.LENGTH_SHORT)
+                "came here", Toast.LENGTH_SHORT)
                 .show();
 		
-		//factory = new PeerConnectionFactory();
+		factory = new PeerConnectionFactory();
 		
-		//peer = new FilePeer();
+		peer = new FilePeer();
 		
 		/*
 		MainActivity mainActivity = (MainActivity)getActivity();
@@ -64,6 +66,8 @@ public class FileConnection extends CustomActivity {
 			createOffer();
 		}
 		*/
+		
+		createOffer();
 		
 		//peer.dc.send("data will be sent from here");
 		
@@ -138,7 +142,7 @@ public class FileConnection extends CustomActivity {
 	      this.pc = factory.createPeerConnection(RTCConfig.getIceServer(), 
 	    		  RTCConfig.getMediaConstraints(), this);
 	      
-	      // Check this one too, this might be wrong, in JS : {reliable: true}
+	      
 	      dc = this.pc.createDataChannel("sendDataChannel", new DataChannel.Init());
 			
 	    }
@@ -250,15 +254,35 @@ public class FileConnection extends CustomActivity {
 
 		@Override
 		public void onStateChange() {
-			// TODO Auto-generated method stub
+			
+			 byte[] bytes = new byte[10];
+			 
+			 bytes[0] = 0;
+			 bytes[1] = 1;
+			 bytes[2] = 2;
+			 bytes[3] = 3;
+			 bytes[4] = 4;
+			 bytes[5] = 5;
+			 bytes[6] = 6;
+			 bytes[7] = 7;
+			 bytes[8] = 8;
+			 bytes[9] = 9;
+			 
+		     ByteBuffer buf = ByteBuffer.wrap(bytes);
+		     
+		     
+		     
+		     Buffer b = new Buffer(buf, true);
+		     
+			dc.send(b);
 			
 		}
 
 	}
-	
+	/*
 	public void receivedSignallingData(JSONArray data){
 		
 	}
-
+*/
 
 }
