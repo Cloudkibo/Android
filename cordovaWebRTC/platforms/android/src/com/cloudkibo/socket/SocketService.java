@@ -408,7 +408,7 @@ public class SocketService extends Service {
 			message.put("msg", msg);
 			message.put("room", room);
 			message.put("to", filePeer);
-			message.put("username", user.get("username"));
+			message.put("from", user.get("username"));
 			
 			client.emit("messagefordatachannel", new JSONArray().put(message));
 			

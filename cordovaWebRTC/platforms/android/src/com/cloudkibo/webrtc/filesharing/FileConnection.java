@@ -1,6 +1,7 @@
 package com.cloudkibo.webrtc.filesharing;
 
 import java.nio.ByteBuffer;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,19 +17,29 @@ import org.webrtc.SessionDescription;
 import org.webrtc.PeerConnection.IceConnectionState;
 import org.webrtc.PeerConnection.IceGatheringState;
 import org.webrtc.PeerConnection.SignalingState;
+import org.webrtc.VideoRendererGui;
 
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomActivity;
 import com.cloudkibo.custom.CustomFragment;
+import com.cloudkibo.socket.BoundServiceListener;
+import com.cloudkibo.socket.SocketService;
+import com.cloudkibo.socket.SocketService.SocketBinder;
 import com.cloudkibo.utils.IFragmentName;
 
 public class FileConnection extends CustomActivity {
@@ -38,39 +49,63 @@ public class FileConnection extends CustomActivity {
 	
 	String peerName;
 	String fileData;
+	Boolean initiator;
 	
+	SocketService socketService;
+	boolean isBound = false;
 	
+	private HashMap<String, String> user;
+	private String room;
 	
+	Button sendButton;
+	
+	@SuppressWarnings("unchecked")
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.fileshare);
 		
-		Toast.makeText(getApplicationContext(),
-                "came here", Toast.LENGTH_SHORT)
-                .show();
-		
-		factory = new PeerConnectionFactory();
-		
-		peer = new FilePeer();
-		
-		/*
-		MainActivity mainActivity = (MainActivity)getActivity();
-		
-		if(mainActivity.isInitiatorFileTransfer()){
+		user = (HashMap) getIntent().getExtras().get("user");
+		room = getIntent().getExtras().getString("room");
+		peerName = getIntent().getExtras().getString("contact");
+        fileData = getIntent().getExtras().getString("filepath");
+        initiator = getIntent().getExtras().getBoolean("initiator");
+        
+        Intent i = new Intent(this, SocketService.class);
+        i.putExtra("user", user);
+        i.putExtra("room", room);
+        startService(i);
+        bindService(i, socketConnection, Context.BIND_AUTO_CREATE);
+        
+        sendButton = (Button) findViewById(R.id.sendFile);
+        
+        sendButton.setOnClickListener(new View.OnClickListener() {
 			
-			peerName = mainActivity.getFilePeerName();
-			fileData = mainActivity.getFileData();
-			
-			createOffer();
-		}
-		*/
-		
-		createOffer();
+			@Override
+			public void onClick(View view) {
+				
+				PeerConnectionFactory.initializeAndroidGlobals(getApplicationContext(), true, true,
+		        		VideoRendererGui.getEGLContext());
+		        
+				factory = new PeerConnectionFactory();
+				
+				peer = new FilePeer();
+				
+				if(initiator){
+					createOffer();
+				}
+				
+			}
+		});
 		
 		//peer.dc.send("data will be sent from here");
 		
+	}
+	
+	protected void onDestroy() {
+		unbindService(socketConnection);
+		super.onDestroy();
 	}
 	
 	public void createOffer(){
@@ -132,6 +167,10 @@ public class FileConnection extends CustomActivity {
 		
 	}
 	
+	public void sendSocketMessageDataChannel(String msg){
+		socketService.sendSocketMessageDataChannel(msg, peerName);
+	}
+	
 	public class FilePeer implements SdpObserver, PeerConnection.Observer, DataChannel.Observer {
 		
 		private PeerConnection pc;
@@ -141,7 +180,6 @@ public class FileConnection extends CustomActivity {
 			
 	      this.pc = factory.createPeerConnection(RTCConfig.getIceServer(), 
 	    		  RTCConfig.getMediaConstraints(), this);
-	      
 	      
 	      dc = this.pc.createDataChannel("sendDataChannel", new DataChannel.Init());
 			
@@ -168,8 +206,7 @@ public class FileConnection extends CustomActivity {
 		        payload.put("id", candidate.sdpMid);
 		        payload.put("candidate", candidate.sdp);
 		        
-		        //MainActivity mainActivity = (MainActivity)getActivity();
-           	 	//mainActivity.sendSocketMessageDataChannel(payload.toString());
+		        sendSocketMessageDataChannel(payload.toString());
 		        
 		        
 		      } catch (JSONException e) {
@@ -223,8 +260,7 @@ public class FileConnection extends CustomActivity {
 		        payload.put("type", sdp.type.canonicalForm());
 		        payload.put("sdp", sdp.description);
 		        
-		        //MainActivity act1 = (MainActivity)getActivity();
-           	 	//act1.sendSocketMessageDataChannel(payload.toString());
+		        sendSocketMessageDataChannel(payload.toString());
 		        
 		        pc.setLocalDescription(FilePeer.this, sdp);
 		        
@@ -255,6 +291,11 @@ public class FileConnection extends CustomActivity {
 		@Override
 		public void onStateChange() {
 			
+			Toast.makeText(getApplicationContext(),
+                    "State Got Changed", Toast.LENGTH_SHORT)
+                    .show();
+			
+			/*
 			 byte[] bytes = new byte[10];
 			 
 			 bytes[0] = 0;
@@ -274,15 +315,47 @@ public class FileConnection extends CustomActivity {
 		     
 		     Buffer b = new Buffer(buf, true);
 		     
-			dc.send(b);
-			
+			 dc.send(b);
+			*/
 		}
 
 	}
-	/*
-	public void receivedSignallingData(JSONArray data){
+	
+	private ServiceConnection socketConnection = new ServiceConnection() {
 		
-	}
-*/
-
+		@Override
+		public void onServiceDisconnected(ComponentName name) {
+			isBound = false;
+		}
+		
+		@Override
+		public void onServiceConnected(ComponentName name, IBinder service) {
+			SocketBinder binder = (SocketBinder) service;
+			socketService = binder.getService();
+			isBound = true;
+			
+			binder.setListener(new BoundServiceListener() {
+				
+				@Override
+				public void receiveSocketMessage(String type, String body) {
+					
+				}
+				
+				@Override
+				public void receiveSocketArray(String type, JSONArray body) {
+					
+					if(type.equals("messagefordatachannel")){
+						
+						Toast.makeText(getApplicationContext(),
+			                    body.toString(), Toast.LENGTH_SHORT)
+			                    .show();
+						
+						Log.d("FILESHARING", body.toString());
+						
+					}
+					
+				}
+			});
+		}
+	};
 }

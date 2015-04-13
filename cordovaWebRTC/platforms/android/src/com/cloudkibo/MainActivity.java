@@ -107,9 +107,6 @@ public class MainActivity extends CustomActivity
 	/** Store Authentication Token **/
 	String authtoken;
 	
-	/** Socket.IO Connection Object **/
-	private SocketIOClient client;
-	
 	private String room = "globalchatroom";
 
 	UserFunctions userFunction;
@@ -165,8 +162,15 @@ public class MainActivity extends CustomActivity
         	
             fetchUserFromServerForFirstTime();
         }
-        
-        /*
+        else {
+	        startSocketService();
+        }
+		setupContainer();
+		setupDrawer();
+	}
+	
+	public void startSocketService(){
+		/*
          * Binding the service to only activity and not fragment
          * http://stackoverflow.com/questions/24309379/bind-service-to-activity-or-fragment
          */
@@ -176,14 +180,10 @@ public class MainActivity extends CustomActivity
         i.putExtra("room", room);
         startService(i);
         bindService(i, socketConnection, Context.BIND_AUTO_CREATE);
-
-		setupContainer();
-		setupDrawer();
 	}
 
 	@Override
 	protected void onDestroy() {
-		Intent i = new Intent(this, SocketService.class);
 		unbindService(socketConnection);
 		super.onDestroy();
 	}
@@ -254,8 +254,6 @@ public class MainActivity extends CustomActivity
 			userEmail.setText(user.get("email"));
 
 		}
-		
-		//setSocketIOConfig();
 
 	}
 
@@ -348,6 +346,8 @@ public class MainActivity extends CustomActivity
 							initiatorFileTransfer = true;
 							
 							Intent i = new Intent(this, FileConnection.class);
+							i.putExtra("user", user);
+					        i.putExtra("room", room);
 							i.putExtra("contact", filePeer);
 							i.putExtra("initiator", initiatorFileTransfer);
 							i.putExtra("filepath", path);
@@ -356,7 +356,6 @@ public class MainActivity extends CustomActivity
 							
 							
 						} catch (IOException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 	                }
@@ -364,18 +363,7 @@ public class MainActivity extends CustomActivity
 	            break;
 	    }
 	}
-	
-	public String getFilePeerName(){
-		return filePeer;
-	}
-	
-	public String getFileData(){
-		return fileData;
-	}
-	
-	public Boolean isInitiatorFileTransfer(){
-		return initiatorFileTransfer;
-	}
+
 
 	/**
 	 * Setup the container fragment for drawer layout. The current
@@ -423,10 +411,6 @@ public class MainActivity extends CustomActivity
 	
 	public void sendSocketMessage(String msg, String peer){
 		socketService.sendSocketMessage(msg, peer);
-	}
-	
-	public void sendSocketMessageDataChannel(String msg){
-		socketService.sendSocketMessageDataChannel(msg, filePeer);
 	}
 	
 	public void callThisPerson(String contact){
@@ -611,7 +595,7 @@ public class MainActivity extends CustomActivity
                                     user = new HashMap<String, String>();
                                     user = db.getUserDetails();
 
-                                    //setSocketIOConfig();
+                                    startSocketService();
 
                                 }
 
@@ -760,18 +744,7 @@ public class MainActivity extends CustomActivity
 				@Override
 				public void receiveSocketArray(String type, JSONArray body) {
 
-					if(type.equals("messagefordatachannel")){
-						
-						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-						
-						if(myFragment.getFragmentName().equals("FileConnection"))
-						{
-							FileConnection myFileConnectionFragment = (FileConnection) myFragment;
-						    myFileConnectionFragment.receivedSignallingData(body); //here you call the method of your current Fragment.  
-						}
-						
-					}
-					else if(type.equals("theseareonline")){
+					if(type.equals("theseareonline")){
 					
 						IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 

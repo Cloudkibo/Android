@@ -175,6 +175,10 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				catch (NullPointerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				return json;
 			}
 

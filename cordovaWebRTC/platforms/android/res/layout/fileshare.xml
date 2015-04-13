@@ -9,7 +9,15 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Sending File..."
+        android:layout_margin="@dimen/pad_chat_item"
+        android:text="Ready to send the file"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/sendFile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/pad_chat_item"
+        android:text="Send the file now" />
 
 </LinearLayout>
