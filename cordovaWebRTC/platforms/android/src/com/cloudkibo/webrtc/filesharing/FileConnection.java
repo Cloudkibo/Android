@@ -194,6 +194,8 @@ public class FileConnection extends CustomActivity {
 		@Override
 		public void onDataChannel(DataChannel dataChannel) {
 			this.dc = dataChannel;
+			
+			
 
 		}
 
@@ -346,11 +348,47 @@ public class FileConnection extends CustomActivity {
 					
 					if(type.equals("messagefordatachannel")){
 						
-						Toast.makeText(getApplicationContext(),
-			                    body.toString(), Toast.LENGTH_SHORT)
-			                    .show();
+						try {
+							
+							JSONObject payload = body.getJSONObject(0);
+							String type2 = body.getJSONObject(0).getString("type");
+							
+							Toast.makeText(getApplicationContext(),
+				                    payload.toString(), Toast.LENGTH_SHORT)
+				                    .show();
+							
+							if(type2.equals("offer")){
+								SessionDescription sdp = new SessionDescription(
+                                        SessionDescription.Type.fromCanonicalForm(payload.getString("type")),
+                                        payload.getString("sdp")
+                                        );
+								peer.pc.setRemoteDescription(peer, sdp);
+								peer.pc.createAnswer(peer, RTCConfig.getMediaConstraints());
+							}
+							else if(type2.equals("answer")){
+								SessionDescription sdp = new SessionDescription(
+                                        SessionDescription.Type.fromCanonicalForm(payload.getString("type")),
+                                        payload.getString("sdp")
+                                        );
+								peer.pc.setRemoteDescription(peer, sdp);
+							}
+							else if(type2.equals("candidate")){
+								PeerConnection pc = peer.pc;
+							      if (pc.getRemoteDescription() != null) {
+							        IceCandidate candidate = new IceCandidate(
+							                                                  payload.getString("id"),
+							                                                  payload.getInt("label"),
+							                                                  payload.getString("candidate")
+							                                                  );
+							        pc.addIceCandidate(candidate);
+							      }
+							}
+							
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
 						
-						Log.d("FILESHARING", body.toString());
+						
 						
 					}
 					
