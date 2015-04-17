@@ -10,14 +10,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/pad_chat_item"
-        android:text="Ready to send the file"
+        android:text="Ready for file transfer"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
+    <Button
+        android:id="@+id/makeConnection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/pad_chat_item"
+        android:text="Make the connection" />
+    
     <Button
         android:id="@+id/sendFile"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/pad_chat_item"
         android:text="Send the file now" />
+    
+    <Button
+        android:id="@+id/downloadFile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/pad_chat_item"
+        android:text="Download File" />
 
 </LinearLayout>

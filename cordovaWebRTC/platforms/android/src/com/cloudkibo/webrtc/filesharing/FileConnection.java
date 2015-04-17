@@ -1,5 +1,6 @@
 package com.cloudkibo.webrtc.filesharing;
 
+import java.io.File;
 import java.nio.ByteBuffer;
 import java.util.HashMap;
 
@@ -48,7 +49,7 @@ public class FileConnection extends CustomActivity {
 	FilePeer peer;
 	
 	String peerName;
-	String fileData;
+	String filePath;
 	Boolean initiator;
 	
 	SocketService socketService;
@@ -57,7 +58,9 @@ public class FileConnection extends CustomActivity {
 	private HashMap<String, String> user;
 	private String room;
 	
-	Button sendButton;
+	Button makeConnectionButton;
+	Button sendFileButton;
+	Button downloadFileButton;
 	
 	@SuppressWarnings("unchecked")
 	protected void onCreate(Bundle savedInstanceState)
@@ -69,7 +72,7 @@ public class FileConnection extends CustomActivity {
 		user = (HashMap) getIntent().getExtras().get("user");
 		room = getIntent().getExtras().getString("room");
 		peerName = getIntent().getExtras().getString("contact");
-        fileData = getIntent().getExtras().getString("filepath");
+		filePath = getIntent().getExtras().getString("filepath");
         initiator = getIntent().getExtras().getBoolean("initiator");
         
         Intent i = new Intent(this, SocketService.class);
@@ -78,9 +81,9 @@ public class FileConnection extends CustomActivity {
         startService(i);
         bindService(i, socketConnection, Context.BIND_AUTO_CREATE);
         
-        sendButton = (Button) findViewById(R.id.sendFile);
+        makeConnectionButton = (Button) findViewById(R.id.makeConnection);
         
-        sendButton.setOnClickListener(new View.OnClickListener() {
+        makeConnectionButton.setOnClickListener(new View.OnClickListener() {
 			
 			@Override
 			public void onClick(View view) {
@@ -98,8 +101,62 @@ public class FileConnection extends CustomActivity {
 				
 			}
 		});
+        
+        sendFileButton = (Button) findViewById(R.id.sendFile);
+        
+        sendFileButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View view) {
+				
+				JSONObject metadata = new JSONObject();
+				
+				try {
+					
+					metadata.put("eventName", "data_msg");
+					metadata.put("data", (new JSONObject()).put("file_meta", Utility.getFileMetaData(filePath)));
+
+					peer.dc.send(new DataChannel.Buffer(Utility.toByteBuffer(metadata.toString()), false));
+					
+					peer.dc.send(new DataChannel.Buffer(Utility.toByteBuffer("You have " +
+							"received a file. Download and Save it."), false));
+					
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				
+			}
+		});
+        
+        downloadFileButton = (Button) findViewById(R.id.downloadFile);
+        
+        downloadFileButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View view) {
+				
+				JSONObject request_chunk = new JSONObject();
+				
+				try {
+					
+					request_chunk.put("eventName", "request_chunk");
+					
+					JSONObject request_data = new JSONObject();
+					request_data.put("chunk", 0);
+					request_data.put("browser", "chrome"); // This chrome is hardcoded for testing purpose
+					
+					request_chunk.put("data", request_data);
+
+					peer.dc.send(new DataChannel.Buffer(Utility.toByteBuffer(request_chunk.toString()), false));
+					
+					
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				
+			}
+		});
 		
-		//peer.dc.send("data will be sent from here");
 		
 	}
 	
@@ -171,7 +228,78 @@ public class FileConnection extends CustomActivity {
 		socketService.sendSocketMessageDataChannel(msg, peerName);
 	}
 	
-	public class FilePeer implements SdpObserver, PeerConnection.Observer, DataChannel.Observer {
+	public class DcObserver implements DataChannel.Observer {
+		
+		public DcObserver(){
+			
+		}
+
+		@Override
+		public void onMessage(final DataChannel.Buffer buffer) {
+			
+			Toast.makeText(getApplicationContext(),
+                    "Some Data has been received", Toast.LENGTH_SHORT)
+                    .show();
+			
+			ByteBuffer data = buffer.data;
+		    byte[] bytes = new byte[ data.capacity() ];
+		    data.get(bytes);
+		   
+		    String strData = new String( bytes );
+		    
+		    try {
+		    	
+				JSONObject jsonData = new JSONObject(strData);
+				
+				if(jsonData.getJSONObject("data").has("file_meta")){
+					
+					Toast.makeText(getApplicationContext(),
+		                    jsonData.getJSONObject("data").getJSONObject("file_meta").toString(), Toast.LENGTH_SHORT)
+		                    .show();
+					
+				}
+				else if(jsonData.getJSONObject("data").has("kill")){
+					Toast.makeText(getApplicationContext(),
+		                    "Other user has cancelled uploading the file", Toast.LENGTH_SHORT)
+		                    .show();
+				}
+				else if(jsonData.getJSONObject("data").has("ok_to_download")){
+					Toast.makeText(getApplicationContext(),
+		                    "File Transfer is complete. You can save the file now", Toast.LENGTH_SHORT)
+		                    .show();
+				}
+				else {
+					Toast.makeText(getApplicationContext(),
+		                    "Chunk got requested", Toast.LENGTH_SHORT)
+		                    .show();
+					
+					boolean isBinaryFile = true;
+					File file = new File(filePath);
+					
+					ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file));
+					DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, isBinaryFile);
+					
+					peer.dc.send(buf);
+				}
+				
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+
+		@Override
+		public void onStateChange() {
+			
+			Toast.makeText(getApplicationContext(),
+                    "State Got Changed", Toast.LENGTH_SHORT)
+                    .show();
+			
+		}
+	}
+	
+	public class FilePeer implements SdpObserver, PeerConnection.Observer {
 		
 		private PeerConnection pc;
 		private DataChannel dc;
@@ -182,7 +310,11 @@ public class FileConnection extends CustomActivity {
 	    		  RTCConfig.getMediaConstraints(), this);
 	      
 	      dc = this.pc.createDataChannel("sendDataChannel", new DataChannel.Init());
-			
+	      
+	      DcObserver dcObserver = new DcObserver();
+	      
+	      dc.registerObserver(dcObserver);
+	      			
 	    }
 
 		@Override
@@ -192,16 +324,27 @@ public class FileConnection extends CustomActivity {
 		}
 
 		@Override
-		public void onDataChannel(DataChannel dataChannel) {
-			this.dc = dataChannel;
+		public void onDataChannel(final DataChannel dataChannel) {
+			
+			runOnUiThread(new Runnable() {
+			      public void run() {
+			    	//if(!initiator){
+						dc = dataChannel;
+						
+						DcObserver dcObserver = new DcObserver();
+						
+						dc.registerObserver(dcObserver); // This crashes the app
+					//}
+			      }
+			    });
 			
 			
-
 		}
 
 		@Override
 		public void onIceCandidate(final IceCandidate candidate) {
 			try {
+				
 		        JSONObject payload = new JSONObject();
 		        payload.put("type", "candidate");
 		        payload.put("label", candidate.sdpMLineIndex);
@@ -209,7 +352,6 @@ public class FileConnection extends CustomActivity {
 		        payload.put("candidate", candidate.sdp);
 		        
 		        sendSocketMessageDataChannel(payload.toString());
-		        
 		        
 		      } catch (JSONException e) {
 		        e.printStackTrace();
@@ -284,43 +426,6 @@ public class FileConnection extends CustomActivity {
 
 		}
 
-		@Override
-		public void onMessage(Buffer data) {
-			Log.w("FILE", data.toString());
-			
-		}
-
-		@Override
-		public void onStateChange() {
-			
-			Toast.makeText(getApplicationContext(),
-                    "State Got Changed", Toast.LENGTH_SHORT)
-                    .show();
-			
-			/*
-			 byte[] bytes = new byte[10];
-			 
-			 bytes[0] = 0;
-			 bytes[1] = 1;
-			 bytes[2] = 2;
-			 bytes[3] = 3;
-			 bytes[4] = 4;
-			 bytes[5] = 5;
-			 bytes[6] = 6;
-			 bytes[7] = 7;
-			 bytes[8] = 8;
-			 bytes[9] = 9;
-			 
-		     ByteBuffer buf = ByteBuffer.wrap(bytes);
-		     
-		     
-		     
-		     Buffer b = new Buffer(buf, true);
-		     
-			 dc.send(b);
-			*/
-		}
-
 	}
 	
 	private ServiceConnection socketConnection = new ServiceConnection() {
@@ -358,6 +463,10 @@ public class FileConnection extends CustomActivity {
 				                    .show();
 							
 							if(type2.equals("offer")){
+								
+								factory = new PeerConnectionFactory();
+								peer = new FilePeer();
+								
 								SessionDescription sdp = new SessionDescription(
                                         SessionDescription.Type.fromCanonicalForm(payload.getString("type")),
                                         payload.getString("sdp")
