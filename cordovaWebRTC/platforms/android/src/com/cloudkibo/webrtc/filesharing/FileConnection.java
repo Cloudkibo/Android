@@ -88,10 +88,7 @@ public class FileConnection extends CustomActivity {
 			@Override
 			public void onClick(View view) {
 				
-				PeerConnectionFactory.initializeAndroidGlobals(getApplicationContext(), true, true,
-		        		VideoRendererGui.getEGLContext());
-		        
-				factory = new PeerConnectionFactory();
+				createPeerConnectionFactory();
 				
 				peer = new FilePeer();
 				
@@ -108,22 +105,28 @@ public class FileConnection extends CustomActivity {
 			
 			@Override
 			public void onClick(View view) {
-				
-				JSONObject metadata = new JSONObject();
-				
-				try {
 					
-					metadata.put("eventName", "data_msg");
-					metadata.put("data", (new JSONObject()).put("file_meta", Utility.getFileMetaData(filePath)));
+				runOnUiThread(new Runnable() {
+				      public void run() {
+			    	
+						try {
 
-					peer.dc.send(new DataChannel.Buffer(Utility.toByteBuffer(metadata.toString()), false));
-					
-					peer.dc.send(new DataChannel.Buffer(Utility.toByteBuffer("You have " +
-							"received a file. Download and Save it."), false));
-					
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
+				    		JSONObject metadata = new JSONObject();
+				    		
+							metadata.put("eventName", "data_msg");
+							metadata.put("data", (new JSONObject()).put("file_meta", Utility.getFileMetaData(filePath)));
+
+							peer.dc.send(new DataChannel.Buffer(Utility.toByteBuffer(metadata.toString()), false));
+							
+							peer.dc.send(new DataChannel.Buffer(Utility.toByteBuffer("You have " +
+									"received a file. Download and Save it."), false));
+							
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+						
+				      }
+				    });
 				
 			}
 		});
@@ -142,7 +145,7 @@ public class FileConnection extends CustomActivity {
 					request_chunk.put("eventName", "request_chunk");
 					
 					JSONObject request_data = new JSONObject();
-					request_data.put("chunk", 0);
+					request_data.put("chunk", 0);			// putting 0 for now
 					request_data.put("browser", "chrome"); // This chrome is hardcoded for testing purpose
 					
 					request_chunk.put("data", request_data);
@@ -163,6 +166,13 @@ public class FileConnection extends CustomActivity {
 	protected void onDestroy() {
 		unbindService(socketConnection);
 		super.onDestroy();
+	}
+	
+	public void createPeerConnectionFactory(){
+		PeerConnectionFactory.initializeAndroidGlobals(getApplicationContext(), true, true,
+        		VideoRendererGui.getEGLContext());
+        
+		factory = new PeerConnectionFactory();
 	}
 	
 	public void createOffer(){
@@ -235,7 +245,7 @@ public class FileConnection extends CustomActivity {
 		}
 
 		@Override
-		public void onMessage(final DataChannel.Buffer buffer) {
+		public void onMessage(DataChannel.Buffer buffer) {
 			
 			Toast.makeText(getApplicationContext(),
                     "Some Data has been received", Toast.LENGTH_SHORT)
@@ -299,28 +309,16 @@ public class FileConnection extends CustomActivity {
 		}
 	}
 	
-	public class FilePeer implements SdpObserver, PeerConnection.Observer {
+	public class PcObserver implements PeerConnection.Observer{
 		
-		private PeerConnection pc;
-		private DataChannel dc;
-		
-		public FilePeer() {
+		public PcObserver(){
 			
-	      this.pc = factory.createPeerConnection(RTCConfig.getIceServer(), 
-	    		  RTCConfig.getMediaConstraints(), this);
-	      
-	      dc = this.pc.createDataChannel("sendDataChannel", new DataChannel.Init());
-	      
-	      DcObserver dcObserver = new DcObserver();
-	      
-	      dc.registerObserver(dcObserver);
-	      			
-	    }
+		}
 
 		@Override
 		public void onAddStream(MediaStream arg0) {
 			// TODO Auto-generated method stub
-
+			
 		}
 
 		@Override
@@ -328,13 +326,11 @@ public class FileConnection extends CustomActivity {
 			
 			runOnUiThread(new Runnable() {
 			      public void run() {
-			    	//if(!initiator){
-						dc = dataChannel;
+						peer.dc = dataChannel;
 						
 						DcObserver dcObserver = new DcObserver();
 						
-						dc.registerObserver(dcObserver); // This crashes the app
-					//}
+						peer.dc.registerObserver(dcObserver);
 			      }
 			    });
 			
@@ -385,6 +381,28 @@ public class FileConnection extends CustomActivity {
 		@Override
 		public void onSignalingChange(SignalingState arg0) {
 			// TODO Auto-generated method stub
+
+		}
+		
+	}
+	
+	public class FilePeer implements SdpObserver {
+		
+		private PeerConnection pc;
+		private DataChannel dc;
+		
+		public FilePeer() {
+
+    		PcObserver pcObserver = new PcObserver();
+    		
+    		pc = factory.createPeerConnection(RTCConfig.getIceServer(), 
+	  	    		  RTCConfig.getMediaConstraints(), pcObserver);
+    		
+			dc = pc.createDataChannel("sendDataChannel", new DataChannel.Init());
+			  
+			//DcObserver dcObserver = new DcObserver();
+			  
+			//dc.registerObserver(dcObserver);
 
 		}
 
@@ -464,7 +482,8 @@ public class FileConnection extends CustomActivity {
 							
 							if(type2.equals("offer")){
 								
-								factory = new PeerConnectionFactory();
+								createPeerConnectionFactory();
+								
 								peer = new FilePeer();
 								
 								SessionDescription sdp = new SessionDescription(
