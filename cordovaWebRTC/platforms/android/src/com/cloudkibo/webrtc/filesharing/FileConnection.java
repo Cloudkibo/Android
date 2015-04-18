@@ -238,7 +238,7 @@ public class FileConnection extends CustomActivity {
 		socketService.sendSocketMessageDataChannel(msg, peerName);
 	}
 	
-	public class DcObserver implements DataChannel.Observer {
+	private class DcObserver implements DataChannel.Observer {
 		
 		public DcObserver(){
 			
@@ -247,15 +247,13 @@ public class FileConnection extends CustomActivity {
 		@Override
 		public void onMessage(DataChannel.Buffer buffer) {
 			
-			Toast.makeText(getApplicationContext(),
-                    "Some Data has been received", Toast.LENGTH_SHORT)
-                    .show();
-			
 			ByteBuffer data = buffer.data;
 		    byte[] bytes = new byte[ data.capacity() ];
 		    data.get(bytes);
 		   
 		    String strData = new String( bytes );
+		    
+		    Log.d("FILETRANSFER", strData);
 		    
 		    try {
 		    	
@@ -263,25 +261,16 @@ public class FileConnection extends CustomActivity {
 				
 				if(jsonData.getJSONObject("data").has("file_meta")){
 					
-					Toast.makeText(getApplicationContext(),
-		                    jsonData.getJSONObject("data").getJSONObject("file_meta").toString(), Toast.LENGTH_SHORT)
-		                    .show();
 					
 				}
 				else if(jsonData.getJSONObject("data").has("kill")){
-					Toast.makeText(getApplicationContext(),
-		                    "Other user has cancelled uploading the file", Toast.LENGTH_SHORT)
-		                    .show();
+					
 				}
 				else if(jsonData.getJSONObject("data").has("ok_to_download")){
-					Toast.makeText(getApplicationContext(),
-		                    "File Transfer is complete. You can save the file now", Toast.LENGTH_SHORT)
-		                    .show();
+					
 				}
 				else {
-					Toast.makeText(getApplicationContext(),
-		                    "Chunk got requested", Toast.LENGTH_SHORT)
-		                    .show();
+					
 					
 					boolean isBinaryFile = true;
 					File file = new File(filePath);
@@ -309,7 +298,7 @@ public class FileConnection extends CustomActivity {
 		}
 	}
 	
-	public class PcObserver implements PeerConnection.Observer{
+	private class PcObserver implements PeerConnection.Observer{
 		
 		public PcObserver(){
 			
@@ -323,14 +312,16 @@ public class FileConnection extends CustomActivity {
 
 		@Override
 		public void onDataChannel(final DataChannel dataChannel) {
-			
+			final DataChannel dc = dataChannel;
 			runOnUiThread(new Runnable() {
 			      public void run() {
-						peer.dc = dataChannel;
+						//peer.dc = dc;
 						
 						DcObserver dcObserver = new DcObserver();
 						
 						peer.dc.registerObserver(dcObserver);
+						
+						//dc.registerObserver(dcObserver);
 			      }
 			    });
 			
@@ -386,7 +377,7 @@ public class FileConnection extends CustomActivity {
 		
 	}
 	
-	public class FilePeer implements SdpObserver {
+	private class FilePeer implements SdpObserver {
 		
 		private PeerConnection pc;
 		private DataChannel dc;
@@ -399,11 +390,10 @@ public class FileConnection extends CustomActivity {
 	  	    		  RTCConfig.getMediaConstraints(), pcObserver);
     		
 			dc = pc.createDataChannel("sendDataChannel", new DataChannel.Init());
-			  
-			//DcObserver dcObserver = new DcObserver();
+			
+	    	//DcObserver dcObserver = new DcObserver();
 			  
 			//dc.registerObserver(dcObserver);
-
 		}
 
 		@Override
