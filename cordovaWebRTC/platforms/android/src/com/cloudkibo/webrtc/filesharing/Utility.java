@@ -1,10 +1,14 @@
 package com.cloudkibo.webrtc.filesharing;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.nio.ByteBuffer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.os.Environment;
+import android.util.Log;
 
 import com.cloudkibo.file.filechooser.utils.FileUtils;
 
@@ -29,6 +33,32 @@ public class Utility {
 			return null;
 		}
 		return stream;
+	}
+	
+	public static Boolean convertByteArrayToFile(byte[] bytes, String fileName){
+		
+		try {
+			
+			if(isExternalStorageWritable()){
+			
+				String folderName = "CloudKibo";
+				//convert array of bytes into file
+			    FileOutputStream fileOuputStream = 
+		                  new FileOutputStream(getDownloadStorageDir(folderName)+"/"+fileName); 
+			    fileOuputStream.write(bytes);
+			    fileOuputStream.close();
+			    
+			    return true;
+			}
+			else{
+				return false;
+			}
+	 
+        }catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+		
 	}
 	
 	public static JSONObject getFileMetaData(String filePath){
@@ -67,5 +97,33 @@ public class Utility {
 		return CHUNKS_PER_ACK;
 	}
 	
+	/* Checks if external storage is available for read and write */
+	public static boolean isExternalStorageWritable() {
+	    String state = Environment.getExternalStorageState();
+	    if (Environment.MEDIA_MOUNTED.equals(state)) {
+	        return true;
+	    }
+	    return false;
+	}
+
+	/* Checks if external storage is available to at least read */
+	public static boolean isExternalStorageReadable() {
+	    String state = Environment.getExternalStorageState();
+	    if (Environment.MEDIA_MOUNTED.equals(state) ||
+	        Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+	        return true;
+	    }
+	    return false;
+	}
+	
+	public static File getDownloadStorageDir(String foldername) {
+	    // Get the directory for the user's public pictures directory. 
+	    File file = new File(Environment.getExternalStoragePublicDirectory(
+	            Environment.DIRECTORY_DOWNLOADS), foldername);
+	    if (!file.mkdirs()) {
+	        Log.e("FILESTORAGE", "Directory not created");
+	    }
+	    return file;
+	}
 	
 }

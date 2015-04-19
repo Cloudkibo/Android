@@ -2,6 +2,7 @@ package com.cloudkibo.webrtc.filesharing;
 
 import java.io.File;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -51,16 +52,19 @@ public class FileConnection extends CustomActivity {
 	String peerName;
 	String filePath;
 	Boolean initiator;
+	String fileNameToSave;
 	
 	SocketService socketService;
 	boolean isBound = false;
 	
 	private HashMap<String, String> user;
 	private String room;
+	ArrayList<Byte> fileBytesArray = new ArrayList<Byte>();
 	
 	Button makeConnectionButton;
 	Button sendFileButton;
 	Button downloadFileButton;
+	Button saveFileButton;
 	
 	@SuppressWarnings("unchecked")
 	protected void onCreate(Bundle savedInstanceState)
@@ -160,11 +164,42 @@ public class FileConnection extends CustomActivity {
 			}
 		});
 		
+        saveFileButton = (Button) findViewById(R.id.saveFile);
+        
+        saveFileButton.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View view) {
+				
+				runOnUiThread(new Runnable(){
+					public void run() {
+						
+						byte[] fileBytes = new byte[fileBytesArray.size()];
+						
+						for(int i=0; i<fileBytesArray.size(); i++){
+							fileBytes[i] = fileBytesArray.get(i);
+						}
+						
+						if(Utility.convertByteArrayToFile(fileBytes, fileNameToSave)){
+							Toast.makeText(getApplicationContext(),
+				                    "File stored in Downloads", Toast.LENGTH_SHORT)
+				                    .show();
+						}
+						else{
+							Toast.makeText(getApplicationContext(),
+				                    "Some error caused storage failure. You must have SD card.", Toast.LENGTH_SHORT)
+				                    .show();
+						}
+					}
+			    });
+				
+			}
+		});
 		
 	}
 	
 	protected void onDestroy() {
-		unbindService(socketConnection);
+		//unbindService(socketConnection);
 		super.onDestroy();
 	}
 	
@@ -250,75 +285,97 @@ public class FileConnection extends CustomActivity {
 			ByteBuffer data = buffer.data;
 		    final byte[] bytes = new byte[ data.capacity() ];
 		    data.get(bytes);
-		   
-		    runOnUiThread(new Runnable() {
-			      public void run() {
-			    	    String strData = new String( bytes );
-					    
-					    Log.d("FILETRANSFER", strData);
-					    
-					    try {
-					    	
-							JSONObject jsonData = new JSONObject(strData);
-							
-							if(jsonData.getJSONObject("data").has("file_meta")){
+		    
+		    final File file = new File(filePath);;
+			
+			if(buffer.binary){
+				
+				String strData = new String( bytes );
+			    Log.d("FILETRANSFER", strData);
+			    
+			    runOnUiThread(new Runnable(){
+					public void run() {
+						for(int i=0; i<bytes.length; i++)
+							fileBytesArray.add(bytes[i]);	
+					}
+			    });
+			    
+			}
+			else {
+				
+			   
+			    runOnUiThread(new Runnable() {
+				      public void run() {
+				    	    String strData = new String( bytes );
+						    
+						    Log.d("FILETRANSFER", strData);
+						    
+						    try {
+						    	
+								JSONObject jsonData = new JSONObject(strData);
 								
-								
-							}
-							else if(jsonData.getJSONObject("data").has("kill")){
-								
-							}
-							else if(jsonData.getJSONObject("data").has("ok_to_download")){
-								
-							}
-							else {
-								
-								boolean isBinaryFile = true;
-								File file = new File(filePath);
-								
-								int chunkNumber = jsonData.getJSONObject("data").getInt("chunk");
-								
-								Log.d("FILETRANSFER", "Chunk Number "+ chunkNumber);
-								if(chunkNumber % Utility.getChunksPerACK() == 0){
-									for(int i = 0; i< Utility.getChunksPerACK(); i++){
-										
-										if(file.length() < Utility.getChunkSize()){
-											ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file));
+								if(jsonData.getJSONObject("data").has("file_meta")){
+									
+									fileNameToSave = jsonData.getJSONObject("data").getJSONObject("file_meta").getString("name");
+									
+								}
+								else if(jsonData.getJSONObject("data").has("kill")){
+									
+								}
+								else if(jsonData.getJSONObject("data").has("ok_to_download")){
+									
+								}
+								else {
+									
+									boolean isBinaryFile = true;
+									
+									int chunkNumber = jsonData.getJSONObject("data").getInt("chunk");
+									
+									Log.d("FILETRANSFER", "Chunk Number "+ chunkNumber);
+									if(chunkNumber % Utility.getChunksPerACK() == 0){
+										for(int i = 0; i< Utility.getChunksPerACK(); i++){
+											
+											if(file.length() < Utility.getChunkSize()){
+												ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file));
+												DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, isBinaryFile);
+												
+												peer.dc.send(buf);
+												break;
+											}
+											
+											Log.d("FILETRANSFER", "File Length "+ file.length());
+											Log.d("FILETRANSFER", "Ceiling "+ Math.ceil(file.length() / Utility.getChunkSize()));
+											if((chunkNumber+i) >= Math.ceil(file.length() / Utility.getChunkSize())){
+												break;
+											}
+											
+											int upperLimit = (chunkNumber + i + 1) * Utility.getChunkSize();
+											
+											if(upperLimit > (int)file.length()){
+												upperLimit = (int)file.length();
+											}
+											
+											int lowerLimit = (chunkNumber + i) * Utility.getChunkSize();
+											Log.d("LIMITS", ""+ lowerLimit +" "+ upperLimit);
+											ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file), lowerLimit, upperLimit);
 											DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, isBinaryFile);
 											
 											peer.dc.send(buf);
+											Log.d("CHUNK", "Chunk has been sent");
 										}
-										
-										Log.d("FILETRANSFER", "File Length "+ file.length());
-										Log.d("FILETRANSFER", "Ceiling "+ Math.ceil(file.length() / Utility.getChunkSize()));
-										if((chunkNumber+i) >= Math.ceil(file.length() / Utility.getChunkSize())){
-											break;
-										}
-										
-										int upperLimit = (chunkNumber + i + 1) * Utility.getChunkSize();
-										
-										if(upperLimit > (int)file.length()){
-											upperLimit = (int)file.length();
-										}
-										
-										int lowerLimit = (chunkNumber + i) * Utility.getChunkSize();
-										Log.d("LIMITS", ""+ lowerLimit +" "+ upperLimit);
-										ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file), lowerLimit, upperLimit);
-										DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, isBinaryFile);
-										
-										peer.dc.send(buf);
-										
 									}
 								}
-							}
-							
-						} catch (JSONException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}  
-			      }
-			});
-		    
+								
+							} catch (JSONException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}  
+				      }
+				});
+			    
+			}
+			
+			
 		    
 			
 		}
