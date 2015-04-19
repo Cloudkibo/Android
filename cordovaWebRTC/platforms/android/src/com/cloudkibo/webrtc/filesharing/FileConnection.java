@@ -248,52 +248,85 @@ public class FileConnection extends CustomActivity {
 		public void onMessage(DataChannel.Buffer buffer) {
 			
 			ByteBuffer data = buffer.data;
-		    byte[] bytes = new byte[ data.capacity() ];
+		    final byte[] bytes = new byte[ data.capacity() ];
 		    data.get(bytes);
 		   
-		    String strData = new String( bytes );
+		    runOnUiThread(new Runnable() {
+			      public void run() {
+			    	    String strData = new String( bytes );
+					    
+					    Log.d("FILETRANSFER", strData);
+					    
+					    try {
+					    	
+							JSONObject jsonData = new JSONObject(strData);
+							
+							if(jsonData.getJSONObject("data").has("file_meta")){
+								
+								
+							}
+							else if(jsonData.getJSONObject("data").has("kill")){
+								
+							}
+							else if(jsonData.getJSONObject("data").has("ok_to_download")){
+								
+							}
+							else {
+								
+								boolean isBinaryFile = true;
+								File file = new File(filePath);
+								
+								int chunkNumber = jsonData.getJSONObject("data").getInt("chunk");
+								
+								Log.d("FILETRANSFER", "Chunk Number "+ chunkNumber);
+								if(chunkNumber % Utility.getChunksPerACK() == 0){
+									for(int i = 0; i< Utility.getChunksPerACK(); i++){
+										
+										if(file.length() < Utility.getChunkSize()){
+											ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file));
+											DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, isBinaryFile);
+											
+											peer.dc.send(buf);
+										}
+										
+										Log.d("FILETRANSFER", "File Length "+ file.length());
+										Log.d("FILETRANSFER", "Ceiling "+ Math.ceil(file.length() / Utility.getChunkSize()));
+										if((chunkNumber+i) >= Math.ceil(file.length() / Utility.getChunkSize())){
+											break;
+										}
+										
+										int upperLimit = (chunkNumber + i + 1) * Utility.getChunkSize();
+										
+										if(upperLimit > (int)file.length()){
+											upperLimit = (int)file.length();
+										}
+										
+										int lowerLimit = (chunkNumber + i) * Utility.getChunkSize();
+										Log.d("LIMITS", ""+ lowerLimit +" "+ upperLimit);
+										ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file), lowerLimit, upperLimit);
+										DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, isBinaryFile);
+										
+										peer.dc.send(buf);
+										
+									}
+								}
+							}
+							
+						} catch (JSONException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}  
+			      }
+			});
 		    
-		    Log.d("FILETRANSFER", strData);
 		    
-		    try {
-		    	
-				JSONObject jsonData = new JSONObject(strData);
-				
-				if(jsonData.getJSONObject("data").has("file_meta")){
-					
-					
-				}
-				else if(jsonData.getJSONObject("data").has("kill")){
-					
-				}
-				else if(jsonData.getJSONObject("data").has("ok_to_download")){
-					
-				}
-				else {
-					
-					
-					boolean isBinaryFile = true;
-					File file = new File(filePath);
-					
-					ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file));
-					DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, isBinaryFile);
-					
-					peer.dc.send(buf);
-				}
-				
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
 			
 		}
 
 		@Override
 		public void onStateChange() {
 			
-			Toast.makeText(getApplicationContext(),
-                    "State Got Changed", Toast.LENGTH_SHORT)
-                    .show();
+			Log.e("FILE_ERROR", "DataChannel State Changed");
 			
 		}
 	}

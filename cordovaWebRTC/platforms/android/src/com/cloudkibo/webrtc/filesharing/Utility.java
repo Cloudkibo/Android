@@ -9,6 +9,9 @@ import org.json.JSONObject;
 import com.cloudkibo.file.filechooser.utils.FileUtils;
 
 public class Utility {
+	
+	private static final int CHUNK_SIZE = 16000;
+	private static final int CHUNKS_PER_ACK = 16;
 
 	public static byte[] convertFileToByteArray(File f) {
 		
@@ -54,6 +57,14 @@ public class Utility {
 	
 	public static ByteBuffer toByteBuffer(String text){
 		return ByteBuffer.wrap(text.getBytes());
+	}
+	
+	public static int getChunkSize(){
+		return CHUNK_SIZE;
+	}
+	
+	public static int getChunksPerACK(){
+		return CHUNKS_PER_ACK;
 	}
 	
 	
