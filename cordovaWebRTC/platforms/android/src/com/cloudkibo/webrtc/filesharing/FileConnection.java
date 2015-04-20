@@ -147,7 +147,14 @@ public class FileConnection extends CustomActivity {
 			@Override
 			public void onClick(View view) {
 				
-				requestChunk();				
+				if(Utility.isFreeSpaceAvailableForFileSize(sizeOfFileToSave)){
+					requestChunk();
+				}
+				else{
+					Toast.makeText(getApplicationContext(),
+		                    "Need more free space to save this file", Toast.LENGTH_SHORT)
+		                    .show();
+				}				
 			}
 		});
 		

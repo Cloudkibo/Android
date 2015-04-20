@@ -16,6 +16,7 @@ public class Utility {
 	
 	private static final int CHUNK_SIZE = 16000;
 	private static final int CHUNKS_PER_ACK = 16;
+	private static final String FOLDER_NAME = "CloudKibo";
 
 	public static byte[] convertFileToByteArray(File f) {
 		
@@ -41,7 +42,7 @@ public class Utility {
 			
 			if(isExternalStorageWritable()){
 			
-				String folderName = "CloudKibo";
+				String folderName = FOLDER_NAME;
 				//convert array of bytes into file
 			    FileOutputStream fileOuputStream = 
 		                  new FileOutputStream(getDownloadStorageDir(folderName)+"/"+fileName); 
@@ -114,6 +115,20 @@ public class Utility {
 	        return true;
 	    }
 	    return false;
+	}
+	
+	public static boolean isFreeSpaceAvailableForFileSize(int fileSize){
+		 File file = new File(Environment.getExternalStoragePublicDirectory(
+		            Environment.DIRECTORY_DOWNLOADS), FOLDER_NAME);
+		    if (!file.mkdirs()) {
+		        Log.e("FILESTORAGE", "Directory not created");
+		    }
+		    
+		    if(fileSize < (file.getFreeSpace() - 10000000)){
+		    	return true;
+		    }
+		    
+		    return false;
 	}
 	
 	public static File getDownloadStorageDir(String foldername) {
