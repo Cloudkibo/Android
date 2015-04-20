@@ -52,7 +52,12 @@ public class FileConnection extends CustomActivity {
 	String peerName;
 	String filePath;
 	Boolean initiator;
+	
 	String fileNameToSave;
+	int numberOfChunksInFileToSave;
+	int numberOfChunksReceived;
+	int sizeOfFileToSave;
+	int chunkNumberToRequest;
 	
 	SocketService socketService;
 	boolean isBound = false;
@@ -142,25 +147,7 @@ public class FileConnection extends CustomActivity {
 			@Override
 			public void onClick(View view) {
 				
-				JSONObject request_chunk = new JSONObject();
-				
-				try {
-					
-					request_chunk.put("eventName", "request_chunk");
-					
-					JSONObject request_data = new JSONObject();
-					request_data.put("chunk", 0);			// putting 0 for now
-					request_data.put("browser", "chrome"); // This chrome is hardcoded for testing purpose
-					
-					request_chunk.put("data", request_data);
-
-					peer.dc.send(new DataChannel.Buffer(Utility.toByteBuffer(request_chunk.toString()), false));
-					
-					
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-				
+				requestChunk();				
 			}
 		});
 		
@@ -198,8 +185,33 @@ public class FileConnection extends CustomActivity {
 		
 	}
 	
+	public void requestChunk(){
+		
+		Log.d("FILERECEIVE", "Requesting CHUNK: "+ chunkNumberToRequest);
+		
+		JSONObject request_chunk = new JSONObject();
+		
+		try {
+			
+			request_chunk.put("eventName", "request_chunk");
+			
+			JSONObject request_data = new JSONObject();
+			request_data.put("chunk", chunkNumberToRequest);
+			request_data.put("browser", "chrome"); // This chrome is hardcoded for testing purpose
+			
+			request_chunk.put("data", request_data);
+
+			peer.dc.send(new DataChannel.Buffer(Utility.toByteBuffer(request_chunk.toString()), false));
+			
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 	protected void onDestroy() {
-		//unbindService(socketConnection);
+		unbindService(socketConnection);
 		super.onDestroy();
 	}
 	
@@ -296,14 +308,26 @@ public class FileConnection extends CustomActivity {
 			    runOnUiThread(new Runnable(){
 					public void run() {
 						for(int i=0; i<bytes.length; i++)
-							fileBytesArray.add(bytes[i]);	
+							fileBytesArray.add(bytes[i]);
+						
+						if (numberOfChunksReceived % Utility.getChunksPerACK() == (Utility.getChunksPerACK() - 1) 
+								|| numberOfChunksInFileToSave == (numberOfChunksReceived + 1)) {
+							
+							if (numberOfChunksInFileToSave > numberOfChunksReceived) {
+								chunkNumberToRequest += Utility.getChunksPerACK();
+								
+                                requestChunk();
+                            }
+							
+			            }
+						
+						numberOfChunksReceived++;
 					}
 			    });
 			    
 			}
 			else {
 				
-			   
 			    runOnUiThread(new Runnable() {
 				      public void run() {
 				    	    String strData = new String( bytes );
@@ -317,6 +341,10 @@ public class FileConnection extends CustomActivity {
 								if(jsonData.getJSONObject("data").has("file_meta")){
 									
 									fileNameToSave = jsonData.getJSONObject("data").getJSONObject("file_meta").getString("name");
+									sizeOfFileToSave = jsonData.getJSONObject("data").getJSONObject("file_meta").getInt("size");
+									numberOfChunksInFileToSave = (int) Math.ceil(sizeOfFileToSave / Utility.getChunkSize());
+									numberOfChunksReceived = 0;
+									chunkNumberToRequest = 0;
 									
 								}
 								else if(jsonData.getJSONObject("data").has("kill")){
@@ -594,9 +622,19 @@ public class FileConnection extends CustomActivity {
 							
 						} catch (JSONException e) {
 							e.printStackTrace();
+						} catch (NullPointerException e){
+							e.printStackTrace();
+							
+							/*
+							 * todo This needs to be fixed. It does not receive offer and receives
+							 * the candidate. This is a network error
+							 */
+							
+							Toast.makeText(getApplicationContext(),
+				                    "Network error occurred. Try again after connecting to Internet", Toast.LENGTH_SHORT)
+				                    .show();
+							
 						}
-						
-						
 						
 					}
 					
