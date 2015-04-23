@@ -218,7 +218,11 @@ public class FileConnection extends CustomActivity {
 	}
 	
 	protected void onDestroy() {
-		unbindService(socketConnection);
+		
+		if(isBound){
+			unbindService(socketConnection);
+		}
+		
 		super.onDestroy();
 	}
 	

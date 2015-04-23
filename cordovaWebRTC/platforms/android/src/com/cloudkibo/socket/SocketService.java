@@ -3,6 +3,7 @@ package com.cloudkibo.socket;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 
 import io.cordova.hellocordova.CordovaApp;
 
@@ -24,9 +25,15 @@ import com.koushikdutta.async.http.socketio.ConnectCallback;
 import com.koushikdutta.async.http.socketio.EventCallback;
 import com.koushikdutta.async.http.socketio.SocketIOClient;
 
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Dialog;
 import android.app.Service;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -144,6 +151,46 @@ public class SocketService extends Service {
 
 	}
 	
+	/**
+	 * This checks if the activity or app is running or not.
+	 * @param myPackage
+	 * @return
+	 */
+	
+	public boolean isForeground(String myPackage) {
+	    ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+	    List<ActivityManager.RunningTaskInfo> runningTaskInfo = manager.getRunningTasks(1); 
+	    ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
+	    return componentInfo.getPackageName().equals(myPackage);
+	}
+	
+	public static boolean isAppSentToBackground(final Context context) {
+
+	    try {
+	        ActivityManager am = (ActivityManager) context
+	                .getSystemService(Context.ACTIVITY_SERVICE);
+	        // The first in the list of RunningTasks is always the foreground
+	        // task.
+	        RunningTaskInfo foregroundTaskInfo = am.getRunningTasks(1).get(0);
+	        String foregroundTaskPackageName = foregroundTaskInfo.topActivity
+	                .getPackageName();// get the top fore ground activity
+	        PackageManager pm = context.getPackageManager();
+	        PackageInfo foregroundAppPackageInfo = pm.getPackageInfo(
+	                foregroundTaskPackageName, 0);
+
+	        String foregroundTaskAppName = foregroundAppPackageInfo.applicationInfo
+	                .loadLabel(pm).toString();
+
+	        // Log.e("", foregroundTaskAppName +"----------"+
+	        // foregroundTaskPackageName);
+	        if (!foregroundTaskAppName.equals("CloudKibo")) {
+	            return true;
+	        }
+	    } catch (Exception e) {
+	        Log.e("isAppSentToBackground", "" + e);
+	    }
+	    return false;
+	}
 	
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {

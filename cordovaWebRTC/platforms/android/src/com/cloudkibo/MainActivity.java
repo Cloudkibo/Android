@@ -184,7 +184,11 @@ public class MainActivity extends CustomActivity
 
 	@Override
 	protected void onDestroy() {
-		unbindService(socketConnection);
+		
+		if(isBound){
+			unbindService(socketConnection);
+		}
+		
 		super.onDestroy();
 	}
 
