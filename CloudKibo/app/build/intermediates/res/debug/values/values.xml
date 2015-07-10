@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- From: file:/F:/Android/CloudKibo/app/src/main/res/values/bool.xml -->
+    <eat-comment/>
+    <bool name="use_activity">true</bool>
+    <bool name="use_provider">false</bool>
     <!-- From: file:/F:/Android/CloudKibo/app/src/main/res/values/color.xml -->
     <eat-comment/>
     <color name="black">#000000</color>
@@ -13,6 +17,8 @@
     <color name="white_smoke">#F7F7F7</color>
     <!-- From: file:/F:/Android/CloudKibo/app/src/main/res/values/dimens.xml -->
     <eat-comment/>
+    <dimen name="list_item_padding">16dp</dimen>
+    <dimen name="list_padding">0dp</dimen>
     <dimen name="pad_10dp">10dp</dimen>
     <dimen name="pad_15dp">15dp</dimen>
     <dimen name="pad_20dp">20dp</dimen>
@@ -30,25 +36,31 @@
     <dimen name="txt_7sp">7sp</dimen>
     <!-- From: file:/F:/Android/CloudKibo/app/src/main/res/values/strings.xml -->
     <eat-comment/>
-    <string name="about_txt">Online chat may refer to any kind of communication over the Internet that offers a real-time transmission of text messages from sender to receiver. Chat messages are generally short in order to enable other participants to respond quickly. Thereby, a feeling similar to a spoken conversation is created, which distinguishes chatting from other text-based online communication forms such as Internet forums and email. Online chat may address point-to-point communications as well as multicast communications from one sender to many receivers and voice and video chat, or may be a feature of a web conferencing service.\\n\\nOnline chat in a less stringent definition may be primarily any direct text-based or video-based (webcams), one-on-one chat or one-to-many group chat (formally also known as synchronous conferencing), using tools such as instant messengers, Internet Relay Chat (IRC), talkers and possibly MUDs. The expression online chat comes from the word chat which means \"informal conversation\". Online chat includes web-based applications that allow communication –often directly addressed, but anonymous between users in a multi-user environment. Web conferencing is a more specific online service, that is often sold as a service, hosted on a web server controlled by the vendor.\n\nThe first online chat system was called Talkomatic, created by Doug Brown and David R. Woolley in 1974 on the PLATO System at the University of Illinois. It offered several channels, each of which could accommodate up to five people, with messages appearing on all users\' screens character-by-character as they were typed. Talkomatic was very popular among PLATO users into the mid-1980s.\n\nThe first dedicated online chat service that was widely available to the public was the CompuServe CB Simulator in 1980,[1][2] created by CompuServe executive Alexander "Sandy" Trevor in Columbus, Ohio. Ancestors include network chat software such as UNIX "talk" used in the 1970s.</string>
+    <string name="about_txt">CloudKibo is a next generation communication technology. It’s intuitive, cost effective, and rich with functionality. It can be used both for internal and external communications. It provides integrated and unified voice, video, and data communication across web.\n\n CloudKibo lets you invite your friend with a click of a button into a call. Don’t get tied down to a clumsy keypad and cryptic codes to control and manage your calls.\n\n CloudKibo also allows you to invite multiple people to join the Web meeting without installing any complex software. All they need to do is visit a URL and join the meeting.\n\n CloudKibo uses VP8 codec, which allows efficient use of bandwidth estimation for better video quality. VP8 adaptable technology allows you have HD quality. It also includes components to conceal pack loss and clean up noisy images.\n\n CloudKibo stunning HD audio quality lets you experience the full, glorious range of the human voice. Wideband and Narrowband PSTN codec are supported.\n\n Cloudkibo lets you share your weekly project status, share your weekly sales slides, collect feedback on the latest design rendering, and makes sharing a screen easy as clicking the “Share Screen” button.\n\n Cloudkibo makes it simple for you or anyone in your call to instantly share notes, documents, videos, or any other file. File transfer is highly secured. All file transfers are peer to peer with 128 Bit encryption. Current email systems normally limit your attachments to 25MB and multiple copies of your files are left on the mail servers.\n\n Downloading, installing, and updating plugins can be complex, error prone, and annoying. With CloudKibo you are able to join the call straight from your browser without any need to download and install client software. Plugins can be difficult to deploy, debug, troubleshoot, test and maintain and may require licensing and integration with complex, expensive technology.\n\n CloudKibo connects you to social network services like Facebook, Google, and Microsoft. You can connect and import your friends from these social networks.\n\n Cloudkibo is based on modern Web technology like Nodejs, Angularjs, Socket.io, WebRTC etc, thus it is highly scalable. Also as most of the communication is Peer to Peer the need for a large and complex server platform is minimized resulting in a very cost effective solution.\n\n Cloudkibo is highly secured as all communication is 128 Bit encrypted and the base technology uses Peer to Peer communication between two end points. No customer content audio, video, or files are stored on the central server.</string>
+    <string name="activity_name">Submit</string>
     <string name="all_chats">All Chats</string>
     <string name="all_contacts">All Contacts</string>
     <string name="all_notes">All Notes</string>
     <string name="all_projects">All Projects</string>
     <string name="app_name">CloudKibo</string>
+    <string name="choose_file">Select a file</string>
     <string name="choose_project">Choose Project</string>
     <string name="credentials">Login Credentials</string>
     <string name="drawer_close">Close</string>
     <string name="drawer_open">Open</string>
     <string name="edit">Edit</string>
     <string name="email">Email Address</string>
+    <string name="empty_directory">Empty Directory</string>
+    <string name="error_selecting_file">Error selecting File</string>
     <string name="fav_contacts">Favorite</string>
     <string name="first_name">First Name</string>
     <string name="forgot_my_pwd">I’ve forgotten my password?</string>
     <string name="forgot_password_string">Enter your email address</string>
     <string name="grp_temp">\@JayL, @damen.miller, @steve.buscemi, @ris.collins, @peterk</string>
     <string name="host">www.cloudkibo.com</string>
+    <string name="internal_storage">Internal storage</string>
     <string name="last_name">Last Name</string>
+    <string name="launcher_name">Submit</string>
     <string name="log_in">Log in</string>
     <string name="my_chats">My Chats</string>
     <string name="my_notes">My Notes</string>
@@ -61,6 +73,7 @@
     <string name="publc">Public</string>
     <string name="register">Register</string>
     <string name="search">Search</string>
+    <string name="storage_removed">Storage was removed or unmounted.</string>
     <string name="submit">Submit</string>
     <string name="to">To:</string>
     <string name="trash">Trash</string>
@@ -124,6 +137,15 @@
         <item name="android:paddingRight">@dimen/pad_5dp</item>
         <item name="android:textColorHint">@color/main_color_gray</item>
         <item name="android:textSize">@dimen/txt_16sp</item>
+    </style>
+    <style name="fileChooserName">
+        <item name="android:drawablePadding">@dimen/list_item_padding</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:maxLines">2</item>
+        <item name="android:paddingLeft">@dimen/list_item_padding</item>
+        <item name="android:paddingRight">@dimen/list_item_padding</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
     </style>
     <style name="lbl_count" parent="android:Widget.Holo.Light.TextView">
         <item name="android:background">@drawable/btn_rect</item>

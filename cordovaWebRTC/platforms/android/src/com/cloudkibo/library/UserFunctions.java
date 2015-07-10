@@ -34,6 +34,9 @@ public class UserFunctions {
     private static String forpassURL = "https://www.cloudkibo.com/api/users/resetpasswordrequest";
     private static String chgpassURL = "https://www.cloudkibo.com/learn2crack_login_api/";
     private static String getContactsURL = "https://www.cloudkibo.com/api/contactslist/";
+    private static String getPendingContactsURL = "https://www.cloudkibo.com/api/pendingcontacts/";
+    private static String approveContactURL = "https://www.cloudkibo.com/api/approvefriendrequest/";
+    private static String rejectContactURL = "https://www.cloudkibo.com/api/rejectfriendrequest/";
     
     
     
@@ -180,12 +183,14 @@ public class UserFunctions {
 	}
 	
 	
-	
-	
-	
 	public JSONArray getContactsList(String authtoken) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		JSONArray contactslist = connection.getArrayFromServer(getContactsURL, authtoken);
+        return contactslist;
+	}
+	
+	public JSONArray getPendingContactsList(String authtoken) {
+		JSONArray contactslist = connection.getArrayFromServer(getPendingContactsURL, authtoken);
         return contactslist;
 	}
 	

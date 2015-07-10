@@ -16,11 +16,11 @@
         <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\cordovaapp-cordovalib-baf77f164e7b3cb94a83374700de266933f8f243.jar" />
     </item>
     <item
-        jar="F:\Android\CloudKibo\app\libs\lib_android_websockets.jar"
+        jar="C:\Users\sojharo\.gradle\caches\modules-2\files-2.1\com.github.nkzawa\socket.io-client\0.5.1\f83dcb739e03bcc6f2e6b784d470002e993ce25f\socket.io-client-0.5.1.jar"
         jumboMode="false"
         revision="21.1.2"
-        sha1="3cb9d5095e4795e6a1ac2bb3a3705434fc5063c7">
-        <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\lib_android_websockets-fb0f3ca1ea963cc9655fe2466a0d95becf4268c7.jar" />
+        sha1="f83dcb739e03bcc6f2e6b784d470002e993ce25f">
+        <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\socket.io-client-0.5.1-fedb81604c1f24c7eeb434c821495c6fc78812d4.jar" />
     </item>
     <item
         jar="F:\Android\CloudKibo\app\libs\libjingle_so.jar"
@@ -30,11 +30,39 @@
         <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\libjingle_so-4a1837b82218a4172f078e952d0e5b0d4e6ebc29.jar" />
     </item>
     <item
+        jar="C:\Users\sojharo\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp\okhttp\2.4.0\40340c0748190fe897baf7bffbc1b282734294e5\okhttp-2.4.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="40340c0748190fe897baf7bffbc1b282734294e5">
+        <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\okhttp-2.4.0-e1fb63ca2fd5332b34080f12479f4ddd20813dd7.jar" />
+    </item>
+    <item
+        jar="C:\Users\sojharo\.gradle\caches\modules-2\files-2.1\com.squareup.okio\okio\1.4.0\5b72bf48563ea8410e650de14aa33ff69a3e8c35\okio-1.4.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="5b72bf48563ea8410e650de14aa33ff69a3e8c35">
+        <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\okio-1.4.0-195a789e238aa755c697aba4d528c66ed3a96299.jar" />
+    </item>
+    <item
+        jar="C:\Users\sojharo\.gradle\caches\modules-2\files-2.1\com.github.nkzawa\engine.io-client\0.5.1\c83503e6668d63b3d5b2a27edf6e3a54d9eb7a66\engine.io-client-0.5.1.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="c83503e6668d63b3d5b2a27edf6e3a54d9eb7a66">
+        <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\engine.io-client-0.5.1-f8eef0b0d564fb7fccc846a869bb85fc6fba6a57.jar" />
+    </item>
+    <item
         jar="C:\Users\sojharo\AppData\Local\Android\sdk\extras\android\m2repository\com\android\support\support-v4\19.1.0\support-v4-19.1.0.jar"
         jumboMode="false"
         revision="21.1.2"
         sha1="85f201b380937e61a9dce6ca90ccf6872abbfb67">
         <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\support-v4-19.1.0-fb29ddbb3afde9743b3aa2faf79410a86847963b.jar" />
+    </item>
+    <item
+        jar="C:\Users\sojharo\.gradle\caches\modules-2\files-2.1\com.squareup.okhttp\okhttp-ws\2.4.0\69206d28966656052a982ceded583abdeb41cf63\okhttp-ws-2.4.0.jar"
+        jumboMode="false"
+        revision="21.1.2"
+        sha1="69206d28966656052a982ceded583abdeb41cf63">
+        <dex dex="F:\Android\CloudKibo\app\build\intermediates\pre-dexed\debug\okhttp-ws-2.4.0-f590b77017cb7bb4831a40172709c3bde32dbf60.jar" />
     </item>
     <item
         jar="C:\Users\sojharo\.gradle\caches\modules-2\files-2.1\com.google.code.gson\gson\2.2.2\1f96456ca233dec780aa224bff076d8e8bca3908\gson-2.2.2.jar"

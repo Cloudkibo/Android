@@ -128,6 +128,8 @@ public class CloudKiboSyncAdapter extends AbstractThreadedSyncAdapter {
 	        
 	        for (int i=0; i < remoteContacts.length(); i++) {
 	        	JSONObject row = remoteContacts.getJSONObject(i);
+
+                Log.e("SYNC", row.toString());
 	        	
 	        	cvContacts.put(Contacts.CONTACT_FIRSTNAME, 
 	        			row.getJSONObject("contactid").getString(Contacts.CONTACT_FIRSTNAME));

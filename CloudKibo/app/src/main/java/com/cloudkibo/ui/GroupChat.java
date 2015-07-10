@@ -29,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloudkibo.MainActivity;
+//import com.cloudkibo.R;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
@@ -135,9 +136,17 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	public void receiveMessage(String msg){
 		
 		convList.add(new Conversation(msg, new Date().toString(), false, true));
-		adp.notifyDataSetChanged();
+
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+
+                adp.notifyDataSetChanged();
+
+            }
+        });
 		
 	}
+	
 
 	/**
 	 * This method currently loads a dummy list of conversations. You can write the
@@ -173,6 +182,10 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				catch (NullPointerException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				return json;
 			}
 
@@ -200,6 +213,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 						
 					}
 				} catch (JSONException e) {
+					e.printStackTrace();
+				} catch (NullPointerException e){
 					e.printStackTrace();
 				}
 			}
