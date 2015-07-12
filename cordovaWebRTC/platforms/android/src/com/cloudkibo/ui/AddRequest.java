@@ -5,7 +5,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -199,18 +202,185 @@ public class AddRequest extends CustomFragment implements IFragmentName
      public boolean onContextItemSelected(MenuItem item)
      {  
 
-             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+             final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
     
              if(item.getTitle()=="Accept")
              {
+            	 
+            	 final List<NameValuePair> params = new ArrayList<NameValuePair>();
+            	 params.add(new BasicNameValuePair("username", contactList.get(info.position).getUserName()));
+            	 params.add(new BasicNameValuePair("_id", contactList.get(info.position).getUserId()));
+            	 
+            	 new AsyncTask<String, String, Boolean>() {
+
+ 					@Override
+ 					protected Boolean doInBackground(String... args) {
+
+ 						ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+ 						NetworkInfo netInfo = cm.getActiveNetworkInfo();
+ 						if (netInfo != null && netInfo.isConnected()) {
+ 							try {
+ 								URL url = new URL("http://www.google.com");
+ 								HttpURLConnection urlc = (HttpURLConnection) url
+ 										.openConnection();
+ 								urlc.setConnectTimeout(3000);
+ 								urlc.connect();
+ 								if (urlc.getResponseCode() == 200) {
+ 									return true;
+ 								}
+ 							} catch (MalformedURLException e1) {
+ 								e1.printStackTrace();
+ 							} catch (IOException e) {
+ 								e.printStackTrace();
+ 							}
+ 						}
+ 						return false;
+
+ 					}
+
+ 					@Override
+ 					protected void onPostExecute(Boolean th) {
+
+ 						if (th == true) {
+ 							
+ 							new AsyncTask<String, String, JSONObject>() {
+
+ 								@Override
+ 								protected JSONObject doInBackground(String... args) {
+ 									JSONObject result = null;
+ 									
+ 									
+ 									result = userFunction.acceptFriendRequest(params, authtoken);
+ 									
+ 									
+ 									return result;
+ 									
+ 								}
+
+ 								@Override
+ 								protected void onPostExecute(JSONObject json) {
+
+ 									try{
+	 									if(json.getString("status").equals("success")){
+	 										
+	 										try{
+	 											contactList.remove(info.position);
+	 											contactAdapter.notifyDataSetChanged();
+	 											
+	 										}catch(NullPointerException e){}
+	 										
+	 									}
+	 									else{
+	 										Toast.makeText(getActivity().getApplicationContext(),
+	 			 									"Some error occured. Try again.", Toast.LENGTH_SHORT)
+	 			 									.show();
+	 									}
+ 									}
+ 									catch(JSONException e){
+ 										
+ 									}
+ 								}
+ 					            
+ 					        }.execute();
+ 							
+ 						} else {
+ 							Toast.makeText(getActivity().getApplicationContext(),
+ 									"Could not connect to Internet", Toast.LENGTH_SHORT)
+ 									.show();
+ 						}
+ 					}
+ 		            
+ 		        }.execute();
             	 
             	 
                // Code to execute when clicked on This Item
              }  
              else if(item.getTitle()=="Reject")
              {  
-            	 //MainActivity act1 = (MainActivity)getActivity();
-            	 //act1.sendFileToThisPerson(contactList.get(info.position).getUserName());
+            	 final List<NameValuePair> params = new ArrayList<NameValuePair>();
+            	 params.add(new BasicNameValuePair("username", contactList.get(info.position).getUserName()));
+            	 params.add(new BasicNameValuePair("_id", contactList.get(info.position).getUserId()));
+            	 
+            	 new AsyncTask<String, String, Boolean>() {
+
+ 					@Override
+ 					protected Boolean doInBackground(String... args) {
+
+ 						ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+ 						NetworkInfo netInfo = cm.getActiveNetworkInfo();
+ 						if (netInfo != null && netInfo.isConnected()) {
+ 							try {
+ 								URL url = new URL("http://www.google.com");
+ 								HttpURLConnection urlc = (HttpURLConnection) url
+ 										.openConnection();
+ 								urlc.setConnectTimeout(3000);
+ 								urlc.connect();
+ 								if (urlc.getResponseCode() == 200) {
+ 									return true;
+ 								}
+ 							} catch (MalformedURLException e1) {
+ 								e1.printStackTrace();
+ 							} catch (IOException e) {
+ 								e.printStackTrace();
+ 							}
+ 						}
+ 						return false;
+
+ 					}
+
+ 					@Override
+ 					protected void onPostExecute(Boolean th) {
+
+ 						if (th == true) {
+ 							
+ 							new AsyncTask<String, String, JSONObject>() {
+
+ 								@Override
+ 								protected JSONObject doInBackground(String... args) {
+ 									JSONObject result = null;
+ 									
+ 									
+ 									result = userFunction.rejectFriendRequest(params, authtoken);
+ 									
+ 									
+ 									return result;
+ 									
+ 								}
+
+ 								@Override
+ 								protected void onPostExecute(JSONObject json) {
+
+ 									try{
+	 									if(json.getString("status").equals("success")){
+	 										
+	 										try{
+	 											contactList.remove(info.position);
+	 											contactAdapter.notifyDataSetChanged();
+	 											
+	 										}catch(NullPointerException e){}
+	 										
+	 									}
+	 									else{
+	 										Toast.makeText(getActivity().getApplicationContext(),
+	 			 									"Some error occured. Try again.", Toast.LENGTH_SHORT)
+	 			 									.show();
+	 									}
+ 									}
+ 									catch(JSONException e){
+ 										
+ 									}
+ 								}
+ 					            
+ 					        }.execute();
+ 							
+ 						} else {
+ 							Toast.makeText(getActivity().getApplicationContext(),
+ 									"Could not connect to Internet", Toast.LENGTH_SHORT)
+ 									.show();
+ 						}
+ 					}
+ 		            
+ 		        }.execute();
              }  
              else 
              {
@@ -274,24 +444,24 @@ public class AddRequest extends CustomFragment implements IFragmentName
                         for (int i=0; i < jsonA.length(); i++) {
                             JSONObject row = jsonA.getJSONObject(i);
                             try{
-                            	contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
-                                        row.getJSONObject("contactid").getString("username"),
-                                        row.getJSONObject("contactid").getString("firstname"),
-                                        row.getJSONObject("contactid").getString("lastname"),
-                                        row.getJSONObject("contactid").getString("phone"), 01,
+                            	contactList1.add(new ContactItem(row.getJSONObject("userid").getString("_id"),
+                                        row.getJSONObject("userid").getString("username"),
+                                        row.getJSONObject("userid").getString("firstname"),
+                                        row.getJSONObject("userid").getString("lastname"),
+                                        row.getJSONObject("userid").getString("phone"), 01,
                                         false, "",
-                                        row.getJSONObject("contactid").getString("status"),
+                                        row.getJSONObject("userid").getString("status"),
                                         row.getString("detailsshared"),
                                         row.getBoolean("unreadMessage")
                                 ));
                             }catch(JSONException e){
-                            	contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
-                                        row.getJSONObject("contactid").getString("username"),
-                                        row.getJSONObject("contactid").getString("firstname"),
-                                        row.getJSONObject("contactid").getString("lastname"),
+                            	contactList1.add(new ContactItem(row.getJSONObject("userid").getString("_id"),
+                                        row.getJSONObject("userid").getString("username"),
+                                        row.getJSONObject("userid").getString("firstname"),
+                                        row.getJSONObject("userid").getString("lastname"),
                                         "nill", 01,
                                         false, "",
-                                        row.getJSONObject("contactid").getString("status"),
+                                        row.getJSONObject("userid").getString("status"),
                                         row.getString("detailsshared"),
                                         row.getBoolean("unreadMessage")
                                 ));
