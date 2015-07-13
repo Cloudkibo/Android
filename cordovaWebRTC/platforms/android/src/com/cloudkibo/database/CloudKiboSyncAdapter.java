@@ -60,7 +60,7 @@ public class CloudKiboSyncAdapter extends AbstractThreadedSyncAdapter {
 			JSONArray remoteContacts = userFunction.getContactsList(authToken);
 
             if(remoteUser == null){
-                //mAccountManager.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, authToken);
+                mAccountManager.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, authToken);
 
                 Log.e("TOKEN", "TOKEN INVALIDATED");
 

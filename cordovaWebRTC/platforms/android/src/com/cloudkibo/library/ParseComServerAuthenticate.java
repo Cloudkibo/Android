@@ -4,10 +4,13 @@ import android.util.Log;
 import com.google.gson.Gson;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpParams;
 import org.apache.http.util.EntityUtils;
@@ -16,6 +19,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ParseComServerAuthenticate implements ServerAuthenticate{
     @Override
@@ -47,7 +52,7 @@ public class ParseComServerAuthenticate implements ServerAuthenticate{
 
             User createdUser = new Gson().fromJson(responseString, User.class);
 
-            authtoken = createdUser.sessionToken;
+            authtoken = createdUser.token;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -62,9 +67,9 @@ public class ParseComServerAuthenticate implements ServerAuthenticate{
         Log.d("udini", "userSignIn");
 
         DefaultHttpClient httpClient = new DefaultHttpClient();
-        String url = "https://api.parse.com/1/login";
+        String url = "https://www.cloudkibo.com/auth/local";
 
-
+/*
         String query = null;
         try {
             query = String.format("%s=%s&%s=%s", "username", URLEncoder.encode(user, "UTF-8"), "password", pass);
@@ -72,16 +77,23 @@ public class ParseComServerAuthenticate implements ServerAuthenticate{
             e.printStackTrace();
         }
         url += "?" + query;
+*/
+        HttpPost httpGet = new HttpPost(url);
 
-        HttpGet httpGet = new HttpGet(url);
+//        httpGet.addHeader("X-Parse-Application-Id", "XUafJTkPikD5XN5HxciweVuSe12gDgk2tzMltOhr");
+//        httpGet.addHeader("X-Parse-REST-API-Key", "8L9yTQ3M86O4iiucwWb4JS7HkxoSKo7ssJqGChWx");
 
-        httpGet.addHeader("X-Parse-Application-Id", "XUafJTkPikD5XN5HxciweVuSe12gDgk2tzMltOhr");
-        httpGet.addHeader("X-Parse-REST-API-Key", "8L9yTQ3M86O4iiucwWb4JS7HkxoSKo7ssJqGChWx");
-
-        HttpParams params = new BasicHttpParams();
+        Log.e("UDINIC", user);
+        Log.e("UDINIC", pass);
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("username", user));
+        params.add(new BasicNameValuePair("password", pass));
+        httpGet.setEntity(new UrlEncodedFormEntity(params));
+        
+  /*      HttpParams params = new BasicHttpParams();
         params.setParameter("username", user);
         params.setParameter("password", pass);
-        httpGet.setParams(params);
+        httpGet.setParams(params);*/
 //        httpGet.getParams().setParameter("username", user).setParameter("password", pass);
 
         String authtoken = null;
@@ -95,12 +107,13 @@ public class ParseComServerAuthenticate implements ServerAuthenticate{
             }
 
             User loggedUser = new Gson().fromJson(responseString, User.class);
-            authtoken = loggedUser.sessionToken;
+            authtoken = loggedUser.token;
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        Log.e("UDINIC", authtoken);
         return authtoken;
     }
 
@@ -117,7 +130,7 @@ public class ParseComServerAuthenticate implements ServerAuthenticate{
         private String username;
         private String phone;
         private String objectId;
-        public String sessionToken;
+        public String token;
         private String gravatarId;
         private String avatarUrl;
 
@@ -163,11 +176,11 @@ public class ParseComServerAuthenticate implements ServerAuthenticate{
         }
 
         public String getSessionToken() {
-            return sessionToken;
+            return token;
         }
 
-        public void setSessionToken(String sessionToken) {
-            this.sessionToken = sessionToken;
+        public void setSessionToken(String token) {
+            this.token = token;
         }
 
         public String getGravatarId() {
