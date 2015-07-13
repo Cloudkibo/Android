@@ -639,14 +639,23 @@ public class MainActivity extends CustomActivity
                 @Override
                 public void receiveSocketMessage(String type, String msg) {
 
+                	final String message = msg;
                     if(type.equals("im")){
 
                         IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 
                         if(myFragment.getFragmentName().equals("GroupChat"))
                         {
-                            GroupChat myGroupChatFragment = (GroupChat) myFragment;
-                            myGroupChatFragment.receiveMessage(msg);
+                            final GroupChat myGroupChatFragment = (GroupChat) myFragment;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                	myGroupChatFragment.receiveMessage(message);
+
+                               }
+                           });
+                            
                         }
 
                     }
