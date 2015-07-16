@@ -1,4 +1,4 @@
-package com.dooble.phonertc;
+/*package com.dooble.phonertc;
 
 import java.util.LinkedList;
 import java.util.regex.Matcher;
@@ -65,10 +65,10 @@ public class Session {
 		iceServers.add(new PeerConnection.IceServer("turn:turn.anyfirewall.com:443?transport=tcp",
 				"webrtc", "webrtc"));
 		iceServers.add(new PeerConnection.IceServer("stun:stun.anyfirewall.com:3478"));
-		/*iceServers.add(new PeerConnection.IceServer(_config.getTurnServerHost(),
-													_config.getTurnServerUsername(), 
-													_config.getTurnServerPassword()));
-		*/
+		//iceServers.add(new PeerConnection.IceServer(_config.getTurnServerHost(),
+		//											_config.getTurnServerUsername(), 
+		//											_config.getTurnServerPassword()));
+		
 		// Initialize SDP media constraints
 		_sdpMediaConstraints = new MediaConstraints();
 		_sdpMediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(
@@ -429,4 +429,4 @@ public class Session {
 			}
 		}
 	}
-}
+}*/

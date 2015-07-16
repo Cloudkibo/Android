@@ -1,4 +1,4 @@
-package com.dooble.phonertc;
+/*package com.dooble.phonertc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -458,3 +458,4 @@ public class PhoneRTCPlugin extends CordovaPlugin {
 		return _shouldDispose;
 	}
 }
+*/

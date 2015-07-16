@@ -175,6 +175,12 @@
         <service android:name="com.cloudkibo.socket.SocketService"
             android:exported="false"
             />
+        <service
+		  android:name="FileTransferService"
+		  android:icon="@drawable/icon"
+		  android:label="File Transfer"
+		  >
+</service> 
 	
 	</application>
 
