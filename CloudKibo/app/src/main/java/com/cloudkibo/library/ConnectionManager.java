@@ -23,10 +23,15 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.cloudkibo.MainActivity;
+import com.cloudkibo.SplashScreen;
 import com.google.gson.Gson;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerFuture;
+import android.content.Intent;
+import android.os.Bundle;
 import android.util.Log;
 
 public class ConnectionManager {
@@ -40,7 +45,6 @@ public class ConnectionManager {
     static JSONObject jObj = null;
     static JSONArray jArr = null;
     static String json = "";
-    
     
     
     
@@ -284,8 +288,6 @@ public class ConnectionManager {
         // return JSON String
         return jArr;
 	}
-    
-    
     
     
     

@@ -42,7 +42,7 @@ public class KiboAuthenticator extends AbstractAccountAuthenticator {
     @Override
     public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
 
-        Log.d("udinic", TAG + "> getAuthToken");
+        Log.d("AUTH", TAG + "> getAuthToken");
 
         // If the caller requested an authToken type we don't support, then
         // return an error
@@ -58,8 +58,8 @@ public class KiboAuthenticator extends AbstractAccountAuthenticator {
 
         String authToken = am.peekAuthToken(account, authTokenType);
 
-        Log.d("udinic", TAG + "> peekAuthToken returned - " + authToken);
-
+        Log.d("AUTH", TAG + "> peekAuthToken returned - " + authToken);        
+        
         // Lets give another try to authenticate the user
         if (TextUtils.isEmpty(authToken)) {
             final String password = am.getPassword(account);

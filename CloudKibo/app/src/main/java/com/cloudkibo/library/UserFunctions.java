@@ -34,6 +34,9 @@ public class UserFunctions {
     private static String forpassURL = "https://www.cloudkibo.com/api/users/resetpasswordrequest";
     private static String chgpassURL = "https://www.cloudkibo.com/learn2crack_login_api/";
     private static String getContactsURL = "https://www.cloudkibo.com/api/contactslist/";
+    private static String getPendingContactsURL = "https://www.cloudkibo.com/api/contactslist/pendingcontacts/";
+    private static String approveContactURL = "https://www.cloudkibo.com/api/contactslist/approvefriendrequest/";
+    private static String rejectContactURL = "https://www.cloudkibo.com/api/contactslist/rejectfriendrequest/";
     
     
     
@@ -180,12 +183,14 @@ public class UserFunctions {
 	}
 	
 	
-	
-	
-	
 	public JSONArray getContactsList(String authtoken) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		JSONArray contactslist = connection.getArrayFromServer(getContactsURL, authtoken);
+        return contactslist;
+	}
+	
+	public JSONArray getPendingContactsList(String authtoken) {
+		JSONArray contactslist = connection.getArrayFromServer(getPendingContactsURL, authtoken);
         return contactslist;
 	}
 	
@@ -199,6 +204,18 @@ public class UserFunctions {
 		params.add(new BasicNameValuePair("user1", user1));
 		params.add(new BasicNameValuePair("user2", user2));
 		JSONObject userchatresponse = connection.sendObjectToServer(markChatReadURL, authtoken, params);
+        return userchatresponse;
+	}
+	
+	public JSONObject acceptFriendRequest(List<NameValuePair> param, String authtoken) {
+		List<NameValuePair> params = param;
+		JSONObject userchatresponse = connection.sendObjectToServer(approveContactURL, authtoken, params);
+        return userchatresponse;
+	}
+	
+	public JSONObject rejectFriendRequest(List<NameValuePair> param, String authtoken) {
+		List<NameValuePair> params = param;
+		JSONObject userchatresponse = connection.sendObjectToServer(rejectContactURL, authtoken, params);
         return userchatresponse;
 	}
 	

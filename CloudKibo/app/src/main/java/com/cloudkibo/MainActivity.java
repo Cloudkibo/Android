@@ -69,6 +69,7 @@ import com.cloudkibo.socket.BoundServiceListener;
 import com.cloudkibo.socket.SocketService;
 import com.cloudkibo.socket.SocketService.SocketBinder;
 import com.cloudkibo.ui.AboutChat;
+import com.cloudkibo.ui.AddRequest;
 import com.cloudkibo.ui.ChatList;
 import com.cloudkibo.ui.ContactList;
 import com.cloudkibo.ui.GroupChat;
@@ -269,7 +270,7 @@ public class MainActivity extends CustomActivity
         ArrayList<Data> al = new ArrayList<Data>();
         //al.add(new Data("Chat", null, R.drawable.ic_chat));
         al.add(new Data("Contacts", null, R.drawable.ic_notes));
-        //al.add(new Data("Projects", null, R.drawable.ic_projects));
+        al.add(new Data("Add Requests", null, R.drawable.ic_projects));
         //al.add(new Data("Settings", null, R.drawable.ic_setting));
         al.add(new Data("About CloudKibo", null, R.drawable.ic_about));
         al.add(new Data("Logout", null, R.drawable.ic_logout));
@@ -293,12 +294,16 @@ public class MainActivity extends CustomActivity
             title = "Contacts";
             f = new ContactList();
         }
-        else if (pos == 2)
+        else if(pos == 2){
+        	title = "Add Requests";
+        	f = new AddRequest();
+        }
+        else if (pos == 3)
         {
             title = "About CloudKibo";
             f = new AboutChat();
         }
-        else if (pos == 3)
+        else if (pos == 4)
         {
             startActivity(new Intent(this, Login.class));
 
@@ -634,14 +639,23 @@ public class MainActivity extends CustomActivity
                 @Override
                 public void receiveSocketMessage(String type, String msg) {
 
+                	final String message = msg;
                     if(type.equals("im")){
 
                         IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 
                         if(myFragment.getFragmentName().equals("GroupChat"))
                         {
-                            GroupChat myGroupChatFragment = (GroupChat) myFragment;
-                            myGroupChatFragment.receiveMessage(msg);
+                            final GroupChat myGroupChatFragment = (GroupChat) myFragment;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+
+                                	myGroupChatFragment.receiveMessage(message);
+
+                               }
+                           });
+                            
                         }
 
                     }

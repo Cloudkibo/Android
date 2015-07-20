@@ -90,6 +90,13 @@ public class FileConnection extends CustomActivity {
         startService(i);
         bindService(i, socketConnection, Context.BIND_AUTO_CREATE);
         
+        // For the File Transfer Service
+        Intent intentFile = new Intent(this, FileTransferService.class);
+        intentFile.putExtra("contact", peerName);
+        intentFile.putExtra("filepath", filePath);
+        intentFile.putExtra("initiator", initiator);
+        startService(intentFile); 
+        
         makeConnectionButton = (Button) findViewById(R.id.makeConnection);
         
         makeConnectionButton.setOnClickListener(new View.OnClickListener() {

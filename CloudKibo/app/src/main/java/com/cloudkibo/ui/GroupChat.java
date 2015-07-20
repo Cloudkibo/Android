@@ -136,14 +136,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	public void receiveMessage(String msg){
 		
 		convList.add(new Conversation(msg, new Date().toString(), false, true));
-
-        getActivity().runOnUiThread(new Runnable() {
-            public void run() {
-
-                adp.notifyDataSetChanged();
-
-            }
-        });
+		
+		adp.notifyDataSetChanged();
 		
 	}
 	

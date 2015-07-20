@@ -342,24 +342,49 @@ public class ContactList extends CustomFragment implements IFragmentName
 																
 																ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 																
-																JSONArray jsonA = json.getJSONArray("msg");
-																
-																for (int i=0; i < jsonA.length(); i++) {
-																	JSONObject row = jsonA.getJSONObject(i);
-																	contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
-																			row.getJSONObject("contactid").getString("username"),
-																			row.getJSONObject("contactid").getString("firstname"),
-																			row.getJSONObject("contactid").getString("lastname"),
-																			row.getJSONObject("contactid").getString("phone"), 01, 
-																			false, "",
-																			row.getJSONObject("contactid").getString("status"),
-																			row.getString("detailsshared"),
-																			row.getBoolean("unreadMessage")
-																			));
+																if(json.isNull("msg")){
+																	Toast.makeText(getActivity().getApplicationContext(),
+																			"User not found on CloudKibo", Toast.LENGTH_SHORT)
+																			.show();
+																}
+																else{
+																	JSONArray jsonA = json.getJSONArray("msg");
+																	
+																	for (int i=0; i < jsonA.length(); i++) {
+																		JSONObject row = jsonA.getJSONObject(i);
+																		
+																		try{
+																			contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
+																					row.getJSONObject("contactid").getString("username"),
+																					row.getJSONObject("contactid").getString("firstname"),
+																					row.getJSONObject("contactid").getString("lastname"),
+																					row.getJSONObject("contactid").getString("phone"), 01, 
+																					false, "",
+																					row.getJSONObject("contactid").getString("status"),
+																					row.getString("detailsshared"),
+																					row.getBoolean("unreadMessage")
+																					));
+																		}catch(JSONException e){
+																			contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
+																					row.getJSONObject("contactid").getString("username"),
+																					row.getJSONObject("contactid").getString("firstname"),
+																					row.getJSONObject("contactid").getString("lastname"),
+																					"nill", 01, 
+																					false, "",
+																					row.getJSONObject("contactid").getString("status"),
+																					row.getString("detailsshared"),
+																					row.getBoolean("unreadMessage")
+																					));
+																		}
+																		
+																		
+																	}
+																	
+																	loadNewContacts(contactList1);
+																	insertContactsIntoDB(contactList1);
 																}
 																
-																loadNewContacts(contactList1);
-																insertContactsIntoDB(contactList1);
+																
 															
 															}
 															else{
@@ -442,16 +467,30 @@ public class ContactList extends CustomFragment implements IFragmentName
 
                         for (int i=0; i < jsonA.length(); i++) {
                             JSONObject row = jsonA.getJSONObject(i);
-                            contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
-                                    row.getJSONObject("contactid").getString("username"),
-                                    row.getJSONObject("contactid").getString("firstname"),
-                                    row.getJSONObject("contactid").getString("lastname"),
-                                    row.getJSONObject("contactid").getString("phone"), 01,
-                                    false, "",
-                                    row.getJSONObject("contactid").getString("status"),
-                                    row.getString("detailsshared"),
-                                    row.getBoolean("unreadMessage")
-                            ));
+                            try{
+                            	contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
+                                        row.getJSONObject("contactid").getString("username"),
+                                        row.getJSONObject("contactid").getString("firstname"),
+                                        row.getJSONObject("contactid").getString("lastname"),
+                                        row.getJSONObject("contactid").getString("phone"), 01,
+                                        false, "",
+                                        row.getJSONObject("contactid").getString("status"),
+                                        row.getString("detailsshared"),
+                                        row.getBoolean("unreadMessage")
+                                ));
+                            }catch(JSONException e){
+                            	contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
+                                        row.getJSONObject("contactid").getString("username"),
+                                        row.getJSONObject("contactid").getString("firstname"),
+                                        row.getJSONObject("contactid").getString("lastname"),
+                                        "nill", 01,
+                                        false, "",
+                                        row.getJSONObject("contactid").getString("status"),
+                                        row.getString("detailsshared"),
+                                        row.getBoolean("unreadMessage")
+                                ));
+                            }
+                            
                         }
 
                         loadNewContacts(contactList1);

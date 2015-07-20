@@ -60,7 +60,7 @@ public class CloudKiboSyncAdapter extends AbstractThreadedSyncAdapter {
 			JSONArray remoteContacts = userFunction.getContactsList(authToken);
 
             if(remoteUser == null){
-                //mAccountManager.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, authToken);
+                mAccountManager.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, authToken);
 
                 Log.e("TOKEN", "TOKEN INVALIDATED");
 
@@ -120,7 +120,7 @@ public class CloudKiboSyncAdapter extends AbstractThreadedSyncAdapter {
 	        }
 	        curContacts.close();
 	        */
-	        Log.d("SYNC_ADAPTER", remoteContacts.toString());
+	        //Log.d("SYNC_ADAPTER", remoteContacts.toString());
 	        
 	        provider.delete(Contacts.CONTENT_URI, null, null);
 	        
@@ -128,15 +128,21 @@ public class CloudKiboSyncAdapter extends AbstractThreadedSyncAdapter {
 	        
 	        for (int i=0; i < remoteContacts.length(); i++) {
 	        	JSONObject row = remoteContacts.getJSONObject(i);
-
-                Log.e("SYNC", row.toString());
+	        	
+	        	Log.d("CONTACT", row.getJSONObject("contactid").toString());
 	        	
 	        	cvContacts.put(Contacts.CONTACT_FIRSTNAME, 
 	        			row.getJSONObject("contactid").getString(Contacts.CONTACT_FIRSTNAME));
 	        	cvContacts.put(Contacts.CONTACT_LASTNAME, 
 	        			row.getJSONObject("contactid").getString(Contacts.CONTACT_LASTNAME));
+	        	try{
 	        	cvContacts.put(Contacts.CONTACT_PHONE, 
 	        			row.getJSONObject("contactid").getString(Contacts.CONTACT_PHONE));
+	        	}catch(JSONException e){
+	        		Log.e("CONTACT", "PERSON WITH NO PHONE NO");
+	        		cvContacts.put(Contacts.CONTACT_PHONE, 
+		        			 "nill");
+	        	}
 	        	cvContacts.put(Contacts.CONTACT_USERNAME, 
 	        			row.getJSONObject("contactid").getString(Contacts.CONTACT_USERNAME));
 	        	cvContacts.put(Contacts.CONTACT_UID, 
