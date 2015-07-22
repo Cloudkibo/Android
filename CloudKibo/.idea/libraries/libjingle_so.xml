@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="libjingle_so">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/app/libs/libjingle_so.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

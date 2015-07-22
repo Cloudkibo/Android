@@ -42,7 +42,7 @@ public class FileTransferService extends Service {
 	  
 	  public void createPeerConnectionFactory(){
 			PeerConnectionFactory.initializeAndroidGlobals(getApplicationContext(), true, true,
-	        		VideoRendererGui.getEGLContext());
+	        		false, VideoRendererGui.getEGLContext());
 	        
 			factory = new PeerConnectionFactory();
 		}

@@ -31,6 +31,7 @@ ADDED from AndroidManifest.xml:11:5
 		ADDED from AndroidManifest.xml:11:52
 uses-sdk
 ADDED from AndroidManifest.xml:14:5
+MERGED from io.pristine:libjingle:8871:7:5
 	android:targetSdkVersion
 		ADDED from AndroidManifest.xml:16:9
 		INJECTED from AndroidManifest.xml:0:0
@@ -105,6 +106,7 @@ ADDED from AndroidManifest.xml:39:5
 		ADDED from AndroidManifest.xml:39:22
 application
 ADDED from AndroidManifest.xml:43:5
+MERGED from io.pristine:libjingle:8871:11:5
 	android:label
 		ADDED from AndroidManifest.xml:46:9
 	android:hardwareAccelerated

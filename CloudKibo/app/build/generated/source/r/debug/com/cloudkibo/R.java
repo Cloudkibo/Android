@@ -207,12 +207,13 @@ public final class R {
         public static final int new_chat=0x7f030012;
         public static final int note=0x7f030013;
         public static final int note_item=0x7f030014;
-        public static final int project=0x7f030015;
-        public static final int project_item=0x7f030016;
-        public static final int prompt=0x7f030017;
-        public static final int register=0x7f030018;
-        public static final int rtc_activity=0x7f030019;
-        public static final int splash=0x7f03001a;
+        public static final int pendinglist=0x7f030015;
+        public static final int project=0x7f030016;
+        public static final int project_item=0x7f030017;
+        public static final int prompt=0x7f030018;
+        public static final int register=0x7f030019;
+        public static final int rtc_activity=0x7f03001a;
+        public static final int splash=0x7f03001b;
     }
     public static final class menu {
         public static final int main=0x7f0a0000;
