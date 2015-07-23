@@ -28,7 +28,7 @@
             android:layout_marginTop="@dimen/pad_15dp"
             android:orientation="horizontal" >
 
-            <Button
+            <com.facebook.login.widget.LoginButton
                 android:id="@+id/btnFb"
                 style="@style/btn"
                 android:layout_width="wrap_content"

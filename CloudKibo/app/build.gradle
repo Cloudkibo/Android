@@ -22,9 +22,14 @@ android {
     }
 }
 
+repositories {
+    mavenCentral()
+}
+
 dependencies {
     compile 'com.github.nkzawa:socket.io-client:0.5.1'
     compile 'com.android.support:support-v4:19.1.0'
     compile 'com.google.code.gson:gson:2.2.2'
     compile 'io.pristine:libjingle:8871@aar'
+    compile 'com.facebook.android:facebook-android-sdk:4.0.0'
 }

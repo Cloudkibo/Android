@@ -28,6 +28,12 @@ import android.content.Intent;
 
 import com.cloudkibo.R;
 import com.cloudkibo.R.id;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
 
 /**
  * The Class Login is an Activity class that shows the login screen to users.
@@ -43,6 +49,7 @@ public class Login extends AccountAuthenticatorActivity
 	Button btnLogin;
 	Button btnRegister;
     Button btnForgot;
+    LoginButton btnFacebook;
 	EditText userNameText;
 	EditText passwordText;
 
@@ -68,6 +75,8 @@ public class Login extends AccountAuthenticatorActivity
 
     private final int REQ_SIGNUP = 1;
     private final int REQ_FORGOT = 2;
+
+    private CallbackManager callbackManager;
 	
 
 	/* (non-Javadoc)
@@ -88,6 +97,31 @@ public class Login extends AccountAuthenticatorActivity
 		userNameText = (EditText) findViewById(R.id.editTextUserName);
 		passwordText = (EditText) findViewById(R.id.editTextPassword);
 		btnLogin = (Button) findViewById(R.id.btnLogin);
+
+        btnFacebook = (LoginButton) findViewById(R.id.btnFb);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        callbackManager = CallbackManager.Factory.create();
+
+        btnFacebook.setReadPermissions("user_friends");
+
+        btnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                // App code
+            }
+
+            @Override
+            public void onCancel() {
+                // App code
+            }
+
+            @Override
+            public void onError(FacebookException exception) {
+                // App code
+            }
+        });
+
 
 		btnRegister = (Button) findViewById(R.id.btnReg);
         btnForgot = (Button) findViewById(id.btnForgot);
@@ -156,8 +190,10 @@ public class Login extends AccountAuthenticatorActivity
                 Toast.makeText(getBaseContext(), "Check your email", Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(getBaseContext(), data.getStringExtra(KEY_MSG), Toast.LENGTH_SHORT).show();
-        } else
+        } else {
             super.onActivityResult(requestCode, resultCode, data);
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
     }
 	
 	

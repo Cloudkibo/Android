@@ -14,7 +14,7 @@ import org.webrtc.VideoRenderer;
 import org.webrtc.VideoRendererGui;
 
 import java.util.List;
-
+/*
 public class RtcActivity extends Activity implements WebRtcClient.RtcListener {
     private final static int VIDEO_CALL_SENT = 666;
     private static final String VIDEO_CODEC_VP9 = "VP9";
@@ -193,4 +193,4 @@ public class RtcActivity extends Activity implements WebRtcClient.RtcListener {
                 LOCAL_WIDTH_CONNECTING, LOCAL_HEIGHT_CONNECTING,
                 scalingType);
     }
-}
+}*/
