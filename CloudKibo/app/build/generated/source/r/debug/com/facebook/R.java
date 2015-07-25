@@ -138,7 +138,7 @@ public final class R {
 		public static final int com_facebook_send_button_text = 0x7f080016;
 		public static final int com_facebook_share_button_text = 0x7f080017;
 		public static final int com_facebook_tooltip_default = 0x7f080018;
-		public static final int messenger_send_button_text = 0x7f08002a;
+		public static final int messenger_send_button_text = 0x7f08002b;
 	}
 	public static final class style {
 		public static final int MessengerButton = 0x7f090002;

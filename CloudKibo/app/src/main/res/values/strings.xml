@@ -51,6 +51,8 @@
     <string name="choose_file">Select a file</string>
     <string name="error_selecting_file">Error selecting File</string>
     <string name="internal_storage">Internal storage</string>
+
+    <string name="facebook_app_id">456637644436523</string>
     
 
 </resources>

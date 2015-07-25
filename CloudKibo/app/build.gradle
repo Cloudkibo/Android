@@ -1,22 +1,31 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
+    signingConfigs {
+        config {
+            keyAlias 'androiddebugkey'
+            keyPassword 'android'
+            storeFile file('C:/Users/sojharo/.android/debug.keystore')
+            storePassword 'android'
+        }
+    }
     compileSdkVersion 19
     buildToolsVersion "21.1.2"
-
     defaultConfig {
         applicationId "com.cloudkibo"
         minSdkVersion 16
         targetSdkVersion 18
     }
-
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
+        debug {
+            signingConfig signingConfigs.config
+        }
     }
-
     dexOptions {
         preDexLibraries = false
     }
@@ -32,4 +41,5 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.2'
     compile 'io.pristine:libjingle:8871@aar'
     compile 'com.facebook.android:facebook-android-sdk:4.0.0'
+    compile 'com.google.android.gms:play-services:7.5.0'
 }

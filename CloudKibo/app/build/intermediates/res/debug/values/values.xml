@@ -113,6 +113,7 @@
     <string name="email">Email Address</string>
     <string name="empty_directory">Empty Directory</string>
     <string name="error_selecting_file">Error selecting File</string>
+    <string name="facebook_app_id">456637644436523</string>
     <string name="fav_contacts">Favorite</string>
     <string name="first_name">First Name</string>
     <string name="forgot_my_pwd">I’ve forgotten my password?</string>

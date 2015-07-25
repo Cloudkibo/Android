@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -86,6 +87,8 @@ public class Login extends AccountAuthenticatorActivity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+
+        FacebookSdk.sdkInitialize(getApplicationContext());
 		setContentView(R.layout.login);
 		
 		mAccountManager = AccountManager.get(getBaseContext());
@@ -100,7 +103,6 @@ public class Login extends AccountAuthenticatorActivity
 
         btnFacebook = (LoginButton) findViewById(R.id.btnFb);
 
-        FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
 
         btnFacebook.setReadPermissions("user_friends");
@@ -108,17 +110,23 @@ public class Login extends AccountAuthenticatorActivity
         btnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                // App code
+
+                Log.e("FACEBOOK", "User ID: "
+                        + loginResult.getAccessToken().getUserId()
+                        + "\n" +
+                        "Auth Token: "
+                        + loginResult.getAccessToken().getToken());
+
             }
 
             @Override
             public void onCancel() {
-                // App code
+                Log.e("FACEBOOK", "User cancelled");
             }
 
             @Override
             public void onError(FacebookException exception) {
-                // App code
+                Log.e("FACEBOOK", "Error occurred");
             }
         });
 
