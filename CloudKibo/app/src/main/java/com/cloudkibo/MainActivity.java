@@ -419,7 +419,9 @@ public class MainActivity extends CustomActivity
     }
 
     public void callThisPerson(String contact){
+        Log.d("CALL", "Call this person function called");
         socketService.callThisPerson(contact);
+        Log.d("CALL", "After call this person function called");
     }
 
     public void sendFileToThisPerson(String contact){

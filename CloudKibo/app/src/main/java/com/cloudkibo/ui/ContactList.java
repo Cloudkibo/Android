@@ -203,6 +203,8 @@ public class ContactList extends CustomFragment implements IFragmentName
     
              if(item.getTitle()=="Call")
              {
+
+                 Log.d("CALL", "Call button pressed");
             	 
             	 MainActivity act1 = (MainActivity)getActivity();
          		

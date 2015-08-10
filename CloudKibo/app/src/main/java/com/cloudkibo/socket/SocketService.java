@@ -629,6 +629,8 @@ public class SocketService extends Service {
 		
 		try {
 
+            Log.d("CALL", "Making Call to "+ contact);
+
 			JSONObject message1 = new JSONObject();
 
 			message1.put("room", room);
