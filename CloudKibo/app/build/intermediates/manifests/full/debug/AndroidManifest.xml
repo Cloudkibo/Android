@@ -113,6 +113,18 @@
             android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
+            android:name="com.cloudkibo.webrtc.call.IncomingCall"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cloudkibo.webrtc.call.OutgoingCall"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
             android:name="com.cloudkibo.NewChat"
             android:label="@string/new_chat"
             android:launchMode="singleTask"

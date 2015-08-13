@@ -76,6 +76,7 @@ import com.cloudkibo.ui.GroupChat;
 import com.cloudkibo.ui.LeftNavAdapter;
 import com.cloudkibo.ui.ProjectList;
 import com.cloudkibo.utils.IFragmentName;
+import com.cloudkibo.webrtc.call.OutgoingCall;
 import com.cloudkibo.webrtc.filesharing.FileConnection;
 import com.cloudkibo.file.filechooser.utils.Base64;
 
@@ -422,6 +423,10 @@ public class MainActivity extends CustomActivity
         Log.d("CALL", "Call this person function called");
         socketService.callThisPerson(contact);
         Log.d("CALL", "After call this person function called");
+        Intent i = new Intent(this, OutgoingCall.class);
+        i.putExtra("user", user);
+        i.putExtra("room", room);
+        i.putExtra("contact", contact);
     }
 
     public void sendFileToThisPerson(String contact){
