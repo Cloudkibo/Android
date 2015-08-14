@@ -191,7 +191,8 @@ public class ContactList extends CustomFragment implements IFragmentName
 	      super.onCreateContextMenu(menu, v, menuInfo);
 	      menu.setHeaderTitle("Select The Action");  
 	      menu.add(0, v.getId(), 0, "Call");  
-	      menu.add(0, v.getId(), 0, "Transfer File"); 
+	      menu.add(0, v.getId(), 0, "Transfer File");
+		  menu.add(0, v.getId(), 0, "Remove Conversation");
 
     } 
 	
@@ -199,7 +200,7 @@ public class ContactList extends CustomFragment implements IFragmentName
      public boolean onContextItemSelected(MenuItem item)
      {  
 
-             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+             final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
     
              if(item.getTitle()=="Call")
              {
@@ -239,7 +240,70 @@ public class ContactList extends CustomFragment implements IFragmentName
              {  
             	 MainActivity act1 = (MainActivity)getActivity();
             	 act1.sendFileToThisPerson(contactList.get(info.position).getUserName());
-             }  
+             }
+			 else if(item.getTitle() == "Remove Conversation"){
+				 new AsyncTask<String, String, Boolean>() {
+
+					 @Override
+					 protected Boolean doInBackground(String... args) {
+
+						 ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
+						 NetworkInfo netInfo = cm.getActiveNetworkInfo();
+						 if (netInfo != null && netInfo.isConnected()) {
+							 try {
+								 URL url = new URL("http://www.google.com");
+								 HttpURLConnection urlc = (HttpURLConnection) url
+										 .openConnection();
+								 urlc.setConnectTimeout(3000);
+								 urlc.connect();
+								 if (urlc.getResponseCode() == 200) {
+									 return true;
+								 }
+							 } catch (MalformedURLException e1) {
+								 e1.printStackTrace();
+							 } catch (IOException e) {
+								 e.printStackTrace();
+							 }
+						 }
+						 return false;
+
+					 }
+
+					 @Override
+					 protected void onPostExecute(Boolean th) {
+
+						 if (th == true) {
+
+							 new AsyncTask<String, String, JSONObject>() {
+
+								 @Override
+								 protected JSONObject doInBackground(String... args) {
+									 JSONObject result = null;
+
+									 MainActivity act1 = (MainActivity)getActivity();
+
+									 result = userFunction.removeChat(act1.getUserId(), contactList.get(info.position).getUserName(), authtoken);
+
+									 return result;
+
+								 }
+
+								 @Override
+								 protected void onPostExecute(JSONObject json) {
+
+								 }
+
+							 }.execute();
+
+						 } else {
+							/*Toast.makeText(getActivity().getApplicationContext(),
+									"Could not connect to Internet", Toast.LENGTH_SHORT)
+									.show();*/
+						 }
+					 }
+
+				 }.execute();
+			 }
              else 
              {
                  return false;
