@@ -37,7 +37,7 @@ public class UserFunctions {
     private static String getPendingContactsURL = "https://www.cloudkibo.com/api/contactslist/pendingcontacts/";
     private static String approveContactURL = "https://www.cloudkibo.com/api/contactslist/approvefriendrequest/";
     private static String rejectContactURL = "https://www.cloudkibo.com/api/contactslist/rejectfriendrequest/";
-    private static String removeChatURL = "https://www.cloudkibo.com//api/userchat/removechathistory/";
+    private static String removeChatURL = "https://www.cloudkibo.com/api/userchat/removechathistory/";
     
     
     

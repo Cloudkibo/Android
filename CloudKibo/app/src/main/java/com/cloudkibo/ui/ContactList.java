@@ -291,6 +291,28 @@ public class ContactList extends CustomFragment implements IFragmentName
 								 @Override
 								 protected void onPostExecute(JSONObject json) {
 
+									 try {
+
+										 if(json != null){
+
+											 if(json.getString("status").equals("success")){
+
+												 DatabaseHandler db = new DatabaseHandler(
+														 getActivity().getApplicationContext());
+
+												 MainActivity act1 = (MainActivity)getActivity();
+
+												 db.resetSpecificChat(act1.getUserName(), contactList.get(info.position).getUserName());
+
+											 }
+
+
+										 }
+
+									 } catch (JSONException e) {
+										 e.printStackTrace();
+									 }
+
 								 }
 
 							 }.execute();

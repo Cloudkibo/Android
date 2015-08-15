@@ -76,6 +76,7 @@ import com.cloudkibo.ui.GroupChat;
 import com.cloudkibo.ui.LeftNavAdapter;
 import com.cloudkibo.ui.ProjectList;
 import com.cloudkibo.utils.IFragmentName;
+import com.cloudkibo.webrtc.call.IncomingCall;
 import com.cloudkibo.webrtc.call.OutgoingCall;
 import com.cloudkibo.webrtc.filesharing.FileConnection;
 import com.cloudkibo.file.filechooser.utils.Base64;
@@ -427,6 +428,7 @@ public class MainActivity extends CustomActivity
         i.putExtra("user", user);
         i.putExtra("room", room);
         i.putExtra("contact", contact);
+        startActivity(i);
     }
 
     public void sendFileToThisPerson(String contact){
@@ -666,106 +668,14 @@ public class MainActivity extends CustomActivity
                         }
 
                     }
-                    else if(type.equals("Missed")){
-                        dialog.dismiss();
-                    }
-                    else if(type.equals("Reject Call")){
-                        dialog.dismiss();
-                    }
-                    else if(type.equals("got user media")){
-
-                        Toast.makeText(getApplicationContext(),
-                                "Disabled due to phonertc vs socket service bug #5", Toast.LENGTH_SHORT)
-                                .show();
-/*
-	  					Intent i = new Intent(getApplicationContext(), CordovaApp.class);
-	  					i.putExtra("username", user.get("username"));
-	  					i.putExtra("_id", user.get("_id"));
-	  					i.putExtra("peer", msg);
-	  					i.putExtra("lastmessage", "GotUserMedia");
-	  					i.putExtra("room", room);
-	  		            startActivity(i);
-	  		            */
-                    }
-                    else if(type.equals("Accept Call")){
-                        dialog.dismiss();
-
-                        Toast.makeText(getApplicationContext(),
-                                "Disabled due to phonertc vs socket service bug #5", Toast.LENGTH_SHORT)
-                                .show();
-                        /*
-						Intent i = new Intent(getApplicationContext(), CordovaApp.class);
-	  					i.putExtra("username", user.get("username"));
-	  					i.putExtra("_id", user.get("_id"));
-	  					i.putExtra("peer", msg);
-	  					i.putExtra("lastmessage", "AcceptCallFromOther");
-	  					i.putExtra("room", room);
-	  		            startActivity(i);*/
-                    }
-                    else if(type.equals("calleeisoffline") || type.equals("calleeisbusy")){
-                        dialog.dismiss();
-                    }
-                    else if(type.equals("othersideringing")){
-                        dialog = new Dialog(MainActivity.this);
-                        dialog.setContentView(R.layout.call_dialog);
-                        dialog.setTitle(msg);
-
-                        // set the custom dialog components - text, image and button
-                        TextView text = (TextView) dialog.findViewById(R.id.textDialog);
-                        text.setText(msg);
-                        ImageView image = (ImageView) dialog.findViewById(R.id.imageDialog);
-                        image.setImageResource(R.drawable.ic_launcher);
-
-                        Button dialogButton = (Button) dialog.findViewById(R.id.declineButton);
-                        // if button is clicked, close the custom dialog
-                        dialogButton.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                socketService.stopCallMessageToCallee();
-
-                                dialog.dismiss();
-                            }
-                        });
-
-                        dialog.show();
-                    }
                     else if(type.equals("areyoufreeforcall")){
-                        dialog = new Dialog(MainActivity.this);
-                        dialog.setContentView(R.layout.call_dialog2);
-                        dialog.setTitle(msg);
 
-                        // set the custom dialog components - text, image and button
-                        TextView text = (TextView) dialog.findViewById(R.id.textDialog);
-                        text.setText(msg);
-                        ImageView image = (ImageView) dialog.findViewById(R.id.imageDialog);
-                        image.setImageResource(R.drawable.ic_launcher);
+                        Intent i = new Intent(getApplicationContext(), IncomingCall.class);
+                        i.putExtra("user", user);
+                        i.putExtra("room", room);
+                        i.putExtra("contact", msg);
+                        startActivity(i);
 
-                        Button dialogButton = (Button) dialog.findViewById(R.id.declineButton);
-                        // if button is clicked, close the custom dialog
-                        dialogButton.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                socketService.acceptCallMessageToCallee();
-
-                                dialog.dismiss();
-                            }
-                        });
-
-                        Button acceptButton = (Button) dialog.findViewById(R.id.acceptButton);
-                        // if button is clicked, close the custom dialog
-                        acceptButton.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                socketService.rejectCallMessageToCallee();
-
-                                dialog.dismiss();
-                            }
-                        });
-
-                        dialog.show();
                     }
 
                 }

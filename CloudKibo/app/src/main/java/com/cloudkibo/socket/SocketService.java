@@ -183,44 +183,22 @@ public class SocketService extends Service {
                 @Override
                 public void call(Object... args) {
 
+                    Log.e("SOCKET", args[0].toString());
                     try {
 
-                        JSONArray payload = new JSONArray(args[0].toString());
+                        if(args[0].toString().equals("Reject Call")){
 
-                        if(payload.getString(0).startsWith("Missed")){
-
-
-                            // todo Create Notification here for the missed call
-
-
-                            Toast.makeText(getApplicationContext(),
-                                    payload.getString(0), Toast.LENGTH_SHORT).show();
 
                             amInCall = false;
 
-                            ringing = false;
-
-                            mListener.receiveSocketMessage("Missed", "");
-
-                            amInCallWith = "";
-
-                        }
-                        else if(payload.getString(0).equals("Reject Call")){
-
-                            Toast.makeText(getApplicationContext(),
-                                    amInCallWith +
-                                            " is busy", Toast.LENGTH_SHORT).show();
-
-                            amInCall = false;
-
-                            mListener.receiveSocketMessage("Reject Call", "");
+                            mListener.receiveSocketMessage("Reject Call", amInCallWith);
 
                             otherSideRinging = false;
 
                             amInCallWith = "";
 
                         }
-                        else if(payload.getString(0).equals("got user media")){
+                        else if(args[0].toString().equals("got user media")){
 
                             // todo not sure about this. check if cordova app can access service run by
                             // our main app
@@ -232,7 +210,7 @@ public class SocketService extends Service {
 
 
                         }
-                        else if(payload.getString(0).equals("Accept Call")){
+                        else if(args[0].toString().equals("Accept Call")){
 
                             otherSideRinging = false;
 
@@ -248,6 +226,25 @@ public class SocketService extends Service {
 
 
                         }
+                        else if(args[0].toString().startsWith("Missed")){
+
+
+                            // todo Create Notification here for the missed call
+
+
+                            amInCall = false;
+
+                            ringing = false;
+
+                            mListener.receiveSocketMessage("Missed", args[0].toString());
+
+                            amInCallWith = "";
+
+                        }
+
+
+                        JSONArray payload = new JSONArray(args[0].toString());
+
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -328,8 +325,6 @@ public class SocketService extends Service {
                 public void call(Object... args) {
 
                     try {
-
-                        Log.e("SOCKET", args.toString());
 
                         JSONObject payload = new JSONObject(args[0].toString());
 
@@ -590,7 +585,7 @@ public class SocketService extends Service {
 	}
 	
 	public void acceptCallMessageToCallee(){
-		sendSocketMessage("Reject Call", amInCallWith);
+		sendSocketMessage("Accept Call", amInCallWith);
 		
 		isSomeOneCalling = false;
 		ringing = false;
@@ -599,7 +594,7 @@ public class SocketService extends Service {
 	}
 	
 	public void rejectCallMessageToCallee(){
-		sendSocketMessage("Accept Call", amInCallWith);
+		sendSocketMessage("Reject Call", amInCallWith);
 		
 		isSomeOneCalling = false;
 		ringing = false;

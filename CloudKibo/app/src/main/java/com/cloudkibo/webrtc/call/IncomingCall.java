@@ -1,26 +1,8 @@
 package com.cloudkibo.webrtc.call;
 
-
-import java.io.File;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.webrtc.DataChannel;
-import org.webrtc.DataChannel.Buffer;
-import org.webrtc.IceCandidate;
-import org.webrtc.MediaStream;
-import org.webrtc.PeerConnection;
-import org.webrtc.PeerConnectionFactory;
-import org.webrtc.SdpObserver;
-import org.webrtc.SessionDescription;
-import org.webrtc.PeerConnection.IceConnectionState;
-import org.webrtc.PeerConnection.IceGatheringState;
-import org.webrtc.PeerConnection.SignalingState;
-import org.webrtc.VideoRendererGui;
 
 
 import android.content.ComponentName;
@@ -29,21 +11,15 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomActivity;
-import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.socket.BoundServiceListener;
 import com.cloudkibo.socket.SocketService;
 import com.cloudkibo.socket.SocketService.SocketBinder;
-import com.cloudkibo.utils.IFragmentName;
 
 public class IncomingCall extends CustomActivity {
 
@@ -55,6 +31,9 @@ public class IncomingCall extends CustomActivity {
 
     private HashMap<String, String> user;
     private String room;
+
+    Button btnAcceptCall;
+    Button btnRejectCall;
 
     @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +50,25 @@ public class IncomingCall extends CustomActivity {
         i.putExtra("room", room);
         startService(i);
         bindService(i, socketConnection, Context.BIND_AUTO_CREATE);
+
+        btnAcceptCall = (Button) findViewById(R.id.pickCall);
+        btnRejectCall = (Button) findViewById(R.id.rejectCall);
+
+        btnRejectCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                socketService.rejectCallMessageToCallee();
+                finish();
+            }
+        });
+
+        btnAcceptCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                socketService.acceptCallMessageToCallee();
+                finish();
+            }
+        });
 
     }
 
@@ -100,6 +98,23 @@ public class IncomingCall extends CustomActivity {
 
                 @Override
                 public void receiveSocketMessage(String type, String body) {
+                    if(type.equals("Missed")){
+                        finish();
+                        //dialog.dismiss();
+                    }
+                    else if(type.equals("got user media")){
+
+                        finish();
+/*
+	  					Intent i = new Intent(getApplicationContext(), CordovaApp.class);
+	  					i.putExtra("username", user.get("username"));
+	  					i.putExtra("_id", user.get("_id"));
+	  					i.putExtra("peer", msg);
+	  					i.putExtra("lastmessage", "GotUserMedia");
+	  					i.putExtra("room", room);
+	  		            startActivity(i);
+	  		            */
+                    }
 
                 }
 
