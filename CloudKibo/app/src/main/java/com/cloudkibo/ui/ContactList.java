@@ -140,8 +140,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 									MainActivity act1 = (MainActivity)getActivity();
 									
 									result = userFunction.markChatAsRead(act1.getUserId(), tempContactId, authtoken);
-									
-									
+
 									return result;
 									
 								}

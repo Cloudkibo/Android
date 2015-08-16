@@ -21,6 +21,9 @@ import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -239,8 +242,7 @@ public class MainActivity extends CustomActivity
 
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
-                                    long arg3)
-            {
+                                    long arg3) {
                 drawerLayout.closeDrawers();
                 launchFragment(pos);
             }
@@ -317,7 +319,6 @@ public class MainActivity extends CustomActivity
 
             am.removeAccount(account, null, null);
 
-            finish();
         }
         if (f != null)
         {

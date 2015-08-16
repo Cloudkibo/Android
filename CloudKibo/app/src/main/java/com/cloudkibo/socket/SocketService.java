@@ -14,10 +14,12 @@ import org.json.JSONObject;
 
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
+import com.cloudkibo.SplashScreen;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.ui.ContactList;
 import com.cloudkibo.ui.GroupChat;
 import com.cloudkibo.utils.IFragmentName;
+import com.cloudkibo.webrtc.call.IncomingCall;
 import com.cloudkibo.webrtc.filesharing.FileConnection;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
@@ -30,6 +32,9 @@ import com.github.nkzawa.socketio.client.Socket;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Dialog;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
@@ -50,88 +55,87 @@ import android.widget.Toast;
 /**
  * Service for connecting to socket server. This should be alive forever to receive
  * chat and other updates from server in real-time.
- * 
+ * <p/>
  * Learning Sources:
  * http://developer.android.com/guide/components/services.html
  * http://www.vogella.com/tutorials/AndroidServices/article.html
  * http://stackoverflow.com/questions/10547577/how-can-a-remote-service-send-messages-to-a-bound-activity
- * 
- * @author sojharo
  *
+ * @author sojharo
  */
 
 public class SocketService extends Service {
-	
-	private final IBinder socketBinder = new SocketBinder();
-	private BoundServiceListener mListener;
-	
-	private HashMap<String, String> user;
-	private String room;
-	
-	//private SocketIOClient client;
-	//private MessageHandler messageHandler = new MessageHandler();
-	
-	private Boolean areYouCallingSomeone = false;
-	private Boolean ringing = false;
-	private String amInCallWith;
-	private Boolean amInCall = false;
-	private Boolean otherSideRinging = false;
-	private Boolean isSomeOneCalling = false;
-	
-	//nkzawa
-	Socket socket;
 
-	@Override
-	public IBinder onBind(Intent intent) {
-		return socketBinder;
-	}
+    private final IBinder socketBinder = new SocketBinder();
+    private BoundServiceListener mListener;
 
-	
-	public class SocketBinder extends Binder{
-		
-		public SocketService getService(){
-			return SocketService.this;
-		}
-		
-		public void setListener(BoundServiceListener listener) {
-	        mListener = listener;
-	    }
-		
-	}
-	
-	public void setSocketIOConfig(){
-			
-		try {
-			
-			socket = IO.socket("https://www.cloudkibo.com");
-			socket.connect();
-			
-			socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+    private HashMap<String, String> user;
+    private String room;
 
-				  @Override
-				  public void call(Object... args) {
+    //private SocketIOClient client;
+    //private MessageHandler messageHandler = new MessageHandler();
+
+    private Boolean areYouCallingSomeone = false;
+    private Boolean ringing = false;
+    private String amInCallWith;
+    private Boolean amInCall = false;
+    private Boolean otherSideRinging = false;
+    private Boolean isSomeOneCalling = false;
+
+    //nkzawa
+    Socket socket;
+
+    @Override
+    public IBinder onBind(Intent intent) {
+        return socketBinder;
+    }
 
 
-					  JSONObject message = new JSONObject();
+    public class SocketBinder extends Binder {
 
-						try {
-							
-							JSONObject userInfo = new JSONObject();
-							userInfo.put("username", user.get("username"));
-							userInfo.put("_id", user.get("_id"));
+        public SocketService getService() {
+            return SocketService.this;
+        }
 
-							message.put("user", userInfo);
-							message.put("room", room);
+        public void setListener(BoundServiceListener listener) {
+            mListener = listener;
+        }
 
-							socket.emit("join global chatroom", message);//new JSONArray().put(message));
-							
+    }
 
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-				  }
+    public void setSocketIOConfig() {
 
-				}).on("im", new Emitter.Listener() {
+        try {
+
+            socket = IO.socket("https://www.cloudkibo.com");
+            socket.connect();
+
+            socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+
+
+                    JSONObject message = new JSONObject();
+
+                    try {
+
+                        JSONObject userInfo = new JSONObject();
+                        userInfo.put("username", user.get("username"));
+                        userInfo.put("_id", user.get("_id"));
+
+                        message.put("user", userInfo);
+                        message.put("room", room);
+
+                        socket.emit("join global chatroom", message);//new JSONArray().put(message));
+
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }).on("im", new Emitter.Listener() {
 
                 @Override
                 public void call(Object... args) {
@@ -141,7 +145,25 @@ public class SocketService extends Service {
 
                         JSONObject payload = new JSONObject(args[0].toString());
 
-                        mListener.receiveSocketMessage("im", payload.getString("msg"));
+                        if (isForeground("com.cloudkibo")) {
+                            mListener.receiveSocketMessage("im", payload.getString("msg"));
+                        } else {
+                            Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+                            PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+                            Notification n = new Notification.Builder(getApplicationContext())
+                                    .setContentTitle(payload.getString("fromFullName"))
+                                    .setContentText("Unread Message")
+                                    .setSmallIcon(R.drawable.icon)
+                                    .setContentIntent(pIntent)
+                                    .setAutoCancel(true)
+                                    .build();
+
+                            NotificationManager notificationManager =
+                                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                            notificationManager.notify(0, n);
+                        }
 
                         // todo Date throws exception
 
@@ -186,7 +208,7 @@ public class SocketService extends Service {
                     Log.e("SOCKET", args[0].toString());
                     try {
 
-                        if(args[0].toString().equals("Reject Call")){
+                        if (args[0].toString().equals("Reject Call")) {
 
 
                             amInCall = false;
@@ -197,8 +219,7 @@ public class SocketService extends Service {
 
                             amInCallWith = "";
 
-                        }
-                        else if(args[0].toString().equals("got user media")){
+                        } else if (args[0].toString().equals("got user media")) {
 
                             // todo not sure about this. check if cordova app can access service run by
                             // our main app
@@ -209,8 +230,7 @@ public class SocketService extends Service {
                             mListener.receiveSocketMessage("got user media", amInCallWith);
 
 
-                        }
-                        else if(args[0].toString().equals("Accept Call")){
+                        } else if (args[0].toString().equals("Accept Call")) {
 
                             otherSideRinging = false;
 
@@ -225,18 +245,14 @@ public class SocketService extends Service {
                             //client.disconnect();
 
 
-                        }
-                        else if(args[0].toString().startsWith("Missed")){
+                        } else if (args[0].toString().startsWith("Missed")) {
 
 
-                            // todo Create Notification here for the missed call
-
+                            mListener.receiveSocketMessage("Missed", amInCallWith);
 
                             amInCall = false;
 
                             ringing = false;
-
-                            mListener.receiveSocketMessage("Missed", args[0].toString());
 
                             amInCallWith = "";
 
@@ -284,9 +300,9 @@ public class SocketService extends Service {
 
                         mListener.receiveSocketMessage("calleeisoffline", "");
 
-                        Toast.makeText(getApplicationContext(),
-                                payload.toString() +
-                                        " is offline", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(),
+                        //        payload.toString() +
+                        //                " is offline", Toast.LENGTH_SHORT).show();
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -309,9 +325,9 @@ public class SocketService extends Service {
 
                         mListener.receiveSocketMessage("calleeisbusy", "");
 
-                        Toast.makeText(getApplicationContext(),
-                                payload.toString() +
-                                        " is busy", Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getApplicationContext(),
+                        //        payload.toString() +
+                        //                " is busy", Toast.LENGTH_SHORT).show();
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -356,7 +372,7 @@ public class SocketService extends Service {
                         message2.put("me", user.get("username"));
                         message2.put("mycaller", payload.getString("caller"));
 
-                        if(!amInCall){
+                        if (!amInCall) {
 
                             isSomeOneCalling = true;
                             ringing = true;
@@ -366,10 +382,18 @@ public class SocketService extends Service {
 
                             socket.emit("yesiamfreeforcall", message2);
 
-                            mListener.receiveSocketMessage("areyoufreeforcall", amInCallWith);
+                            if(isForeground("com.cloudkibo")){
+                                mListener.receiveSocketMessage("areyoufreeforcall", amInCallWith);
+                            } else {
+                                Intent i = new Intent(getApplicationContext(), IncomingCall.class);
+                                i.putExtra("user", user);
+                                i.putExtra("room", room);
+                                i.putExtra("contact", amInCallWith);
+                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(i);
+                            }
 
-                        }
-                        else{
+                        } else {
 
                             socket.emit("noiambusy", message2);
                         }
@@ -422,11 +446,11 @@ public class SocketService extends Service {
                 }
 
             });
-			
-		} catch (URISyntaxException e) {
-			e.printStackTrace();
-		}
-		
+
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+
 		/*
 		SocketIOClient.connect("https://www.cloudkibo.com", new ConnectCallback() {
 
@@ -482,224 +506,227 @@ public class SocketService extends Service {
 		}, new Handler());
 
 	*/
-	}
-	
-	/**
-	 * This checks if the activity or app is running or not.
-	 * @param myPackage
-	 * @return
-	 */
-	
-	public boolean isForeground(String myPackage) {
-	    ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-	    List<ActivityManager.RunningTaskInfo> runningTaskInfo = manager.getRunningTasks(1); 
-	    ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
-	    return componentInfo.getPackageName().equals(myPackage);
-	}
-	
-	public static boolean isAppSentToBackground(final Context context) {
+    }
 
-	    try {
-	        ActivityManager am = (ActivityManager) context
-	                .getSystemService(Context.ACTIVITY_SERVICE);
-	        // The first in the list of RunningTasks is always the foreground
-	        // task.
-	        RunningTaskInfo foregroundTaskInfo = am.getRunningTasks(1).get(0);
-	        String foregroundTaskPackageName = foregroundTaskInfo.topActivity
-	                .getPackageName();// get the top fore ground activity
-	        PackageManager pm = context.getPackageManager();
-	        PackageInfo foregroundAppPackageInfo = pm.getPackageInfo(
-	                foregroundTaskPackageName, 0);
+    /**
+     * This checks if the activity or app is running or not.
+     *
+     * @param myPackage
+     * @return
+     */
 
-	        String foregroundTaskAppName = foregroundAppPackageInfo.applicationInfo
-	                .loadLabel(pm).toString();
+    public boolean isForeground(String myPackage) {
+        ActivityManager manager = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> runningTaskInfo = manager.getRunningTasks(1);
+        ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
+        Log.e("SOCKET", "Packange name of foreground " + componentInfo.getPackageName());
+        return componentInfo.getPackageName().equals(myPackage);
+    }
 
-	        // Log.e("", foregroundTaskAppName +"----------"+
-	        // foregroundTaskPackageName);
-	        if (!foregroundTaskAppName.equals("CloudKibo")) {
-	            return true;
-	        }
-	    } catch (Exception e) {
-	        Log.e("isAppSentToBackground", "" + e);
-	    }
-	    return false;
-	}
-	
-	@Override
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		
-		user = (HashMap) intent.getExtras().get("user");
-		room = intent.getExtras().getString("room");
-		
-		return Service.START_REDELIVER_INTENT;
-	}
-	
-	/**
-	 * This following part needs some rigorous testing of more than 2 days usage.
-	 * I need to check what happens when this method is not called. Or what happens
-	 * when service is destroyed and started again by the system (not activity)
-	 * 
-	 * Learning Source: http://stackoverflow.com/questions/14182014/android-oncreate-or-onstartcommand-for-starting-service
-	 * 
-	 * @author sojharo
-	 */
+    public static boolean isAppSentToBackground(final Context context) {
 
-	@Override
-	public void onCreate() {
-		
-		setSocketIOConfig();
-		
-		super.onCreate();
-	}
+        try {
+            ActivityManager am = (ActivityManager) context
+                    .getSystemService(Context.ACTIVITY_SERVICE);
+            // The first in the list of RunningTasks is always the foreground
+            // task.
+            RunningTaskInfo foregroundTaskInfo = am.getRunningTasks(1).get(0);
+            String foregroundTaskPackageName = foregroundTaskInfo.topActivity
+                    .getPackageName();// get the top fore ground activity
+            PackageManager pm = context.getPackageManager();
+            PackageInfo foregroundAppPackageInfo = pm.getPackageInfo(
+                    foregroundTaskPackageName, 0);
+
+            String foregroundTaskAppName = foregroundAppPackageInfo.applicationInfo
+                    .loadLabel(pm).toString();
+
+            Log.e("SOCKET", foregroundTaskAppName + "----------" +
+                    foregroundTaskPackageName);
+            if (!foregroundTaskAppName.equals("CloudKibo")) {
+                return true;
+            }
+        } catch (Exception e) {
+            Log.e("isAppSentToBackground", "" + e);
+        }
+        return false;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+
+        user = (HashMap) intent.getExtras().get("user");
+        room = intent.getExtras().getString("room");
+
+        return Service.START_REDELIVER_INTENT;
+    }
+
+    /**
+     * This following part needs some rigorous testing of more than 2 days usage.
+     * I need to check what happens when this method is not called. Or what happens
+     * when service is destroyed and started again by the system (not activity)
+     * <p/>
+     * Learning Source: http://stackoverflow.com/questions/14182014/android-oncreate-or-onstartcommand-for-starting-service
+     *
+     * @author sojharo
+     */
+
+    @Override
+    public void onCreate() {
+
+        setSocketIOConfig();
+
+        super.onCreate();
+    }
 
 
-	public void sendSocketMessage(String msg, String peer){
-		
-		JSONObject message = new JSONObject();
-		
-		try {
-			
-			message.put("msg", msg);
-			message.put("room", room);
-			message.put("to", peer);
-			message.put("username", user.get("username"));
-			
-			socket.emit("message", message);//new JSONArray().put(message));
-			
-			
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public void stopCallMessageToCallee(){
-		
-		sendSocketMessage("Missed Incoming Call: "+ user.get("username"), amInCallWith);
-			
-		amInCall = false;
-		amInCallWith = "";
-		otherSideRinging = false;
-		areYouCallingSomeone = false;
-		
-	}
-	
-	public void acceptCallMessageToCallee(){
-		sendSocketMessage("Accept Call", amInCallWith);
-		
-		isSomeOneCalling = false;
-		ringing = false;
-		amInCall = false;
-		amInCallWith = "";
-	}
-	
-	public void rejectCallMessageToCallee(){
-		sendSocketMessage("Reject Call", amInCallWith);
-		
-		isSomeOneCalling = false;
-		ringing = false;
-	}
-	
-	public void sendSocketMessageDataChannel(String msg, String filePeer){
-		
-		JSONObject message = new JSONObject();
-		
-		try {
-			
-			message.put("msg", msg);
-			message.put("room", room);
-			message.put("to", filePeer);
-			message.put("from", user.get("username"));
-			
-			socket.emit("messagefordatachannel", message);// new JSONArray().put(message));
-			
-			
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public void callThisPerson(String contact){
-		
-		try {
+    public void sendSocketMessage(String msg, String peer) {
 
-            Log.d("CALL", "Making Call to "+ contact);
+        JSONObject message = new JSONObject();
 
-			JSONObject message1 = new JSONObject();
+        try {
 
-			message1.put("room", room);
-			message1.put("caller", user.get("username"));
-			message1.put("callee", contact);
+            message.put("msg", msg);
+            message.put("room", room);
+            message.put("to", peer);
+            message.put("username", user.get("username"));
 
-			socket.emit("callthisperson", message1);//new JSONArray().put(message1));
-			
-			areYouCallingSomeone = true;
+            socket.emit("message", message);//new JSONArray().put(message));
 
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (NullPointerException e) {
-			Toast.makeText(getApplicationContext(),
+
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public void stopCallMessageToCallee() {
+
+        sendSocketMessage("Missed Incoming Call: " + user.get("username"), amInCallWith);
+
+        amInCall = false;
+        amInCallWith = "";
+        otherSideRinging = false;
+        areYouCallingSomeone = false;
+
+    }
+
+    public void acceptCallMessageToCallee() {
+        sendSocketMessage("Accept Call", amInCallWith);
+
+        isSomeOneCalling = false;
+        ringing = false;
+        amInCall = false;
+        amInCallWith = "";
+    }
+
+    public void rejectCallMessageToCallee() {
+        sendSocketMessage("Reject Call", amInCallWith);
+
+        isSomeOneCalling = false;
+        ringing = false;
+        amInCall = false;
+    }
+
+    public void sendSocketMessageDataChannel(String msg, String filePeer) {
+
+        JSONObject message = new JSONObject();
+
+        try {
+
+            message.put("msg", msg);
+            message.put("room", room);
+            message.put("to", filePeer);
+            message.put("from", user.get("username"));
+
+            socket.emit("messagefordatachannel", message);// new JSONArray().put(message));
+
+
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public void callThisPerson(String contact) {
+
+        try {
+
+            Log.d("CALL", "Making Call to " + contact);
+
+            JSONObject message1 = new JSONObject();
+
+            message1.put("room", room);
+            message1.put("caller", user.get("username"));
+            message1.put("callee", contact);
+
+            socket.emit("callthisperson", message1);//new JSONArray().put(message1));
+
+            areYouCallingSomeone = true;
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            Toast.makeText(getApplicationContext(),
                     "Could not make this call. No Internet or behind proxy", Toast.LENGTH_SHORT)
                     .show();
-		}
-	}
-	
-	public void sendMessage(String contactUserName, String contactId, String msg){
-		
-		try {
-			
-			JSONObject message = new JSONObject();
-			
-			message.put("from", user.get("username"));
-			message.put("to", contactUserName);
-			message.put("from_id", user.get("_id"));
-			message.put("to_id", contactId);
-			message.put("fromFullName", user.get("firstname")+" "+ user.get("lastname"));
-			message.put("msg", msg);
-			message.put("date", (new Date().toString()));
-			
-			JSONObject completeMessage = new JSONObject();
-			
-			completeMessage.put("room", room);
-			completeMessage.put("stanza", message);
+        }
+    }
 
-			socket.emit("im", completeMessage);//new JSONArray().put(completeMessage));
-			
-			DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-			db.addChat(contactUserName, user.get("username"), user.get("firstname")+" "+ user.get("lastname"),
-					msg, (new Date().toString()));
-			
+    public void sendMessage(String contactUserName, String contactId, String msg) {
 
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (NullPointerException e) {
-			Toast.makeText(getApplicationContext(),
+        try {
+
+            JSONObject message = new JSONObject();
+
+            message.put("from", user.get("username"));
+            message.put("to", contactUserName);
+            message.put("from_id", user.get("_id"));
+            message.put("to_id", contactId);
+            message.put("fromFullName", user.get("firstname") + " " + user.get("lastname"));
+            message.put("msg", msg);
+            message.put("date", (new Date().toString()));
+
+            JSONObject completeMessage = new JSONObject();
+
+            completeMessage.put("room", room);
+            completeMessage.put("stanza", message);
+
+            socket.emit("im", completeMessage);//new JSONArray().put(completeMessage));
+
+            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+            db.addChat(contactUserName, user.get("username"), user.get("firstname") + " " + user.get("lastname"),
+                    msg, (new Date().toString()));
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            Toast.makeText(getApplicationContext(),
                     "Message not sent. No Internet", Toast.LENGTH_SHORT)
                     .show();
-		}
-	}
-	
-	public void askFriendsOnlineStatus(){
-		
-		try {
-			
-			JSONObject message = new JSONObject();
-			
-			message.put("_id", user.get("_id"));
-			
-			JSONObject completeMessage = new JSONObject();
-			
-			completeMessage.put("room", room);
-			completeMessage.put("user", message);
+        }
+    }
 
-			socket.emit("whozonline", completeMessage);//new JSONArray().put(completeMessage));
-			
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
+    public void askFriendsOnlineStatus() {
+
+        try {
+
+            JSONObject message = new JSONObject();
+
+            message.put("_id", user.get("_id"));
+
+            JSONObject completeMessage = new JSONObject();
+
+            completeMessage.put("room", room);
+            completeMessage.put("user", message);
+
+            socket.emit("whozonline", completeMessage);//new JSONArray().put(completeMessage));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
 
-	}
+    }
 
 }
