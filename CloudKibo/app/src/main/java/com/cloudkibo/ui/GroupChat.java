@@ -247,7 +247,6 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			convList.clear();
 
 			convList.addAll(chatList1);
-			adp.notifyDataSetChanged();
 			
 		} catch (JSONException e) {
 			e.printStackTrace();

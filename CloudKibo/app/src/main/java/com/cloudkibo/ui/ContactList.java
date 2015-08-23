@@ -317,9 +317,9 @@ public class ContactList extends CustomFragment implements IFragmentName
 							 }.execute();
 
 						 } else {
-							/*Toast.makeText(getActivity().getApplicationContext(),
+							Toast.makeText(getActivity().getApplicationContext(),
 									"Could not connect to Internet", Toast.LENGTH_SHORT)
-									.show();*/
+									.show();
 						 }
 					 }
 
