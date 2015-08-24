@@ -1,4 +1,4 @@
-[Design Diagram](https://github.com/Cloudkibo/Android/blob/master/Documentation/images/ComponentsDiagram.PNG)
+![Design Diagram](https://github.com/Cloudkibo/Android/blob/master/Documentation/images/ComponentsDiagram.PNG)
 
 #Main Application with components and background services
 
