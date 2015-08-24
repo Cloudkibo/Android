@@ -1,3 +1,5 @@
+[Design Diagram](https://github.com/Cloudkibo/Android/blob/master/Documentation/images/ComponentsDiagram.PNG)
+
 #Main Application with components and background services
 
 This is the main application code which is responsible for showing views and carrying required user tasks. This application is connected to background services and other components written by us.
