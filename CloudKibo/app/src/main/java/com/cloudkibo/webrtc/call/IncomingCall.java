@@ -113,6 +113,7 @@ public class IncomingCall extends CustomActivity {
                                 .setSmallIcon(R.drawable.icon)
                                 .setContentIntent(pIntent)
                                 .setAutoCancel(true)
+                                .addAction(R.drawable.com_facebook_button_send_icon, "Send Message", pIntent)
                                 .build();
 
                         NotificationManager notificationManager =
