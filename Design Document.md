@@ -5,6 +5,7 @@ This is the main application code which is responsible for showing views and car
 ##Socket Service
 
 Our socket.io code is running in this background service. As socket.io is technology to support real-time communication, it is required that we should keep it running on the android device. In this manner, no matter application is running or not, we will always be connected to our server using socket.io. If we have any call or message while application is closed, socket service has responsibility to check application open status and then if application is closed or in background then show the notification or alert.
+
 When we start our application, each of its activity gets bound to this service. In this way, our application gets connected to this service which runs in the background. Each activity uses this socket service to send any real-time message to server i.e. chat message or signaling messages. We do activity-service communication, so that activity listens to specifics events or messages which occur in socket service. 
 
 ##Sync Adapter
