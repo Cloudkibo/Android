@@ -93,7 +93,9 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="16" column="2" selection-start-line="16" selection-start-column="2" selection-end-line="16" selection-end-column="2" />
-              <folding />
+              <folding>
+                <element signature="imports" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -102,11 +104,9 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/filesharing/FileConnection.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="48" column="4" selection-start-line="48" selection-start-column="4" selection-end-line="66" selection-end-column="59" />
+              <caret line="61" column="4" selection-start-line="61" selection-start-column="4" selection-end-line="62" selection-end-column="28" />
               <folding>
                 <element signature="method#onCreate#0;class#FileConnection#0" expanded="false" />
-                <element signature="e#4969#5641#0" expanded="true" />
-                <element signature="e#5640#5641#0" expanded="true" />
                 <element signature="method#requestChunk#0;class#FileConnection#0" expanded="false" />
                 <element signature="method#onDestroy#0;class#FileConnection#0" expanded="false" />
                 <element signature="method#createPeerConnectionFactory#0;class#FileConnection#0" expanded="false" />
@@ -128,24 +128,41 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/WebRtcClient.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="287" column="35" selection-start-line="287" selection-start-column="35" selection-end-line="287" selection-end-column="35" />
-              <folding />
+              <caret line="272" column="44" selection-start-line="272" selection-start-column="44" selection-end-line="272" selection-end-column="44" />
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="class#Command#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="class#CreateOfferCommand#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="class#CreateAnswerCommand#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="class#SetRemoteSDPCommand#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="class#AddIceCandidateCommand#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="method#sendMessage#0;class#WebRtcClient#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="VideoCall.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/VideoCall.java">
+      <file leaf-file-name="VideoCallView.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/VideoCallView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.09123435">
-              <caret line="178" column="0" selection-start-line="178" selection-start-column="0" selection-end-line="178" selection-end-column="0" />
+            <state vertical-scroll-proportion="8.237925">
+              <caret line="289" column="30" selection-start-line="289" selection-start-column="30" selection-end-line="289" selection-end-column="30" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="method#onDestroy#0;class#VideoCall#0" expanded="false" />
-                <element signature="method#createAnswer#0;class#VideoCall#0" expanded="false" />
-                <element signature="method#setRemoteSDP#0;class#VideoCall#0" expanded="false" />
-                <element signature="method#DcObserver#0;class#DcObserver#0;class#VideoCall#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.xml" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main.xml">
+          <provider editor-type-id="android-designer">
+            <state />
+          </provider>
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-8.793103">
+              <caret line="15" column="17" selection-start-line="15" selection-start-column="17" selection-end-line="15" selection-end-column="17" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -155,8 +172,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="layoutResourceFile_vertical" />
         <option value="Class" />
+        <option value="layoutResourceFile_vertical" />
       </list>
     </option>
   </component>
@@ -1445,7 +1462,17 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/RtcActivity.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/IncomingCall.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/VideoCall.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/WebRtcClient.java" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/main.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/VideoCallView.java" />
       </list>
+    </option>
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="Bundled (Maven 3)" />
+      </MavenGeneralSettings>
     </option>
   </component>
   <component name="MavenProjectNavigator">
@@ -1486,30 +1513,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="ProjectPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="External Libraries" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
       <pane id="Scope">
         <subPane subId="Problems" />
         <subPane subId="Production">
@@ -1565,12 +1568,8 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cloudkibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
@@ -1583,49 +1582,42 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="cloudkibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
+              <option name="myItemId" value="layout" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="ProjectPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudKibo" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="webrtc" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="filesharing" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+              <option name="myItemId" value="External Libraries" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ExternalLibrariesNode" />
             </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cloudkibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webrtc" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="call" />
+              <option name="myItemId" value="CloudKibo" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
+      </pane>
+      <pane id="Scratches">
+        <subPane />
       </pane>
       <pane id="PackagesPane">
         <subPane>
@@ -1640,9 +1632,6 @@
             </PATH_ELEMENT>
           </PATH>
         </subPane>
-      </pane>
-      <pane id="Scratches">
-        <subPane />
       </pane>
     </panes>
   </component>
@@ -1893,7 +1882,7 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1378" height="744" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.274276" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
@@ -1902,11 +1891,12 @@
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.60477" sideWeight="0.4795764" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32980332" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32852808" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.6541738" sideWeight="0.51059" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32879046" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.6201022" sideWeight="0.5204236" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.318569" sideWeight="0.5204236" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.5093697" sideWeight="0.5559758" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2245827" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -1922,7 +1912,6 @@
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39863715" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32852808" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Memory Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.6780239" sideWeight="0.48184568" order="14" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.55706984" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
@@ -1974,13 +1963,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$USER_HOME$/AppData/Local/Android/sdk/extras/android/m2repository/com/android/support/support-v4/19.1.0/support-v4-19.1.0-sources.jar!/android/support/v4/app/Fragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.33226836">
-          <caret line="1631" column="0" selection-start-line="1631" selection-start-column="0" selection-end-line="1631" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/local.properties">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -1989,13 +1971,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/PeerConnectionParameters.java">
@@ -2020,43 +2002,43 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/file.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fileshare.xml">
       <provider editor-type-id="android-designer">
         <state />
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/fileshare.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-12.592592">
           <caret line="20" column="45" selection-start-line="0" selection-start-column="0" selection-end-line="43" selection-end-column="15" />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/call_dialog2.xml">
       <provider editor-type-id="android-designer">
         <state />
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/call_dialog2.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="7.5555553">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/call_dialog.xml">
       <provider editor-type-id="android-designer">
         <state />
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/call_dialog.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/filesharing/RTCConfig.java">
@@ -2088,13 +2070,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/chat_list.xml">
+      <provider selected="true" editor-type-id="android-designer">
+        <state />
+      </provider>
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
         </state>
-      </provider>
-      <provider selected="true" editor-type-id="android-designer">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/ui/ChatList.java">
@@ -2112,23 +2094,23 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/login.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-9.379311">
           <caret line="43" column="65" selection-start-line="43" selection-start-column="65" selection-end-line="43" selection-end-column="65" />
         </state>
       </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/outgoing_call.xml">
       <provider editor-type-id="android-designer">
         <state />
       </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/outgoing_call.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-9.965517">
           <caret line="17" column="28" selection-start-line="17" selection-start-column="28" selection-end-line="17" selection-end-column="28" />
         </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/Login.java">
@@ -2238,13 +2220,13 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/incoming_call.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.37037036">
           <caret line="23" column="36" selection-start-line="23" selection-start-column="36" selection-end-line="23" selection-end-column="36" />
         </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/file/localstorage/LocalStorageProvider.java">
@@ -2293,16 +2275,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="318" column="26" selection-start-line="318" selection-start-column="26" selection-end-line="318" selection-end-column="26" />
-          <folding>
-            <element signature="e#10503#10561#0" expanded="false" />
-            <element signature="method#loadContactList#0;class#ContactList#0" expanded="false" />
-            <element signature="method#loadNewContacts#0;class#ContactList#0" expanded="false" />
-            <element signature="method#setOnlineStatus#0;class#ContactList#0" expanded="false" />
-            <element signature="method#setOfflineStatusIndividual#0;class#ContactList#0" expanded="false" />
-            <element signature="method#setOnlineStatusIndividual#0;class#ContactList#0" expanded="false" />
-            <element signature="method#insertContactsIntoDB#0;class#ContactList#0" expanded="false" />
-            <element signature="method#loadContactsFromDatabase#0;class#ContactList#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2332,7 +2304,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="128" column="61" selection-start-line="128" selection-start-column="61" selection-end-line="128" selection-end-column="61" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2340,17 +2311,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.51699466">
           <caret line="114" column="52" selection-start-line="114" selection-start-column="52" selection-end-line="114" selection-end-column="52" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/WebRtcClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="287" column="35" selection-start-line="287" selection-start-column="35" selection-end-line="287" selection-end-column="35" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2358,18 +2318,34 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="16" column="2" selection-start-line="16" selection-start-column="2" selection-end-line="16" selection-end-column="2" />
-          <folding />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/WebRtcClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="272" column="44" selection-start-line="272" selection-start-column="44" selection-end-line="272" selection-end-column="44" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="class#Command#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="class#CreateOfferCommand#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="class#CreateAnswerCommand#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="class#SetRemoteSDPCommand#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="class#AddIceCandidateCommand#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="method#sendMessage#0;class#WebRtcClient#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/filesharing/FileConnection.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="48" column="4" selection-start-line="48" selection-start-column="4" selection-end-line="66" selection-end-column="59" />
+          <caret line="61" column="4" selection-start-line="61" selection-start-column="4" selection-end-line="62" selection-end-column="28" />
           <folding>
             <element signature="method#onCreate#0;class#FileConnection#0" expanded="false" />
-            <element signature="e#4969#5641#0" expanded="true" />
-            <element signature="e#5640#5641#0" expanded="true" />
             <element signature="method#requestChunk#0;class#FileConnection#0" expanded="false" />
             <element signature="method#onDestroy#0;class#FileConnection#0" expanded="false" />
             <element signature="method#createPeerConnectionFactory#0;class#FileConnection#0" expanded="false" />
@@ -2386,16 +2362,23 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/VideoCall.java">
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.09123435">
-          <caret line="178" column="0" selection-start-line="178" selection-start-column="0" selection-end-line="178" selection-end-column="0" />
+        <state vertical-scroll-proportion="-8.793103">
+          <caret line="15" column="17" selection-start-line="15" selection-start-column="17" selection-end-line="15" selection-end-column="17" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/VideoCallView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="8.237925">
+          <caret line="289" column="30" selection-start-line="289" selection-start-column="30" selection-end-line="289" selection-end-column="30" />
           <folding>
             <element signature="imports" expanded="true" />
-            <element signature="method#onDestroy#0;class#VideoCall#0" expanded="false" />
-            <element signature="method#createAnswer#0;class#VideoCall#0" expanded="false" />
-            <element signature="method#setRemoteSDP#0;class#VideoCall#0" expanded="false" />
-            <element signature="method#DcObserver#0;class#DcObserver#0;class#VideoCall#0" expanded="false" />
           </folding>
         </state>
       </provider>

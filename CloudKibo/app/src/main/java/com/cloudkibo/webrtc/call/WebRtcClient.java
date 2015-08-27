@@ -1,42 +1,26 @@
 package com.cloudkibo.webrtc.call;
 
-import android.opengl.EGLContext;
-import android.util.Log;
-
-import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.webrtc.AudioSource;
-import org.webrtc.DataChannel;
-import org.webrtc.IceCandidate;
-import org.webrtc.MediaConstraints;
-import org.webrtc.MediaStream;
-import org.webrtc.PeerConnection;
-import org.webrtc.PeerConnectionFactory;
-import org.webrtc.SdpObserver;
-import org.webrtc.SessionDescription;
-import org.webrtc.VideoCapturer;
-import org.webrtc.VideoCapturerAndroid;
-import org.webrtc.VideoSource;
-
 import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-/**
- * Created by Sojharo on 7/22/2015.
- */
-/*
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
+import com.github.nkzawa.emitter.Emitter;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import android.opengl.EGLContext;
+import android.util.Log;
+import org.webrtc.*;
+
 public class WebRtcClient {
     private final static String TAG = WebRtcClient.class.getCanonicalName();
     private final static int MAX_PEER = 2;
     private boolean[] endPoints = new boolean[MAX_PEER];
     private PeerConnectionFactory factory;
     private HashMap<String, Peer> peers = new HashMap<String, Peer>();
-    private LinkedList<PeerConnection.IceServer> iceServers = new LinkedList<>();
+    private LinkedList<PeerConnection.IceServer> iceServers = new LinkedList<PeerConnection.IceServer>();
     private PeerConnectionParameters pcParams;
     private MediaConstraints pcConstraints = new MediaConstraints();
     private MediaStream localMS;
@@ -44,8 +28,9 @@ public class WebRtcClient {
     private RtcListener mListener;
     private Socket client;
 
-    // Implement this interface to be notified of events.
-
+    /**
+     * Implement this interface to be notified of events.
+     */
     public interface RtcListener{
         void onCallReady(String callId);
 
@@ -64,7 +49,7 @@ public class WebRtcClient {
 
     private class CreateOfferCommand implements Command{
         public void execute(String peerId, JSONObject payload) throws JSONException {
-            Log.d(TAG, "CreateOfferCommand");
+            Log.d(TAG,"CreateOfferCommand");
             Peer peer = peers.get(peerId);
             peer.pc.createOffer(peer, pcConstraints);
         }
@@ -109,7 +94,7 @@ public class WebRtcClient {
             }
         }
     }
-*/
+
     /**
      * Send a message through the signaling server
      *
@@ -118,7 +103,7 @@ public class WebRtcClient {
      * @param payload payload of message
      * @throws JSONException
      */
-    /*public void sendMessage(String to, String type, JSONObject payload) throws JSONException {
+    public void sendMessage(String to, String type, JSONObject payload) throws JSONException {
         JSONObject message = new JSONObject();
         message.put("to", to);
         message.put("type", type);
@@ -130,7 +115,7 @@ public class WebRtcClient {
         private HashMap<String, Command> commandMap;
 
         private MessageHandler() {
-            this.commandMap = new HashMap<>();
+            this.commandMap = new HashMap<String, Command>();
             commandMap.put("init", new CreateOfferCommand());
             commandMap.put("offer", new CreateAnswerCommand());
             commandMap.put("answer", new SetRemoteSDPCommand());
@@ -303,30 +288,29 @@ public class WebRtcClient {
         pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"));
         pcConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
     }
-*/
+
     /**
      * Call this method in Activity.onPause()
      */
-/*    public void onPause() {
+    public void onPause() {
         if(videoSource != null) videoSource.stop();
     }
-*/
+
     /**
      * Call this method in Activity.onResume()
      */
-/*    public void onResume() {
+    public void onResume() {
         if(videoSource != null) videoSource.restart();
     }
-*/
+
     /**
      * Call this method in Activity.onDestroy()
      */
-/*
     public void onDestroy() {
         for (Peer peer : peers.values()) {
             peer.pc.dispose();
         }
-        videoSource.stop();
+        videoSource.dispose();
         factory.dispose();
         client.disconnect();
         client.close();
@@ -336,7 +320,7 @@ public class WebRtcClient {
         for(int i = 0; i < MAX_PEER; i++) if (!endPoints[i]) return i;
         return MAX_PEER;
     }
-        */
+
     /**
      * Start the client.
      *
@@ -345,7 +329,7 @@ public class WebRtcClient {
      *
      * @param name client name
      */
-  /*  public void start(String name){
+    public void start(String name){
         setCamera();
         try {
             JSONObject message = new JSONObject();
@@ -380,4 +364,3 @@ public class WebRtcClient {
         return VideoCapturerAndroid.create(frontCameraDeviceName);
     }
 }
-*/
