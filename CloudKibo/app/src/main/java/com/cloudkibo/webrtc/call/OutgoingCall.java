@@ -128,20 +128,15 @@ public class OutgoingCall extends CustomActivity {
                     }
                     else if(type.equals("Accept Call")){
 
-
-/*                        Toast.makeText(getApplicationContext(),
-                                "Disabled due to phonertc vs socket service bug #5", Toast.LENGTH_SHORT)
-                                .show();
-*/
-                        finish();
-                        /*
-						Intent i = new Intent(getApplicationContext(), CordovaApp.class);
+						Intent i = new Intent(getApplicationContext(), VideoCallView.class);
 	  					i.putExtra("username", user.get("username"));
 	  					i.putExtra("_id", user.get("_id"));
-	  					i.putExtra("peer", msg);
+	  					i.putExtra("peer", body);
 	  					i.putExtra("lastmessage", "AcceptCallFromOther");
 	  					i.putExtra("room", room);
-	  		            startActivity(i);*/
+	  		            startActivity(i);
+
+                        finish();
                     }
 
                 }

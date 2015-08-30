@@ -1,0 +1,38 @@
+Applications Memory Usage (kB):
+Uptime: 161189321 Realtime: 453335976
+
+** MEMINFO in pid 27766 [com.cloudkibo] **
+                   Pss  Private  Private  Swapped     Heap     Heap     Heap
+                 Total    Dirty    Clean    Dirty     Size    Alloc     Free
+                ------   ------   ------   ------   ------   ------   ------
+  Native Heap     3111     3072        0     1108     5476     5138      337
+  Dalvik Heap     4331     4240        0     2520     8111     7817      294
+ Dalvik Other      603      588        0        0                           
+        Stack      152      152        0        0                           
+       Ashmem       16        4        0        0                           
+    Other dev        4        0        4        0                           
+     .so mmap     1162      160      428     1656                           
+    .apk mmap      266        0       96        0                           
+    .ttf mmap       92        0       88        0                           
+    .dex mmap     2932        0     2928        0                           
+    code mmap     1870        0      688        0                           
+   image mmap     1334      772      100      668                           
+   Other mmap       58        4       24        0                           
+      Unknown      560      560        0       52                           
+        TOTAL    16491     9552     4356     6004    13587    12955      631
+ 
+ Objects
+               Views:       86         ViewRootImpl:        1
+         AppContexts:        4           Activities:        1
+              Assets:        3        AssetManagers:        3
+       Local Binders:       13        Proxy Binders:       17
+    Death Recipients:        0
+     OpenSSL Sockets:        4
+ 
+ SQL
+         MEMORY_USED:      112
+  PAGECACHE_OVERFLOW:       32          MALLOC_SIZE:       62
+ 
+ DATABASES
+      pgsz     dbsz   Lookaside(b)          cache  Dbname
+         4       32             27         4/19/5  /data/data/com.cloudkibo/databases/cloudkibo

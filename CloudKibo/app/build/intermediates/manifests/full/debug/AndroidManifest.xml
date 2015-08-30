@@ -72,10 +72,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="io.cordova.hellocordova.CordovaApp"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
-            android:windowSoftInputMode="stateHidden" >
+            android:name="com.cloudkibo.webrtc.call.VideoCallView"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullUser"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="com.facebook.FacebookActivity"

@@ -73,9 +73,9 @@
         </activity>
 
         <activity
-            android:name="io.cordova.hellocordova.CordovaApp"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
+            android:name="com.cloudkibo.webrtc.call.VideoCallView"
+            android:screenOrientation="fullUser"
+            android:configChanges="orientation|screenSize"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
 

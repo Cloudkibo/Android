@@ -179,16 +179,16 @@ ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:70:17-71:53
 		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:71:23-50
 	android:scheme
 		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:70:23-44
-activity#io.cordova.hellocordova.CordovaApp
+activity#com.cloudkibo.webrtc.call.VideoCallView
 ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:75:9-80:20
 	android:screenOrientation
 		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:77:13-49
-	android:windowSoftInputMode
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:78:13-54
+	android:configChanges
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:78:13-59
 	android:theme
 		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:79:13-77
 	android:name
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:76:13-62
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:76:13-67
 activity#com.facebook.FacebookActivity
 ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:82:9-86:48
 	android:label
