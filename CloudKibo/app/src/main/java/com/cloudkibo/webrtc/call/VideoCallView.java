@@ -7,12 +7,14 @@ package com.cloudkibo.webrtc.call;
 import java.util.List;
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Point;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Toast;
@@ -63,15 +65,19 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         getWindow().addFlags(
                 LayoutParams.FLAG_FULLSCREEN
                         | LayoutParams.FLAG_KEEP_SCREEN_ON
                         | LayoutParams.FLAG_DISMISS_KEYGUARD
                         | LayoutParams.FLAG_SHOW_WHEN_LOCKED
                         | LayoutParams.FLAG_TURN_SCREEN_ON);
+
         setContentView(R.layout.main);
+
         mSocketAddress = "https://" + getResources().getString(R.string.host);
         mSocketAddress += (":" + getResources().getString(R.string.port) + "/");
 
@@ -97,6 +103,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
         final String action = intent.getAction();
 
         if (Intent.ACTION_VIEW.equals(action)) {
+            Log.e("INTENT", action);
             final List<String> segments = intent.getData().getPathSegments();
             callerId = segments.get(0);
         }
