@@ -70,6 +70,15 @@ public class IncomingCall extends CustomActivity {
             @Override
             public void onClick(View view) {
                 socketService.acceptCallMessageToCallee();
+
+                Intent i = new Intent(getApplicationContext(), VideoCallView.class);
+                i.putExtra("username", user.get("username"));
+                i.putExtra("_id", user.get("_id"));
+                i.putExtra("peer", peerName);
+                i.putExtra("lastmessage", "AcceptCallFromMe");
+                i.putExtra("room", room);
+                startActivity(i);
+
                 finish();
             }
         });

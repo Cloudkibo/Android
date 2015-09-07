@@ -4,6 +4,7 @@ package com.cloudkibo.webrtc.call;
  * Created by sojharo on 8/27/2015.
  */
 
+import java.util.HashMap;
 import java.util.List;
 import android.app.Activity;
 import android.content.ComponentName;
@@ -22,6 +23,7 @@ import android.widget.Toast;
 import com.cloudkibo.R;
 import com.cloudkibo.socket.BoundServiceListener;
 import com.cloudkibo.socket.SocketService;
+import com.cloudkibo.webrtc.filesharing.RTCConfig;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,11 +65,23 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
     SocketService socketService;
     boolean isBound = false;
 
+    String peerName;
+    Boolean initiator;
+    String lastMessage;
+
+    private String username;
+    private String room;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        username = getIntent().getExtras().getString("user");
+        room = getIntent().getExtras().getString("room");
+        peerName = getIntent().getExtras().getString("peer");
+        lastMessage = getIntent().getExtras().getString("lastmessage");
 
         getWindow().addFlags(
                 LayoutParams.FLAG_FULLSCREEN
@@ -116,6 +130,9 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
                 true, false, displaySize.x, displaySize.y, 30, 1, VIDEO_CODEC_VP9, true, 1, AUDIO_CODEC_OPUS, true);
 
         client = new WebRtcClient(this, mSocketAddress, params, VideoRendererGui.getEGLContext());
+
+        startCam();
+
     }
 
     @Override
@@ -144,41 +161,23 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
         super.onDestroy();
     }
 
-    @Override
-    public void onCallReady(String callId) {
-        if (callerId != null) {
-            try {
-                answer(callerId);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else {
-            call(callId);
-        }
-    }
-
-    public void answer(String callerId) throws JSONException {
-        client.sendMessage(callerId, "init", null);
-        startCam();
-    }
-
-    public void call(String callId) {
-        Intent msg = new Intent(Intent.ACTION_SEND);
-        msg.putExtra(Intent.EXTRA_TEXT, mSocketAddress + callId);
-        msg.setType("text/plain");
-        startActivityForResult(Intent.createChooser(msg, "Call someone :"), VIDEO_CALL_SENT);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == VIDEO_CALL_SENT) {
-            startCam();
-        }
-    }
-
     public void startCam() {
         // Camera settings
-        client.start("android_test");
+        client.start();
+        try {
+            if (lastMessage.equals("AcceptCallFromOther")) {
+                room = RTCConfig.randomString(10);
+
+                JSONObject data = new JSONObject();
+                data.put("type", "room_name");
+                data.put("room", room);
+
+                socketService.sendSocketMessage(data.toString(), peerName);
+
+            }
+        }catch(JSONException e){
+            Log.getStackTraceString(e);
+        }
     }
 
     @Override

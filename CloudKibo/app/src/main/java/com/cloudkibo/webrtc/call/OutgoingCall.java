@@ -131,7 +131,7 @@ public class OutgoingCall extends CustomActivity {
 						Intent i = new Intent(getApplicationContext(), VideoCallView.class);
 	  					i.putExtra("username", user.get("username"));
 	  					i.putExtra("_id", user.get("_id"));
-	  					i.putExtra("peer", body);
+	  					i.putExtra("peer", peerName);
 	  					i.putExtra("lastmessage", "AcceptCallFromOther");
 	  					i.putExtra("room", room);
 	  		            startActivity(i);

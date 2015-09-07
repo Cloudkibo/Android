@@ -4,6 +4,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+import com.cloudkibo.webrtc.filesharing.RTCConfig;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.github.nkzawa.emitter.Emitter;
@@ -20,7 +21,6 @@ public class WebRtcClient {
     private boolean[] endPoints = new boolean[MAX_PEER];
     private PeerConnectionFactory factory;
     private HashMap<String, Peer> peers = new HashMap<String, Peer>();
-    private LinkedList<PeerConnection.IceServer> iceServers = new LinkedList<PeerConnection.IceServer>();
     private PeerConnectionParameters pcParams;
     private MediaConstraints pcConstraints = new MediaConstraints();
     private MediaStream localMS;
@@ -32,8 +32,6 @@ public class WebRtcClient {
      * Implement this interface to be notified of events.
      */
     public interface RtcListener{
-        void onCallReady(String callId);
-
         void onStatusChanged(String newStatus);
 
         void onLocalStream(MediaStream localStream);
@@ -151,13 +149,6 @@ public class WebRtcClient {
             }
         };
 
-        private Emitter.Listener onId = new Emitter.Listener() {
-            @Override
-            public void call(Object... args) {
-                String id = (String) args[0];
-                mListener.onCallReady(id);
-            }
-        };
     }
 
     private class Peer implements SdpObserver, PeerConnection.Observer{
@@ -238,7 +229,7 @@ public class WebRtcClient {
 
         public Peer(String id, int endPoint) {
             Log.d(TAG,"new Peer: "+id + " " + endPoint);
-            this.pc = factory.createPeerConnection(iceServers, pcConstraints, this);
+            this.pc = factory.createPeerConnection(RTCConfig.getIceServer(), pcConstraints, this);
             this.id = id;
             this.endPoint = endPoint;
 
@@ -267,22 +258,10 @@ public class WebRtcClient {
     public WebRtcClient(RtcListener listener, String host, PeerConnectionParameters params, EGLContext mEGLcontext) {
         mListener = listener;
         pcParams = params;
+
         PeerConnectionFactory.initializeAndroidGlobals(listener, true, true,
                 params.videoCodecHwAcceleration, mEGLcontext);
         factory = new PeerConnectionFactory();
-        MessageHandler messageHandler = new MessageHandler();
-
-        try {
-            client = IO.socket(host);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-        }
-        client.on("id", messageHandler.onId);
-        client.on("message", messageHandler.onMessage);
-        client.connect();
-
-        iceServers.add(new PeerConnection.IceServer("stun:23.21.150.121"));
-        iceServers.add(new PeerConnection.IceServer("stun:stun.l.google.com:19302"));
 
         pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"));
         pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"));
@@ -329,15 +308,8 @@ public class WebRtcClient {
      *
      * @param name client name
      */
-    public void start(String name){
+    public void start(){
         setCamera();
-        try {
-            JSONObject message = new JSONObject();
-            message.put("name", name);
-            client.emit("readyToStream", message);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     private void setCamera(){

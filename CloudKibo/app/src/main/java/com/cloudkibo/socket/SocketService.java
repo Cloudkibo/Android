@@ -259,7 +259,14 @@ public class SocketService extends Service {
                         }
 
 
-                        JSONArray payload = new JSONArray(args[0].toString());
+                      
+                            JSONObject payload = new JSONObject(args[0].toString());
+
+                            if(payload.getString("type").equals("room_name")){
+
+                            }
+
+
 
 
                     } catch (JSONException e) {
@@ -382,7 +389,7 @@ public class SocketService extends Service {
 
                             socket.emit("yesiamfreeforcall", message2);
 
-                            if(isForeground("com.cloudkibo")){
+                            if (isForeground("com.cloudkibo")) {
                                 mListener.receiveSocketMessage("areyoufreeforcall", amInCallWith);
                             } else {
                                 Intent i = new Intent(getApplicationContext(), IncomingCall.class);
@@ -591,7 +598,6 @@ public class SocketService extends Service {
             message.put("username", user.get("username"));
 
             socket.emit("message", message);//new JSONArray().put(message));
-
 
         } catch (JSONException e) {
             // TODO Auto-generated catch block
