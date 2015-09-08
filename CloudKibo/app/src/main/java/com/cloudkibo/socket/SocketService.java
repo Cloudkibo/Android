@@ -190,9 +190,9 @@ public class SocketService extends Service {
 
                     try {
 
-                        JSONArray payload = new JSONArray(args[0].toString());
+                        JSONObject payload = new JSONObject(args[0].toString());
 
-                        mListener.receiveSocketArray("messagefordatachannel", payload);
+                        mListener.receiveSocketJson("messagefordatachannel", payload);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -265,9 +265,6 @@ public class SocketService extends Service {
                             if(payload.getString("type").equals("room_name")){
 
                             }
-
-
-
 
                     } catch (JSONException e) {
                         e.printStackTrace();

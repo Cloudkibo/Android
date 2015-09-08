@@ -3,6 +3,7 @@ package com.cloudkibo.webrtc.call;
 import java.util.HashMap;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 
 import android.app.Notification;
@@ -152,6 +153,11 @@ public class IncomingCall extends CustomActivity {
                 public void receiveSocketArray(String type, JSONArray body) {
 
 
+
+                }
+
+                @Override
+                public void receiveSocketJson(String type, JSONObject body) {
 
                 }
             });

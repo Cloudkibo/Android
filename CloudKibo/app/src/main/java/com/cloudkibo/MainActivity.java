@@ -716,6 +716,11 @@ public class MainActivity extends CustomActivity
 
                 }
 
+                @Override
+                public void receiveSocketJson(String type, JSONObject body) {
+
+                }
+
             });
         }
     };

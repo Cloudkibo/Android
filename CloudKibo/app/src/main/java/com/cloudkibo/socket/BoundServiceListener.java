@@ -9,4 +9,6 @@ public interface BoundServiceListener {
 	
 	public void receiveSocketArray(String type, JSONArray body);
 
+	public void receiveSocketJson(String type, JSONObject body);
+
 }

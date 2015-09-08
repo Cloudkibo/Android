@@ -91,11 +91,11 @@ public class FileConnection extends CustomActivity {
         bindService(i, socketConnection, Context.BIND_AUTO_CREATE);
         
         // For the File Transfer Service
-        Intent intentFile = new Intent(this, FileTransferService.class);
+        /*Intent intentFile = new Intent(this, FileTransferService.class);
         intentFile.putExtra("contact", peerName);
         intentFile.putExtra("filepath", filePath);
         intentFile.putExtra("initiator", initiator);
-        startService(intentFile); 
+        startService(intentFile);*/
         
         makeConnectionButton = (Button) findViewById(R.id.makeConnection);
         
@@ -107,6 +107,8 @@ public class FileConnection extends CustomActivity {
 				createPeerConnectionFactory();
 				
 				peer = new FilePeer();
+
+				Log.w("FILE_TRANSFER", "File Peer object created");
 				
 				if(initiator){
 					createOffer();
@@ -136,6 +138,8 @@ public class FileConnection extends CustomActivity {
 							
 							peer.dc.send(new DataChannel.Buffer(Utility.toByteBuffer("You have " +
 									"received a file. Download and Save it."), false));
+
+							Log.w("FILE_TRANSFER", "Sending file meta to peer");
 							
 						} catch (JSONException e) {
 							e.printStackTrace();
@@ -155,9 +159,11 @@ public class FileConnection extends CustomActivity {
 			public void onClick(View view) {
 				
 				if(Utility.isFreeSpaceAvailableForFileSize(sizeOfFileToSave)){
+					Log.w("FILE_TRANSFER", "Free space is available for file save, requesting chunk now");
 					requestChunk();
 				}
 				else{
+					Log.w("FILE_TRANSFER", "Need more space to save this file");
 					Toast.makeText(getApplicationContext(),
 		                    "Need more free space to save this file", Toast.LENGTH_SHORT)
 		                    .show();
@@ -174,22 +180,24 @@ public class FileConnection extends CustomActivity {
 				
 				runOnUiThread(new Runnable(){
 					public void run() {
-						
-						byte[] fileBytes = new byte[fileBytesArray.size()];
-						
-						for(int i=0; i<fileBytesArray.size(); i++){
-							fileBytes[i] = fileBytesArray.get(i);
-						}
-						
-						if(Utility.convertByteArrayToFile(fileBytes, fileNameToSave)){
-							Toast.makeText(getApplicationContext(),
-				                    "File stored in Downloads", Toast.LENGTH_SHORT)
-				                    .show();
-						}
-						else{
-							Toast.makeText(getApplicationContext(),
-				                    "Some error caused storage failure. You must have SD card.", Toast.LENGTH_SHORT)
-				                    .show();
+
+						if(fileBytesArray.size() > 0) {
+
+							byte[] fileBytes = new byte[fileBytesArray.size()];
+
+							for (int i = 0; i < fileBytesArray.size(); i++) {
+								fileBytes[i] = fileBytesArray.get(i);
+							}
+
+							if (Utility.convertByteArrayToFile(fileBytes, fileNameToSave)) {
+								Toast.makeText(getApplicationContext(),
+										"File stored in Downloads", Toast.LENGTH_SHORT)
+										.show();
+							} else {
+								Toast.makeText(getApplicationContext(),
+										"Some error caused storage failure. You must have SD card.", Toast.LENGTH_SHORT)
+										.show();
+							}
 						}
 					}
 			    });
@@ -201,7 +209,7 @@ public class FileConnection extends CustomActivity {
 	
 	public void requestChunk(){
 		
-		Log.d("FILERECEIVE", "Requesting CHUNK: "+ chunkNumberToRequest);
+		Log.w("FILERECEIVE", "Requesting CHUNK: "+ chunkNumberToRequest);
 		
 		JSONObject request_chunk = new JSONObject();
 		
@@ -237,12 +245,15 @@ public class FileConnection extends CustomActivity {
 		PeerConnectionFactory.initializeAndroidGlobals(getApplicationContext(), true, true,
         		false, VideoRendererGui.getEGLContext());
 
+		Log.w("FILE_TRANSFER", "PeerConnection Factory created");
+
         
 		factory = new PeerConnectionFactory();
 	}
 	
 	public void createOffer(){
 		peer.pc.createOffer(peer, RTCConfig.getMediaConstraints());
+		Log.w("FILE_TRANSFER", "Create offer function called");
 	}
 	
 	public void createAnswer(JSONObject payload){
@@ -322,7 +333,7 @@ public class FileConnection extends CustomActivity {
 			if(buffer.binary){
 				
 				String strData = new String( bytes );
-			    Log.d("FILETRANSFER", strData);
+			    Log.w("FILE_TRANSFER", strData);
 			    
 			    runOnUiThread(new Runnable(){
 					public void run() {
@@ -350,8 +361,8 @@ public class FileConnection extends CustomActivity {
 			    runOnUiThread(new Runnable() {
 				      public void run() {
 				    	    String strData = new String( bytes );
-						    
-						    Log.d("FILETRANSFER", strData);
+
+						  	Log.w("FILE_TRANSFER", strData);
 						    
 						    try {
 						    	
@@ -378,7 +389,7 @@ public class FileConnection extends CustomActivity {
 									
 									int chunkNumber = jsonData.getJSONObject("data").getInt("chunk");
 									
-									Log.d("FILETRANSFER", "Chunk Number "+ chunkNumber);
+									Log.w("FILE_TRANSFER", "Chunk Number "+ chunkNumber);
 									if(chunkNumber % Utility.getChunksPerACK() == 0){
 										for(int i = 0; i< Utility.getChunksPerACK(); i++){
 											
@@ -390,8 +401,8 @@ public class FileConnection extends CustomActivity {
 												break;
 											}
 											
-											Log.d("FILETRANSFER", "File Length "+ file.length());
-											Log.d("FILETRANSFER", "Ceiling "+ Math.ceil(file.length() / Utility.getChunkSize()));
+											Log.w("FILE_TRANSFER", "File Length "+ file.length());
+											Log.w("FILE_TRANSFER", "Ceiling "+ Math.ceil(file.length() / Utility.getChunkSize()));
 											if((chunkNumber+i) >= Math.ceil(file.length() / Utility.getChunkSize())){
 												break;
 											}
@@ -403,12 +414,12 @@ public class FileConnection extends CustomActivity {
 											}
 											
 											int lowerLimit = (chunkNumber + i) * Utility.getChunkSize();
-											Log.d("LIMITS", ""+ lowerLimit +" "+ upperLimit);
+											Log.w("FILE_TRANSFER", "Limits: "+ lowerLimit +" "+ upperLimit);
 											ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file), lowerLimit, upperLimit);
 											DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, isBinaryFile);
 											
 											peer.dc.send(buf);
-											Log.d("CHUNK", "Chunk has been sent");
+											Log.w("FILE_TRANSFER", "Chunk has been sent");
 										}
 									}
 								}
@@ -525,9 +536,13 @@ public class FileConnection extends CustomActivity {
     		
     		pc = factory.createPeerConnection(RTCConfig.getIceServer(), 
 	  	    		  RTCConfig.getMediaConstraints(), pcObserver);
+
+			Log.w("FILE_TRANSFER", "Peer connection object created");
     		
 			dc = pc.createDataChannel("sendDataChannel", new DataChannel.Init());
-			
+
+			Log.w("FILE_TRANSFER", "data channel object created");
+
 	    	//DcObserver dcObserver = new DcObserver();
 			  
 			//dc.registerObserver(dcObserver);
@@ -552,6 +567,8 @@ public class FileConnection extends CustomActivity {
 		        sendSocketMessageDataChannel(payload.toString());
 		        
 		        pc.setLocalDescription(FilePeer.this, sdp);
+
+				Log.w("FILE_TRANSFER", "Create offer call back function called");
 		        
 		      } catch (JSONException e) {
 		        e.printStackTrace();
@@ -595,68 +612,66 @@ public class FileConnection extends CustomActivity {
 				
 				@Override
 				public void receiveSocketArray(String type, JSONArray body) {
-					
+
+
+				}
+
+				@Override
+				public void receiveSocketJson(String type, JSONObject body) {
+					Log.w("FILE_TRANSFER", "GOT_MSG: " + body.toString());
+
 					if(type.equals("messagefordatachannel")){
-						
+
 						try {
-							
-							JSONObject payload = body.getJSONObject(0);
-							String type2 = body.getJSONObject(0).getString("type");
-							
-							Toast.makeText(getApplicationContext(),
-				                    payload.toString(), Toast.LENGTH_SHORT)
-				                    .show();
-							
+
+							JSONObject payload = body;
+							String type2 = body.getString("type");
+
 							if(type2.equals("offer")){
-								
+
 								createPeerConnectionFactory();
-								
+
 								peer = new FilePeer();
-								
+
 								SessionDescription sdp = new SessionDescription(
-                                        SessionDescription.Type.fromCanonicalForm(payload.getString("type")),
-                                        payload.getString("sdp")
-                                        );
+										SessionDescription.Type.fromCanonicalForm(payload.getString("type")),
+										payload.getString("sdp")
+								);
 								peer.pc.setRemoteDescription(peer, sdp);
 								peer.pc.createAnswer(peer, RTCConfig.getMediaConstraints());
 							}
 							else if(type2.equals("answer")){
 								SessionDescription sdp = new SessionDescription(
-                                        SessionDescription.Type.fromCanonicalForm(payload.getString("type")),
-                                        payload.getString("sdp")
-                                        );
+										SessionDescription.Type.fromCanonicalForm(payload.getString("type")),
+										payload.getString("sdp")
+								);
 								peer.pc.setRemoteDescription(peer, sdp);
 							}
 							else if(type2.equals("candidate")){
 								PeerConnection pc = peer.pc;
-							      if (pc.getRemoteDescription() != null) {
-							        IceCandidate candidate = new IceCandidate(
-							                                                  payload.getString("id"),
-							                                                  payload.getInt("label"),
-							                                                  payload.getString("candidate")
-							                                                  );
-							        pc.addIceCandidate(candidate);
-							      }
+								if (pc.getRemoteDescription() != null) {
+									IceCandidate candidate = new IceCandidate(
+											payload.getString("id"),
+											payload.getInt("label"),
+											payload.getString("candidate")
+									);
+									pc.addIceCandidate(candidate);
+								}
 							}
-							
+
 						} catch (JSONException e) {
 							e.printStackTrace();
 						} catch (NullPointerException e){
 							e.printStackTrace();
-							
+
 							/*
 							 * todo This needs to be fixed. It does not receive offer and receives
 							 * the candidate. This is a network error
 							 */
-							
-							Toast.makeText(getApplicationContext(),
-				                    "Network error occurred. Try again after connecting to Internet", Toast.LENGTH_SHORT)
-				                    .show();
-							
 						}
-						
+
 					}
-					
+
 				}
 			});
 		}
