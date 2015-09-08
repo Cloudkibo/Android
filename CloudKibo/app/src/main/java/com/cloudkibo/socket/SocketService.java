@@ -259,7 +259,7 @@ public class SocketService extends Service {
                         }
 
 
-                      
+
                             JSONObject payload = new JSONObject(args[0].toString());
 
                             if(payload.getString("type").equals("room_name")){
