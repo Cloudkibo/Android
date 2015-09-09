@@ -323,6 +323,7 @@ public class FileConnection extends CustomActivity {
 
 		@Override
 		public void onMessage(DataChannel.Buffer buffer) {
+			Log.w("FILE_TRANSFER", "Data Channel message received");
 			
 			ByteBuffer data = buffer.data;
 		    final byte[] bytes = new byte[ data.capacity() ];
@@ -353,7 +354,7 @@ public class FileConnection extends CustomActivity {
 						
 						numberOfChunksReceived++;
 					}
-			    });
+							    });
 			    
 			}
 			else {
@@ -441,7 +442,7 @@ public class FileConnection extends CustomActivity {
 		@Override
 		public void onStateChange() {
 			
-			Log.e("FILE_ERROR", "DataChannel State Changed");
+			Log.w("FILE_ERROR", "DataChannel State Changed");
 			
 		}
 	}
@@ -460,6 +461,7 @@ public class FileConnection extends CustomActivity {
 
 		@Override
 		public void onDataChannel(final DataChannel dataChannel) {
+			Log.w("FILE_TRANSFER", "Data Channel received to this peer.");
 			final DataChannel dc = dataChannel;
 			runOnUiThread(new Runnable() {
 			      public void run() {
@@ -538,14 +540,16 @@ public class FileConnection extends CustomActivity {
 	  	    		  RTCConfig.getMediaConstraints(), pcObserver);
 
 			Log.w("FILE_TRANSFER", "Peer connection object created");
-    		
-			dc = pc.createDataChannel("sendDataChannel", new DataChannel.Init());
 
-			Log.w("FILE_TRANSFER", "data channel object created");
+			if(initiator) {
+				dc = pc.createDataChannel("sendDataChannel", new DataChannel.Init());
 
-	    	//DcObserver dcObserver = new DcObserver();
-			  
-			//dc.registerObserver(dcObserver);
+				Log.w("FILE_TRANSFER", "data channel object created");
+
+				DcObserver dcObserver = new DcObserver();
+
+				dc.registerObserver(dcObserver);
+			}
 		}
 
 		@Override
@@ -628,6 +632,8 @@ public class FileConnection extends CustomActivity {
 							String type2 = body.getString("type");
 
 							if(type2.equals("offer")){
+
+								initiator = false;
 
 								createPeerConnectionFactory();
 
