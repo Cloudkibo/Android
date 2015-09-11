@@ -397,6 +397,8 @@ public class FileConnection extends CustomActivity {
 											if(file.length() < Utility.getChunkSize()){
 												ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file));
 												DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, isBinaryFile);
+
+												Log.w("FILE_TRANSFER", "File Smaller than chunk size condition");
 												
 												peer.dc.send(buf);
 												break;
@@ -405,18 +407,23 @@ public class FileConnection extends CustomActivity {
 											Log.w("FILE_TRANSFER", "File Length "+ file.length());
 											Log.w("FILE_TRANSFER", "Ceiling "+ Math.ceil(file.length() / Utility.getChunkSize()));
 											if((chunkNumber+i) >= Math.ceil(file.length() / Utility.getChunkSize())){
-												break;
+												Log.w("FILE_TRANSFER", "Came into math ceiling condition");
+												//break;
 											}
 											
 											int upperLimit = (chunkNumber + i + 1) * Utility.getChunkSize();
 											
 											if(upperLimit > (int)file.length()){
-												upperLimit = (int)file.length();
+												upperLimit = (int)file.length()-1;
 											}
 											
 											int lowerLimit = (chunkNumber + i) * Utility.getChunkSize();
 											Log.w("FILE_TRANSFER", "Limits: "+ lowerLimit +" "+ upperLimit);
-											ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file), lowerLimit, upperLimit);
+
+											if(lowerLimit > upperLimit)
+												break;
+
+											ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file), lowerLimit, upperLimit - lowerLimit);
 											DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, isBinaryFile);
 											
 											peer.dc.send(buf);
