@@ -561,10 +561,11 @@ public class FileConnection extends CustomActivity {
 
 		@Override
 		public void onCreateFailure(String msg) {
-			Toast.makeText(getApplicationContext(),
+			/*Toast.makeText(getApplicationContext(),
                     msg, Toast.LENGTH_SHORT)
                     .show();
-
+                    */
+			Log.e("FILEPEER", msg);
 		}
 
 		@Override
