@@ -11,9 +11,11 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabaseLockedException;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 
 public class CloudKiboContentProvider extends ContentProvider {
@@ -28,10 +30,12 @@ public class CloudKiboContentProvider extends ContentProvider {
 		
 		switch(sUriMatcher.match(uri)){
         case USER:
-        	delCount = db.delete(
-                    User.TABLE_USER_NAME, 
-                    selection,
-                    selectionArgs);
+            try {
+                delCount = db.delete(
+                        User.TABLE_USER_NAME,
+                        selection,
+                        selectionArgs);
+            }catch(SQLiteDatabaseLockedException e){ Log.e("SQLITE", "Database locked exception captured"); }
             break;
         case CONTACT:
         	delCount = db.delete(

@@ -472,7 +472,7 @@ public class FileConnection extends CustomActivity {
 			final DataChannel dc = dataChannel;
 			runOnUiThread(new Runnable() {
 			      public void run() {
-						//peer.dc = dc;
+						peer.dc = dc;
 						
 						DcObserver dcObserver = new DcObserver();
 						
