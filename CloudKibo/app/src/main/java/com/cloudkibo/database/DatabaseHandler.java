@@ -358,4 +358,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	db.close();
     }
 
+    public void resetSpecificContact(String user1, String user2){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String deleteQuery = "DELETE FROM " + Contacts.TABLE_CONTACTS + " WHERE "+ Contacts.CONTACT_USERNAME + "='"+ user2 +"'";
+
+        db.execSQL(deleteQuery);
+        db.close();
+    }
+
 }

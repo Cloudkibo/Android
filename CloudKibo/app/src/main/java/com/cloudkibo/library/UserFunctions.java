@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.cloudkibo.database.DatabaseHandler;
@@ -38,6 +39,7 @@ public class UserFunctions {
     private static String approveContactURL = "https://www.cloudkibo.com/api/contactslist/approvefriendrequest/";
     private static String rejectContactURL = "https://www.cloudkibo.com/api/contactslist/rejectfriendrequest/";
     private static String removeChatURL = "https://www.cloudkibo.com/api/userchat/removechathistory/";
+    private static String removeContactURL = "https://www.cloudkibo.com/api/contactslist/removefriend/";
     
     
     
@@ -212,6 +214,13 @@ public class UserFunctions {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("username", user2));
         JSONObject userchatresponse = connection.sendObjectToServer(removeChatURL, authtoken, params);
+        return userchatresponse;
+    }
+
+    public JSONObject removeContact(String user1, String user2, String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("username", user2));
+        JSONObject userchatresponse = connection.sendObjectToServer(removeContactURL, authtoken, params);
         return userchatresponse;
     }
 	
