@@ -200,6 +200,23 @@ public class SocketService extends Service {
 
                 }
 
+            }).on("msg", new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+
+                    try {
+
+                        JSONObject payload = new JSONObject(args[0].toString());
+
+                        mListener.receiveSocketJson("msg", payload);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
             }).on("message", new Emitter.Listener() {
 
                 @Override
@@ -259,12 +276,11 @@ public class SocketService extends Service {
                         }
 
 
+                        JSONObject payload = new JSONObject(args[0].toString());
 
-                            JSONObject payload = new JSONObject(args[0].toString());
+                        if (payload.getString("type").equals("room_name")) {
 
-                            if(payload.getString("type").equals("room_name")){
-
-                            }
+                        }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -595,6 +611,25 @@ public class SocketService extends Service {
             message.put("username", user.get("username"));
 
             socket.emit("message", message);//new JSONArray().put(message));
+
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public void sendSocketMsg(String msg, String peer) { // todo: do test this
+
+        JSONObject message = new JSONObject();
+
+        try {
+
+            message.put("msg", msg);
+            message.put("room", room);
+            message.put("to", peer);
+            message.put("username", user.get("username"));
+
+            socket.emit("msg", message);//new JSONArray().put(message));
 
         } catch (JSONException e) {
             // TODO Auto-generated catch block

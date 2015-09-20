@@ -239,25 +239,6 @@ public class WebRtcClient {
         }
     }
 
-    private void setCameraTest(){
-        localMS = factory.createLocalMediaStream("ARDAMS");
-        if(pcParams.videoCallEnabled){
-            MediaConstraints videoConstraints = new MediaConstraints();
-            videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxHeight", Integer.toString(pcParams.videoHeight)));
-            videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxWidth", Integer.toString(pcParams.videoWidth)));
-            videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxFrameRate", Integer.toString(pcParams.videoFps)));
-            videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("minFrameRate", Integer.toString(pcParams.videoFps)));
-
-            videoSource = factory.createVideoSource(getVideoCapturer(), videoConstraints);
-            localMS.addTrack(factory.createVideoTrack("ARDAMSv0", videoSource));
-        }
-
-        AudioSource audioSource = factory.createAudioSource(new MediaConstraints());
-        localMS.addTrack(factory.createAudioTrack("ARDAMSa0", audioSource));
-
-        mListener.onLocalStream(localMS);
-    }
-
     private Peer addPeer(String id, int endPoint) {
         Peer peer = new Peer(id, endPoint);
         peers.put(id, peer);
