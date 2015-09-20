@@ -335,4 +335,17 @@ public class WebRtcClient {
         String frontCameraDeviceName = VideoCapturerAndroid.getNameOfFrontFacingDevice();
         return VideoCapturerAndroid.create(frontCameraDeviceName);
     }
+
+    public void WebRtcClientScreen(RtcListener listener, String host, PeerConnectionParameters params, EGLContext mEGLcontext) {
+        mListener = listener;
+        pcParams = params;
+
+        PeerConnectionFactory.initializeAndroidGlobals(listener, true, true,
+                params.videoCodecHwAcceleration, mEGLcontext);
+        factory = new PeerConnectionFactory();
+
+        //pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveAudio", "true"));
+        //pcConstraints.mandatory.add(new MediaConstraints.KeyValuePair("OfferToReceiveVideo", "true"));
+        //pcConstraints.optional.add(new MediaConstraints.KeyValuePair("DtlsSrtpKeyAgreement", "true"));
+    }
 }
