@@ -98,32 +98,7 @@
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
               <caret line="620" column="66" selection-start-line="620" selection-start-column="66" selection-end-line="620" selection-end-column="66" />
-              <folding>
-                <element signature="e#3397#4146#0" expanded="true" />
-                <element signature="e#4145#4146#0" expanded="true" />
-                <element signature="e#4157#6307#0" expanded="true" />
-                <element signature="e#6306#6307#0" expanded="true" />
-                <element signature="e#6337#6786#0" expanded="true" />
-                <element signature="e#6785#6786#0" expanded="true" />
-                <element signature="e#6798#7229#0" expanded="true" />
-                <element signature="e#7228#7229#0" expanded="true" />
-                <element signature="e#7245#9282#0" expanded="true" />
-                <element signature="e#9281#9282#0" expanded="true" />
-                <element signature="e#9305#9746#0" expanded="true" />
-                <element signature="e#9745#9746#0" expanded="true" />
-                <element signature="e#9770#10505#0" expanded="true" />
-                <element signature="e#10504#10505#0" expanded="true" />
-                <element signature="e#10526#11255#0" expanded="true" />
-                <element signature="e#11254#11255#0" expanded="true" />
-                <element signature="e#11280#11893#0" expanded="true" />
-                <element signature="e#11892#11893#0" expanded="true" />
-                <element signature="e#11919#13589#0" expanded="true" />
-                <element signature="e#13588#13589#0" expanded="true" />
-                <element signature="e#13604#14037#0" expanded="true" />
-                <element signature="e#14036#14037#0" expanded="true" />
-                <element signature="e#14053#14487#0" expanded="true" />
-                <element signature="e#14486#14487#0" expanded="true" />
-              </folding>
+              <folding />
             </state>
           </provider>
         </entry>
@@ -131,13 +106,15 @@
       <file leaf-file-name="WebRtcClient.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/WebRtcClient.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.42218247">
-              <caret line="338" column="16" selection-start-line="338" selection-start-column="16" selection-end-line="338" selection-end-column="16" />
+            <state vertical-scroll-proportion="0.608229">
+              <caret line="160" column="14" selection-start-line="160" selection-start-column="14" selection-end-line="160" selection-end-column="14" />
               <folding>
-                <element signature="e#9891#9892#0" expanded="true" />
-                <element signature="e#9949#9950#0" expanded="true" />
-                <element signature="e#10754#10755#0" expanded="true" />
-                <element signature="e#10781#10782#0" expanded="true" />
+                <element signature="e#4490#5705#0" expanded="true" />
+                <element signature="e#5704#5705#0" expanded="true" />
+                <element signature="e#11177#11178#0" expanded="true" />
+                <element signature="e#11238#11239#0" expanded="true" />
+                <element signature="e#11889#11890#0" expanded="true" />
+                <element signature="e#11916#11917#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -1495,9 +1472,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scratches">
-        <subPane />
-      </pane>
       <pane id="PackagesPane">
         <subPane>
           <PATH>
@@ -1536,6 +1510,9 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches">
+        <subPane />
+      </pane>
       <pane id="Scope">
         <subPane subId="Problems" />
         <subPane subId="Production">
@@ -1569,82 +1546,6 @@
             <PATH_ELEMENT>
               <option name="myItemId" value="CloudKibo" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cloudkibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cloudkibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webrtc" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cloudkibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webrtc" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="call" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -2347,23 +2248,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="401" column="9" selection-start-line="401" selection-start-column="9" selection-end-line="401" selection-end-column="9" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#6658#6659#0" expanded="false" />
-            <element signature="e#6709#6710#0" expanded="false" />
-            <element signature="e#6802#6803#0" expanded="false" />
-            <element signature="e#6865#6866#0" expanded="false" />
-            <element signature="e#12604#12605#0" expanded="false" />
-            <element signature="e#12671#12672#0" expanded="false" />
-            <element signature="e#14531#14532#0" expanded="false" />
-            <element signature="e#14585#14586#0" expanded="false" />
-            <element signature="e#14888#14889#0" expanded="false" />
-            <element signature="e#14931#14932#0" expanded="false" />
-            <element signature="e#14963#14964#0" expanded="false" />
-            <element signature="e#15001#15002#0" expanded="false" />
-            <element signature="e#21020#21021#0" expanded="false" />
-            <element signature="e#21059#21060#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2408,9 +2292,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="360" column="65" selection-start-line="360" selection-start-column="65" selection-end-line="360" selection-end-column="65" />
-          <folding>
-            <element signature="imports" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2432,44 +2313,21 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="620" column="66" selection-start-line="620" selection-start-column="66" selection-end-line="620" selection-end-column="66" />
-          <folding>
-            <element signature="e#3397#4146#0" expanded="true" />
-            <element signature="e#4145#4146#0" expanded="true" />
-            <element signature="e#4157#6307#0" expanded="true" />
-            <element signature="e#6306#6307#0" expanded="true" />
-            <element signature="e#6337#6786#0" expanded="true" />
-            <element signature="e#6785#6786#0" expanded="true" />
-            <element signature="e#6798#7229#0" expanded="true" />
-            <element signature="e#7228#7229#0" expanded="true" />
-            <element signature="e#7245#9282#0" expanded="true" />
-            <element signature="e#9281#9282#0" expanded="true" />
-            <element signature="e#9305#9746#0" expanded="true" />
-            <element signature="e#9745#9746#0" expanded="true" />
-            <element signature="e#9770#10505#0" expanded="true" />
-            <element signature="e#10504#10505#0" expanded="true" />
-            <element signature="e#10526#11255#0" expanded="true" />
-            <element signature="e#11254#11255#0" expanded="true" />
-            <element signature="e#11280#11893#0" expanded="true" />
-            <element signature="e#11892#11893#0" expanded="true" />
-            <element signature="e#11919#13589#0" expanded="true" />
-            <element signature="e#13588#13589#0" expanded="true" />
-            <element signature="e#13604#14037#0" expanded="true" />
-            <element signature="e#14036#14037#0" expanded="true" />
-            <element signature="e#14053#14487#0" expanded="true" />
-            <element signature="e#14486#14487#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/WebRtcClient.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.42218247">
-          <caret line="338" column="16" selection-start-line="338" selection-start-column="16" selection-end-line="338" selection-end-column="16" />
+        <state vertical-scroll-proportion="0.608229">
+          <caret line="160" column="14" selection-start-line="160" selection-start-column="14" selection-end-line="160" selection-end-column="14" />
           <folding>
-            <element signature="e#9891#9892#0" expanded="true" />
-            <element signature="e#9949#9950#0" expanded="true" />
-            <element signature="e#10754#10755#0" expanded="true" />
-            <element signature="e#10781#10782#0" expanded="true" />
+            <element signature="e#4490#5705#0" expanded="true" />
+            <element signature="e#5704#5705#0" expanded="true" />
+            <element signature="e#11177#11178#0" expanded="true" />
+            <element signature="e#11238#11239#0" expanded="true" />
+            <element signature="e#11889#11890#0" expanded="true" />
+            <element signature="e#11916#11917#0" expanded="true" />
           </folding>
         </state>
       </provider>
