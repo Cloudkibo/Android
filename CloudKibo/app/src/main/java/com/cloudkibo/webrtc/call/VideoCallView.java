@@ -59,7 +59,6 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
     private VideoRenderer.Callbacks localRender;
     private VideoRenderer.Callbacks remoteRender;
     private WebRtcClient client;
-    private String mSocketAddress;
     private String callerId;
 
     SocketService socketService;
@@ -91,9 +90,6 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
                         | LayoutParams.FLAG_TURN_SCREEN_ON);
 
         setContentView(R.layout.main);
-
-        mSocketAddress = "https://" + getResources().getString(R.string.host);
-        mSocketAddress += (":" + getResources().getString(R.string.port) + "/");
 
         vsv = (GLSurfaceView) findViewById(R.id.glview_call);
         vsv.setPreserveEGLContextOnPause(true);
@@ -129,7 +125,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
         PeerConnectionParameters params = new PeerConnectionParameters(
                 true, false, displaySize.x, displaySize.y, 30, 1, VIDEO_CODEC_VP9, true, 1, AUDIO_CODEC_OPUS, true);
 
-        client = new WebRtcClient(this, mSocketAddress, params, VideoRendererGui.getEGLContext());
+        client = new WebRtcClient(this, params, VideoRendererGui.getEGLContext());
 
         startCam();
 
@@ -311,5 +307,6 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
                 }
             });
         }
+
     };
 }
