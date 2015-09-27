@@ -280,6 +280,8 @@ public class SocketService extends Service {
 
                         if (payload.getString("type").equals("room_name")) {
 
+                            mListener.receiveSocketMessage("call_room", payload.getString("room"));
+
                         }
 
                     } catch (JSONException e) {

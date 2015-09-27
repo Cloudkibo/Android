@@ -11,12 +11,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -41,6 +44,7 @@ import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.model.ContactItem;
 import com.cloudkibo.utils.IFragmentName;
+import android.content.ContentResolver;
 
 /**
  * The Class ContactList is the Fragment class that is launched when the user
@@ -74,6 +78,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 		authtoken = getActivity().getIntent().getExtras().getString("authtoken");
 		
 		loadContactList();
+		loadContactsFromAddressBook();
 		
 		ListView list = (ListView) v.findViewById(R.id.list);
 		contactAdapter = new ContactAdapter();
@@ -783,12 +788,12 @@ public class ContactList extends CustomFragment implements IFragmentName
 						row.getString("firstname"),
 						row.getString("lastname"),
 						row.getString("phone"),
-                        01,
+						01,
 						false, "",
 						row.getString("status"),
 						row.getString("detailsshared"),
 						false
-						));
+				));
 			}
 			
 			contactList.addAll(contactList1);
@@ -797,6 +802,50 @@ public class ContactList extends CustomFragment implements IFragmentName
 			e.printStackTrace();
 		}
 		
+	}
+
+	public void loadContactsFromAddressBook(){
+		ContentResolver cr = getActivity().getApplicationContext().getContentResolver();
+		Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+				null, null, null, null);
+		if (cur.getCount() > 0) {
+			while (cur.moveToNext()) {
+				String id = cur.getString(
+						cur.getColumnIndex(ContactsContract.Contacts._ID));
+				String name = cur.getString(
+						cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+				//Log.w("Contact Name : ", "Name " + name + "");
+				if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+					Cursor pCur = cr.query(
+							ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+							null,
+							ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+							new String[]{id}, null);
+					while (pCur.moveToNext()) {
+						String phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+						Log.w("Phone Number: ", "Name : "+ name +" Number : "+ phone);
+					}
+					pCur.close();
+				}
+				Cursor emailCur = cr.query(
+						ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+						null,
+						ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+						new String[]{id}, null);
+				while (emailCur.moveToNext()) {
+					// This would allow you get several email addresses
+					// if the email addresses were stored in an array
+					String email = emailCur.getString(
+							emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+					String emailType = emailCur.getString(
+							emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
+					Log.w("Email: ", "Name : "+ name +" Email : "+ email);
+				}
+				emailCur.close();
+			}
+		}
+		cur.close();
+
 	}
 
 	/**

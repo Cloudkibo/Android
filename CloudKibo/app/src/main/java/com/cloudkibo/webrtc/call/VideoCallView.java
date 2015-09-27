@@ -164,6 +164,8 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
             if (lastMessage.equals("AcceptCallFromOther")) {
                 room = RTCConfig.randomString(10);
 
+                joinRoomForCall(room);
+
                 JSONObject data = new JSONObject();
                 data.put("type", "room_name");
                 data.put("room", room);
@@ -174,6 +176,21 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
         }catch(JSONException e){
             Log.getStackTraceString(e);
         }
+    }
+
+    public void joinRoomForCall(String r){
+        /*
+                socket.emit('init', { room: r, username: username }, function (roomid, id) {
+                    if(id === null){
+                        alert('You cannot join conference. Room is full');
+                        connected = false;
+                        return;
+                    }
+                    currentId = id;
+                    roomId = roomid;
+                });
+                connected = true;
+*/
     }
 
     @Override
@@ -232,7 +249,9 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
 
                 @Override
                 public void receiveSocketMessage(String type, String body) {
-
+                    if(type.equals("call_room")){
+                        joinRoomForCall(body);
+                    }
                 }
 
                 @Override
