@@ -805,46 +805,109 @@ public class ContactList extends CustomFragment implements IFragmentName
 	}
 
 	public void loadContactsFromAddressBook(){
-		ContentResolver cr = getActivity().getApplicationContext().getContentResolver();
-		Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-				null, null, null, null);
-		if (cur.getCount() > 0) {
-			while (cur.moveToNext()) {
-				String id = cur.getString(
-						cur.getColumnIndex(ContactsContract.Contacts._ID));
-				String name = cur.getString(
-						cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-				//Log.w("Contact Name : ", "Name " + name + "");
-				if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-					Cursor pCur = cr.query(
-							ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-							null,
-							ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
-							new String[]{id}, null);
-					while (pCur.moveToNext()) {
-						String phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-						Log.w("Phone Number: ", "Name : "+ name +" Number : "+ phone);
+
+		new AsyncTask<String, String, JSONArray>() {
+
+			@Override
+			protected JSONArray doInBackground(String... args) {
+
+
+				ContentResolver cr = getActivity().getApplicationContext().getContentResolver();
+				Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+						null, null, null, null);
+				if (cur.getCount() > 0) {
+					while (cur.moveToNext()) {
+						String id = cur.getString(
+								cur.getColumnIndex(ContactsContract.Contacts._ID));
+						String name = cur.getString(
+								cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+						//Log.w("Contact Name : ", "Name " + name + "");
+						if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+							Cursor pCur = cr.query(
+									ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+									null,
+									ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+									new String[]{id}, null);
+							while (pCur.moveToNext()) {
+								String phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+								Log.w("Phone Number: ", "Name : "+ name +" Number : "+ phone);
+							}
+							pCur.close();
+						}
+						Cursor emailCur = cr.query(
+								ContactsContract.CommonDataKinds.Email.CONTENT_URI,
+								null,
+								ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
+								new String[]{id}, null);
+						while (emailCur.moveToNext()) {
+							// This would allow you get several email addresses
+							// if the email addresses were stored in an array
+							String email = emailCur.getString(
+									emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
+							String emailType = emailCur.getString(
+									emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
+							Log.w("Email: ", "Name : "+ name +" Email : "+ email);
+						}
+						emailCur.close();
 					}
-					pCur.close();
 				}
-				Cursor emailCur = cr.query(
-						ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-						null,
-						ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-						new String[]{id}, null);
-				while (emailCur.moveToNext()) {
-					// This would allow you get several email addresses
-					// if the email addresses were stored in an array
-					String email = emailCur.getString(
-							emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-					String emailType = emailCur.getString(
-							emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
-					Log.w("Email: ", "Name : "+ name +" Email : "+ email);
-				}
-				emailCur.close();
+				cur.close();
+
+				//todo see this function
+
+				UserFunctions userFunction = new UserFunctions();
+				JSONArray json = userFunction.getContactsList(authtoken);
+				return json;
 			}
-		}
-		cur.close();
+
+			@Override
+			protected void onPostExecute(JSONArray jsonA) {
+				try {
+
+					if (jsonA != null) {
+
+						//String res = jsonA.get(0).toString();
+
+						ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
+
+						for (int i=0; i < jsonA.length(); i++) {
+							JSONObject row = jsonA.getJSONObject(i);
+							try{
+								contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
+										row.getJSONObject("contactid").getString("username"),
+										row.getJSONObject("contactid").getString("firstname"),
+										row.getJSONObject("contactid").getString("lastname"),
+										row.getJSONObject("contactid").getString("phone"), 01,
+										false, "",
+										row.getJSONObject("contactid").getString("status"),
+										row.getString("detailsshared"),
+										row.getBoolean("unreadMessage")
+								));
+							}catch(JSONException e){
+								contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
+										row.getJSONObject("contactid").getString("username"),
+										row.getJSONObject("contactid").getString("firstname"),
+										row.getJSONObject("contactid").getString("lastname"),
+										"nill", 01,
+										false, "",
+										row.getJSONObject("contactid").getString("status"),
+										row.getString("detailsshared"),
+										row.getBoolean("unreadMessage")
+								));
+							}
+
+						}
+
+						loadNewContacts(contactList1);
+						insertContactsIntoDB(contactList1);
+
+					}
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}.execute();
 
 	}
 
