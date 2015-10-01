@@ -40,6 +40,8 @@ public class UserFunctions {
     private static String rejectContactURL = "https://www.cloudkibo.com/api/contactslist/rejectfriendrequest/";
     private static String removeChatURL = "https://www.cloudkibo.com/api/userchat/removechathistory/";
     private static String removeContactURL = "https://www.cloudkibo.com/api/contactslist/removefriend/";
+    private static String phoneContactsURL = "https://www.cloudkibo.com/api/users/searchaccountsbyphone/";
+    private static String emailContactsURL = "https://www.cloudkibo.com/api/users/searchaccountsbyemail/";
     
     
     
@@ -201,6 +203,16 @@ public class UserFunctions {
 		JSONObject userchatresponse = connection.sendObjectToServer(saveChatURL, authtoken, params);
         return userchatresponse;
 	}
+
+    public JSONObject sendAddressBookNumberContactsToServer(List<NameValuePair> params, String authtoken) {
+        JSONObject contactresponse = connection.sendObjectToServer(phoneContactsURL, authtoken, params);
+        return contactresponse;
+    }
+
+    public JSONObject sendAddressBookEmailContactsToServer(List<NameValuePair> params, String authtoken) {
+        JSONObject contactresponse = connection.sendObjectToServer(emailContactsURL, authtoken, params);
+        return contactresponse;
+    }
 	
 	public JSONObject markChatAsRead(String user1, String user2, String authtoken) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();

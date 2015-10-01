@@ -5,7 +5,10 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -806,11 +809,13 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 	public void loadContactsFromAddressBook(){
 
-		new AsyncTask<String, String, JSONArray>() {
+		new AsyncTask<String, String, JSONObject>() {
 
 			@Override
-			protected JSONArray doInBackground(String... args) {
+			protected JSONObject doInBackground(String... args) {
 
+				List<NameValuePair> phones = new ArrayList<NameValuePair>();
+				List<NameValuePair> emails = new ArrayList<NameValuePair>();
 
 				ContentResolver cr = getActivity().getApplicationContext().getContentResolver();
 				Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
@@ -830,7 +835,8 @@ public class ContactList extends CustomFragment implements IFragmentName
 									new String[]{id}, null);
 							while (pCur.moveToNext()) {
 								String phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-								Log.w("Phone Number: ", "Name : "+ name +" Number : "+ phone);
+								phones.add(new BasicNameValuePair("phonenumbers", phone));
+								//Log.w("Phone Number: ", "Name : "+ name +" Number : "+ phone);
 							}
 							pCur.close();
 						}
@@ -846,6 +852,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 									emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
 							String emailType = emailCur.getString(
 									emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
+							emails.add(new BasicNameValuePair("emails", email));
 							Log.w("Email: ", "Name : "+ name +" Email : "+ email);
 						}
 						emailCur.close();
@@ -856,55 +863,14 @@ public class ContactList extends CustomFragment implements IFragmentName
 				//todo see this function
 
 				UserFunctions userFunction = new UserFunctions();
-				JSONArray json = userFunction.getContactsList(authtoken);
+				JSONObject json = userFunction.sendAddressBookEmailContactsToServer(emails, authtoken);
+				Log.w("SERVER SENT RESPONSE", json.toString());
 				return json;
 			}
 
 			@Override
-			protected void onPostExecute(JSONArray jsonA) {
-				try {
+			protected void onPostExecute(JSONObject jsonA) {
 
-					if (jsonA != null) {
-
-						//String res = jsonA.get(0).toString();
-
-						ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
-
-						for (int i=0; i < jsonA.length(); i++) {
-							JSONObject row = jsonA.getJSONObject(i);
-							try{
-								contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
-										row.getJSONObject("contactid").getString("username"),
-										row.getJSONObject("contactid").getString("firstname"),
-										row.getJSONObject("contactid").getString("lastname"),
-										row.getJSONObject("contactid").getString("phone"), 01,
-										false, "",
-										row.getJSONObject("contactid").getString("status"),
-										row.getString("detailsshared"),
-										row.getBoolean("unreadMessage")
-								));
-							}catch(JSONException e){
-								contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
-										row.getJSONObject("contactid").getString("username"),
-										row.getJSONObject("contactid").getString("firstname"),
-										row.getJSONObject("contactid").getString("lastname"),
-										"nill", 01,
-										false, "",
-										row.getJSONObject("contactid").getString("status"),
-										row.getString("detailsshared"),
-										row.getBoolean("unreadMessage")
-								));
-							}
-
-						}
-
-						loadNewContacts(contactList1);
-						insertContactsIntoDB(contactList1);
-
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
 			}
 
 		}.execute();
