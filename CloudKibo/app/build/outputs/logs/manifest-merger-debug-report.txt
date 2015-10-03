@@ -1,6 +1,6 @@
 -- Merging decision tree log ---
 manifest
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:1:1-207:12
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:1:1-216:12
 	package
 		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:2:5-28
 		INJECTED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml
@@ -118,7 +118,7 @@ ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:42:5-72
 	android:name
 		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:42:22-69
 application
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:46:5-205:16
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:46:5-214:16
 MERGED from [com.android.support:support-v4:21.0.3] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\AndroidManifest.xml:16:5-19
 MERGED from [io.pristine:libjingle:8871] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\io.pristine\libjingle\8871\AndroidManifest.xml:11:5-12:19
 MERGED from [com.facebook.android:facebook-android-sdk:4.0.0] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.facebook.android\facebook-android-sdk\4.0.0\AndroidManifest.xml:28:5-20
@@ -287,100 +287,112 @@ ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:139:9-145:20
 		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:144:13-67
 	android:name
 		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:140:13-49
+activity#com.cloudkibo.ui.Invite_Friends
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:147:9-150:20
+	android:label
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:149:13-45
+	android:name
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:148:13-59
+activity#com.cloudkibo.ui.ResultActivity
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:151:9-154:20
+	android:label
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:153:13-45
+	android:name
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:152:13-59
 activity#com.cloudkibo.file.filechooser.FileChooserActivity
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:147:9-161:14
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:156:9-170:14
 	android:enabled
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:150:7-43
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:159:7-43
 	android:label
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:152:7-42
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:161:7-42
 	android:exported
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:151:7-30
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:160:7-30
 	android:icon
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:149:7-42
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:158:7-42
 	android:name
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:148:7-72
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:157:7-72
 intent-filter#android.intent.action.GET_CONTENT+android.intent.category.DEFAULT+android.intent.category.OPENABLE
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:153:7-160:23
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:162:7-169:23
 action#android.intent.action.GET_CONTENT
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:154:11-70
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:163:11-70
 	android:name
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:154:19-67
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:163:19-67
 category#android.intent.category.OPENABLE
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:157:11-71
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:166:11-71
 	android:name
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:157:21-68
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:166:21-68
 provider#com.cloudkibo.file.localstorage.LocalStorageProvider
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:163:9-173:14
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:172:9-182:14
 	android:authorities
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:165:7-70
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:174:7-70
 	android:enabled
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:166:7-43
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:175:7-43
 	android:grantUriPermissions
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:168:7-41
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:177:7-41
 	android:exported
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:167:7-30
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:176:7-30
 	android:permission
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:169:7-63
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:178:7-63
 	android:name
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:164:7-74
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:173:7-74
 intent-filter#android.content.action.DOCUMENTS_PROVIDER
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:170:11-172:27
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:179:11-181:27
 action#android.content.action.DOCUMENTS_PROVIDER
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:171:15-82
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:180:15-82
 	android:name
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:171:23-79
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:180:23-79
 provider#com.cloudkibo.database.CloudKiboContentProvider
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:175:9-181:20
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:184:9-190:20
 	android:authorities
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:177:13-82
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:186:13-82
 	android:label
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:180:13-53
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:189:13-53
 	android:multiprocess
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:178:13-40
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:187:13-40
 	android:exported
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:179:13-36
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:188:13-36
 	android:name
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:176:13-75
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:185:13-75
 service#com.cloudkibo.library.KiboAuthenticatorService
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:183:9-189:19
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:192:9-198:19
 	android:name
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:183:18-79
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:192:18-79
 intent-filter#android.accounts.AccountAuthenticator
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:184:13-186:29
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:193:13-195:29
 action#android.accounts.AccountAuthenticator
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:185:17-80
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:194:17-80
 	android:name
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:185:25-77
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:194:25-77
 meta-data#android.accounts.AccountAuthenticator
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:187:13-188:64
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:196:13-197:64
 	android:resource
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:188:24-61
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:197:24-61
 	android:name
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:187:24-76
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:196:24-76
 service#com.cloudkibo.database.SyncAdapterService
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:191:9-199:13
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:200:9-208:13
 	android:exported
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:192:11-34
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:201:11-34
 	android:name
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:191:18-74
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:200:18-74
 intent-filter#android.content.SyncAdapter
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:193:7-195:23
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:202:7-204:23
 action#android.content.SyncAdapter
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:194:11-64
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:203:11-64
 	android:name
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:194:19-61
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:203:19-61
 meta-data#android.content.SyncAdapter
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:196:7-198:54
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:205:7-207:54
 	android:resource
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:198:15-51
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:207:15-51
 	android:name
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:197:15-57
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:206:15-57
 service#com.cloudkibo.socket.SocketService
-ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:201:9-203:15
+ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:210:9-212:15
 	android:exported
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:202:13-37
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:211:13-37
 	android:name
-		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:201:18-67
+		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:210:18-67
 meta-data#com.google.android.gms.version
 ADDED from [com.google.android.gms:play-services:6.5.87] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.google.android.gms\play-services\6.5.87\AndroidManifest.xml:21:9-23:69
 	android:value
