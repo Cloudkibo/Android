@@ -206,7 +206,24 @@ public class Invite_Friends extends Activity {
         runOnUiThread(new Runnable() {
             public void run() {
                 emails = new String[contactList1.size()];
-                for(int i = 0; i<contactList1.size(); i++)
+                for (int i = 0; i < contactList1.size(); i++)
+                    emails[i] = contactList1.get(i);
+                //adapter.notifyDataSetChanged();
+                adapter = new ArrayAdapter<String>(getApplicationContext(),
+                        android.R.layout.simple_list_item_multiple_choice, emails);
+                listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+                listView.setAdapter(adapter);
+
+            }
+        });
+    }
+
+    public void loadNewContacts2(final ArrayList<String> contactList1) {
+
+        runOnUiThread(new Runnable() {
+            public void run() {
+                emails = new String[contactList1.size()];
+                for (int i = 0; i < contactList1.size(); i++)
                     emails[i] = contactList1.get(i);
                 //adapter.notifyDataSetChanged();
                 adapter = new ArrayAdapter<String>(getApplicationContext(),
