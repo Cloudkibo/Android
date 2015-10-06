@@ -137,13 +137,7 @@ public class SplashScreen extends Activity
 					i.putExtra("authtoken", authtoken);
 					startActivity(i);
 					finish();
-					/*
-					Intent i = new Intent(SplashScreen.this, MainActivity.class);
-					i.putExtra("authtoken", authtoken);
-					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					startActivity(i);
-					finish();
-*/
+
 
 				} catch (Exception e) {
 					e.printStackTrace();

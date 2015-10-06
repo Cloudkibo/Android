@@ -20,7 +20,9 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
+import com.cloudkibo.SplashScreen;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.model.AddressBookContactItem;
 
@@ -45,6 +47,9 @@ public class Invite_Friends extends Activity {
 
     String[] emails;
 
+    final ArrayList<String> contactList1 = new ArrayList<String>();
+    final ArrayList<String> contactList1Email = new ArrayList<String>();
+
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,13 +69,14 @@ public class Invite_Friends extends Activity {
             @Override
             public void onClick(View v) {
                 SparseBooleanArray checked = listView.getCheckedItemPositions();
+                final List<NameValuePair> emails = new ArrayList<NameValuePair>();
                 ArrayList<String> selectedItems = new ArrayList<String>();
                 for (int i = 0; i < checked.size(); i++) {
-                    // Item position in adapter
                     int position = checked.keyAt(i);
-                    // Add sport if it is checked i.e.) == TRUE!
-                    if (checked.valueAt(i))
+                    if (checked.valueAt(i)) {
                         selectedItems.add(adapter.getItem(position));
+                        emails.add(new BasicNameValuePair("emails", contactList1Email.get(position)));
+                    }
                 }
 
                 String[] outputStrArr = new String[selectedItems.size()];
@@ -79,7 +85,59 @@ public class Invite_Friends extends Activity {
                     outputStrArr[i] = selectedItems.get(i);
                 }
 
-                Intent intent = new Intent(getApplicationContext(),
+                new AsyncTask<String, String, JSONObject>() {
+                    private ProgressDialog nDialog;
+
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        nDialog = new ProgressDialog(Invite_Friends.this);
+                        nDialog.setTitle("Inviting your friends to CloudKibo...");
+                        nDialog.setMessage("Just a moment");
+                        nDialog.setIndeterminate(false);
+                        nDialog.setCancelable(true);
+                        nDialog.show();
+                    }
+
+                    @Override
+                    protected JSONObject doInBackground(String... args) {
+
+                        UserFunctions userFunction = new UserFunctions();
+                        JSONObject json = userFunction.sendEmailsOfInvitees(emails, authtoken);
+                        Log.w("SERVER SENT RESPONSE", json.toString());
+                        return json;
+                    }
+
+                    @Override
+                    protected void onPostExecute(JSONObject json) {
+
+                        try {
+
+                            if(json != null){
+
+                                String response = json.getString("status");
+
+                                if(response.equals("success")) {
+                                    Intent i = new Intent(Invite_Friends.this, MainActivity.class);
+                                    i.putExtra("authtoken", authtoken);
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(i);
+                                    finish();
+                                }
+
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        nDialog.dismiss();
+
+                    }
+
+                }.execute();
+
+
+                /*Intent intent = new Intent(getApplicationContext(),
                         ResultActivity.class);
 
                 // Create a bundle object
@@ -90,7 +148,8 @@ public class Invite_Friends extends Activity {
                 intent.putExtras(b);
 
                 // start the ResultActivity
-                startActivity(intent);
+                startActivity(intent);*/
+
             }
         });
     }
@@ -99,9 +158,6 @@ public class Invite_Friends extends Activity {
 
         new AsyncTask<String, String, JSONObject>() {
             private ProgressDialog nDialog;
-
-            ArrayList<String> contactList1 = new ArrayList<String>();
-            ArrayList<String> contactList1Email = new ArrayList<String>();
 
             @Override
             protected void onPreExecute() {
@@ -218,22 +274,7 @@ public class Invite_Friends extends Activity {
         });
     }
 
-    public void loadNewContacts2(final ArrayList<String> contactList1) {
 
-        runOnUiThread(new Runnable() {
-            public void run() {
-                emails = new String[contactList1.size()];
-                for (int i = 0; i < contactList1.size(); i++)
-                    emails[i] = contactList1.get(i);
-                //adapter.notifyDataSetChanged();
-                adapter = new ArrayAdapter<String>(getApplicationContext(),
-                        android.R.layout.simple_list_item_multiple_choice, emails);
-                listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-                listView.setAdapter(adapter);
-
-            }
-        });
-    }
 
 
 }

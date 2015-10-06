@@ -42,6 +42,7 @@ public class UserFunctions {
     private static String removeContactURL = "https://www.cloudkibo.com/api/contactslist/removefriend/";
     private static String phoneContactsURL = "https://www.cloudkibo.com/api/users/searchaccountsbyphone/";
     private static String emailContactsURL = "https://www.cloudkibo.com/api/users/searchaccountsbyemail/";
+    private static String inviteContactsURL = "https://www.cloudkibo.com/api/users/invitebymultipleemail/";
     
     
     
@@ -211,6 +212,11 @@ public class UserFunctions {
 
     public JSONObject sendAddressBookEmailContactsToServer(List<NameValuePair> params, String authtoken) {
         JSONObject contactresponse = connection.sendObjectToServer(emailContactsURL, authtoken, params);
+        return contactresponse;
+    }
+
+    public JSONObject sendEmailsOfInvitees(List<NameValuePair> params, String authtoken) {
+        JSONObject contactresponse = connection.sendObjectToServer(inviteContactsURL, authtoken, params);
         return contactresponse;
     }
 	
