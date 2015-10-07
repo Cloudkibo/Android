@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import android.provider.ContactsContract;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;

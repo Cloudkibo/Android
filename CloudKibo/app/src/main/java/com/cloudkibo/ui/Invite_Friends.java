@@ -2,6 +2,7 @@ package com.cloudkibo.ui;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
@@ -23,8 +24,10 @@ import android.widget.TextView;
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.SplashScreen;
+import com.cloudkibo.library.AccountGeneral;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.model.AddressBookContactItem;
+import com.cloudkibo.model.ContactItem;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -113,16 +116,12 @@ public class Invite_Friends extends Activity {
 
                         try {
 
-                            if(json != null){
+                            if (json != null) {
 
                                 String response = json.getString("status");
 
-                                if(response.equals("success")) {
-                                    Intent i = new Intent(Invite_Friends.this, MainActivity.class);
-                                    i.putExtra("authtoken", authtoken);
-                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivity(i);
-                                    finish();
+                                if (response.equals("success")) {
+
                                 }
 
                             }
@@ -131,6 +130,115 @@ public class Invite_Friends extends Activity {
                             e.printStackTrace();
                         }
                         nDialog.dismiss();
+
+                        new AsyncTask<String, String, JSONArray>() {
+                            private ProgressDialog nDialog2;
+
+                            @Override
+                            protected void onPreExecute() {
+                                super.onPreExecute();
+                                nDialog2 = new ProgressDialog(Invite_Friends.this);
+                                nDialog2.setTitle("Importing your CloudKibo Contacts");
+                                nDialog2.setMessage("Almost done");
+                                nDialog2.setIndeterminate(false);
+                                nDialog2.setCancelable(true);
+                                nDialog2.show();
+                            }
+
+                            @Override
+                            protected JSONArray doInBackground(String... args) {
+                                UserFunctions userFunction = new UserFunctions();
+                                JSONArray json = userFunction.getContactsList(authtoken);
+                                return json;
+                            }
+
+                            @Override
+                            protected void onPostExecute(JSONArray jsonA) {
+                                try {
+
+                                    if (jsonA != null) {
+
+                                        //String res = jsonA.get(0).toString();
+
+                                        ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
+
+                                        for (int i = 0; i < jsonA.length(); i++) {
+                                            String displayName;
+                                            String phoneNumber;
+                                            String emailAddress;
+                                            JSONObject row = jsonA.getJSONObject(i);
+                                            try {
+                                                displayName = row.getJSONObject("contactid").getString("firstname") +" "+
+                                                        row.getJSONObject("contactid").getString("lastname");
+                                                phoneNumber = row.getJSONObject("contactid").getString("phone");
+                                                emailAddress = row.getJSONObject("contactid").getString("email");
+                                            } catch (JSONException e) {
+                                                displayName = row.getJSONObject("contactid").getString("firstname") +" "+
+                                                        row.getJSONObject("contactid").getString("lastname");
+                                                phoneNumber = "";
+                                                emailAddress = row.getJSONObject("contactid").getString("email");
+                                            }
+
+                                            Log.w("INSERTING", ""+ displayName +" "+ phoneNumber +" "+ emailAddress);
+
+                                            ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+                                            int rawContactInsertIndex = ops.size();
+                                            ops.add(ContentProviderOperation
+                                                    .newInsert(ContactsContract.RawContacts.CONTENT_URI)
+                                                    .withValue(ContactsContract.RawContacts.ACCOUNT_TYPE, AccountGeneral.ACCOUNT_TYPE)
+                                                    .withValue(ContactsContract.RawContacts.ACCOUNT_NAME, AccountGeneral.ACCOUNT_NAME)
+                                                    .build());
+                                            ops.add(ContentProviderOperation
+                                                    .newInsert(ContactsContract.Data.CONTENT_URI)
+                                                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactInsertIndex)
+                                                    .withValue(
+                                                            ContactsContract.Data.MIMETYPE,
+                                                            ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE)
+                                                    .withValue(
+                                                            ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME,
+                                                            displayName).build());
+                                            ops.add(ContentProviderOperation
+                                                    .newInsert(ContactsContract.Data.CONTENT_URI)
+                                                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactInsertIndex)
+                                                    .withValue(
+                                                            ContactsContract.Data.MIMETYPE,
+                                                            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                                                    .withValue(ContactsContract.CommonDataKinds.Phone.NUMBER,
+                                                            phoneNumber)
+                                                    .withValue(ContactsContract.CommonDataKinds.Phone.TYPE,
+                                                            ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE).build());
+                                            ops.add(ContentProviderOperation
+                                                    .newInsert(ContactsContract.Data.CONTENT_URI)
+                                                    .withValueBackReference(ContactsContract.Data.RAW_CONTACT_ID, rawContactInsertIndex)
+                                                    .withValue(
+                                                            ContactsContract.Data.MIMETYPE,
+                                                            ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
+                                                    .withValue(ContactsContract.CommonDataKinds.Email.ADDRESS,
+                                                            emailAddress).build());
+                                            try {
+                                                getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+
+
+                                        }
+
+                                        Intent i = new Intent(Invite_Friends.this, MainActivity.class);
+                                        i.putExtra("authtoken", authtoken);
+                                        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                        startActivity(i);
+                                        finish();
+
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                                nDialog2.dismiss();
+                            }
+
+                        }.execute();
 
                     }
 
