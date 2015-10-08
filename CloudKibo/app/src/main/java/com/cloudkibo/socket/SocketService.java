@@ -41,6 +41,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
@@ -163,6 +166,14 @@ public class SocketService extends Service {
                                     (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
                             notificationManager.notify(0, n);
+
+                            try {
+                                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                                r.play();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
 
                         // todo Date throws exception

@@ -13,6 +13,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
@@ -40,6 +43,8 @@ public class IncomingCall extends CustomActivity {
     Button btnAcceptCall;
     Button btnRejectCall;
 
+    Ringtone r;
+
     @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -56,6 +61,14 @@ public class IncomingCall extends CustomActivity {
         startService(i);
         bindService(i, socketConnection, Context.BIND_AUTO_CREATE);
 
+        try {
+            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+            r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+            r.play();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         btnAcceptCall = (Button) findViewById(R.id.pickCall);
         btnRejectCall = (Button) findViewById(R.id.rejectCall);
 
@@ -63,6 +76,7 @@ public class IncomingCall extends CustomActivity {
             @Override
             public void onClick(View view) {
                 socketService.rejectCallMessageToCallee();
+                r.stop();
                 finish();
             }
         });
@@ -71,6 +85,7 @@ public class IncomingCall extends CustomActivity {
             @Override
             public void onClick(View view) {
                 socketService.acceptCallMessageToCallee();
+                r.stop();
 
                 Intent i = new Intent(getApplicationContext(), VideoCallView.class);
                 i.putExtra("username", user.get("username"));
@@ -116,6 +131,8 @@ public class IncomingCall extends CustomActivity {
 
                         Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
                         PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+                        r.stop();
 
                         Notification n = new Notification.Builder(getApplicationContext())
                                 .setContentTitle(body)
