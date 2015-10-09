@@ -166,19 +166,11 @@ public class SplashScreen extends Activity
                     final String authtoken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
                     //showMessage((authtoken != null) ? "SUCCESS!\ntoken: " + authtoken : "FAIL");
 
-					Intent i = new Intent(SplashScreen.this, Invite_Friends.class);
-					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					i.putExtra("authtoken", authtoken);
-					startActivity(i);
-					finish();
-					/*
                     Intent i = new Intent(SplashScreen.this, MainActivity.class);
                     i.putExtra("authtoken", authtoken);
                     i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(i);
                     finish();
-*/
-
 
                 } catch (Exception e) {
                     e.printStackTrace();

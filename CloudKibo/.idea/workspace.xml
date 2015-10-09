@@ -97,66 +97,50 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/SplashScreen.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="163" column="44" selection-start-line="163" selection-start-column="44" selection-end-line="163" selection-end-column="44" />
-              <folding>
-                <element signature="imports" expanded="false" />
-                <element signature="e#1831#1832#0" expanded="false" />
-                <element signature="e#1858#1859#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Invite_Friends.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/ui/Invite_Friends.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="188" column="134" selection-start-line="188" selection-start-column="134" selection-end-line="188" selection-end-column="134" />
-              <folding>
-                <element signature="method#loadContactsFromAddressBook#0;class#Invite_Friends#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/MainActivity.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="174" column="16" selection-start-line="174" selection-start-column="16" selection-end-line="174" selection-end-column="16" />
-              <folding>
-                <element signature="imports" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="IncomingCall.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/IncomingCall.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="64" column="90" selection-start-line="64" selection-start-column="90" selection-end-line="64" selection-end-column="90" />
+              <caret line="173" column="0" selection-start-line="173" selection-start-column="0" selection-end-line="173" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AndroidManifest.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="42" column="68" selection-start-line="42" selection-start-column="68" selection-end-line="42" selection-end-column="68" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="prefs.xml" pinned="false" current-in-tab="true">
+      <file leaf-file-name="prefs.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/res/xml/prefs.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.25123152">
-              <caret line="3" column="4" selection-start-line="3" selection-start-column="4" selection-end-line="5" selection-end-column="76" />
+            <state vertical-scroll-proportion="0.0">
+              <caret line="10" column="28" selection-start-line="10" selection-start-column="28" selection-end-line="10" selection-end-column="28" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WebRtcClient.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/WebRtcClient.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="81" column="41" selection-start-line="0" selection-start-column="0" selection-end-line="339" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="WebRtcClientConf.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/WebRtcClientConf.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.16790123">
+              <caret line="17" column="17" selection-start-line="17" selection-start-column="17" selection-end-line="17" selection-end-column="19" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="KiboAuthenticator.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/KiboAuthenticator.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="63" column="29" selection-start-line="63" selection-start-column="22" selection-end-line="63" selection-end-column="29" />
+              <folding>
+                <element signature="imports" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -175,8 +159,62 @@
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/UserFunctions.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="217" column="22" selection-start-line="217" selection-start-column="22" selection-end-line="217" selection-end-column="22" />
-              <folding />
+              <caret line="76" column="41" selection-start-line="76" selection-start-column="41" selection-end-line="76" selection-end-column="41" />
+              <folding>
+                <element signature="imports" expanded="false" />
+                <element signature="e#2701#2702#0" expanded="false" />
+                <element signature="e#2753#2754#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Login.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/Login.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="497" column="62" selection-start-line="497" selection-start-column="52" selection-end-line="497" selection-end-column="62" />
+              <folding>
+                <element signature="imports" expanded="false" />
+                <element signature="e#8531#8532#0" expanded="false" />
+                <element signature="e#8598#8599#0" expanded="false" />
+                <element signature="e#12394#12395#0" expanded="false" />
+                <element signature="e#12425#12426#0" expanded="false" />
+                <element signature="e#17728#17729#0" expanded="false" />
+                <element signature="e#17752#17753#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ConnectionManager.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/ConnectionManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="96" column="42" selection-start-line="96" selection-start-column="37" selection-end-line="96" selection-end-column="42" />
+              <folding>
+                <element signature="imports" expanded="false" />
+                <element signature="e#13745#13746#0" expanded="false" />
+                <element signature="e#13785#13786#0" expanded="false" />
+                <element signature="e#13839#13840#0" expanded="false" />
+                <element signature="e#13889#13890#0" expanded="false" />
+                <element signature="e#13928#13929#0" expanded="false" />
+                <element signature="e#13967#13968#0" expanded="false" />
+                <element signature="e#14019#14020#0" expanded="false" />
+                <element signature="e#14067#14068#0" expanded="false" />
+                <element signature="e#14106#14107#0" expanded="false" />
+                <element signature="e#14145#14146#0" expanded="false" />
+                <element signature="e#14197#14198#0" expanded="false" />
+                <element signature="e#14245#14246#0" expanded="false" />
+                <element signature="e#14281#14282#0" expanded="false" />
+                <element signature="e#14317#14318#0" expanded="false" />
+                <element signature="e#14363#14364#0" expanded="false" />
+                <element signature="e#14405#14406#0" expanded="false" />
+                <element signature="e#14448#14449#0" expanded="false" />
+                <element signature="e#14484#14485#0" expanded="false" />
+                <element signature="e#14537#14538#0" expanded="false" />
+                <element signature="e#14579#14580#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -1475,7 +1513,6 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/OutgoingCall.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/database/CloudKiboContentProvider.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/filesharing/FileConnection.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/ConnectionManager.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/database/DatabaseHandler.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/WebRtcClient.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/VideoCallView.java" />
@@ -1488,12 +1525,14 @@
         <option value="$PROJECT_DIR$/app/src/main/res/layout/invite_contacts.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/UserFunctions.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/MainActivity.java" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/SplashScreen.java" />
         <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/ui/Invite_Friends.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/socket/SocketService.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/IncomingCall.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/ConnectionManager.java" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/SplashScreen.java" />
         <option value="$PROJECT_DIR$/app/src/main/res/xml/prefs.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/WebRTCClientConf.java" />
       </list>
     </option>
   </component>
@@ -1566,6 +1605,50 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope">
+        <subPane subId="Problems" />
+        <subPane subId="Production">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+        <subPane subId="Project Files">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+        <subPane subId="Tests">
+          <PATH>
+            <PATH_ELEMENT USER_OBJECT="Root">
+              <option name="myItemId" value="" />
+              <option name="myItemType" value="" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="PackagesPane">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudKibo" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
+      </pane>
+      <pane id="Scratches">
+        <subPane />
+      </pane>
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -1594,38 +1677,6 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="xml" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="res" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
               <option name="myItemId" value="java" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
             </PATH_ELEMENT>
@@ -1652,7 +1703,7 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="socket" />
+              <option name="myItemId" value="webrtc" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -1666,52 +1717,20 @@
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="manifests" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidManifestsGroupNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="Scratches">
-        <subPane />
-      </pane>
-      <pane id="PackagesPane">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+              <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+              <option name="myItemId" value="cloudkibo" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-      </pane>
-      <pane id="Scope">
-        <subPane subId="Problems" />
-        <subPane subId="Production">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
+            <PATH_ELEMENT>
+              <option name="myItemId" value="webrtc" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-        <subPane subId="Project Files">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
-        <subPane subId="Tests">
-          <PATH>
-            <PATH_ELEMENT USER_OBJECT="Root">
-              <option name="myItemId" value="" />
-              <option name="myItemType" value="" />
+            <PATH_ELEMENT>
+              <option name="myItemId" value="call" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -1981,10 +2000,10 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.51277685" sideWeight="0.51059" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32879046" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.60647357" sideWeight="0.47723824" order="11" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.21294719" sideWeight="0.47723824" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.52640545" sideWeight="0.51966715" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2245827" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.32018209" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32980332" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24962178" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
@@ -1998,7 +2017,7 @@
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="15" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.39863715" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Memory Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.6780239" sideWeight="0.48184568" order="14" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.55706984" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.16865417" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -2048,71 +2067,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="jar://$USER_HOME$/AppData/Local/Android/sdk/platforms/android-19/android.jar!/android/content/ContentResolver.class">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.79746836">
-          <caret line="289" column="0" selection-start-line="289" selection-start-column="0" selection-end-line="289" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/incoming_call.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.37037036">
-          <caret line="23" column="36" selection-start-line="23" selection-start-column="36" selection-end-line="23" selection-end-column="36" />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/file/localstorage/LocalStorageProvider.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-3.4824798">
-          <caret line="25" column="13" selection-start-line="25" selection-start-column="13" selection-end-line="25" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/database/SyncAdapterService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="6" column="13" selection-start-line="6" selection-start-column="13" selection-end-line="6" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/database/CloudKiboSyncAdapter.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="128" column="61" selection-start-line="128" selection-start-column="61" selection-end-line="128" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/drawable-mdpi/ic_chooser.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/captures/SystemInfo_2015.08.28_18.59.27.txt">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-2.5619047">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://F:/device-2015-08-28-202819.png">
-      <provider selected="true" editor-type-id="images">
-        <state />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/about.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/activity_main.xml">
       <provider editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -2215,36 +2169,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/ConnectionManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="357" column="0" selection-start-line="357" selection-start-column="0" selection-end-line="357" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#13745#13746#0" expanded="false" />
-            <element signature="e#13785#13786#0" expanded="false" />
-            <element signature="e#13839#13840#0" expanded="false" />
-            <element signature="e#13889#13890#0" expanded="false" />
-            <element signature="e#13928#13929#0" expanded="false" />
-            <element signature="e#13967#13968#0" expanded="false" />
-            <element signature="e#14019#14020#0" expanded="false" />
-            <element signature="e#14067#14068#0" expanded="false" />
-            <element signature="e#14106#14107#0" expanded="false" />
-            <element signature="e#14145#14146#0" expanded="false" />
-            <element signature="e#14197#14198#0" expanded="false" />
-            <element signature="e#14245#14246#0" expanded="false" />
-            <element signature="e#14281#14282#0" expanded="false" />
-            <element signature="e#14317#14318#0" expanded="false" />
-            <element signature="e#14363#14364#0" expanded="false" />
-            <element signature="e#14405#14406#0" expanded="false" />
-            <element signature="e#14448#14449#0" expanded="false" />
-            <element signature="e#14484#14485#0" expanded="false" />
-            <element signature="e#14537#14538#0" expanded="false" />
-            <element signature="e#14579#14580#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/database/CloudKiboContentProvider.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.4257603">
@@ -2270,13 +2194,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="123" column="0" selection-start-line="123" selection-start-column="0" selection-end-line="123" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/WebRtcClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="311" column="13" selection-start-line="311" selection-start-column="8" selection-end-line="311" selection-end-column="13" />
         </state>
       </provider>
     </entry>
@@ -2366,53 +2283,10 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/Login.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.425">
-          <caret line="417" column="34" selection-start-line="417" selection-start-column="16" selection-end-line="417" selection-end-column="34" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Android/sdk1/sources/android-19/android/os/AsyncTask.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-0.03557312">
           <caret line="643" column="0" selection-start-line="643" selection-start-column="0" selection-end-line="643" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/SplashScreen.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="163" column="44" selection-start-line="163" selection-start-column="44" selection-end-line="163" selection-end-column="44" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#1831#1832#0" expanded="false" />
-            <element signature="e#1858#1859#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/ui/ContactList.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.32673267">
-          <caret line="760" column="0" selection-start-line="760" selection-start-column="0" selection-end-line="760" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/UserFunctions.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="217" column="22" selection-start-line="217" selection-start-column="22" selection-end-line="217" selection-end-column="22" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/AccountGeneral.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2420,9 +2294,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="188" column="134" selection-start-line="188" selection-start-column="134" selection-end-line="188" selection-end-column="134" />
-          <folding>
-            <element signature="method#loadContactsFromAddressBook#0;class#Invite_Friends#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2430,9 +2301,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.16588785">
           <caret line="169" column="28" selection-start-line="169" selection-start-column="28" selection-end-line="175" selection-end-column="29" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2440,9 +2308,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="174" column="16" selection-start-line="174" selection-start-column="16" selection-end-line="174" selection-end-column="16" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2450,7 +2315,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="64" column="90" selection-start-line="64" selection-start-column="90" selection-end-line="64" selection-end-column="90" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2466,14 +2330,170 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/ParseComServerAuthenticate.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.15668203">
+          <caret line="24" column="13" selection-start-line="24" selection-start-column="13" selection-end-line="24" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/database/SyncAdapterService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.21658987">
+          <caret line="9" column="39" selection-start-line="9" selection-start-column="19" selection-end-line="9" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/KiboAuthenticatorService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.35253456">
+          <caret line="11" column="39" selection-start-line="11" selection-start-column="29" selection-end-line="11" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk1/sources/android-19/android/accounts/AccountAuthenticatorActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33179724">
+          <caret line="46" column="22" selection-start-line="46" selection-start-column="22" selection-end-line="46" selection-end-column="22" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk1/sources/android-19/android/accounts/AccountManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.60599077">
+          <caret line="922" column="37" selection-start-line="922" selection-start-column="25" selection-end-line="922" selection-end-column="37" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/KiboAuthenticator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="63" column="29" selection-start-line="63" selection-start-column="22" selection-end-line="63" selection-end-column="29" />
+          <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/ServerAuthenticate.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2" column="17" selection-start-line="2" selection-start-column="17" selection-end-line="2" selection-end-column="17" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/AccountGeneral.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="2" column="13" selection-start-line="2" selection-start-column="13" selection-end-line="2" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/UserFunctions.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="76" column="41" selection-start-line="76" selection-start-column="41" selection-end-line="76" selection-end-column="41" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#2701#2702#0" expanded="false" />
+            <element signature="e#2753#2754#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/ConnectionManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="96" column="42" selection-start-line="96" selection-start-column="37" selection-end-line="96" selection-end-column="42" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#13745#13746#0" expanded="false" />
+            <element signature="e#13785#13786#0" expanded="false" />
+            <element signature="e#13839#13840#0" expanded="false" />
+            <element signature="e#13889#13890#0" expanded="false" />
+            <element signature="e#13928#13929#0" expanded="false" />
+            <element signature="e#13967#13968#0" expanded="false" />
+            <element signature="e#14019#14020#0" expanded="false" />
+            <element signature="e#14067#14068#0" expanded="false" />
+            <element signature="e#14106#14107#0" expanded="false" />
+            <element signature="e#14145#14146#0" expanded="false" />
+            <element signature="e#14197#14198#0" expanded="false" />
+            <element signature="e#14245#14246#0" expanded="false" />
+            <element signature="e#14281#14282#0" expanded="false" />
+            <element signature="e#14317#14318#0" expanded="false" />
+            <element signature="e#14363#14364#0" expanded="false" />
+            <element signature="e#14405#14406#0" expanded="false" />
+            <element signature="e#14448#14449#0" expanded="false" />
+            <element signature="e#14484#14485#0" expanded="false" />
+            <element signature="e#14537#14538#0" expanded="false" />
+            <element signature="e#14579#14580#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/library/Login.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="497" column="62" selection-start-line="497" selection-start-column="52" selection-end-line="497" selection-end-column="62" />
+          <folding>
+            <element signature="imports" expanded="false" />
+            <element signature="e#8531#8532#0" expanded="false" />
+            <element signature="e#8598#8599#0" expanded="false" />
+            <element signature="e#12394#12395#0" expanded="false" />
+            <element signature="e#12425#12426#0" expanded="false" />
+            <element signature="e#17728#17729#0" expanded="false" />
+            <element signature="e#17752#17753#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/ui/ContactList.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.8074074">
+          <caret line="120" column="54" selection-start-line="120" selection-start-column="37" selection-end-line="120" selection-end-column="54" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/database/CloudKiboSyncAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="1.9792627">
+          <caret line="97" column="12" selection-start-line="97" selection-start-column="12" selection-end-line="97" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/SplashScreen.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="173" column="0" selection-start-line="173" selection-start-column="0" selection-end-line="173" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/res/xml/prefs.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.25123152">
-          <caret line="3" column="4" selection-start-line="3" selection-start-column="4" selection-end-line="5" selection-end-column="76" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="10" column="28" selection-start-line="10" selection-start-column="28" selection-end-line="10" selection-end-column="28" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/WebRtcClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="81" column="41" selection-start-line="0" selection-start-column="0" selection-end-line="339" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/WebRtcClientConf.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.16790123">
+          <caret line="17" column="17" selection-start-line="17" selection-start-column="17" selection-end-line="17" selection-end-column="19" />
           <folding />
         </state>
       </provider>
