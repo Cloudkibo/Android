@@ -279,7 +279,7 @@ public class MainActivity extends CustomActivity
         //al.add(new Data("Settings", null, R.drawable.ic_setting));
         al.add(new Data("About CloudKibo", null, R.drawable.ic_about));
         al.add(new Data("Logout", null, R.drawable.ic_logout));
-        //al.add(new Data("WebRTC", null, R.drawable.group1)); // this is for testing purpose
+        al.add(new Data("Conference", null, R.drawable.group1)); // conference now starts with the button
         return al;
     }
 
