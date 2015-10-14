@@ -22,6 +22,7 @@ import com.cloudkibo.utils.IFragmentName;
 import com.cloudkibo.webrtc.call.IncomingCall;
 import com.cloudkibo.webrtc.filesharing.FileConnection;
 import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Ack;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 //import com.koushikdutta.async.http.socketio.Acknowledge;
@@ -471,6 +472,23 @@ public class SocketService extends Service {
 
                 }
 
+            }).on("peer.connected", new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+
+                    Log.w("CONFERENCE", args[0].toString());
+                    try {
+                        JSONObject payload = new JSONObject(args[0].toString());
+
+                        mListener.receiveSocketJson("peer.connected", payload);
+
+                    }catch(JSONException e){
+                        e.printStackTrace();
+                    }
+
+                }
+
             }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
 
                 @Override
@@ -756,6 +774,19 @@ public class SocketService extends Service {
                     "Message not sent. No Internet", Toast.LENGTH_SHORT)
                     .show();
         }
+    }
+
+    public void joinConference(JSONObject data){
+        socket.emit("init", data, new Ack() {
+            @Override
+            public void call(Object... args) {
+
+                Log.w("CURRENT ID", args[1].toString());
+
+                mListener.receiveSocketMessage("conference_id", args[1].toString());
+
+            }
+        });
     }
 
     public void askFriendsOnlineStatus() {

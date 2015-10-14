@@ -6,6 +6,7 @@ package com.cloudkibo.webrtc.conference;
 
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Point;
@@ -21,6 +22,7 @@ import com.cloudkibo.R;
 import com.cloudkibo.socket.BoundServiceListener;
 import com.cloudkibo.socket.SocketService;
 import com.cloudkibo.webrtc.filesharing.RTCConfig;
+import com.github.nkzawa.socketio.client.Ack;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +31,7 @@ import org.webrtc.MediaStream;
 import org.webrtc.VideoRenderer;
 import org.webrtc.VideoRendererGui;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class VideoCallView extends Activity implements WebRtcClient.RtcListener {
@@ -56,15 +59,14 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
     private VideoRenderer.Callbacks remoteRender;
     private WebRtcClient client;
     private String callerId;
+    private int currentId;
 
     SocketService socketService;
     boolean isBound = false;
 
-    String peerName;
     Boolean initiator;
-    String lastMessage;
 
-    private String username;
+    private HashMap<String, String> user;
     private String room;
 
     @Override
@@ -73,10 +75,14 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
-        username = getIntent().getExtras().getString("user");
+        user = (HashMap) getIntent().getExtras().get("user");
         room = getIntent().getExtras().getString("room");
-        peerName = getIntent().getExtras().getString("peer");
-        lastMessage = getIntent().getExtras().getString("lastmessage");
+
+        Intent i = new Intent(this, SocketService.class);
+        i.putExtra("user", user);
+        i.putExtra("room", room);
+        startService(i);
+        bindService(i, socketConnection, Context.BIND_AUTO_CREATE);
 
         getWindow().addFlags(
                 LayoutParams.FLAG_FULLSCREEN
@@ -155,38 +161,26 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
 
     public void startCam() {
         // Camera settings
+
+        Log.w("VideoCallView", "inside startCam going to call start()");
         client.start();
-        try {
-            if (lastMessage.equals("AcceptCallFromOther")) {
-                room = RTCConfig.randomString(10);
 
-                joinRoomForCall(room);
-
-                JSONObject data = new JSONObject();
-                data.put("type", "room_name");
-                data.put("room", room);
-
-                socketService.sendSocketMessage(data.toString(), peerName);
-
-            }
-        }catch(JSONException e){
-            Log.getStackTraceString(e);
-        }
     }
 
-    public void joinRoomForCall(String r){
-        /*
-                socket.emit('init', { room: r, username: username }, function (roomid, id) {
-                    if(id === null){
-                        alert('You cannot join conference. Room is full');
-                        connected = false;
-                        return;
-                    }
-                    currentId = id;
-                    roomId = roomid;
-                });
-                connected = true;
-*/
+    public void joinRoomForCall(){
+
+        Log.w("VideoCallView", "inside joinRoomForCall");
+
+        try {
+            JSONObject data = new JSONObject();
+            data.put("room", room);
+            data.put("username", user.get("username"));
+
+            socketService.joinConference(data);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+
     }
 
     @Override
@@ -201,11 +195,16 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
 
     @Override
     public void onLocalStream(MediaStream localStream) {
+        Log.w("VideoCallView", "inside onLocalStream");
+
         localStream.videoTracks.get(0).addRenderer(new VideoRenderer(localRender));
         VideoRendererGui.update(localRender,
                 LOCAL_X_CONNECTING, LOCAL_Y_CONNECTING,
                 LOCAL_WIDTH_CONNECTING, LOCAL_HEIGHT_CONNECTING,
                 scalingType);
+
+       joinRoomForCall();
+
     }
 
     @Override
@@ -245,80 +244,25 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
 
                 @Override
                 public void receiveSocketMessage(String type, String body) {
-                    if(type.equals("call_room")){
-                        joinRoomForCall(body);
+                    if(type.equals("conference_id")){
+                        currentId = Integer.parseInt(body);
                     }
                 }
 
                 @Override
                 public void receiveSocketArray(String type, JSONArray body) {
-/*
-                    if(type.equals("msg")){
 
-                        try {
-
-                            JSONObject payload = body.getJSONObject(0);
-                            String type2 = body.getJSONObject(0).getString("type");
-
-                            Toast.makeText(getApplicationContext(),
-                                    payload.toString(), Toast.LENGTH_SHORT)
-                                    .show();
-
-                            if(type2.equals("offer")){
-
-                                createPeerConnectionFactory();
-
-                                peer = new FilePeer();
-
-                                SessionDescription sdp = new SessionDescription(
-                                        SessionDescription.Type.fromCanonicalForm(payload.getString("type")),
-                                        payload.getString("sdp")
-                                );
-                                peer.pc.setRemoteDescription(peer, sdp);
-                                peer.pc.createAnswer(peer, RTCConfig.getMediaConstraints());
-                            }
-                            else if(type2.equals("answer")){
-                                SessionDescription sdp = new SessionDescription(
-                                        SessionDescription.Type.fromCanonicalForm(payload.getString("type")),
-                                        payload.getString("sdp")
-                                );
-                                peer.pc.setRemoteDescription(peer, sdp);
-                            }
-                            else if(type2.equals("candidate")){
-                                PeerConnection pc = peer.pc;
-                                if (pc.getRemoteDescription() != null) {
-                                    IceCandidate candidate = new IceCandidate(
-                                            payload.getString("id"),
-                                            payload.getInt("label"),
-                                            payload.getString("candidate")
-                                    );
-                                    pc.addIceCandidate(candidate);
-                                }
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        } catch (NullPointerException e){
-                            e.printStackTrace();
-
-							//
-							// * todo This needs to be fixed. It does not receive offer and receives
-							// * the candidate. This is a network error
-							// *
-
-                            Toast.makeText(getApplicationContext(),
-                                    "Network error occurred. Try again after connecting to Internet", Toast.LENGTH_SHORT)
-                                    .show();
-
-                        }
-
-                    }
-*/
                 }
 
                 @Override
                 public void receiveSocketJson(String type, JSONObject body) {
-
+                    if(type.equals("peer.connected")){
+                        try {
+                            client.peerConnected(type, body.getString("id"), body.getString("username"));
+                        }catch(JSONException e){
+                            e.printStackTrace();
+                        }
+                    }
                 }
             });
         }

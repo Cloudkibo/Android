@@ -26,7 +26,7 @@ import java.util.HashMap;
 
 public class WebRtcClient {
     private final static String TAG = WebRtcClient.class.getCanonicalName();
-    private final static int MAX_PEER = 2;
+    private final static int MAX_PEER = 50;
     private boolean[] endPoints = new boolean[MAX_PEER];
     private PeerConnectionFactory factory;
     private HashMap<String, Peer> peers = new HashMap<String, Peer>();
@@ -123,7 +123,7 @@ public class WebRtcClient {
 
         private MessageHandler() {
             this.commandMap = new HashMap<String, Command>();
-            commandMap.put("init", new CreateOfferCommand());
+            commandMap.put("peer.connected", new CreateOfferCommand());
             commandMap.put("offer", new CreateAnswerCommand());
             commandMap.put("answer", new SetRemoteSDPCommand());
             commandMap.put("candidate", new AddIceCandidateCommand());
@@ -143,12 +143,7 @@ public class WebRtcClient {
                     // if peer is unknown, try to add him
                     if(!peers.containsKey(from)) {
                         // if MAX_PEER is reach, ignore the call
-                        int endPoint = findEndPoint();
-                        if(endPoint != MAX_PEER) {
-                            Peer peer = addPeer(from, endPoint);
-                            peer.pc.addStream(localMS);
-                            commandMap.get(type).execute(from, payload);
-                        }
+
                     } else {
                         commandMap.get(type).execute(from, payload);
                     }
@@ -158,6 +153,12 @@ public class WebRtcClient {
             }
         };
 
+    }
+
+    public void peerConnected (String type, String id, String username){
+        Peer peer = addPeer(id, Integer.parseInt(id), username);
+        peer.pc.addStream(localMS);
+        //commandMap.get(type).execute(id, payload); // todo start from here
     }
 
     private class Peer implements SdpObserver, PeerConnection.Observer{
@@ -248,7 +249,7 @@ public class WebRtcClient {
         }
     }
 
-    private Peer addPeer(String id, int endPoint) {
+    private Peer addPeer(String id, int endPoint, String username) {
         Peer peer = new Peer(id, endPoint);
         peers.put(id, peer);
 
@@ -338,6 +339,7 @@ public class WebRtcClient {
         localMS.addTrack(factory.createAudioTrack("ARDAMSa0", audioSource));
 
         mListener.onLocalStream(localMS);
+        Log.w("VideoCallView", "inside setCamera");
     }
 
     private VideoCapturer getVideoCapturer() {

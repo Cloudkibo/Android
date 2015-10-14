@@ -424,10 +424,11 @@ int layout pendinglist 0x7f030022
 int layout project 0x7f030023
 int layout project_item 0x7f030024
 int layout prompt 0x7f030025
-int layout register 0x7f030026
-int layout result 0x7f030027
-int layout rtc_activity 0x7f030028
-int layout splash 0x7f030029
+int layout prompt_conference_name 0x7f030026
+int layout register 0x7f030027
+int layout result 0x7f030028
+int layout rtc_activity 0x7f030029
+int layout splash 0x7f03002a
 int menu main 0x7f0c0000
 int menu newchat 0x7f0c0001
 int raw gtm_analytics 0x7f050000

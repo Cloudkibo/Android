@@ -841,10 +841,11 @@ containing a value of this type.
         public static final int project=0x7f030023;
         public static final int project_item=0x7f030024;
         public static final int prompt=0x7f030025;
-        public static final int register=0x7f030026;
-        public static final int result=0x7f030027;
-        public static final int rtc_activity=0x7f030028;
-        public static final int splash=0x7f030029;
+        public static final int prompt_conference_name=0x7f030026;
+        public static final int register=0x7f030027;
+        public static final int result=0x7f030028;
+        public static final int rtc_activity=0x7f030029;
+        public static final int splash=0x7f03002a;
     }
     public static final class menu {
         public static final int main=0x7f0c0000;

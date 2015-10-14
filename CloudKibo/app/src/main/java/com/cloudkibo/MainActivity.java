@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.provider.ContactsContract;
 
 import org.apache.http.NameValuePair;
@@ -45,12 +48,14 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -66,6 +71,7 @@ import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.AccountGeneral;
 import com.cloudkibo.library.Login;
 import com.cloudkibo.library.UserFunctions;
+import com.cloudkibo.model.ContactItem;
 import com.cloudkibo.model.Data;
 //import io.cordova.hellocordova.CordovaApp;
 
@@ -276,10 +282,10 @@ public class MainActivity extends CustomActivity
         //al.add(new Data("Chat", null, R.drawable.ic_chat));
         al.add(new Data("Contacts", null, R.drawable.ic_notes));
         al.add(new Data("Add Requests", null, R.drawable.ic_projects));
+        al.add(new Data("Conference", null, R.drawable.group1));
         //al.add(new Data("Settings", null, R.drawable.ic_setting));
         al.add(new Data("About CloudKibo", null, R.drawable.ic_about));
         al.add(new Data("Logout", null, R.drawable.ic_logout));
-        al.add(new Data("Conference", null, R.drawable.group1)); // conference now starts with the button
         return al;
     }
 
@@ -300,15 +306,60 @@ public class MainActivity extends CustomActivity
             f = new ContactList();
         }
         else if(pos == 2){
-        	title = "Add Requests";
-        	f = new AddRequest();
+            title = "Add Requests";
+            f = new AddRequest();
         }
-        else if (pos == 3)
+        else if(pos == 3){
+
+            // get prompts.xml view
+            LayoutInflater layoutInflater = LayoutInflater.from(getApplicationContext());
+
+            View promptView = layoutInflater.inflate(R.layout.prompt_conference_name, null);
+
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+            final EditText input = (EditText) promptView.findViewById(R.id.userInput);
+
+            // set prompts.xml to be the layout file of the alertdialog builder
+            alertDialogBuilder.setView(promptView);
+
+            // setup a dialog window
+            alertDialogBuilder
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // get user input and send it to server
+                            Log.w("SOJHARO", "VALUE = "+ input.getText());
+
+                            Intent i = new Intent(getApplicationContext(), com.cloudkibo.webrtc.conference.VideoCallView.class);
+                            i.putExtra("authtoken", authtoken);
+                            i.putExtra("user", user);
+                            i.putExtra("room", input.getText().toString());
+                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(i);
+                            finish();
+
+
+                        }
+                    })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,	int id) {
+                                    dialog.cancel();
+                                }
+                            });
+
+            // create an alert dialog
+            AlertDialog alertD = alertDialogBuilder.create();
+
+            alertD.show();
+        }
+        else if (pos == 4)
         {
             title = "About CloudKibo";
             f = new AboutChat();
         }
-        else if (pos == 4)
+        else if (pos == 5)
         {
             startActivity(new Intent(this, Login.class));
 
