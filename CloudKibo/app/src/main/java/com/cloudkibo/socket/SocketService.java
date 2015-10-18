@@ -119,6 +119,7 @@ public class SocketService extends Service {
                 @Override
                 public void call(Object... args) {
 
+                    Log.w("SOCKET", "CONNECTED");
 
                     JSONObject message = new JSONObject();
 
@@ -489,6 +490,23 @@ public class SocketService extends Service {
 
                 }
 
+            }).on("msg", new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+
+                    Log.w("CONFERENCE", args[0].toString());
+                    try {
+                        JSONObject payload = new JSONObject(args[0].toString());
+
+                        mListener.receiveSocketJson("msg", payload);
+
+                    }catch(JSONException e){
+                        e.printStackTrace();
+                    }
+
+                }
+
             }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
 
                 @Override
@@ -649,23 +667,10 @@ public class SocketService extends Service {
         }
     }
 
-    public void sendSocketMsg(String msg, String peer) { // todo: do test this
+    public void sendConferenceMsg(JSONObject message) { // todo: do test this
 
-        JSONObject message = new JSONObject();
+        socket.emit("msg", message);//new JSONArray().put(message));
 
-        try {
-
-            message.put("msg", msg);
-            message.put("room", room);
-            message.put("to", peer);
-            message.put("username", user.get("username"));
-
-            socket.emit("msg", message);//new JSONArray().put(message));
-
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
     }
 
     public void stopCallMessageToCallee() {

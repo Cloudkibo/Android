@@ -80,13 +80,10 @@ public class ConnectionManager {
 
             String responseString = EntityUtils.toString(response.getEntity());
             if (response.getStatusLine().getStatusCode() != 200) {
+                Log.w("Register", responseString);
                 // try parse the string to a JSON object
                 try {
                     jObj = new JSONObject(responseString);
-
-                    if(jObj.has("message")){
-                        throw new Exception(jObj.getString("message"));
-                    }
 
                     if(jObj.has("errors")) {
                         jObj = jObj.getJSONObject("errors");
@@ -100,6 +97,10 @@ public class ConnectionManager {
                         if(jObj.has("email")){
                             throw new Exception(jObj.getJSONObject("email").getString("message"));
                         }
+                    }
+
+                    if(jObj.has("message")){
+                        throw new Exception(jObj.getString("message"));
                     }
 
                 } catch (JSONException e) {

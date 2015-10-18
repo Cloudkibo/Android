@@ -168,9 +168,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
     }
 
     public void joinRoomForCall(){
-
         Log.w("VideoCallView", "inside joinRoomForCall");
-
         try {
             JSONObject data = new JSONObject();
             data.put("room", room);
@@ -180,7 +178,17 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
         }catch(JSONException e){
             e.printStackTrace();
         }
+    }
 
+    public void sendMessage(String to, JSONObject payload){
+        try {
+            payload.put("to", to);
+            payload.put("by", Integer.toString(currentId));
+            payload.put("username", user.get("username"));
+            socketService.sendConferenceMsg(payload);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -256,13 +264,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
 
                 @Override
                 public void receiveSocketJson(String type, JSONObject body) {
-                    if(type.equals("peer.connected")){
-                        try {
-                            client.peerConnected(type, body.getString("id"), body.getString("username"));
-                        }catch(JSONException e){
-                            e.printStackTrace();
-                        }
-                    }
+                    client.messageReceived(type, body);
                 }
             });
         }

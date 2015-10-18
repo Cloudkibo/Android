@@ -364,7 +364,7 @@ public class Login extends AccountAuthenticatorActivity implements GoogleApiClie
 			nDialog.setMessage("Loading..");
 			nDialog.setIndeterminate(false);
 			nDialog.setCancelable(true);
-			// nDialog.show();
+			nDialog.show();
 		}
 		
 		
