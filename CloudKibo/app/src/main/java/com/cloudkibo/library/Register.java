@@ -154,7 +154,7 @@ public class Register extends Activity {
 			nDialog.setTitle("Checking Network");
 			nDialog.setIndeterminate(false);
 			nDialog.setCancelable(true);
-			// nDialog.show();
+			nDialog.show();
 		}
 
 		@Override

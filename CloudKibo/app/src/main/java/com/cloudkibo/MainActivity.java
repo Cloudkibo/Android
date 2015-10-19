@@ -369,6 +369,10 @@ public class MainActivity extends CustomActivity
             db.resetContactsTable();
             db.resetTables();
 
+            stopService(new Intent(this, SocketService.class));
+
+            am.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, authtoken);
+
             am.removeAccount(account, null, null);
 
         }

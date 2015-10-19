@@ -144,9 +144,14 @@ public class WebRtcClient {
             // TODO: modify sdp to use pcParams prefered codecs
             try {
                 Log.w("Conference", sdp.type.canonicalForm());
+                JSONObject sdpString = new JSONObject();
+                sdpString.put("type", sdp.type.canonicalForm());
+                sdpString.put("sdp", sdp.description);
+
                 JSONObject payload = new JSONObject();
+                payload.put("sdp", sdpString);
                 payload.put("type", sdp.type.canonicalForm());
-                payload.put("sdp", sdp.description);
+
                 mListener.sendMessage(id, payload);
                 pc.setLocalDescription(Peer.this, sdp);
             } catch (JSONException e) {
@@ -182,6 +187,7 @@ public class WebRtcClient {
             try {
                 //socket.emit('msg', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
                 JSONObject cnd = new JSONObject();
+                cnd.put("type", "candidate");
                 cnd.put("label", candidate.sdpMLineIndex);
                 cnd.put("id", candidate.sdpMid);
                 cnd.put("candidate", candidate.sdp);
