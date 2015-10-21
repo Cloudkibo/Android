@@ -116,11 +116,11 @@ public class WebRtcClient {
                         if (endPoint != MAX_PEER) {
                             Peer peer = addPeer(body.getString("by"), endPoint, body.getString("username"));
                             peer.pc.addStream(localMS);
-                            createAnswer(body.getString("by"), body);
+                            createAnswer(body.getString("by"), body.getJSONObject("sdp"));
                         }
                     } else {
                         Peer peer = peers.get(body.getString("by"));
-                        createAnswer(body.getString("by"), body);
+                        createAnswer(body.getString("by"), body.getJSONObject("sdp"));
                     }
                 } else if(msg_type.equals("answer")){
                     SetRemoteSDPCommand(body.getString("by"), body);

@@ -281,7 +281,7 @@ public class Login extends AccountAuthenticatorActivity implements GoogleApiClie
 		btnRegister.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent myIntent = new Intent(getBaseContext(), Register.class);
-                myIntent.putExtras(getIntent().getExtras());
+                //myIntent.putExtras(getIntent().getExtras());
                 startActivityForResult(myIntent, REQ_SIGNUP);
                 //finish(); //Don't Finish this activity for now
             }
@@ -290,7 +290,7 @@ public class Login extends AccountAuthenticatorActivity implements GoogleApiClie
         btnForgot.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 Intent myIntent = new Intent(getBaseContext(), ForgotPassword.class);
-                myIntent.putExtras(getIntent().getExtras());
+                //myIntent.putExtras(getIntent().getExtras());
                 startActivityForResult(myIntent, REQ_FORGOT);
                 //finish(); //Don't Finish this activity for now
             }
