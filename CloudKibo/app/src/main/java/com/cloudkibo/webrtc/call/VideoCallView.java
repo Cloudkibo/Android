@@ -322,7 +322,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
 
                 @Override
                 public void receiveSocketJson(String type, JSONObject body) {
-
+                    client.messageReceived(type, body);
                 }
             });
         }

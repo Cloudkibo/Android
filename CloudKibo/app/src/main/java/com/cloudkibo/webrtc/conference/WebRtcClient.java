@@ -33,6 +33,7 @@ public class WebRtcClient {
     private MediaStream localMS;
     private VideoSource videoSource;
     private RtcListener mListener;
+    private Boolean screenSwitch = false;
 
     /**
      * Implement this interface to be notified of events.
@@ -42,7 +43,7 @@ public class WebRtcClient {
 
         void onLocalStream(MediaStream localStream);
 
-        void onAddRemoteStream(MediaStream remoteStream, int endPoint);
+        void onAddRemoteStream(MediaStream remoteStream, int endPoint, Boolean screenShare);
 
         void onRemoveRemoteStream(int endPoint);
 
@@ -87,11 +88,12 @@ public class WebRtcClient {
     private void AddIceCandidateCommand(String peerId, JSONObject payload){
         try {
             Log.w(TAG, "AddIceCandidateCommand");
+            Log.w("Conference", payload.toString());
             PeerConnection pc = peers.get(peerId).pc;
             if (pc.getRemoteDescription() != null) {
                 IceCandidate candidate = new IceCandidate(
-                        payload.getString("id"),
-                        payload.getInt("label"),
+                        payload.getString("sdpMid"),
+                        payload.getInt("sdpMLineIndex"),
                         payload.getString("candidate")
                 );
                 pc.addIceCandidate(candidate);
@@ -123,9 +125,14 @@ public class WebRtcClient {
                         createAnswer(body.getString("by"), body.getJSONObject("sdp"));
                     }
                 } else if(msg_type.equals("answer")){
-                    SetRemoteSDPCommand(body.getString("by"), body);
+                    SetRemoteSDPCommand(body.getString("by"), body.getJSONObject("sdp"));
                 } else if(msg_type.equals("ice")){
-                    AddIceCandidateCommand(body.getString("by"), body);
+                    AddIceCandidateCommand(body.getString("by"), body.getJSONObject("ice"));
+                }
+            } else if (type.equals("conference.stream")){
+                if(body.getString("type").equals("screen")){
+                    createOffer(body.getString("id"));
+                    screenSwitch = true;
                 }
             }
         }catch(JSONException e) {
@@ -188,8 +195,8 @@ public class WebRtcClient {
                 //socket.emit('msg', { by: currentId, to: id, ice: evnt.candidate, type: 'ice' });
                 JSONObject cnd = new JSONObject();
                 cnd.put("type", "candidate");
-                cnd.put("label", candidate.sdpMLineIndex);
-                cnd.put("id", candidate.sdpMid);
+                cnd.put("sdpMLineIndex", candidate.sdpMLineIndex);
+                cnd.put("sdpMid", candidate.sdpMid);
                 cnd.put("candidate", candidate.sdp);
 
                 JSONObject payload = new JSONObject();
@@ -206,7 +213,10 @@ public class WebRtcClient {
         public void onAddStream(MediaStream mediaStream) {
             Log.d(TAG,"onAddStream "+mediaStream.label());
             // remote streams are displayed from 1 to MAX_PEER (0 is localStream)
-            mListener.onAddRemoteStream(mediaStream, endPoint + 1);
+
+            mListener.onAddRemoteStream(mediaStream, endPoint + 1, screenSwitch);
+
+            if(screenSwitch) screenSwitch = false;
         }
 
         @Override

@@ -21,8 +21,6 @@ import android.widget.Toast;
 import com.cloudkibo.R;
 import com.cloudkibo.socket.BoundServiceListener;
 import com.cloudkibo.socket.SocketService;
-import com.cloudkibo.webrtc.filesharing.RTCConfig;
-import com.github.nkzawa.socketio.client.Ack;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,14 +33,13 @@ import java.util.HashMap;
 import java.util.List;
 
 public class VideoCallView extends Activity implements WebRtcClient.RtcListener {
-    private final static int VIDEO_CALL_SENT = 666;
     private static final String VIDEO_CODEC_VP9 = "VP9";
     private static final String AUDIO_CODEC_OPUS = "opus";
     // Local preview screen position before call is connected.
-    private static final int LOCAL_X_CONNECTING = 0;
-    private static final int LOCAL_Y_CONNECTING = 0;
-    private static final int LOCAL_WIDTH_CONNECTING = 100;
-    private static final int LOCAL_HEIGHT_CONNECTING = 100;
+    private static final int LOCAL_X_CONNECTING = 25;//0;
+    private static final int LOCAL_Y_CONNECTING = 25;//0;
+    private static final int LOCAL_WIDTH_CONNECTING = 50;//100;
+    private static final int LOCAL_HEIGHT_CONNECTING = 50;//100;
     // Local preview screen position after call is connected.
     private static final int LOCAL_X_CONNECTED = 72;
     private static final int LOCAL_Y_CONNECTED = 72;
@@ -57,6 +54,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
     private GLSurfaceView vsv;
     private VideoRenderer.Callbacks localRender;
     private VideoRenderer.Callbacks remoteRender;
+    private VideoRenderer.Callbacks screenRender;
     private WebRtcClient client;
     private String callerId;
     private int currentId;
@@ -107,6 +105,9 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
         remoteRender = VideoRendererGui.create(
                 REMOTE_X, REMOTE_Y,
                 REMOTE_WIDTH, REMOTE_HEIGHT, scalingType, false);
+        screenRender = VideoRendererGui.create(
+                LOCAL_X_CONNECTING, LOCAL_Y_CONNECTING,
+                LOCAL_WIDTH_CONNECTING, LOCAL_HEIGHT_CONNECTING, scalingType, true);
         localRender = VideoRendererGui.create(
                 LOCAL_X_CONNECTING, LOCAL_Y_CONNECTING,
                 LOCAL_WIDTH_CONNECTING, LOCAL_HEIGHT_CONNECTING, scalingType, true);
@@ -216,8 +217,12 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
     }
 
     @Override
-    public void onAddRemoteStream(MediaStream remoteStream, int endPoint) {
-        remoteStream.videoTracks.get(0).addRenderer(new VideoRenderer(remoteRender));
+    public void onAddRemoteStream(MediaStream remoteStream, int endPoint, Boolean screenShare) {
+        if(!screenShare)
+            remoteStream.videoTracks.get(0).addRenderer(new VideoRenderer(remoteRender));
+        else
+            remoteStream.videoTracks.get(0).addRenderer(new VideoRenderer(screenRender));
+
         VideoRendererGui.update(remoteRender,
                 REMOTE_X, REMOTE_Y,
                 REMOTE_WIDTH, REMOTE_HEIGHT, scalingType);
@@ -225,6 +230,12 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
                 LOCAL_X_CONNECTED, LOCAL_Y_CONNECTED,
                 LOCAL_WIDTH_CONNECTED, LOCAL_HEIGHT_CONNECTED,
                 scalingType);
+        if(screenShare){
+            VideoRendererGui.update(screenRender,
+                    REMOTE_X, REMOTE_Y,
+                    REMOTE_WIDTH, REMOTE_HEIGHT, VideoRendererGui.ScalingType.SCALE_ASPECT_FIT);
+        }
+
     }
 
     @Override

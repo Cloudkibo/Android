@@ -490,6 +490,23 @@ public class SocketService extends Service {
 
                 }
 
+            }).on("conference.stream", new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+
+                    Log.w("CONFERENCE", args[0].toString());
+                    try {
+                        JSONObject payload = new JSONObject(args[0].toString());
+
+                        mListener.receiveSocketJson("conference.stream", payload);
+
+                    }catch(JSONException e){
+                        e.printStackTrace();
+                    }
+
+                }
+
             }).on("msg", new Emitter.Listener() {
 
                 @Override
@@ -501,7 +518,7 @@ public class SocketService extends Service {
 
                         mListener.receiveSocketJson("msg", payload);
 
-                    }catch(JSONException e){
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
@@ -670,6 +687,12 @@ public class SocketService extends Service {
     public void sendConferenceMsg(JSONObject message) { // todo: do test this
 
         socket.emit("msg", message);//new JSONArray().put(message));
+
+    }
+
+    public void sendConferenceMsgGeneric(String msgType, JSONObject message) { // todo: do test this
+
+        socket.emit(msgType, message);//new JSONArray().put(message));
 
     }
 

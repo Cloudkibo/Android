@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteDatabaseLockedException;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.HashMap;
@@ -319,30 +320,42 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * Delete all tables and create them again
      * */
     public void resetTables(){
-        SQLiteDatabase db = this.getWritableDatabase();
-        // Delete All Rows
-        db.delete(User.TABLE_USER_NAME, null, null);
-        db.close();
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            // Delete All Rows
+            db.delete(User.TABLE_USER_NAME, null, null);
+            db.close();
+        }catch(SQLiteDatabaseLockedException e){
+            e.printStackTrace();
+        }
     }
     
     /**
      * Delete all contacts Table
      * */
     public void resetContactsTable(){
-        SQLiteDatabase db = this.getWritableDatabase();
-        // Delete All Rows
-        db.delete(Contacts.TABLE_CONTACTS, null, null);
-        db.close();
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            // Delete All Rows
+            db.delete(Contacts.TABLE_CONTACTS, null, null);
+            db.close();
+        }catch(SQLiteDatabaseLockedException e){
+            e.printStackTrace();
+        }
     }
     
     /**
      * Delete all chats Table
      * */
     public void resetChatsTable(){
-        SQLiteDatabase db = this.getWritableDatabase();
-        // Delete All Rows
-        db.delete(UserChat.TABLE_USERCHAT, null, null);
-        db.close();
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            // Delete All Rows
+            db.delete(UserChat.TABLE_USERCHAT, null, null);
+            db.close();
+        }catch(SQLiteDatabaseLockedException e){
+            e.printStackTrace();
+        }
     }
     
     public void resetSpecificChat(String user1, String user2){

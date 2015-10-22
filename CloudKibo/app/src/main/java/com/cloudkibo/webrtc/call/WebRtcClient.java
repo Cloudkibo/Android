@@ -282,6 +282,38 @@ public class WebRtcClient {
         if(videoSource != null) videoSource.restart();
     }
 
+    public void messageReceived (String type, JSONObject body){
+        try {
+            if (type.equals("peer.connected")) {
+                String id = body.getString("id");
+                //Peer peer = addPeer(id, findEndPoint(), body.getString("username"));
+                //peer.pc.addStream(localMS);
+                //createOffer(id);
+            } else if (type.equals("msg")) {
+                String msg_type = body.getString("type");
+                if (msg_type.equals("offer")) {
+                    if(!peers.containsKey(body.getString("by"))){
+                        int endPoint = findEndPoint();
+                        if (endPoint != MAX_PEER) {
+                  //          Peer peer = addPeer(body.getString("by"), endPoint, body.getString("username"));
+                  //          peer.pc.addStream(localMS);
+                  //          createAnswer(body.getString("by"), body.getJSONObject("sdp"));
+                        }
+                    } else {
+                        Peer peer = peers.get(body.getString("by"));
+                 //       createAnswer(body.getString("by"), body.getJSONObject("sdp"));
+                    }
+                } else if(msg_type.equals("answer")){
+                   // SetRemoteSDPCommand(body.getString("by"), body);
+                } else if(msg_type.equals("ice")){
+                   // AddIceCandidateCommand(body.getString("by"), body);
+                }
+            }
+        }catch(JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Call this method in Activity.onDestroy()
      */
