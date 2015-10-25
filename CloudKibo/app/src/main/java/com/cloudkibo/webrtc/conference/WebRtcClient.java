@@ -4,6 +4,7 @@ import android.opengl.EGLContext;
 import android.util.Log;
 
 import com.cloudkibo.webrtc.filesharing.RTCConfig;
+import com.cloudkibo.webrtc.filesharing.Utility;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,6 +21,8 @@ import org.webrtc.VideoCapturer;
 import org.webrtc.VideoCapturerAndroid;
 import org.webrtc.VideoSource;
 
+import java.io.File;
+import java.nio.ByteBuffer;
 import java.util.HashMap;
 
 public class WebRtcClient {
@@ -34,6 +37,7 @@ public class WebRtcClient {
     private VideoSource videoSource;
     private RtcListener mListener;
     private Boolean screenSwitch = false;
+    private int currentId;
 
     /**
      * Implement this interface to be notified of events.
@@ -48,11 +52,14 @@ public class WebRtcClient {
         void onRemoveRemoteStream(int endPoint);
 
         void sendMessage(String to, JSONObject payload);
+
+        void toggleRemoteVideo(boolean action);
     }
 
     private void createOffer(String peerId){
         Log.w(TAG, "CreateOfferCommand");
         Peer peer = peers.get(peerId);
+        peer.createDataChannel();
         peer.pc.createOffer(peer, pcConstraints);
     }
 
@@ -110,6 +117,8 @@ public class WebRtcClient {
                 Peer peer = addPeer(id, findEndPoint(), body.getString("username"));
                 peer.pc.addStream(localMS);
                 createOffer(id);
+            } else if (type.equals("peer.disconnected")) {
+                removePeer(body.getString("id"));
             } else if (type.equals("msg")) {
                 String msg_type = body.getString("type");
                 if (msg_type.equals("offer")) {
@@ -130,14 +139,25 @@ public class WebRtcClient {
                     AddIceCandidateCommand(body.getString("by"), body.getJSONObject("ice"));
                 }
             } else if (type.equals("conference.stream")){
-                if(body.getString("type").equals("screen")){
-                    createOffer(body.getString("id"));
-                    screenSwitch = true;
+                if(!body.getString("id").equals(Integer.toString(currentId))) {
+                    if (body.getString("type").equals("screen")) {
+                        createOffer(body.getString("id"));
+                        screenSwitch = true;
+                    } else {
+                        mListener.toggleRemoteVideo(body.getBoolean("action"));
+                    }
                 }
+            } else if (type.equals("conference.chat")){
+                //if(!body.getString("username").equals()) // todo during chat. do not receive ur own message
+                mListener.onStatusChanged(body.getString("username") +": "+ body.getString("message"));
             }
         }catch(JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setCurrentId (int id){
+        currentId = id;
     }
 
     private class Peer implements SdpObserver, PeerConnection.Observer{
@@ -145,6 +165,7 @@ public class WebRtcClient {
         private String id;
         private int endPoint;
         private String name;
+        private DataChannel dc;
 
         @Override
         public void onCreateSuccess(final SessionDescription sdp) {
@@ -226,7 +247,19 @@ public class WebRtcClient {
         }
 
         @Override
-        public void onDataChannel(DataChannel dataChannel) {}
+        public void onDataChannel(final DataChannel dataChannel) {
+            this.dc = dataChannel;
+            DcObserver dcObserver = new DcObserver();
+            this.dc.registerObserver(dcObserver);
+            mListener.onStatusChanged("Data Channel Received");
+        }
+
+        public void createDataChannel(){
+            this.dc = pc.createDataChannel("sendDataChannel", new DataChannel.Init());
+            mListener.onStatusChanged("Data Channel Created");
+            DcObserver dcObserver = new DcObserver();
+            this.dc.registerObserver(dcObserver);
+        }
 
         @Override
         public void onRenegotiationNeeded() {
@@ -245,6 +278,149 @@ public class WebRtcClient {
             mListener.onStatusChanged("CONNECTING");
         }
     }
+
+    private class DcObserver implements DataChannel.Observer {
+
+        public DcObserver(){
+
+        }
+
+        @Override
+        public void onMessage(DataChannel.Buffer buffer) {
+  /*          Log.w("FILE_TRANSFER", "Data Channel message received");
+
+            ByteBuffer data = buffer.data;
+            final byte[] bytes = new byte[ data.capacity() ];
+            data.get(bytes);
+
+            final File file = new File(filePath);;
+
+            if(buffer.binary){
+
+                String strData = new String( bytes );
+                Log.w("FILE_TRANSFER", strData);
+
+                runOnUiThread(new Runnable(){
+                    public void run() {
+                        for(int i=0; i<bytes.length; i++)
+                            fileBytesArray.add(bytes[i]);
+
+                        if (numberOfChunksReceived % Utility.getChunksPerACK() == (Utility.getChunksPerACK() - 1)
+                                || numberOfChunksInFileToSave == (numberOfChunksReceived + 1)) {
+
+                            if (numberOfChunksInFileToSave > numberOfChunksReceived) {
+                                chunkNumberToRequest += Utility.getChunksPerACK();
+
+                                requestChunk();
+                            }
+
+                        }
+
+                        numberOfChunksReceived++;
+                    }
+                });
+
+            }
+            else {
+
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        String strData = new String( bytes );
+
+                        Log.w("FILE_TRANSFER", strData);
+
+                        try {
+
+                            JSONObject jsonData = new JSONObject(strData);
+
+                            if(jsonData.getJSONObject("data").has("file_meta")){
+
+                                fileNameToSave = jsonData.getJSONObject("data").getJSONObject("file_meta").getString("name");
+                                sizeOfFileToSave = jsonData.getJSONObject("data").getJSONObject("file_meta").getInt("size");
+                                numberOfChunksInFileToSave = (int) Math.ceil(sizeOfFileToSave / Utility.getChunkSize());
+                                numberOfChunksReceived = 0;
+                                chunkNumberToRequest = 0;
+
+                            }
+                            else if(jsonData.getJSONObject("data").has("kill")){
+
+                            }
+                            else if(jsonData.getJSONObject("data").has("ok_to_download")){
+
+                            }
+                            else {
+
+                                boolean isBinaryFile = true;
+
+                                int chunkNumber = jsonData.getJSONObject("data").getInt("chunk");
+
+                                Log.w("FILE_TRANSFER", "Chunk Number "+ chunkNumber);
+                                if(chunkNumber % Utility.getChunksPerACK() == 0){
+                                    for(int i = 0; i< Utility.getChunksPerACK(); i++){
+
+                                        if(file.length() < Utility.getChunkSize()){
+                                            ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file));
+                                            DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, isBinaryFile);
+
+                                            Log.w("FILE_TRANSFER", "File Smaller than chunk size condition");
+
+                                            sendDataChannelMessage(buf);
+                                            break;
+                                        }
+
+                                        Log.w("FILE_TRANSFER", "File Length "+ file.length());
+                                        Log.w("FILE_TRANSFER", "Ceiling "+ Math.ceil(file.length() / Utility.getChunkSize()));
+                                        if((chunkNumber+i) >= Math.ceil(file.length() / Utility.getChunkSize())){
+                                            Log.w("FILE_TRANSFER", "Came into math ceiling condition");
+                                            //break;
+                                        }
+
+                                        int upperLimit = (chunkNumber + i + 1) * Utility.getChunkSize();
+
+                                        if(upperLimit > (int)file.length()){
+                                            upperLimit = (int)file.length()-1;
+                                        }
+
+                                        int lowerLimit = (chunkNumber + i) * Utility.getChunkSize();
+                                        Log.w("FILE_TRANSFER", "Limits: "+ lowerLimit +" "+ upperLimit);
+
+                                        if(lowerLimit > upperLimit)
+                                            break;
+
+                                        ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file), lowerLimit, upperLimit - lowerLimit);
+                                        DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, isBinaryFile);
+
+                                        sendDataChannelMessage(buf);
+                                        Log.w("FILE_TRANSFER", "Chunk has been sent");
+                                    }
+                                }
+                            }
+
+                        } catch (JSONException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+            }*/
+
+        }
+
+        @Override
+        public void onStateChange() {
+
+            Log.w("FILE_ERROR", "DataChannel State Changed");
+
+        }
+    }
+
+    public void sendDataChannelMessage(DataChannel.Buffer buf){
+        for (String key: peers.keySet()) {
+            Log.w("ConferenceFile", "i is " + key);
+            peers.get(key).dc.send(buf);
+        }
+    };
 
     private Peer addPeer(String id, int endPoint, String username) {
         Peer peer = new Peer(id, endPoint, username);

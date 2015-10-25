@@ -13,4 +13,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/toggleVideo"
+        android:src="@drawable/ic_camera"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/toggleAudio"
+        android:src="@android:drawable/ic_btn_speak_now"
+        android:layout_alignTop="@+id/toggleVideo"
+        android:layout_toRightOf="@+id/toggleVideo"
+        android:layout_toEndOf="@+id/toggleVideo" />
+
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/sendFile"
+        android:src="@drawable/ic_file"
+        android:layout_alignTop="@+id/toggleAudio"
+        android:layout_toRightOf="@+id/toggleAudio"
+        android:layout_toEndOf="@+id/toggleAudio" />
+
 </RelativeLayout>

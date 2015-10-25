@@ -490,6 +490,23 @@ public class SocketService extends Service {
 
                 }
 
+            }).on("peer.disconnected", new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+
+                    Log.w("CONFERENCE", args[0].toString());
+                    try {
+                        JSONObject payload = new JSONObject(args[0].toString());
+
+                        mListener.receiveSocketJson("peer.disconnected", payload);
+
+                    }catch(JSONException e){
+                        e.printStackTrace();
+                    }
+
+                }
+
             }).on("conference.stream", new Emitter.Listener() {
 
                 @Override
@@ -500,6 +517,23 @@ public class SocketService extends Service {
                         JSONObject payload = new JSONObject(args[0].toString());
 
                         mListener.receiveSocketJson("conference.stream", payload);
+
+                    }catch(JSONException e){
+                        e.printStackTrace();
+                    }
+
+                }
+
+            }).on("conference.chat", new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+
+                    Log.w("CONFERENCE", args[0].toString());
+                    try {
+                        JSONObject payload = new JSONObject(args[0].toString());
+
+                        mListener.receiveSocketJson("conference.chat", payload);
 
                     }catch(JSONException e){
                         e.printStackTrace();

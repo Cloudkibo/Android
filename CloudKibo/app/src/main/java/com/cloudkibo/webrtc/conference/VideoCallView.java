@@ -10,25 +10,35 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Point;
+import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.cloudkibo.R;
+import com.cloudkibo.file.filechooser.utils.Base64;
+import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.socket.BoundServiceListener;
 import com.cloudkibo.socket.SocketService;
+import com.cloudkibo.webrtc.filesharing.FileConnection;
+import com.cloudkibo.webrtc.filesharing.Utility;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.webrtc.DataChannel;
 import org.webrtc.MediaStream;
 import org.webrtc.VideoRenderer;
 import org.webrtc.VideoRendererGui;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 
@@ -45,6 +55,11 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
     private static final int LOCAL_Y_CONNECTED = 72;
     private static final int LOCAL_WIDTH_CONNECTED = 25;
     private static final int LOCAL_HEIGHT_CONNECTED = 25;
+    // Local preview screen position if video is hidden
+    private static final int LOCAL_X_HIDDEN = 99;
+    private static final int LOCAL_Y_HIDDEN = 99;
+    private static final int LOCAL_WIDTH_HIDDEN = 1;
+    private static final int LOCAL_HEIGHT_HIDDEN = 1;
     // Remote video screen position
     private static final int REMOTE_X = 0;
     private static final int REMOTE_Y = 0;
@@ -55,17 +70,26 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
     private VideoRenderer.Callbacks localRender;
     private VideoRenderer.Callbacks remoteRender;
     private VideoRenderer.Callbacks screenRender;
+    private MediaStream localStream;
     private WebRtcClient client;
     private String callerId;
     private int currentId;
+    private boolean isStarted = false;
 
     SocketService socketService;
     boolean isBound = false;
 
-    Boolean initiator;
+    boolean localVideoShared = false;
+    boolean localAudioShared = true;
 
     private HashMap<String, String> user;
     private String room;
+
+    private ImageButton tglVideo;
+    private ImageButton tglAudio;
+    private ImageButton sendFile;
+
+    private static final int REQUEST_CHOOSER = 11050;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -112,6 +136,64 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
                 LOCAL_X_CONNECTING, LOCAL_Y_CONNECTING,
                 LOCAL_WIDTH_CONNECTING, LOCAL_HEIGHT_CONNECTING, scalingType, true);
 
+        tglVideo = (ImageButton) findViewById(R.id.toggleVideo);
+
+        tglVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    if(isStarted) {
+                        localVideoShared = !localVideoShared;
+                        JSONObject payload = new JSONObject();
+                        payload.put("username", user.get("username"));
+                        payload.put("type", "video");
+                        payload.put("action", localVideoShared);
+                        payload.put("id", Integer.toString(currentId));
+                        socketService.sendConferenceMsgGeneric("conference.stream", payload);
+                        if (localVideoShared) {
+                            VideoRendererGui.update(localRender,
+                                    LOCAL_X_CONNECTED, LOCAL_Y_CONNECTED,
+                                    LOCAL_WIDTH_CONNECTED, LOCAL_HEIGHT_CONNECTED,
+                                    scalingType);
+                        } else {
+                            VideoRendererGui.update(localRender,
+                                    LOCAL_X_HIDDEN, LOCAL_Y_HIDDEN,
+                                    LOCAL_WIDTH_HIDDEN, LOCAL_HEIGHT_HIDDEN,
+                                    scalingType);
+                        }
+                    }
+                }catch(JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        tglAudio = (ImageButton) findViewById(R.id.toggleAudio);
+
+        tglAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isStarted) {
+                    localAudioShared = !localAudioShared;
+                    localStream.audioTracks.get(0).setEnabled(localAudioShared);
+                }
+            }
+        });
+
+        sendFile = (ImageButton) findViewById(R.id.sendFile);
+
+        sendFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isStarted) {
+                    Intent getContentIntent = FileUtils.createGetContentIntent();
+
+                    Intent intent = Intent.createChooser(getContentIntent, "Select a file");
+                    startActivityForResult(intent, REQUEST_CHOOSER);
+                }
+            }
+        });
+
         final Intent intent = getIntent();
         final String action = intent.getAction();
 
@@ -119,6 +201,41 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
             Log.e("INTENT", action);
             final List<String> segments = intent.getData().getPathSegments();
             callerId = segments.get(0);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CHOOSER:
+                if (resultCode == RESULT_OK) {
+
+                    final Uri uri = data.getData();
+
+                    // Get the File path from the Uri
+                    String path = FileUtils.getPath(this, uri);
+
+                    // Alternatively, use FileUtils.getFile(Context, Uri)
+                    if (path != null && FileUtils.isLocal(path)) {
+
+                        try {
+                            JSONObject metadata = new JSONObject();
+
+                            metadata.put("eventName", "data_msg");
+                            metadata.put("data", (new JSONObject()).put("file_meta", Utility.getFileMetaData(path)));
+
+                            client.sendDataChannelMessage(new DataChannel.Buffer(Utility.toByteBuffer(metadata.toString()), false));
+
+                            sendChat("You have received a file. Download and Save it.");
+
+                            Log.w("FILE_TRANSFER", "Sending file meta to peer");
+                        }catch(JSONException e){
+                            e.printStackTrace();
+                        }
+
+                    }
+                }
+                break;
         }
     }
 
@@ -192,6 +309,17 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
         }
     }
 
+    public void sendChat(String msg){
+        try {
+            JSONObject payload = new JSONObject();
+            payload.put("message", msg);
+            payload.put("username", user.get("username"));
+            socketService.sendConferenceMsgGeneric("conference.chat", payload);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onStatusChanged(final String newStatus) {
         runOnUiThread(new Runnable() {
@@ -205,7 +333,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
     @Override
     public void onLocalStream(MediaStream localStream) {
         Log.w("VideoCallView", "inside onLocalStream");
-
+        this.localStream = localStream;
         localStream.videoTracks.get(0).addRenderer(new VideoRenderer(localRender));
         VideoRendererGui.update(localRender,
                 LOCAL_X_CONNECTING, LOCAL_Y_CONNECTING,
@@ -218,6 +346,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
 
     @Override
     public void onAddRemoteStream(MediaStream remoteStream, int endPoint, Boolean screenShare) {
+        // todo handle the case when multiple peers are there.. for now it shows them on interval basis
         if(!screenShare)
             remoteStream.videoTracks.get(0).addRenderer(new VideoRenderer(remoteRender));
         else
@@ -227,23 +356,37 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
                 REMOTE_X, REMOTE_Y,
                 REMOTE_WIDTH, REMOTE_HEIGHT, scalingType);
         VideoRendererGui.update(localRender,
-                LOCAL_X_CONNECTED, LOCAL_Y_CONNECTED,
-                LOCAL_WIDTH_CONNECTED, LOCAL_HEIGHT_CONNECTED,
+                LOCAL_X_HIDDEN, LOCAL_Y_HIDDEN,
+                LOCAL_WIDTH_HIDDEN, LOCAL_HEIGHT_HIDDEN,
                 scalingType);
         if(screenShare){
             VideoRendererGui.update(screenRender,
                     REMOTE_X, REMOTE_Y,
                     REMOTE_WIDTH, REMOTE_HEIGHT, VideoRendererGui.ScalingType.SCALE_ASPECT_FIT);
         }
-
+        isStarted = true;
     }
 
     @Override
     public void onRemoveRemoteStream(int endPoint) {
+        // todo handle it for multiple peers and make UI cleaner
+        isStarted = false;
         VideoRendererGui.update(localRender,
                 LOCAL_X_CONNECTING, LOCAL_Y_CONNECTING,
                 LOCAL_WIDTH_CONNECTING, LOCAL_HEIGHT_CONNECTING,
                 scalingType);
+    }
+
+    public void toggleRemoteVideo(boolean action){
+        if(action) {
+            VideoRendererGui.update(remoteRender,
+                    REMOTE_X, REMOTE_Y,
+                    REMOTE_WIDTH, REMOTE_HEIGHT, scalingType);
+        } else {
+            VideoRendererGui.update(remoteRender,
+                    0, 0,
+                    1, 1, scalingType);
+        }
     }
 
     private ServiceConnection socketConnection = new ServiceConnection() {
@@ -265,6 +408,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
                 public void receiveSocketMessage(String type, String body) {
                     if(type.equals("conference_id")){
                         currentId = Integer.parseInt(body);
+                        client.setCurrentId(currentId);
                     }
                 }
 
