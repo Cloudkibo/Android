@@ -38,6 +38,7 @@ public class WebRtcClient {
     private RtcListener mListener;
     private Boolean screenSwitch = false;
     private int currentId;
+    private String username;
 
     /**
      * Implement this interface to be notified of events.
@@ -54,6 +55,8 @@ public class WebRtcClient {
         void sendMessage(String to, JSONObject payload);
 
         void toggleRemoteVideo(boolean action);
+
+        void gotDataChannelMessage(DataChannel.Buffer buffer);
     }
 
     private void createOffer(String peerId){
@@ -148,8 +151,8 @@ public class WebRtcClient {
                     }
                 }
             } else if (type.equals("conference.chat")){
-                //if(!body.getString("username").equals()) // todo during chat. do not receive ur own message
-                mListener.onStatusChanged(body.getString("username") +": "+ body.getString("message"));
+                if(!body.getString("username").equals(username))
+                    mListener.onStatusChanged(body.getString("username") +": "+ body.getString("message"));
             }
         }catch(JSONException e) {
             e.printStackTrace();
@@ -287,124 +290,7 @@ public class WebRtcClient {
 
         @Override
         public void onMessage(DataChannel.Buffer buffer) {
-  /*          Log.w("FILE_TRANSFER", "Data Channel message received");
-
-            ByteBuffer data = buffer.data;
-            final byte[] bytes = new byte[ data.capacity() ];
-            data.get(bytes);
-
-            final File file = new File(filePath);;
-
-            if(buffer.binary){
-
-                String strData = new String( bytes );
-                Log.w("FILE_TRANSFER", strData);
-
-                runOnUiThread(new Runnable(){
-                    public void run() {
-                        for(int i=0; i<bytes.length; i++)
-                            fileBytesArray.add(bytes[i]);
-
-                        if (numberOfChunksReceived % Utility.getChunksPerACK() == (Utility.getChunksPerACK() - 1)
-                                || numberOfChunksInFileToSave == (numberOfChunksReceived + 1)) {
-
-                            if (numberOfChunksInFileToSave > numberOfChunksReceived) {
-                                chunkNumberToRequest += Utility.getChunksPerACK();
-
-                                requestChunk();
-                            }
-
-                        }
-
-                        numberOfChunksReceived++;
-                    }
-                });
-
-            }
-            else {
-
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        String strData = new String( bytes );
-
-                        Log.w("FILE_TRANSFER", strData);
-
-                        try {
-
-                            JSONObject jsonData = new JSONObject(strData);
-
-                            if(jsonData.getJSONObject("data").has("file_meta")){
-
-                                fileNameToSave = jsonData.getJSONObject("data").getJSONObject("file_meta").getString("name");
-                                sizeOfFileToSave = jsonData.getJSONObject("data").getJSONObject("file_meta").getInt("size");
-                                numberOfChunksInFileToSave = (int) Math.ceil(sizeOfFileToSave / Utility.getChunkSize());
-                                numberOfChunksReceived = 0;
-                                chunkNumberToRequest = 0;
-
-                            }
-                            else if(jsonData.getJSONObject("data").has("kill")){
-
-                            }
-                            else if(jsonData.getJSONObject("data").has("ok_to_download")){
-
-                            }
-                            else {
-
-                                boolean isBinaryFile = true;
-
-                                int chunkNumber = jsonData.getJSONObject("data").getInt("chunk");
-
-                                Log.w("FILE_TRANSFER", "Chunk Number "+ chunkNumber);
-                                if(chunkNumber % Utility.getChunksPerACK() == 0){
-                                    for(int i = 0; i< Utility.getChunksPerACK(); i++){
-
-                                        if(file.length() < Utility.getChunkSize()){
-                                            ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file));
-                                            DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, isBinaryFile);
-
-                                            Log.w("FILE_TRANSFER", "File Smaller than chunk size condition");
-
-                                            sendDataChannelMessage(buf);
-                                            break;
-                                        }
-
-                                        Log.w("FILE_TRANSFER", "File Length "+ file.length());
-                                        Log.w("FILE_TRANSFER", "Ceiling "+ Math.ceil(file.length() / Utility.getChunkSize()));
-                                        if((chunkNumber+i) >= Math.ceil(file.length() / Utility.getChunkSize())){
-                                            Log.w("FILE_TRANSFER", "Came into math ceiling condition");
-                                            //break;
-                                        }
-
-                                        int upperLimit = (chunkNumber + i + 1) * Utility.getChunkSize();
-
-                                        if(upperLimit > (int)file.length()){
-                                            upperLimit = (int)file.length()-1;
-                                        }
-
-                                        int lowerLimit = (chunkNumber + i) * Utility.getChunkSize();
-                                        Log.w("FILE_TRANSFER", "Limits: "+ lowerLimit +" "+ upperLimit);
-
-                                        if(lowerLimit > upperLimit)
-                                            break;
-
-                                        ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file), lowerLimit, upperLimit - lowerLimit);
-                                        DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, isBinaryFile);
-
-                                        sendDataChannelMessage(buf);
-                                        Log.w("FILE_TRANSFER", "Chunk has been sent");
-                                    }
-                                }
-                            }
-
-                        } catch (JSONException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
-                        }
-                    }
-                });
-
-            }*/
-
+            mListener.gotDataChannelMessage(buffer);
         }
 
         @Override
@@ -484,7 +370,9 @@ public class WebRtcClient {
      * Call this method after onCallReady.
      *
      */
-    public void start(){
+    public void start(String un){
+
+        username = un;
         setCamera();
     }
 

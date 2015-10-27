@@ -5,12 +5,15 @@ package com.cloudkibo.webrtc.conference;
  */
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.graphics.Point;
 import android.net.Uri;
+import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -39,6 +42,8 @@ import org.webrtc.VideoRendererGui;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -82,6 +87,14 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
     boolean localVideoShared = false;
     boolean localAudioShared = true;
 
+    String filePath;
+    /*String fileNameToSave;
+    int numberOfChunksInFileToSave;
+    int numberOfChunksReceived;
+    int sizeOfFileToSave;
+    int chunkNumberToRequest;*/
+    //ArrayList<Byte> fileBytesArray = new ArrayList<Byte>();
+
     private HashMap<String, String> user;
     private String room;
 
@@ -121,6 +134,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
         VideoRendererGui.setView(vsv, new Runnable() {
             @Override
             public void run() {
+                GLES20.glPixelStorei(GLES20.GL_UNPACK_ALIGNMENT, 1);
                 init();
             }
         });
@@ -213,16 +227,16 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
                     final Uri uri = data.getData();
 
                     // Get the File path from the Uri
-                    String path = FileUtils.getPath(this, uri);
+                    filePath = FileUtils.getPath(this, uri);
 
                     // Alternatively, use FileUtils.getFile(Context, Uri)
-                    if (path != null && FileUtils.isLocal(path)) {
+                    if (filePath != null && FileUtils.isLocal(filePath)) {
 
                         try {
                             JSONObject metadata = new JSONObject();
 
                             metadata.put("eventName", "data_msg");
-                            metadata.put("data", (new JSONObject()).put("file_meta", Utility.getFileMetaData(path)));
+                            metadata.put("data", (new JSONObject()).put("file_meta", Utility.getFileMetaData(filePath)));
 
                             client.sendDataChannelMessage(new DataChannel.Buffer(Utility.toByteBuffer(metadata.toString()), false));
 
@@ -281,7 +295,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
         // Camera settings
 
         Log.w("VideoCallView", "inside startCam going to call start()");
-        client.start();
+        client.start(user.get("username"));
 
     }
 
@@ -389,6 +403,186 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
         }
     }
 
+    public void gotDataChannelMessage(DataChannel.Buffer buffer){
+       /* Log.w("FILE_TRANSFER", "Data Channel message received");
+
+        ByteBuffer data = buffer.data;
+        final byte[] bytes = new byte[ data.capacity() ];
+        data.get(bytes);
+
+        final File file = new File(filePath);
+
+        if(buffer.binary){
+
+            String strData = new String( bytes );
+            Log.w("FILE_TRANSFER", strData);
+
+            runOnUiThread(new Runnable(){
+                public void run() {
+                    for(int i=0; i<bytes.length; i++)
+                        fileBytesArray.add(bytes[i]);
+
+                    if (numberOfChunksReceived % Utility.getChunksPerACK() == (Utility.getChunksPerACK() - 1)
+                            || numberOfChunksInFileToSave == (numberOfChunksReceived + 1)) {
+                        if (numberOfChunksInFileToSave > numberOfChunksReceived) {
+                            chunkNumberToRequest += Utility.getChunksPerACK();
+                            requestChunk();
+                        } else {
+                            new AlertDialog.Builder(getApplicationContext())
+                                    .setTitle("File Transfer Completed")
+                                    .setMessage(fileNameToSave + " : " + FileUtils.getReadableFileSize(sizeOfFileToSave))
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setPositiveButton("Save", new DialogInterface.OnClickListener() {
+
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            if (fileBytesArray.size() > 0) {
+                                                byte[] fileBytes = new byte[fileBytesArray.size()];
+                                                for (int i = 0; i < fileBytesArray.size(); i++) {
+                                                    fileBytes[i] = fileBytesArray.get(i);
+                                                }
+                                                if (Utility.convertByteArrayToFile(fileBytes, fileNameToSave)) {
+                                                    Toast.makeText(getApplicationContext(),
+                                                            "File stored in Downloads", Toast.LENGTH_SHORT)
+                                                            .show();
+                                                } else {
+                                                    Toast.makeText(getApplicationContext(),
+                                                            "Some error caused storage failure. You must have SD card.", Toast.LENGTH_SHORT)
+                                                            .show();
+                                                }
+                                            }
+                                        }
+                                    })
+                                    .setNegativeButton("Remove", null).show();
+                        }
+                    }
+
+                    numberOfChunksReceived++;
+                }
+            });
+
+        }
+        else {
+
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    String strData = new String(bytes);
+
+                    Log.w("FILE_TRANSFER", strData);
+
+                    try {
+
+                        JSONObject jsonData = new JSONObject(strData);
+
+                        if (jsonData.getJSONObject("data").has("file_meta")) {
+
+                            fileNameToSave = jsonData.getJSONObject("data").getJSONObject("file_meta").getString("name");
+                            sizeOfFileToSave = jsonData.getJSONObject("data").getJSONObject("file_meta").getInt("size");
+                            numberOfChunksInFileToSave = (int) Math.ceil(sizeOfFileToSave / Utility.getChunkSize());
+                            numberOfChunksReceived = 0;
+                            chunkNumberToRequest = 0;
+                            fileBytesArray = new ArrayList<Byte>();
+
+                            new AlertDialog.Builder(getApplicationContext())
+                                    .setTitle("File offered")
+                                    .setMessage(fileNameToSave + " : " + FileUtils.getReadableFileSize(sizeOfFileToSave))
+                                    .setIcon(android.R.drawable.ic_dialog_alert)
+                                    .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+
+                                        public void onClick(DialogInterface dialog, int whichButton) {
+                                            Toast.makeText(getApplicationContext(),
+                                                    "Receiving file...", Toast.LENGTH_SHORT)
+                                                    .show();
+                                            if (Utility.isFreeSpaceAvailableForFileSize(sizeOfFileToSave)) {
+                                                Log.w("FILE_TRANSFER", "Free space is available for file save, requesting chunk now");
+                                                requestChunk();
+                                            } else {
+                                                Log.w("FILE_TRANSFER", "Need more space to save this file");
+                                                Toast.makeText(getApplicationContext(),
+                                                        "Need more free space to save this file", Toast.LENGTH_SHORT)
+                                                        .show();
+                                            }
+                                        }
+                                    })
+                                    .setNegativeButton("Reject", null).show();
+
+
+                        } else if (jsonData.getJSONObject("data").has("kill")) {
+
+                        } else if (jsonData.getJSONObject("data").has("ok_to_download")) {
+
+                        } else {
+
+                            boolean isBinaryFile = true;
+
+                            int chunkNumber = jsonData.getJSONObject("data").getInt("chunk");
+
+                            Log.w("FILE_TRANSFER", "Chunk Number " + chunkNumber);
+                            if (chunkNumber % Utility.getChunksPerACK() == 0) {
+                                for (int i = 0; i < Utility.getChunksPerACK(); i++) {
+
+                                    if (file.length() < Utility.getChunkSize()) {
+                                        ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file));
+                                        DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, isBinaryFile);
+
+                                        Log.w("FILE_TRANSFER", "File Smaller than chunk size condition");
+
+                                        client.sendDataChannelMessage(buf);
+                                        break;
+                                    }
+
+                                    Log.w("FILE_TRANSFER", "File Length " + file.length());
+                                    Log.w("FILE_TRANSFER", "Ceiling " + Math.ceil(file.length() / Utility.getChunkSize()));
+                                    if ((chunkNumber + i) >= Math.ceil(file.length() / Utility.getChunkSize())) {
+                                        Log.w("FILE_TRANSFER", "Came into math ceiling condition");
+                                        //break;
+                                    }
+
+                                    int upperLimit = (chunkNumber + i + 1) * Utility.getChunkSize();
+
+                                    if (upperLimit > (int) file.length()) {
+                                        upperLimit = (int) file.length() - 1;
+                                    }
+
+                                    int lowerLimit = (chunkNumber + i) * Utility.getChunkSize();
+                                    Log.w("FILE_TRANSFER", "Limits: " + lowerLimit + " " + upperLimit);
+
+                                    if (lowerLimit > upperLimit)
+                                        break;
+
+                                    ByteBuffer byteBuffer = ByteBuffer.wrap(Utility.convertFileToByteArray(file), lowerLimit, upperLimit - lowerLimit);
+                                    DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, isBinaryFile);
+
+                                    client.sendDataChannelMessage(buf);
+                                    Log.w("FILE_TRANSFER", "Chunk has been sent");
+                                }
+                            }
+                        }
+
+                    } catch (JSONException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        }*/
+    }
+/*
+    public void requestChunk(){
+        Log.w("FILERECEIVE", "Requesting CHUNK: "+ chunkNumberToRequest);
+        JSONObject request_chunk = new JSONObject();
+        try {
+            request_chunk.put("eventName", "request_chunk");
+            JSONObject request_data = new JSONObject();
+            request_data.put("chunk", chunkNumberToRequest);
+            request_data.put("browser", "chrome"); // This chrome is hardcoded for testing purpose
+            request_chunk.put("data", request_data);
+            client.sendDataChannelMessage(new DataChannel.Buffer(Utility.toByteBuffer(request_chunk.toString()), false));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+*/
     private ServiceConnection socketConnection = new ServiceConnection() {
 
         @Override
