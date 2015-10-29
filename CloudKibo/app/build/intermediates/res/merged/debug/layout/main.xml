@@ -40,4 +40,13 @@
         android:layout_toRightOf="@+id/toggleAudio"
         android:layout_toEndOf="@+id/toggleAudio" />
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/startChat"
+        android:src="@drawable/ic_chat"
+        android:layout_alignTop="@+id/sendFile"
+        android:layout_toRightOf="@+id/sendFile"
+        android:layout_toEndOf="@+id/sendFile" />
+
 </RelativeLayout><!-- From: file:/F:/Android/CloudKibo/app/src/main/res/layout/main.xml -->

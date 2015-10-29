@@ -96,6 +96,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
     private ImageButton tglVideo;
     private ImageButton tglAudio;
     private ImageButton sendFile;
+    private ImageButton tglChat;
 
     private static final int REQUEST_CHOOSER = 11050;
 
@@ -202,6 +203,21 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
 
                     Intent intent = Intent.createChooser(getContentIntent, "Select a file");
                     startActivityForResult(intent, REQUEST_CHOOSER);
+                }
+            }
+        });
+
+        tglChat = (ImageButton) findViewById(R.id.startChat);
+
+        tglChat.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(isStarted) {
+
+                    Intent intent = new Intent(getApplicationContext(), GroupChat.class);
+                    intent.putExtra("user", user);
+                    intent.putExtra("room", room);
+                    startActivity(intent);
                 }
             }
         });

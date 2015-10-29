@@ -124,6 +124,12 @@
             android:windowSoftInputMode="stateHidden" >
         </activity>
         <activity
+            android:name=".webrtc.conference.GroupChat"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
             android:name=".webrtc.call.IncomingCall"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
