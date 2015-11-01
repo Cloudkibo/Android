@@ -17,12 +17,12 @@ ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:2:1-224:12
 		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:2:11-69
 uses-sdk
 ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:8:5-10:41
-MERGED from [com.android.support:support-v4:21.0.3] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\AndroidManifest.xml:15:5-42
+MERGED from [com.android.support:support-v4:22.1.0] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.1.0\AndroidManifest.xml:20:5-43
 MERGED from [io.pristine:libjingle:8871] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\io.pristine\libjingle\8871\AndroidManifest.xml:7:5-9:41
 MERGED from [com.facebook.android:facebook-android-sdk:4.0.0] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.facebook.android\facebook-android-sdk\4.0.0\AndroidManifest.xml:24:5-26:41
-MERGED from [com.android.support:support-v4:21.0.3] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\AndroidManifest.xml:15:5-42
+MERGED from [com.android.support:support-v4:22.1.0] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.1.0\AndroidManifest.xml:20:5-43
 MERGED from [com.google.android.gms:play-services:6.5.87] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.google.android.gms\play-services\6.5.87\AndroidManifest.xml:18:5-42
-MERGED from [com.android.support:support-v4:21.0.3] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\AndroidManifest.xml:15:5-42
+MERGED from [com.android.support:support-v4:22.1.0] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.1.0\AndroidManifest.xml:20:5-43
 	android:targetSdkVersion
 		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:10:9-38
 		INJECTED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml
@@ -127,12 +127,12 @@ ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:44:5-83
 		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:44:30-80
 application
 ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:46:5-222:19
-MERGED from [com.android.support:support-v4:21.0.3] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\AndroidManifest.xml:16:5-19
+MERGED from [com.android.support:support-v4:22.1.0] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.1.0\AndroidManifest.xml:22:5-20
 MERGED from [io.pristine:libjingle:8871] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\io.pristine\libjingle\8871\AndroidManifest.xml:11:5-12:19
 MERGED from [com.facebook.android:facebook-android-sdk:4.0.0] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.facebook.android\facebook-android-sdk\4.0.0\AndroidManifest.xml:28:5-20
-MERGED from [com.android.support:support-v4:21.0.3] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\AndroidManifest.xml:16:5-19
+MERGED from [com.android.support:support-v4:22.1.0] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.1.0\AndroidManifest.xml:22:5-20
 MERGED from [com.google.android.gms:play-services:6.5.87] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.google.android.gms\play-services\6.5.87\AndroidManifest.xml:20:5-24:19
-MERGED from [com.android.support:support-v4:21.0.3] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.android.support\support-v4\21.0.3\AndroidManifest.xml:16:5-19
+MERGED from [com.android.support:support-v4:22.1.0] F:\Android\CloudKibo\app\build\intermediates\exploded-aar\com.android.support\support-v4\22.1.0\AndroidManifest.xml:22:5-20
 	android:label
 		ADDED from F:\Android\CloudKibo\app\src\main\AndroidManifest.xml:50:9-41
 	android:hardwareAccelerated

@@ -6,8 +6,8 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="16"
-        android:targetSdkVersion="19" />
+        android:minSdkVersion="21"
+        android:targetSdkVersion="22" />
 
     <!-- They are added by me. -->
     <uses-feature android:name="android.hardware.camera" />

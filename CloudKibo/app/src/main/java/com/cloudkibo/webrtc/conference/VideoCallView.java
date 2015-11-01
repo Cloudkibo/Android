@@ -11,17 +11,30 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.hardware.display.DisplayManager;
+import android.media.Image;
+import android.media.ImageReader;
+import android.media.projection.MediaProjection;
+import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.IBinder;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager.LayoutParams;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.cloudkibo.R;
@@ -40,7 +53,9 @@ import org.webrtc.MediaStream;
 import org.webrtc.VideoRenderer;
 import org.webrtc.VideoRendererGui;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -81,6 +96,16 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
     private int currentId;
     private boolean isStarted = false;
 
+    private MediaProjectionManager projectionManager;
+    private ImageReader imageReader;
+    private MediaProjection mediaProjection;
+    private Handler handler;
+    private ImageView imgViewer;
+    private boolean projectionStarted;
+    private int projectionDisplayWidth;
+    private int projectionDisplayHeight;
+    private int imagesProduced;
+
     SocketService socketService;
     boolean isBound = false;
 
@@ -97,14 +122,19 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
     private ImageButton tglAudio;
     private ImageButton sendFile;
     private ImageButton tglChat;
+    private ImageButton tglScreen;
 
     private static final int REQUEST_CHOOSER = 11050;
+    private static final int SCREEN_REQUEST_CODE = 10151;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        projectionManager = (MediaProjectionManager)
+                getSystemService(Context.MEDIA_PROJECTION_SERVICE);
 
         user = (HashMap) getIntent().getExtras().get("user");
         room = getIntent().getExtras().getString("room");
@@ -126,6 +156,8 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
                         | LayoutParams.FLAG_TURN_SCREEN_ON);
 
         setContentView(R.layout.main);
+
+        handler = new Handler();
 
         vsv = (GLSurfaceView) findViewById(R.id.glview_call);
         vsv.setPreserveEGLContextOnPause(true);
@@ -222,6 +254,15 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
             }
         });
 
+        tglScreen = (ImageButton) findViewById(R.id.startScreenSharing);
+
+        tglScreen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleProjection();
+            }
+        });
+
         final Intent intent = getIntent();
         final String action = intent.getAction();
 
@@ -231,6 +272,47 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
             callerId = segments.get(0);
         }
     }
+    public void toggleProjection(){
+        if (projectionStarted) {
+            stopProjection();
+        } else {
+            startProjection();
+        }
+    }
+
+    /**
+     * Requests to start projection
+     */
+    public void startProjection() {
+        startActivityForResult(projectionManager.createScreenCaptureIntent(), SCREEN_REQUEST_CODE);
+    }
+
+    /**
+     * Request to stop projection
+     */
+    public void stopProjection() {
+        projectionStarted = false;
+
+        try {
+            JSONObject payload = new JSONObject();
+            payload.put("username", user.get("username"));
+            payload.put("type", "screenAndroid");
+            payload.put("action", projectionStarted);
+            payload.put("id", Integer.toString(currentId));
+            socketService.sendConferenceMsgGeneric("conference.stream", payload);
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mediaProjection != null) {
+                    mediaProjection.stop();
+                }
+            }
+        });
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -239,6 +321,44 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
                 if (resultCode == RESULT_OK) {
                     final Uri uri = data.getData();
                     fileTransferService.sendFile(FileUtils.getPath(this, uri));
+                }
+                break;
+            case SCREEN_REQUEST_CODE:
+                mediaProjection = projectionManager.getMediaProjection(resultCode, data);
+                if (mediaProjection != null) {
+
+                    projectionStarted = true;
+
+                    try {
+                        JSONObject payload = new JSONObject();
+                        payload.put("username", user.get("username"));
+                        payload.put("type", "screenAndroid");
+                        payload.put("action", projectionStarted);
+                        payload.put("id", Integer.toString(currentId));
+                        socketService.sendConferenceMsgGeneric("conference.stream", payload);
+                    }catch(JSONException e){
+                        e.printStackTrace();
+                    }
+
+                    // Initialize the media projection
+                    DisplayMetrics metrics = getResources().getDisplayMetrics();
+                    int density = metrics.densityDpi;
+                    int flags = DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY
+                            | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC;
+
+                    Display display = getWindowManager().getDefaultDisplay();
+                    Point size = new Point();
+                    display.getSize(size);
+
+                    projectionDisplayWidth = size.x;
+                    projectionDisplayHeight = size.y;
+
+                    imageReader = ImageReader.newInstance(projectionDisplayWidth, projectionDisplayHeight
+                            , PixelFormat.RGBA_8888, 2);
+                    mediaProjection.createVirtualDisplay("screencap",
+                            projectionDisplayWidth, projectionDisplayHeight, density,
+                            flags, imageReader.getSurface(), null, handler);
+                    imageReader.setOnImageAvailableListener(new ImageAvailableListener(), handler);
                 }
                 break;
         }
@@ -397,6 +517,90 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
 
     public void gotDataChannelMessage(DataChannel.Buffer buffer){
         fileTransferService.onDataChannelMessage(buffer);
+    }
+
+    /**
+     * DataTransferListener implementation
+     */
+    public void onDataReceive(String remotePeerId, final byte[] data) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Log.d("CONFERENCE_SCREEN", "onDataReceive: " + data.length);
+                if (data != null && data.length != 0) {
+                    Bitmap bm = BitmapFactory.decodeByteArray(data, 0, data.length);
+                    Log.d("CONFERENCE_SCREEN", "Set Image : " + bm.toString());
+                    imgViewer.setImageBitmap(bm);
+                }
+            }
+        });
+    }
+
+    private class ImageAvailableListener implements ImageReader.OnImageAvailableListener {
+        @Override
+        public void onImageAvailable(ImageReader reader) {
+            Image image = null;
+            FileOutputStream fos = null;
+            Bitmap bitmap = null;
+
+            ByteArrayOutputStream stream = null;
+
+            try {
+                image = imageReader.acquireLatestImage();
+                if (image != null) {
+                    Image.Plane[] planes = image.getPlanes();
+                    ByteBuffer buffer = planes[0].getBuffer();
+                    int pixelStride = planes[0].getPixelStride();
+                    int rowStride = planes[0].getRowStride();
+                    int rowPadding = rowStride - pixelStride * projectionDisplayWidth;
+
+                    // create bitmap
+                    bitmap = Bitmap.createBitmap(projectionDisplayWidth + rowPadding / pixelStride,
+                            projectionDisplayHeight, Bitmap.Config.ARGB_8888);
+                    bitmap.copyPixelsFromBuffer(buffer);
+
+                    stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 5, stream);
+
+                    JSONObject imgdata = new JSONObject();
+                    imgdata.put("type", "screenData");
+                    imgdata.put("data", stream.toByteArray());
+                    client.sendDataChannelMessage(new DataChannel.Buffer(Utility.toByteBuffer(imgdata.toString()), false));
+                 //   skylinkConnection.sendData(currentRemotePeerId, stream.toByteArray());
+                    Log.w("CONFERENCE_SCREEN", "sending screen data to peer :");
+
+                    imagesProduced++;
+                    Log.w("CONFERENCE_SCREEN", "captured image: " + imagesProduced);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                if (fos != null) {
+                    try {
+                        fos.close();
+                    } catch (IOException ioe) {
+                        ioe.printStackTrace();
+                    }
+                }
+
+                if (stream != null) {
+                    try {
+                        stream.close();
+                    } catch (IOException ioe) {
+                        ioe.printStackTrace();
+                    }
+                }
+
+                if (bitmap != null) {
+                    bitmap.recycle();
+                }
+
+                if (image != null) {
+                    image.close();
+                }
+            }
+        }
     }
 
     private ServiceConnection socketConnection = new ServiceConnection() {

@@ -96,11 +96,14 @@
       <file leaf-file-name="VideoCallView.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/VideoCallView.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0">
-              <caret line="203" column="48" selection-start-line="203" selection-start-column="48" selection-end-line="203" selection-end-column="48" />
+            <state vertical-scroll-proportion="-29.689655">
+              <caret line="602" column="9" selection-start-line="602" selection-start-column="9" selection-end-line="602" selection-end-column="9" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="method#onActivityResult#0;class#VideoCallView#0" expanded="false" />
+                <element signature="e#9800#9952#0" expanded="true" />
+                <element signature="e#9951#9952#0" expanded="true" />
+                <element signature="e#11218#11421#0" expanded="true" />
+                <element signature="e#11420#11421#0" expanded="true" />
                 <element signature="method#init#0;class#VideoCallView#0" expanded="false" />
                 <element signature="method#onPause#0;class#VideoCallView#0" expanded="false" />
                 <element signature="method#onResume#0;class#VideoCallView#0" expanded="false" />
@@ -114,69 +117,21 @@
                 <element signature="method#onAddRemoteStream#0;class#VideoCallView#0" expanded="false" />
                 <element signature="method#onRemoveRemoteStream#0;class#VideoCallView#0" expanded="false" />
                 <element signature="method#toggleRemoteVideo#0;class#VideoCallView#0" expanded="false" />
-                <element signature="class#14229:15343" expanded="false" />
-                <element signature="class#15405:20379" expanded="false" />
+                <element signature="method#gotDataChannelMessage#0;class#VideoCallView#0" expanded="false" />
+                <element signature="class#21976:23090" expanded="false" />
+                <element signature="class#23152:28126" expanded="false" />
+                <element signature="method#onServiceConnected#0;class#23152:28126" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="GroupChat.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/GroupChat.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.8598901">
-              <caret line="253" column="64" selection-start-line="253" selection-start-column="64" selection-end-line="253" selection-end-column="64" />
-              <folding>
-                <element signature="imports" expanded="true" />
-                <element signature="e#4334#4335#0" expanded="true" />
-                <element signature="e#4380#4381#0" expanded="true" />
-                <element signature="e#6931#7462#0" expanded="true" />
-                <element signature="e#7461#7462#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="GroupChat.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/ui/GroupChat.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-12.344828">
-              <caret line="326" column="0" selection-start-line="326" selection-start-column="0" selection-end-line="326" selection-end-column="0" />
-              <folding>
-                <element signature="method#loadChatMessagesFromServer#0;class#GroupChat#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="WebRtcClient.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/WebRtcClient.java">
+      <file leaf-file-name="FileTransferService.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/FileTransferService.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="155" column="13" selection-start-line="152" selection-start-column="20" selection-end-line="155" selection-end-column="13" />
-              <folding>
-                <element signature="class#RtcListener#0;class#WebRtcClient#0" expanded="false" />
-                <element signature="method#createOffer#0;class#WebRtcClient#0" expanded="false" />
-                <element signature="method#createAnswer#0;class#WebRtcClient#0" expanded="false" />
-                <element signature="method#SetRemoteSDPCommand#0;class#WebRtcClient#0" expanded="false" />
-                <element signature="method#AddIceCandidateCommand#0;class#WebRtcClient#0" expanded="false" />
-                <element signature="e#6301#6302#0" expanded="false" />
-                <element signature="e#6331#6332#0" expanded="false" />
-                <element signature="class#Peer#0;class#WebRtcClient#0" expanded="false" />
-                <element signature="method#onCreateSuccess#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
-                <element signature="method#onAddStream#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
-                <element signature="method#onRemoveStream#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
-                <element signature="method#onRenegotiationNeeded#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
-                <element signature="method#Peer#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
-                <element signature="class#DcObserver#0;class#WebRtcClient#0" expanded="false" />
-                <element signature="method#sendDataChannelMessage#0;class#WebRtcClient#0" expanded="false" />
-                <element signature="method#addPeer#0;class#WebRtcClient#0" expanded="false" />
-                <element signature="method#removePeer#0;class#WebRtcClient#0" expanded="false" />
-                <element signature="e#12030#12031#0" expanded="false" />
-                <element signature="e#12088#12089#0" expanded="false" />
-                <element signature="e#12181#12182#0" expanded="false" />
-                <element signature="e#12242#12243#0" expanded="false" />
-              </folding>
+              <caret line="190" column="124" selection-start-line="186" selection-start-column="0" selection-end-line="190" selection-end-column="124" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -206,13 +161,37 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="FileConnection.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/filesharing/FileConnection.java">
+      <file leaf-file-name="WebRtcClient.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/WebRtcClient.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
+              <caret line="303" column="16" selection-start-line="303" selection-start-column="16" selection-end-line="303" selection-end-column="16" />
+              <folding>
+                <element signature="class#RtcListener#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="method#createOffer#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="method#createAnswer#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="method#SetRemoteSDPCommand#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="method#AddIceCandidateCommand#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="class#Peer#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="method#onCreateSuccess#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="method#onAddStream#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="method#onRemoveStream#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="method#onRenegotiationNeeded#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="method#Peer#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="class#DcObserver#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="method#addPeer#0;class#WebRtcClient#0" expanded="false" />
+                <element signature="method#removePeer#0;class#WebRtcClient#0" expanded="false" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="FileConnection.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/filesharing/FileConnection.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-1.7282158">
               <caret line="347" column="82" selection-start-line="347" selection-start-column="82" selection-end-line="347" selection-end-column="82" />
               <folding>
-                <element signature="imports" expanded="false" />
                 <element signature="method#onDestroy#0;class#FileConnection#0" expanded="false" />
                 <element signature="method#createPeerConnectionFactory#0;class#FileConnection#0" expanded="false" />
                 <element signature="method#createOffer#0;class#FileConnection#0" expanded="false" />
@@ -229,8 +208,6 @@
                 <element signature="method#onSetFailure#0;class#FilePeer#0;class#FileConnection#0" expanded="false" />
                 <element signature="method#onSetSuccess#0;class#FilePeer#0;class#FileConnection#0" expanded="false" />
                 <element signature="class#16504:18754" expanded="false" />
-                <element signature="e#16597#16598#0" expanded="false" />
-                <element signature="e#16621#16622#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -638,9 +615,9 @@
                 <option name="name" value="preReleaseUnitTestBuild" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.android.support:support-v4:21.0.3" />
+                <option name="description" value="Prepare com.android.support:support-v4:22.1.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$" />
-                <option name="name" value="prepareComAndroidSupportSupportV42103Library" />
+                <option name="name" value="prepareComAndroidSupportSupportV42210Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Prepare com.facebook.android:facebook-android-sdk:4.0.0" />
@@ -1139,9 +1116,9 @@
                 <option name="name" value="preReleaseUnitTestBuild" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
-                <option name="description" value="Prepare com.android.support:support-v4:21.0.3" />
+                <option name="description" value="Prepare com.android.support:support-v4:22.1.0" />
                 <option name="linkedExternalProjectPath" value="$PROJECT_DIR$/app" />
-                <option name="name" value="prepareComAndroidSupportSupportV42103Library" />
+                <option name="name" value="prepareComAndroidSupportSupportV42210Library" />
               </ExternalTaskPojo>
               <ExternalTaskPojo>
                 <option name="description" value="Prepare com.facebook.android:facebook-android-sdk:4.0.0" />
@@ -1291,7 +1268,7 @@
     <option name="modificationStamps">
       <map>
         <entry key="$PROJECT_DIR$" value="4297968656266" />
-        <entry key="F:\Android\CloudKibo" value="4297968656266" />
+        <entry key="F:\Android\CloudKibo" value="4306337409161" />
       </map>
     </option>
     <option name="projectBuildClasspath">
@@ -1478,18 +1455,18 @@
                             <option value="$APPLICATION_HOME_DIR$/gradle/m2repository/net/sf/proguard/proguard-base/5.2.1/proguard-base-5.2.1-sources.jar" />
                             <option value="$APPLICATION_HOME_DIR$/gradle/m2repository/net/sf/proguard/proguard-base/5.2.1/proguard-base-5.2.1.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.nkzawa/socket.io-client/0.5.1/f83dcb739e03bcc6f2e6b784d470002e993ce25f/socket.io-client-0.5.1.jar" />
+                            <option value="$USER_HOME$/AppData/Local/Android/sdk1/extras/android/m2repository/com/android/support/support-v4/22.1.0/support-v4-22.1.0.aar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.2.2/1f96456ca233dec780aa224bff076d8e8bca3908/gson-2.2.2.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.pristine/libjingle/8871/b06a494a6281745c4092c2056020b68f5278c21b/libjingle-8871.aar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.facebook.android/facebook-android-sdk/4.0.0/f8cc454e2454e4a8b990222647bf976cf0290d9b/facebook-android-sdk-4.0.0.aar" />
                             <option value="$USER_HOME$/AppData/Local/Android/sdk1/extras/google/m2repository/com/google/android/gms/play-services/6.5.87/play-services-6.5.87.aar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.nkzawa/engine.io-client/0.5.1/c83503e6668d63b3d5b2a27edf6e3a54d9eb7a66/engine.io-client-0.5.1.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.json/json/20090211/c183aa3a2a6250293808bba12262c8920ce5a51c/json-20090211.jar" />
+                            <option value="$USER_HOME$/AppData/Local/Android/sdk1/extras/android/m2repository/com/android/support/support-annotations/22.1.0/support-annotations-22.1.0.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.parse.bolts/bolts-android/1.1.4/129874135e6081269ace2312092031558865de12/bolts-android-1.1.4.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp-ws/2.4.0/69206d28966656052a982ceded583abdeb41cf63/okhttp-ws-2.4.0.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp/2.4.0/40340c0748190fe897baf7bffbc1b282734294e5/okhttp-2.4.0.jar" />
                             <option value="$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.4.0/5b72bf48563ea8410e650de14aa33ff69a3e8c35/okio-1.4.0.jar" />
-                            <option value="$USER_HOME$/AppData/Local/Android/sdk1/extras/android/m2repository/com/android/support/support-v4/21.0.3/support-v4-21.0.3.aar" />
-                            <option value="$USER_HOME$/AppData/Local/Android/sdk1/extras/android/m2repository/com/android/support/support-annotations/21.0.3/support-annotations-21.0.3.jar" />
                           </list>
                         </option>
                         <option name="path" value="$PROJECT_DIR$/app" />
@@ -1514,7 +1491,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/app/build.gradle" />
         <option value="$PROJECT_DIR$/app/src/main/res/layout/outgoing_call.xml" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/ui/CallAlert.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/call/CallAlert.java" />
@@ -1556,10 +1532,11 @@
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/BoundFileServiceListener.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/FileTransferService.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/WebRtcClient.java" />
-        <option value="$PROJECT_DIR$/app/src/main/res/layout/main.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
-        <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/VideoCallView.java" />
         <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/GroupChat.java" />
+        <option value="$PROJECT_DIR$/app/src/main/AndroidManifest.xml" />
+        <option value="$PROJECT_DIR$/app/build.gradle" />
+        <option value="$PROJECT_DIR$/app/src/main/res/layout/main.xml" />
+        <option value="$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/VideoCallView.java" />
       </list>
     </option>
   </component>
@@ -1608,9 +1585,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scratches">
-        <subPane />
-      </pane>
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -1631,16 +1605,76 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane">
+      <pane id="AndroidView">
         <subPane>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Gradle Scripts" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidBuildScriptsGroupNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudKibo" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudKibo" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudKibo" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="menu" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="CloudKibo" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="res" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="layout" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidResFolderTypeNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
@@ -1672,87 +1706,22 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="AndroidView">
+      <pane id="PackagesPane">
         <subPane>
           <PATH>
             <PATH_ELEMENT>
               <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewProjectNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cloudkibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cloudkibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="webrtc" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="CloudKibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="java" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidSourceTypeNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cloudkibo" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="ui" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PackageViewModuleNode" />
             </PATH_ELEMENT>
           </PATH>
         </subPane>
+      </pane>
+      <pane id="Scratches">
+        <subPane />
       </pane>
     </panes>
   </component>
@@ -1765,7 +1734,7 @@
     <property name="MemberChooser.copyJavadoc" value="false" />
     <property name="last_opened_file_path" value="F:/device-2015-08-28-202819.png" />
     <property name="recentsLimit" value="5" />
-    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="VKAYP7LFQKT4DIZP" />
+    <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="0123456789ABCDEF" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="Nexus_5_API_21_x86" />
     <property name="FullScreen" value="false" />
     <property name="OverrideImplement.combined" value="true" />
@@ -2014,7 +1983,7 @@
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.274276" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.61839867" sideWeight="0.52276176" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3321976" sideWeight="0.52579665" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32980332" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2245827" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -2022,7 +1991,7 @@
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.51277685" sideWeight="0.51059" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.7666099" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.3321976" sideWeight="0.47723824" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.13117547" sideWeight="0.47420335" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.52640545" sideWeight="0.51966715" order="12" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.2693475" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -2292,61 +2261,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/socket/SocketService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="726" column="0" selection-start-line="726" selection-start-column="0" selection-end-line="726" selection-end-column="0" />
-          <folding>
-            <element signature="method#setSocketIOConfig#0;class#SocketService#0" expanded="false" />
-            <element signature="method#isForeground#0;class#SocketService#0" expanded="false" />
-            <element signature="method#isAppSentToBackground#0;class#SocketService#0" expanded="false" />
-            <element signature="docComment;method#onCreate#0;class#SocketService#0" expanded="false" />
-            <element signature="method#sendSocketMessage#0;class#SocketService#0" expanded="false" />
-            <element signature="method#sendConferenceMsg#0;class#SocketService#0" expanded="false" />
-            <element signature="method#stopCallMessageToCallee#0;class#SocketService#0" expanded="false" />
-            <element signature="method#acceptCallMessageToCallee#0;class#SocketService#0" expanded="false" />
-            <element signature="method#rejectCallMessageToCallee#0;class#SocketService#0" expanded="false" />
-            <element signature="method#sendSocketMessageDataChannel#0;class#SocketService#0" expanded="false" />
-            <element signature="method#callThisPerson#0;class#SocketService#0" expanded="false" />
-            <element signature="method#sendMessage#0;class#SocketService#0" expanded="false" />
-            <element signature="method#joinConference#0;class#SocketService#0" expanded="false" />
-            <element signature="method#askFriendsOnlineStatus#0;class#SocketService#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/BoundFileServiceListener.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-8.185185">
           <caret line="17" column="0" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/filesharing/FileConnection.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="347" column="82" selection-start-line="347" selection-start-column="82" selection-end-line="347" selection-end-column="82" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="method#onDestroy#0;class#FileConnection#0" expanded="false" />
-            <element signature="method#createPeerConnectionFactory#0;class#FileConnection#0" expanded="false" />
-            <element signature="method#createOffer#0;class#FileConnection#0" expanded="false" />
-            <element signature="method#createAnswer#0;class#FileConnection#0" expanded="false" />
-            <element signature="method#setRemoteSDP#0;class#FileConnection#0" expanded="false" />
-            <element signature="method#addIceCandidate#0;class#FileConnection#0" expanded="false" />
-            <element signature="method#sendSocketMessageDataChannel#0;class#FileConnection#0" expanded="false" />
-            <element signature="class#PcObserver#0;class#FileConnection#0" expanded="false" />
-            <element signature="method#onAddStream#0;class#PcObserver#0;class#FileConnection#0" expanded="false" />
-            <element signature="method#onDataChannel#0;class#PcObserver#0;class#FileConnection#0" expanded="false" />
-            <element signature="method#onIceCandidate#0;class#PcObserver#0;class#FileConnection#0" expanded="false" />
-            <element signature="method#onCreateFailure#0;class#FilePeer#0;class#FileConnection#0" expanded="false" />
-            <element signature="method#onCreateSuccess#0;class#FilePeer#0;class#FileConnection#0" expanded="false" />
-            <element signature="method#onSetFailure#0;class#FilePeer#0;class#FileConnection#0" expanded="false" />
-            <element signature="method#onSetSuccess#0;class#FilePeer#0;class#FileConnection#0" expanded="false" />
-            <element signature="class#16504:18754" expanded="false" />
-            <element signature="e#16597#16598#0" expanded="false" />
-            <element signature="e#16621#16622#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2406,36 +2324,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/FileTransferService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="88" column="49" selection-start-line="88" selection-start-column="49" selection-end-line="88" selection-end-column="49" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/build.gradle">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/build.gradle">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.3504673">
-          <caret line="17" column="25" selection-start-line="17" selection-start-column="25" selection-end-line="17" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.48872182">
-          <caret line="45" column="34" selection-start-line="45" selection-start-column="34" selection-end-line="45" selection-end-column="34" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -2457,86 +2349,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="126" column="54" selection-start-line="126" selection-start-column="54" selection-end-line="126" selection-end-column="54" />
-          <folding>
-            <element signature="e#2337#2355#0" expanded="true" />
-            <element signature="e#2501#2526#0" expanded="true" />
-            <element signature="e#2616#2634#0" expanded="true" />
-            <element signature="e#3329#3343#0" expanded="true" />
-            <element signature="e#4199#4217#0" expanded="true" />
-            <element signature="e#5176#5194#0" expanded="true" />
-            <element signature="e#6561#6579#0" expanded="true" />
-            <element signature="e#6852#6870#0" expanded="true" />
-            <element signature="e#6983#7001#0" expanded="true" />
-            <element signature="e#7266#7287#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="407" column="36" selection-start-line="407" selection-start-column="28" selection-end-line="407" selection-end-column="36" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/WebRtcClient.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="155" column="13" selection-start-line="152" selection-start-column="20" selection-end-line="155" selection-end-column="13" />
-          <folding>
-            <element signature="class#RtcListener#0;class#WebRtcClient#0" expanded="false" />
-            <element signature="method#createOffer#0;class#WebRtcClient#0" expanded="false" />
-            <element signature="method#createAnswer#0;class#WebRtcClient#0" expanded="false" />
-            <element signature="method#SetRemoteSDPCommand#0;class#WebRtcClient#0" expanded="false" />
-            <element signature="method#AddIceCandidateCommand#0;class#WebRtcClient#0" expanded="false" />
-            <element signature="e#6301#6302#0" expanded="false" />
-            <element signature="e#6331#6332#0" expanded="false" />
-            <element signature="class#Peer#0;class#WebRtcClient#0" expanded="false" />
-            <element signature="method#onCreateSuccess#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
-            <element signature="method#onAddStream#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
-            <element signature="method#onRemoveStream#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
-            <element signature="method#onRenegotiationNeeded#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
-            <element signature="method#Peer#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
-            <element signature="class#DcObserver#0;class#WebRtcClient#0" expanded="false" />
-            <element signature="method#sendDataChannelMessage#0;class#WebRtcClient#0" expanded="false" />
-            <element signature="method#addPeer#0;class#WebRtcClient#0" expanded="false" />
-            <element signature="method#removePeer#0;class#WebRtcClient#0" expanded="false" />
-            <element signature="e#12030#12031#0" expanded="false" />
-            <element signature="e#12088#12089#0" expanded="false" />
-            <element signature="e#12181#12182#0" expanded="false" />
-            <element signature="e#12242#12243#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/VideoCallView.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="203" column="48" selection-start-line="203" selection-start-column="48" selection-end-line="203" selection-end-column="48" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="method#onActivityResult#0;class#VideoCallView#0" expanded="false" />
-            <element signature="method#init#0;class#VideoCallView#0" expanded="false" />
-            <element signature="method#onPause#0;class#VideoCallView#0" expanded="false" />
-            <element signature="method#onResume#0;class#VideoCallView#0" expanded="false" />
-            <element signature="method#onDestroy#0;class#VideoCallView#0" expanded="false" />
-            <element signature="method#startCam#0;class#VideoCallView#0" expanded="false" />
-            <element signature="method#joinRoomForCall#0;class#VideoCallView#0" expanded="false" />
-            <element signature="method#sendMessage#0;class#VideoCallView#0" expanded="false" />
-            <element signature="method#sendChatMessage#0;class#VideoCallView#0" expanded="false" />
-            <element signature="method#onStatusChanged#0;class#VideoCallView#0" expanded="false" />
-            <element signature="method#onLocalStream#0;class#VideoCallView#0" expanded="false" />
-            <element signature="method#onAddRemoteStream#0;class#VideoCallView#0" expanded="false" />
-            <element signature="method#onRemoveRemoteStream#0;class#VideoCallView#0" expanded="false" />
-            <element signature="method#toggleRemoteVideo#0;class#VideoCallView#0" expanded="false" />
-            <element signature="class#14229:15343" expanded="false" />
-            <element signature="class#15405:20379" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -2553,24 +2369,166 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/ui/GroupChat.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-12.344828">
+        <state vertical-scroll-proportion="0.0">
           <caret line="326" column="0" selection-start-line="326" selection-start-column="0" selection-end-line="326" selection-end-column="0" />
           <folding>
+            <element signature="imports" expanded="false" />
             <element signature="method#loadChatMessagesFromServer#0;class#GroupChat#0" expanded="false" />
+            <element signature="e#7122#7123#0" expanded="false" />
+            <element signature="e#7153#7154#0" expanded="false" />
+            <element signature="e#7281#7282#0" expanded="false" />
+            <element signature="e#7315#7316#0" expanded="false" />
+            <element signature="e#7439#7440#0" expanded="false" />
+            <element signature="e#7459#7460#0" expanded="false" />
+            <element signature="e#8267#8268#0" expanded="false" />
+            <element signature="e#8299#8300#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/GroupChat.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.8598901">
+        <state vertical-scroll-proportion="0.5686813">
           <caret line="253" column="64" selection-start-line="253" selection-start-column="64" selection-end-line="253" selection-end-column="64" />
           <folding>
+            <element signature="imports" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/AndroidManifest.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="9" column="36" selection-start-line="9" selection-start-column="36" selection-end-line="9" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/build.gradle">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="39" column="46" selection-start-line="39" selection-start-column="46" selection-end-line="39" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/res/layout/main.xml">
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.6471698">
+          <caret line="54" column="43" selection-start-line="54" selection-start-column="43" selection-end-line="54" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/socket/SocketService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="726" column="0" selection-start-line="726" selection-start-column="0" selection-end-line="726" selection-end-column="0" />
+          <folding>
+            <element signature="method#setSocketIOConfig#0;class#SocketService#0" expanded="false" />
+            <element signature="method#isForeground#0;class#SocketService#0" expanded="false" />
+            <element signature="method#isAppSentToBackground#0;class#SocketService#0" expanded="false" />
+            <element signature="docComment;method#onCreate#0;class#SocketService#0" expanded="false" />
+            <element signature="method#sendSocketMessage#0;class#SocketService#0" expanded="false" />
+            <element signature="method#sendConferenceMsg#0;class#SocketService#0" expanded="false" />
+            <element signature="method#stopCallMessageToCallee#0;class#SocketService#0" expanded="false" />
+            <element signature="method#acceptCallMessageToCallee#0;class#SocketService#0" expanded="false" />
+            <element signature="method#rejectCallMessageToCallee#0;class#SocketService#0" expanded="false" />
+            <element signature="method#sendSocketMessageDataChannel#0;class#SocketService#0" expanded="false" />
+            <element signature="method#callThisPerson#0;class#SocketService#0" expanded="false" />
+            <element signature="method#sendMessage#0;class#SocketService#0" expanded="false" />
+            <element signature="method#joinConference#0;class#SocketService#0" expanded="false" />
+            <element signature="method#askFriendsOnlineStatus#0;class#SocketService#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/WebRtcClient.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="303" column="16" selection-start-line="303" selection-start-column="16" selection-end-line="303" selection-end-column="16" />
+          <folding>
+            <element signature="class#RtcListener#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="method#createOffer#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="method#createAnswer#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="method#SetRemoteSDPCommand#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="method#AddIceCandidateCommand#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="class#Peer#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="method#onCreateSuccess#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="method#onAddStream#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="method#onRemoveStream#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="method#onRenegotiationNeeded#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="method#Peer#0;class#Peer#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="class#DcObserver#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="method#addPeer#0;class#WebRtcClient#0" expanded="false" />
+            <element signature="method#removePeer#0;class#WebRtcClient#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/FileTransferService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="190" column="124" selection-start-line="186" selection-start-column="0" selection-end-line="190" selection-end-column="124" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/conference/VideoCallView.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-29.689655">
+          <caret line="602" column="9" selection-start-line="602" selection-start-column="9" selection-end-line="602" selection-end-column="9" />
+          <folding>
             <element signature="imports" expanded="true" />
-            <element signature="e#4334#4335#0" expanded="true" />
-            <element signature="e#4380#4381#0" expanded="true" />
-            <element signature="e#6931#7462#0" expanded="true" />
-            <element signature="e#7461#7462#0" expanded="true" />
+            <element signature="e#9800#9952#0" expanded="true" />
+            <element signature="e#9951#9952#0" expanded="true" />
+            <element signature="e#11218#11421#0" expanded="true" />
+            <element signature="e#11420#11421#0" expanded="true" />
+            <element signature="method#init#0;class#VideoCallView#0" expanded="false" />
+            <element signature="method#onPause#0;class#VideoCallView#0" expanded="false" />
+            <element signature="method#onResume#0;class#VideoCallView#0" expanded="false" />
+            <element signature="method#onDestroy#0;class#VideoCallView#0" expanded="false" />
+            <element signature="method#startCam#0;class#VideoCallView#0" expanded="false" />
+            <element signature="method#joinRoomForCall#0;class#VideoCallView#0" expanded="false" />
+            <element signature="method#sendMessage#0;class#VideoCallView#0" expanded="false" />
+            <element signature="method#sendChatMessage#0;class#VideoCallView#0" expanded="false" />
+            <element signature="method#onStatusChanged#0;class#VideoCallView#0" expanded="false" />
+            <element signature="method#onLocalStream#0;class#VideoCallView#0" expanded="false" />
+            <element signature="method#onAddRemoteStream#0;class#VideoCallView#0" expanded="false" />
+            <element signature="method#onRemoveRemoteStream#0;class#VideoCallView#0" expanded="false" />
+            <element signature="method#toggleRemoteVideo#0;class#VideoCallView#0" expanded="false" />
+            <element signature="method#gotDataChannelMessage#0;class#VideoCallView#0" expanded="false" />
+            <element signature="class#21976:23090" expanded="false" />
+            <element signature="class#23152:28126" expanded="false" />
+            <element signature="method#onServiceConnected#0;class#23152:28126" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/app/src/main/java/com/cloudkibo/webrtc/filesharing/FileConnection.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.7282158">
+          <caret line="347" column="82" selection-start-line="347" selection-start-column="82" selection-end-line="347" selection-end-column="82" />
+          <folding>
+            <element signature="method#onDestroy#0;class#FileConnection#0" expanded="false" />
+            <element signature="method#createPeerConnectionFactory#0;class#FileConnection#0" expanded="false" />
+            <element signature="method#createOffer#0;class#FileConnection#0" expanded="false" />
+            <element signature="method#createAnswer#0;class#FileConnection#0" expanded="false" />
+            <element signature="method#setRemoteSDP#0;class#FileConnection#0" expanded="false" />
+            <element signature="method#addIceCandidate#0;class#FileConnection#0" expanded="false" />
+            <element signature="method#sendSocketMessageDataChannel#0;class#FileConnection#0" expanded="false" />
+            <element signature="class#PcObserver#0;class#FileConnection#0" expanded="false" />
+            <element signature="method#onAddStream#0;class#PcObserver#0;class#FileConnection#0" expanded="false" />
+            <element signature="method#onDataChannel#0;class#PcObserver#0;class#FileConnection#0" expanded="false" />
+            <element signature="method#onIceCandidate#0;class#PcObserver#0;class#FileConnection#0" expanded="false" />
+            <element signature="method#onCreateFailure#0;class#FilePeer#0;class#FileConnection#0" expanded="false" />
+            <element signature="method#onCreateSuccess#0;class#FilePeer#0;class#FileConnection#0" expanded="false" />
+            <element signature="method#onSetFailure#0;class#FilePeer#0;class#FileConnection#0" expanded="false" />
+            <element signature="method#onSetSuccess#0;class#FilePeer#0;class#FileConnection#0" expanded="false" />
+            <element signature="class#16504:18754" expanded="false" />
           </folding>
         </state>
       </provider>

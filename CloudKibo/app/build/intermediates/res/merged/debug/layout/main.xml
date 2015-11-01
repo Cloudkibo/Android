@@ -49,4 +49,12 @@
         android:layout_toRightOf="@+id/sendFile"
         android:layout_toEndOf="@+id/sendFile" />
 
+    <ImageButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/startScreenSharing"
+        android:src="@drawable/ic_projects"
+        android:layout_above="@+id/toggleVideo"
+        android:layout_alignParentStart="true" />
+
 </RelativeLayout><!-- From: file:/F:/Android/CloudKibo/app/src/main/res/layout/main.xml -->
