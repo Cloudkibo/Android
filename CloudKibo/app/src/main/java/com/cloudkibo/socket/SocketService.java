@@ -213,23 +213,6 @@ public class SocketService extends Service {
 
                 }
 
-            }).on("msg", new Emitter.Listener() {
-
-                @Override
-                public void call(Object... args) {
-
-                    try {
-
-                        JSONObject payload = new JSONObject(args[0].toString());
-
-                        mListener.receiveSocketJson("msg", payload);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
             }).on("message", new Emitter.Listener() {
 
                 @Override

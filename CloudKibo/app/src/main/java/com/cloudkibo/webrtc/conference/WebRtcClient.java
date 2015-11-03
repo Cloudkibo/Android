@@ -129,7 +129,7 @@ public class WebRtcClient {
                         int endPoint = findEndPoint();
                         if (endPoint != MAX_PEER) {
                             Peer peer = addPeer(body.getString("by"), endPoint, body.getString("username"));
-                            peer.pc.addStream(localMS);
+                            //peer.pc.addStream(localMS);
                             createAnswer(body.getString("by"), body.getJSONObject("sdp"));
                         }
                     } else {
@@ -303,7 +303,7 @@ public class WebRtcClient {
 
     public void sendDataChannelMessage(DataChannel.Buffer buf){
         for (String key: peers.keySet()) {
-            Log.w("ConferenceFile", "i is " + key);
+            //Log.w("ConferenceFile", "i is " + key);
             peers.get(key).dc.send(buf);
         }
     };

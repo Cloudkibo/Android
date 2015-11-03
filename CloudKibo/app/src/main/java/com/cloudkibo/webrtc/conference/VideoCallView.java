@@ -562,12 +562,25 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
                     stream = new ByteArrayOutputStream();
                     bitmap.compress(Bitmap.CompressFormat.JPEG, 5, stream);
 
-                    JSONObject imgdata = new JSONObject();
-                    imgdata.put("type", "screenData");
-                    imgdata.put("data", stream.toByteArray());
-                    client.sendDataChannelMessage(new DataChannel.Buffer(Utility.toByteBuffer(imgdata.toString()), false));
-                 //   skylinkConnection.sendData(currentRemotePeerId, stream.toByteArray());
-                    Log.w("CONFERENCE_SCREEN", "sending screen data to peer :");
+                    if(stream.toByteArray().length < Utility.getChunkSize()){
+                        ByteBuffer byteBuffer = ByteBuffer.wrap(stream.toByteArray());
+                        DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, true);
+
+                        Log.w("CONFERENCE_SCREEN", "Image size less than chunk size condition");
+
+                        client.sendDataChannelMessage(buf);
+
+                        client.sendDataChannelMessage(new DataChannel.Buffer(Utility.toByteBuffer("\n"), false));
+                    } else {
+                        // todo break files in pieces here
+
+                        ByteBuffer byteBuffer = ByteBuffer.wrap(stream.toByteArray());
+                        DataChannel.Buffer buf = new DataChannel.Buffer(byteBuffer, true);
+                        client.sendDataChannelMessage(buf);
+                        client.sendDataChannelMessage(new DataChannel.Buffer(Utility.toByteBuffer("\n"), false));
+                        //   skylinkConnection.sendData(currentRemotePeerId, stream.toByteArray());
+                        Log.w("CONFERENCE_SCREEN", "sending screen data to peer :");
+                    }
 
                     imagesProduced++;
                     Log.w("CONFERENCE_SCREEN", "captured image: " + imagesProduced);
