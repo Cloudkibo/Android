@@ -272,6 +272,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
             callerId = segments.get(0);
         }
     }
+
     public void toggleProjection(){
         if (projectionStarted) {
             stopProjection();

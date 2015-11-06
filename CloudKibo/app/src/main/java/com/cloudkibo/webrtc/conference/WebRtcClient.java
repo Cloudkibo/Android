@@ -32,7 +32,6 @@ public class WebRtcClient {
     private PeerConnectionFactory factory;
     private HashMap<String, Peer> peers = new HashMap<String, Peer>();
     private PeerConnectionParameters pcParams;
-    private MediaConstraints pcConstraints = new MediaConstraints();
     private MediaStream localMS;
     private VideoSource videoSource;
     private RtcListener mListener;
@@ -63,7 +62,7 @@ public class WebRtcClient {
         Log.w(TAG, "CreateOfferCommand");
         Peer peer = peers.get(peerId);
         peer.createDataChannel();
-        peer.pc.createOffer(peer, pcConstraints);
+        peer.pc.createOffer(peer, RTCConfig.getSDPConstraints());
     }
 
     private void createAnswer(String peerId, JSONObject payload){
@@ -75,7 +74,7 @@ public class WebRtcClient {
                     payload.getString("sdp")
             );
             peer.pc.setRemoteDescription(peer, sdp);
-            peer.pc.createAnswer(peer, pcConstraints);
+            peer.pc.createAnswer(peer, RTCConfig.getSDPConstraints());
         }catch(JSONException e){
             e.printStackTrace();
         }
@@ -98,7 +97,7 @@ public class WebRtcClient {
     private void AddIceCandidateCommand(String peerId, JSONObject payload){
         try {
             Log.w(TAG, "AddIceCandidateCommand");
-            Log.w("Conference", payload.toString());
+            //Log.w("Conference", payload.toString());
             PeerConnection pc = peers.get(peerId).pc;
             if (pc.getRemoteDescription() != null) {
                 IceCandidate candidate = new IceCandidate(
@@ -118,9 +117,9 @@ public class WebRtcClient {
             if (type.equals("peer.connected")) {
                 String id = body.getString("id");
                 Peer peer = addPeer(id, findEndPoint(), body.getString("username"));
-                peer.pc.addStream(localMS);
                 createOffer(id);
             } else if (type.equals("peer.disconnected")) {
+                mListener.onStatusChanged("Peer disconnect received");
                 removePeer(body.getString("id"));
             } else if (type.equals("msg")) {
                 String msg_type = body.getString("type");
@@ -129,7 +128,6 @@ public class WebRtcClient {
                         int endPoint = findEndPoint();
                         if (endPoint != MAX_PEER) {
                             Peer peer = addPeer(body.getString("by"), endPoint, body.getString("username"));
-                            //peer.pc.addStream(localMS);
                             createAnswer(body.getString("by"), body.getJSONObject("sdp"));
                         }
                     } else {
@@ -174,7 +172,7 @@ public class WebRtcClient {
         public void onCreateSuccess(final SessionDescription sdp) {
             // TODO: modify sdp to use pcParams prefered codecs
             try {
-                Log.w("Conference", sdp.type.canonicalForm());
+                //Log.w("Conference", sdp.type.canonicalForm());
                 JSONObject sdpString = new JSONObject();
                 sdpString.put("type", sdp.type.canonicalForm());
                 sdpString.put("sdp", sdp.description);
@@ -183,8 +181,9 @@ public class WebRtcClient {
                 payload.put("sdp", sdpString);
                 payload.put("type", sdp.type.canonicalForm());
 
-                mListener.sendMessage(id, payload);
                 pc.setLocalDescription(Peer.this, sdp);
+                mListener.sendMessage(id, payload);
+                Log.w("CONFERENCE", "Sending offer or answer");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -254,12 +253,12 @@ public class WebRtcClient {
             this.dc = dataChannel;
             DcObserver dcObserver = new DcObserver();
             this.dc.registerObserver(dcObserver);
-            mListener.onStatusChanged("Data Channel Received");
+            //mListener.onStatusChanged("Data Channel Received");
         }
 
         public void createDataChannel(){
             this.dc = pc.createDataChannel("sendDataChannel", new DataChannel.Init());
-            mListener.onStatusChanged("Data Channel Created");
+            //mListener.onStatusChanged("Data Channel Created");
             DcObserver dcObserver = new DcObserver();
             this.dc.registerObserver(dcObserver);
         }
@@ -270,7 +269,7 @@ public class WebRtcClient {
         }
 
         public Peer(String id, int endPoint, String name) {
-            Log.d(TAG,"new Peer: "+id + " " + endPoint);
+            Log.w(TAG,"new Peer: "+id + " " + endPoint);
             this.pc = factory.createPeerConnection(RTCConfig.getIceServer(), RTCConfig.getMediaConstraints(), this);
             this.id = id;
             this.endPoint = endPoint;
@@ -296,7 +295,7 @@ public class WebRtcClient {
         @Override
         public void onStateChange() {
 
-            Log.w("FILE_ERROR", "DataChannel State Changed");
+            Log.w("CONFERENCE", "DataChannel State Changed");
 
         }
     }

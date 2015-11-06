@@ -528,8 +528,7 @@ public class SocketService extends Service {
 
                 @Override
                 public void call(Object... args) {
-
-                    Log.w("CONFERENCE", args[0].toString());
+                    
                     try {
                         JSONObject payload = new JSONObject(args[0].toString());
 

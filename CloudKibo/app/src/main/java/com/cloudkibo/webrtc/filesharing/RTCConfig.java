@@ -35,11 +35,18 @@ public class RTCConfig {
 		MediaConstraints pcMediaConstraints = new MediaConstraints();
 		pcMediaConstraints.optional.add(new MediaConstraints.KeyValuePair(
 			"DtlsSrtpKeyAgreement", "true"));
+		
+		return pcMediaConstraints;
+	}
+
+	public static MediaConstraints getSDPConstraints(){
+		// Initialize PeerConnection
+		MediaConstraints pcMediaConstraints = new MediaConstraints();
 		pcMediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(
 				"OfferToReceiveAudio", "true"));
 		pcMediaConstraints.mandatory.add(new MediaConstraints.KeyValuePair(
 				"OfferToReceiveVideo", "true"));
-		
+
 		return pcMediaConstraints;
 	}
 
