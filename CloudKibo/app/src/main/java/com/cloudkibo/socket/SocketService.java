@@ -111,7 +111,7 @@ public class SocketService extends Service {
 
         try {
 
-            socket = IO.socket("https://www.cloudkibo.com");
+            socket = IO.socket("https://api.cloudkibo.com");
             socket.connect();
 
             socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
@@ -554,7 +554,7 @@ public class SocketService extends Service {
         }
 
 		/*
-		SocketIOClient.connect("https://www.cloudkibo.com", new ConnectCallback() {
+		SocketIOClient.connect("https://api.cloudkibo.com", new ConnectCallback() {
 
 			@Override
 			public void onConnectCompleted(Exception ex, SocketIOClient socket) {

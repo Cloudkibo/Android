@@ -25,24 +25,24 @@ public class UserFunctions {
     private ConnectionManager connection;
 
     //URL of the NODEJS API
-    private static String loginURL = "https://www.cloudkibo.com/auth/local";
-    private static String registerURL = "https://www.cloudkibo.com/api/users/";
-    private static String userDataURL = "https://www.cloudkibo.com/api/users/me";
-    private static String saveChatURL = "https://www.cloudkibo.com/api/userchat/save";
-    private static String getChatURL = "https://www.cloudkibo.com/api/userchat";
-    private static String markChatReadURL = "https://www.cloudkibo.com/api/userchat/markasread";
-    private static String saveContactURL = "https://www.cloudkibo.com/api/contactslist/addbyusername";
-    private static String forpassURL = "https://www.cloudkibo.com/api/users/resetpasswordrequest";
-    private static String chgpassURL = "https://www.cloudkibo.com/learn2crack_login_api/";
-    private static String getContactsURL = "https://www.cloudkibo.com/api/contactslist/";
-    private static String getPendingContactsURL = "https://www.cloudkibo.com/api/contactslist/pendingcontacts/";
-    private static String approveContactURL = "https://www.cloudkibo.com/api/contactslist/approvefriendrequest/";
-    private static String rejectContactURL = "https://www.cloudkibo.com/api/contactslist/rejectfriendrequest/";
-    private static String removeChatURL = "https://www.cloudkibo.com/api/userchat/removechathistory/";
-    private static String removeContactURL = "https://www.cloudkibo.com/api/contactslist/removefriend/";
-    private static String phoneContactsURL = "https://www.cloudkibo.com/api/users/searchaccountsbyphone/";
-    private static String emailContactsURL = "https://www.cloudkibo.com/api/users/searchaccountsbyemail/";
-    private static String inviteContactsURL = "https://www.cloudkibo.com/api/users/invitebymultipleemail/";
+    private static String loginURL = "https://api.cloudkibo.com/auth/local";
+    private static String registerURL = "https://api.cloudkibo.com/api/users/";
+    private static String userDataURL = "https://api.cloudkibo.com/api/users/me";
+    private static String saveChatURL = "https://api.cloudkibo.com/api/userchat/save";
+    private static String getChatURL = "https://api.cloudkibo.com/api/userchat";
+    private static String markChatReadURL = "https://api.cloudkibo.com/api/userchat/markasread";
+    private static String saveContactURL = "https://api.cloudkibo.com/api/contactslist/addbyusername";
+    private static String forpassURL = "https://api.cloudkibo.com/api/users/resetpasswordrequest";
+    private static String chgpassURL = "https://api.cloudkibo.com/learn2crack_login_api/";
+    private static String getContactsURL = "https://api.cloudkibo.com/api/contactslist/";
+    private static String getPendingContactsURL = "https://api.cloudkibo.com/api/contactslist/pendingcontacts/";
+    private static String approveContactURL = "https://api.cloudkibo.com/api/contactslist/approvefriendrequest/";
+    private static String rejectContactURL = "https://api.cloudkibo.com/api/contactslist/rejectfriendrequest/";
+    private static String removeChatURL = "https://api.cloudkibo.com/api/userchat/removechathistory/";
+    private static String removeContactURL = "https://api.cloudkibo.com/api/contactslist/removefriend/";
+    private static String phoneContactsURL = "https://api.cloudkibo.com/api/users/searchaccountsbyphone/";
+    private static String emailContactsURL = "https://api.cloudkibo.com/api/users/searchaccountsbyemail/";
+    private static String inviteContactsURL = "https://api.cloudkibo.com/api/users/invitebymultipleemail/";
     
     
     

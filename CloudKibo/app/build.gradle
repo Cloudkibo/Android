@@ -2,14 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
-    signingConfigs {
-        config {
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
-            storeFile file('C:/Users/sojharo/.android/debug.keystore')
-            storePassword 'android'
-        }
-    }
+    //signingConfigs {
+    //    config {
+    //        keyAlias 'androiddebugkey'
+    //        keyPassword 'android'
+    //        //storeFile file('C:/Users/sojharo/.android/debug.keystore')
+    //        storePassword 'android'
+    //    }
+    //}
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
     defaultConfig {
@@ -23,7 +23,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         debug {
-            signingConfig signingConfigs.config
+//            signingConfig signingConfigs.config
         }
     }
     dexOptions {

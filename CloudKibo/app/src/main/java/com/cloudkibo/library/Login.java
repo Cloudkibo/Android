@@ -198,7 +198,7 @@ public class Login extends AccountAuthenticatorActivity implements GoogleApiClie
 	{
 		super.onCreate(savedInstanceState);
 
-        FacebookSdk.sdkInitialize(getApplicationContext());
+       // FacebookSdk.sdkInitialize(getApplicationContext());
 		setContentView(R.layout.login);
 
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -218,13 +218,13 @@ public class Login extends AccountAuthenticatorActivity implements GoogleApiClie
 		passwordText = (EditText) findViewById(R.id.editTextPassword);
 		btnLogin = (Button) findViewById(R.id.btnLogin);
 
-        btnFacebook = (LoginButton) findViewById(R.id.btnFb);
+        //btnFacebook = (LoginButton) findViewById(R.id.btnFb);
         findViewById(id.btnGP).setOnClickListener(this);
 
         callbackManager = CallbackManager.Factory.create();
 
-        btnFacebook.setReadPermissions("user_friends");
-
+        //btnFacebook.setReadPermissions("user_friends");
+/*
         btnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -247,7 +247,7 @@ public class Login extends AccountAuthenticatorActivity implements GoogleApiClie
                 Log.e("FACEBOOK", "Error occurred");
             }
         });
-
+*/
 
 		btnRegister = (Button) findViewById(R.id.btnReg);
         btnForgot = (Button) findViewById(id.btnForgot);

@@ -28,12 +28,12 @@
             android:layout_marginTop="@dimen/pad_15dp"
             android:orientation="horizontal" >
 
-            <com.facebook.login.widget.LoginButton
+            <!--<com.facebook.login.widget.LoginButton
                 android:id="@+id/btnFb"
                 style="@style/btn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
-                <!-- android:background="@drawable/btn_fb" /> -->
+                // android:background="@drawable/btn_fb" /> -->
 
             <com.google.android.gms.common.SignInButton
                 android:id="@+id/btnGP"

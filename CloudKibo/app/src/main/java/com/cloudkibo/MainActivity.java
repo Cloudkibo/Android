@@ -164,10 +164,10 @@ public class MainActivity extends CustomActivity
         	
         	/* todo this starts syncing on very short intervals */
 
-            ContentResolver.setSyncAutomatically(account, CloudKiboDatabaseContract.AUTHORITY, true);
-            ContentResolver.requestSync(account, CloudKiboDatabaseContract.AUTHORITY, new Bundle());
+            //ContentResolver.setSyncAutomatically(account, CloudKiboDatabaseContract.AUTHORITY, true);
+            //ContentResolver.requestSync(account, CloudKiboDatabaseContract.AUTHORITY, new Bundle());
 
-            ContentResolver.addPeriodicSync(account, CloudKiboDatabaseContract.AUTHORITY, Bundle.EMPTY, SYNC_INTERVAL);
+            //ContentResolver.addPeriodicSync(account, CloudKiboDatabaseContract.AUTHORITY, Bundle.EMPTY, SYNC_INTERVAL);
 
             fetchUserFromServerForFirstTime();
         }

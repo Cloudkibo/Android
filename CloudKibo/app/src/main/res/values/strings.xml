@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">CloudKibo</string>
-    <string name="host">www.cloudkibo.com</string>
+    <string name="host">api.cloudkibo.com</string>
     <string name="port">8443</string>
     
     <string name="type_msg">Type message</string>    
