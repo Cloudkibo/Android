@@ -14,8 +14,6 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.provider.ContactsContract;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -120,15 +118,13 @@ public class MainActivity extends CustomActivity
 
     UserFunctions userFunction;
 
-    Dialog dialog;;
+    Dialog dialog;
 
     public String filePeer;
     public String fileData;
     public Boolean initiatorFileTransfer;
 
     HashMap<String, String> user;
-
-    List<NameValuePair> msg1;
 
     AccountManager am;
     Account account;

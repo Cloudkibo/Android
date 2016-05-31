@@ -1,36 +1,322 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services/6.5.87/res/values-pt/common_strings.xml -->
+<resources>
+    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-pt/values-pt.xml -->
     <eat-comment/>
-    <string msgid="473679118463211576" name="common_android_wear_notification_needs_update_text">"Um app exige uma atualização do app Android Wear."</string>
-    <string msgid="3046420540094071256" name="common_android_wear_update_text">"Este app só funciona com uma versão atualizada do app Android Wear."</string>
-    <string msgid="1366439133145190222" name="common_android_wear_update_title">"Atualizar o Android Wear"</string>
-    <string msgid="4181637455539816337" name="common_google_play_services_enable_button">"Ativar o Google Play Services"</string>
-    <string msgid="7627896071867667758" name="common_google_play_services_enable_text">"Este app só funciona com o Google Play Services ativado."</string>
-    <string msgid="529078775174559253" name="common_google_play_services_enable_title">"Ative o Google Play Services"</string>
-    <string msgid="2443362625939284971" name="common_google_play_services_error_notification_requested_by_msg">"Solicitado por <ns1:g id="APP_NAME">%1$s</ns1:g>"</string>
-    <string msgid="8515591849428043265" name="common_google_play_services_install_button">"Instalar o Google Play Services"</string>
-    <string msgid="8685301130651051380" name="common_google_play_services_install_text_phone">"Este app não funciona sem o Google Play Services, que não está instalado em seu telefone."</string>
-    <string msgid="1589957570365247855" name="common_google_play_services_install_text_tablet">"Este app não funciona sem o Google Play Services, que não está instalado em seu tablet."</string>
-    <string msgid="26645092511305524" name="common_google_play_services_install_title">"Instale o Google Play Services"</string>
-    <string msgid="4983316348021735578" name="common_google_play_services_invalid_account_text">"A conta especificada não existe no dispositivo. Escolha outra conta."</string>
-    <string msgid="1066672360770936753" name="common_google_play_services_invalid_account_title">"Conta inválida"</string>
-    <string msgid="2583358409598976717" name="common_google_play_services_needs_enabling_title">"Um app requer a ativação do Google Play Services."</string>
-    <string msgid="9038847255613537209" name="common_google_play_services_network_error_text">"É necessária uma conexão de dados para conectar ao Google Play Services."</string>
-    <string msgid="3827284619958211114" name="common_google_play_services_network_error_title">"Erro na rede"</string>
-    <string msgid="8120534356798772974" name="common_google_play_services_notification_needs_installation_title">"Um app requer a instalação do Google Play Services."</string>
-    <string msgid="1388129345631079938" name="common_google_play_services_notification_needs_update_title">"Um app requer a atualização do Google Play Services."</string>
-    <string msgid="1852570676146674985" name="common_google_play_services_notification_ticker">"Erro do Google Play Services"</string>
-    <string msgid="4762332809710093730" name="common_google_play_services_unknown_issue">"Problema desconhecido com o Google Play Services."</string>
-    <string msgid="3542578567569488671" name="common_google_play_services_unsupported_text">"O Google Play Services, necessário para alguns dos apps, não é compatível com seu dispositivo. Entre em contato com o fabricante para obter assistência."</string>
-    <string msgid="6334768798839376943" name="common_google_play_services_unsupported_title">"Play Services"</string>
-    <string msgid="8932944190611227642" name="common_google_play_services_update_button">"Atualizar"</string>
-    <string msgid="448354684997260580" name="common_google_play_services_update_text">"Este app só funciona com uma versão atualizada do Google Play Services."</string>
-    <string msgid="6006316683626838685" name="common_google_play_services_update_title">"Atualize o Google Play Services"</string>
-    <string msgid="411506735369601515" name="common_open_on_phone">"Abrir no smartphone"</string>
-    <string msgid="9071884888741449141" name="common_signin_button_text">"Login"</string>
-    <string msgid="2429381841831957106" name="common_signin_button_text_long">"Fazer login com o Google"</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/facebook-android-sdk/4.0.0/res/values-pt/values.xml -->
+    <string-array name="com_accountkit_phone_country_codes">
+        <item>376:AD:Andorra</item>
+        <item>971:AE:Emirados Árabes Unidos</item>
+        <item>93:AF:Afeganistão</item>
+        <item>1:AG:Antígua</item>
+        <item>1:AI:Anguila</item>
+        <item>355:AL:Albânia</item>
+        <item>374:AM:Armênia</item>
+        <item>244:AO:Angola</item>
+        <item>54:AR:Argentina</item>
+        <item>1:AS:Samoa Americana</item>
+        <item>43:AT:Áustria</item>
+        <item>61:AU:Austrália</item>
+        <item>297:AW:Aruba</item>
+        <item>994:AZ:Azerbaijão</item>
+        <item>387:BA:Bósnia e Herzegovina</item>
+        <item>1:BB:Barbados</item>
+        <item>880:BD:Bangladesh</item>
+        <item>32:BE:Bélgica</item>
+        <item>226:BF:Burkina Faso</item>
+        <item>359:BG:Bulgária</item>
+        <item>973:BH:Bahrein</item>
+        <item>257:BI:Burundi</item>
+        <item>229:BJ:Benin</item>
+        <item>1:BM:Bermudas</item>
+        <item>673:BN:Brunei</item>
+        <item>591:BO:Bolívia</item>
+        <item>599:BQ:Bonaire, Santo Eustáquio e Saba</item>
+        <item>55:BR:Brasil</item>
+        <item>1:BS:Bahamas</item>
+        <item>975:BT:Butão</item>
+        <item>267:BW:Botsuana</item>
+        <item>375:BY:Belarus</item>
+        <item>501:BZ:Belize</item>
+        <item>1:CA:Canadá</item>
+        <item>243:CD:República Democrática do Congo</item>
+        <item>236:CF:República Centro-Africana</item>
+        <item>242:CG:República do Congo</item>
+        <item>41:CH:Suíça</item>
+        <item>225:CI:Costa do Marfim</item>
+        <item>682:CK:Ilhas Cook</item>
+        <item>56:CL:Chile</item>
+        <item>237:CM:Camarões</item>
+        <item>86:CN:China</item>
+        <item>57:CO:Colômbia</item>
+        <item>506:CR:Costa Rica</item>
+        <item>53:CU:Cuba</item>
+        <item>238:CV:Cabo Verde</item>
+        <item>599:CW:Curaçao</item>
+        <item>357:CY:Chipre</item>
+        <item>420:CZ:República Tcheca</item>
+        <item>49:DE:Alemanha</item>
+        <item>253:DJ:Djibuti</item>
+        <item>45:DK:Dinamarca</item>
+        <item>1:DM:Dominica</item>
+        <item>1:DO:República Dominicana</item>
+        <item>213:DZ:Argélia</item>
+        <item>593:EC:Equador</item>
+        <item>372:EE:Estônia</item>
+        <item>20:EG:Egito</item>
+        <item>212:EH:Saara Ocidental</item>
+        <item>291:ER:Eritreia</item>
+        <item>34:ES:Espanha</item>
+        <item>251:ET:Etiópia</item>
+        <item>358:FI:Finlândia</item>
+        <item>679:FJ:Ilhas Fiji</item>
+        <item>500:FK:Ilhas Malvinas</item>
+        <item>691:FM:Estados Federados da Micronésia</item>
+        <item>298:FO:Ilhas Faroés</item>
+        <item>33:FR:França</item>
+        <item>241:GA:Gabão</item>
+        <item>44:GB:Reino Unido</item>
+        <item>1:GD:Granada</item>
+        <item>995:GE:Geórgia</item>
+        <item>594:GF:Guiana Francesa</item>
+        <item>44:GG:Guernsey</item>
+        <item>233:GH:Gana</item>
+        <item>350:GI:Gibraltar</item>
+        <item>299:GL:Groenlândia</item>
+        <item>220:GM:Gâmbia</item>
+        <item>224:GN:Guiné</item>
+        <item>590:GP:Guadalupe</item>
+        <item>240:GQ:Guiné Equatorial</item>
+        <item>30:GR:Grécia</item>
+        <item>502:GT:Guatemala</item>
+        <item>1:GU:Guam</item>
+        <item>245:GW:Guiné-Bissau</item>
+        <item>592:GY:Guiana</item>
+        <item>852:HK:Hong Kong</item>
+        <item>504:HN:Honduras</item>
+        <item>385:HR:Croácia</item>
+        <item>509:HT:Haiti</item>
+        <item>36:HU:Hungria</item>
+        <item>62:ID:Indonésia</item>
+        <item>353:IE:Irlanda</item>
+        <item>972:IL:Israel</item>
+        <item>44:IM:Ilha de Man</item>
+        <item>91:IN:Índia</item>
+        <item>246:IO:Território Britânico do Oceano Índico</item>
+        <item>964:IQ:Iraque</item>
+        <item>98:IR:Irã</item>
+        <item>354:IS:Islândia</item>
+        <item>39:IT:Itália</item>
+        <item>44:JE:Jersey</item>
+        <item>1:JM:Jamaica</item>
+        <item>962:JO:Jordânia</item>
+        <item>81:JP:Japão</item>
+        <item>254:KE:Quênia</item>
+        <item>996:KG:Quirguistão</item>
+        <item>855:KH:Camboja</item>
+        <item>686:KI:Kiribati</item>
+        <item>269:KM:Ilhas Comores</item>
+        <item>1:KN:São Cristóvão e Névis</item>
+        <item>850:KP:Coreia do Norte</item>
+        <item>82:KR:Coreia do Sul</item>
+        <item>965:KW:Kuwait</item>
+        <item>1:KY:Ilhas Cayman</item>
+        <item>7:KZ:Cazaquistão</item>
+        <item>856:LA:Laos</item>
+        <item>961:LB:Líbano</item>
+        <item>1:LC:Santa Lúcia</item>
+        <item>423:LI:Liechtenstein</item>
+        <item>94:LK:Sri Lanka</item>
+        <item>231:LR:Libéria</item>
+        <item>266:LS:Lesoto</item>
+        <item>370:LT:Lituânia</item>
+        <item>352:LU:Luxemburgo</item>
+        <item>371:LV:Letônia</item>
+        <item>218:LY:Líbia</item>
+        <item>212:MA:Marrocos</item>
+        <item>377:MC:Mônaco</item>
+        <item>373:MD:Moldávia</item>
+        <item>382:ME:Montenegro</item>
+        <item>261:MG:Madagascar</item>
+        <item>692:MH:Ilhas Marshall</item>
+        <item>389:MK:Macedônia</item>
+        <item>223:ML:Mali</item>
+        <item>95:MM:Myanmar</item>
+        <item>976:MN:Mongólia</item>
+        <item>853:MO:Macau</item>
+        <item>1:MP:Ilhas Marianas do Norte</item>
+        <item>596:MQ:Martinica</item>
+        <item>222:MR:Mauritânia</item>
+        <item>1:MS:Montserrat</item>
+        <item>356:MT:Malta</item>
+        <item>230:MU:Ilhas Maurício</item>
+        <item>960:MV:Maldivas</item>
+        <item>265:MW:Malaui</item>
+        <item>52:MX:México</item>
+        <item>60:MY:Malásia</item>
+        <item>258:MZ:Moçambique</item>
+        <item>264:NA:Namíbia</item>
+        <item>687:NC:Nova Caledônia</item>
+        <item>227:NE:Níger</item>
+        <item>672:NF:Ilha Norfolk</item>
+        <item>234:NG:Nigéria</item>
+        <item>505:NI:Nicarágua</item>
+        <item>31:NL:Holanda</item>
+        <item>47:NO:Noruega</item>
+        <item>977:NP:Nepal</item>
+        <item>674:NR:Nauru</item>
+        <item>683:NU:Niue</item>
+        <item>64:NZ:Nova Zelândia</item>
+        <item>968:OM:Omã</item>
+        <item>507:PA:Panamá</item>
+        <item>51:PE:Peru</item>
+        <item>689:PF:Polinésia Francesa</item>
+        <item>675:PG:Papua-Nova Guiné</item>
+        <item>63:PH:Filipinas</item>
+        <item>92:PK:Paquistão</item>
+        <item>48:PL:Polônia</item>
+        <item>508:PM:São Pedro e Miquelon</item>
+        <item>1:PR:Porto Rico</item>
+        <item>970:PS:Palestina</item>
+        <item>351:PT:Portugal</item>
+        <item>680:PW:Palau</item>
+        <item>595:PY:Paraguai</item>
+        <item>974:QA:Catar</item>
+        <item>262:RE:Reunião</item>
+        <item>40:RO:Romênia</item>
+        <item>381:RS:Sérvia</item>
+        <item>7:RU:Rússia</item>
+        <item>250:RW:Ruanda</item>
+        <item>966:SA:Arábia Saudita</item>
+        <item>677:SB:Ilhas Salomão</item>
+        <item>248:SC:Seicheles</item>
+        <item>249:SD:Sudão</item>
+        <item>46:SE:Suécia</item>
+        <item>65:SG:Cingapura</item>
+        <item>290:SH:Santa Helena</item>
+        <item>386:SI:Eslovênia</item>
+        <item>421:SK:Eslováquia</item>
+        <item>232:SL:Serra Leoa</item>
+        <item>378:SM:San Marino</item>
+        <item>221:SN:Senegal</item>
+        <item>252:SO:Somália</item>
+        <item>597:SR:Suriname</item>
+        <item>211:SS:Sul do Sudão</item>
+        <item>239:ST:São Tomé e Príncipe</item>
+        <item>503:SV:El Salvador</item>
+        <item>1:SX:São Martinho</item>
+        <item>963:SY:Síria</item>
+        <item>268:SZ:Suazilândia</item>
+        <item>1:TC:Ilhas Turcos e Caicos</item>
+        <item>235:TD:Chade</item>
+        <item>228:TG:Togo</item>
+        <item>66:TH:Tailândia</item>
+        <item>992:TJ:Tadjiquistão</item>
+        <item>690:TK:Tokelau</item>
+        <item>670:TL:Timor-Leste</item>
+        <item>993:TM:Turcomenistão</item>
+        <item>216:TN:Tunísia</item>
+        <item>676:TO:Tonga</item>
+        <item>90:TR:Turquia</item>
+        <item>1:TT:Trinidad e Tobago</item>
+        <item>688:TV:Tuvalu</item>
+        <item>886:TW:Taiwan</item>
+        <item>255:TZ:Tanzânia</item>
+        <item>380:UA:Ucrânia</item>
+        <item>256:UG:Uganda</item>
+        <item>1:US:Estados Unidos</item>
+        <item>598:UY:Uruguai</item>
+        <item>998:UZ:Uzbequistão</item>
+        <item>1:VC:São Vicente e Granadinas</item>
+        <item>58:VE:Venezuela</item>
+        <item>1:VG:Ilhas Virgens Britânicas</item>
+        <item>1:VI:Ilhas Virgens Americanas</item>
+        <item>84:VN:Vietnã</item>
+        <item>678:VU:Vanuatu</item>
+        <item>681:WF:Ilhas Wallis e Futuna</item>
+        <item>685:WS:Samoa</item>
+        <item>967:YE:Iêmen</item>
+        <item>262:YT:Mayotte</item>
+        <item>27:ZA:África do Sul</item>
+        <item>260:ZM:Zâmbia</item>
+        <item>263:ZW:Zimbábue</item>
+    </string-array>
+    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-pt/values-pt.xml -->
     <eat-comment/>
-    <string name="messenger_send_button_text">Enviar</string>
+    <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Navegar para a página inicial"</string>
+    <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
+    <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
+    <string msgid="1594238315039666878" name="abc_action_bar_up_description">"Navegar para cima"</string>
+    <string msgid="3588849162933574182" name="abc_action_menu_overflow_description">"Mais opções"</string>
+    <string msgid="4076576682505996667" name="abc_action_mode_done">"Concluído"</string>
+    <string msgid="7468859129482906941" name="abc_activity_chooser_view_see_all">"Ver tudo"</string>
+    <string msgid="2031811694353399454" name="abc_activitychooserview_choose_application">"Selecione um app"</string>
+    <string msgid="121134116657445385" name="abc_capital_off">"DESATIVAR"</string>
+    <string msgid="3405795526292276155" name="abc_capital_on">"ATIVAR"</string>
+    <string msgid="7723749260725869598" name="abc_search_hint">"Pesquisar..."</string>
+    <string msgid="3691816814315814921" name="abc_searchview_description_clear">"Limpar consulta"</string>
+    <string msgid="2550479030709304392" name="abc_searchview_description_query">"Consulta de pesquisa"</string>
+    <string msgid="8264924765203268293" name="abc_searchview_description_search">"Pesquisar"</string>
+    <string msgid="8928215447528550784" name="abc_searchview_description_submit">"Enviar consulta"</string>
+    <string msgid="893419373245838918" name="abc_searchview_description_voice">"Pesquisa por voz"</string>
+    <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Compartilhar com"</string>
+    <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Compartilhar com %s"</string>
+    <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Recolher"</string>
+    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-pt/values-pt.xml -->
+    <eat-comment/>
+    <string name="com_accountkit_button_begin">Começar</string>
+    <string name="com_accountkit_button_cancel">Cancelar</string>
+    <string name="com_accountkit_button_confirm">Confirmar</string>
+    <string name="com_accountkit_button_continue">Continuar</string>
+    <string name="com_accountkit_button_log_in">Entrar</string>
+    <string name="com_accountkit_button_next">Avançar</string>
+    <string name="com_accountkit_button_ok">OK</string>
+    <string name="com_accountkit_button_resend">Enviar novo código</string>
+    <string name="com_accountkit_button_resend_sms">Reenviar SMS</string>
+    <string name="com_accountkit_button_send">Enviar</string>
+    <string name="com_accountkit_button_send_code_in_fb">Enviar código no Facebook</string>
+    <string name="com_accountkit_button_send_code_in_fb_disclosure">Toque em Enviar código no Facebook para enviar uma notificação para a conta do Facebook vinculada ao número de telefone que você inseriu.</string>
+    <string name="com_accountkit_button_start">Iniciar</string>
+    <string name="com_accountkit_button_start_over">Tente novamente</string>
+    <string name="com_accountkit_button_submit">Enviar</string>
+    <string name="com_accountkit_check_email">Abra o seu email</string>
+    <string name="com_accountkit_confirmation_code_agreement">
+        Toque em %1$s para aceitar os <![CDATA[<a href="%2$s">Termos</a>]]>, a <![CDATA[<a href="%3$s">Política de Dados</a>]]> e o <![CDATA[<a href="%4$s">uso de cookies</a>]]> do Facebook.
+    </string>
+    <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
+        Toque em %1$s para aceitar os <![CDATA[<a href="%2$s">Termos</a>]]>, a <![CDATA[<a href="%3$s">Política de Dados</a>]]>, o <![CDATA[<a href="%4$s">uso de cookies</a>]]> do Facebook e a <![CDATA[<a href="%5$s">Política de Privacidade</a>]]> do %6$s.
+    </string>
+    <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
+        Toque em %1$s para aceitar os <![CDATA[<a href="%2$s">Termos</a>]]>, a <![CDATA[<a href="%3$s">Política de Dados</a>]]>, o <![CDATA[<a href="%4$s">uso de cookies</a>]]> do Facebook e a <![CDATA[<a href="%5$s">Política de Privacidade</a>]]> e os <![CDATA[<a href="%6$s">Termos de Serviço</a>]]> do %7$s.
+    </string>
+    <string name="com_accountkit_confirmation_code_text">Reenviar código</string>
+    <string name="com_accountkit_confirmation_code_title">Insira seu código</string>
+    <string name="com_accountkit_email_invalid">Este email está incorreto. Tente novamente.</string>
+    <string name="com_accountkit_email_loading_title">Enviando email…</string>
+    <string name="com_accountkit_email_login_retry_title">Confirme seu email</string>
+    <string name="com_accountkit_email_login_text">
+        Toque em %1$s para receber um email de confirmação do Account Kit desenvolvido pelo Facebook. O aplicativo %2$s usa esse recurso para ajudar você a se conectar, mas você não precisa de uma conta do Facebook. <![CDATA[<a href="%3$s">Saiba mais.</a>]]>
+    </string>
+    <string name="com_accountkit_email_login_title">Digite o seu endereço de email</string>
+    <string name="com_accountkit_email_not_received">Reenviar email</string>
+    <string name="com_accountkit_email_verify_title">Abra o email que enviamos e confirme o seu endereço</string>
+    <string name="com_accountkit_error_title">Ocorreu um erro.</string>
+    <string name="com_accountkit_facebook_code_entry_title">Insira o seu código do Facebook</string>
+    <string name="com_accountkit_phone_loading_title">Enviando seu código…</string>
+    <string name="com_accountkit_phone_login_retry_title">Confirme seu número de telefone</string>
+    <string name="com_accountkit_phone_login_text">
+        Toque em %1$s para receber um SMS de confirmação do Account Kit desenvolvido pelo Facebook. O aplicativo %2$s usa esse recurso para ajudar você a se conectar, mas você não precisa de uma conta do Facebook. Sujeito a taxas de mensagem e dados. <![CDATA[<a href="%3$s">Saiba mais.</a>]]>
+    </string>
+    <string name="com_accountkit_phone_login_title">Digite seu número de telefone</string>
+    <string name="com_accountkit_resend_email_text">Enviar novo email</string>
+    <string name="com_accountkit_resend_title">Lamentamos. Experimente estas opções para continuar.</string>
+    <string name="com_accountkit_return_title">Levando você de volta para %1$s…</string>
+    <string name="com_accountkit_sent_title">Enviado!</string>
+    <string name="com_accountkit_success_title">Concluído!</string>
+    <string name="com_accountkit_toolbar_title">Entrar em %1$s</string>
+    <string name="com_accountkit_verify_confirmation_code_title">
+        Não foi possível verificar seu código.\nTente novamente:
+    </string>
+    <string name="com_accountkit_verify_title">Verificando seu código…</string>
+    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-pt/values-pt.xml -->
+    <eat-comment/>
+    <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

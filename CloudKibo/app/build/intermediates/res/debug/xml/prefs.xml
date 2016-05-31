@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
- 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Here I had placed the code to show preferences for user in Settings -->
-</PreferenceScreen><!-- From: file:/F:/Android/CloudKibo/app/src/main/res/xml/prefs.xml -->

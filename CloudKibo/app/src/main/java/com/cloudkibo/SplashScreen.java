@@ -4,6 +4,8 @@ package com.cloudkibo;
 import com.cloudkibo.R;
 import com.cloudkibo.library.AccountGeneral;
 import com.cloudkibo.ui.Invite_Friends;
+import com.facebook.accountkit.AccessToken;
+import com.facebook.accountkit.AccountKit;
 
 import static com.cloudkibo.library.AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS;
 
@@ -102,6 +104,22 @@ public class SplashScreen extends Activity
 		{
 			isRunning = false;
 
+			AccessToken accessToken = null;
+			try {
+				AccountKit.initialize(getApplicationContext());
+				accessToken = AccountKit.getCurrentAccessToken();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			if (accessToken != null) {
+				//Handle Returning User
+
+
+			} else {
+				//Handle new or logged out user
+			}
+/*
             if(mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE).length < 1){
                 getTokenForAccountCreateIfNeeded(AccountGeneral.ACCOUNT_TYPE, AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS);
             }
@@ -109,6 +127,7 @@ public class SplashScreen extends Activity
                 getExistingAccountAuthToken(mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE)[0],
                         AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS);
             }
+*/
 		}
 	}
 	

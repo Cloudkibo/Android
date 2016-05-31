@@ -30,25 +30,13 @@ import android.content.Intent;
 
 import com.cloudkibo.R;
 import com.cloudkibo.R.id;
-import com.facebook.CallbackManager;
-import com.facebook.FacebookCallback;
-import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
-import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.Scopes;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.plus.Plus;
 
 /**
  * The Class Login is an Activity class that shows the login screen to users.
  * The current implementation simply start the MainActivity. You can write your
  * own logic for actual login and for login using Facebook and Twitter.
  */
-public class Login extends AccountAuthenticatorActivity implements GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
+public class Login extends AccountAuthenticatorActivity implements
         View.OnClickListener
 {
 	
@@ -58,7 +46,6 @@ public class Login extends AccountAuthenticatorActivity implements GoogleApiClie
 	Button btnLogin;
 	Button btnRegister;
     Button btnForgot;
-    LoginButton btnFacebook;
 	EditText userNameText;
 	EditText passwordText;
 
@@ -85,109 +72,18 @@ public class Login extends AccountAuthenticatorActivity implements GoogleApiClie
     private final int REQ_SIGNUP = 1;
     private final int REQ_FORGOT = 2;
 
-    private CallbackManager callbackManager; // for facebook login
-
     /* Request code used to invoke sign in user interactions. */
     private static final int RC_SIGN_IN = 0;
-
-    /* Client used to interact with Google APIs. */
-    private GoogleApiClient mGoogleApiClient; // for google authentication
-
-    /* Is there a ConnectionResult resolution in progress? */
-    private boolean mIsResolving = false; // for google authentication
-
-    /* Should we automatically resolve ConnectionResults when possible? */
-    private boolean mShouldResolve = false; // for google authentication
-
-    // todo added for google authentication, need to remove or work on (Google Login required methods)
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == id.btnGP) {
-            // User clicked the sign-in button, so begin the sign-in process and automatically
-            // attempt to resolve any errors that occur.
-            mShouldResolve = true;
-            mGoogleApiClient.connect();
-
-            // Show a message to the user that we are signing in.
-            Toast.makeText(getApplicationContext(),
-                    "Google Login in progress", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     @Override
     protected void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        mGoogleApiClient.disconnect();
     }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        // onConnected indicates that an account was selected on the device, that the selected
-        // account has granted any requested permissions to our app and that we were able to
-        // establish a service connection to Google Play services.
-        Log.d("GOOGLE_SIGN", "onConnected:" + bundle);
-        mShouldResolve = false;
-
-        // Show the signed-in UI
-        Toast.makeText(getApplicationContext(),
-                "Google Login successful: "+ Plus.PeopleApi.getCurrentPerson(mGoogleApiClient).getDisplayName(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        // Could not connect to Google Play Services.  The user needs to select an account,
-        // grant permissions or resolve an error in order to sign in. Refer to the javadoc for
-        // ConnectionResult to see possible error codes.
-        Log.d("GOOGLE_SIGN", "onConnectionFailed:" + connectionResult);
-
-        if (!mIsResolving && mShouldResolve) {
-            if (connectionResult.hasResolution()) {
-                try {
-                    connectionResult.startResolutionForResult(this, RC_SIGN_IN);
-                    mIsResolving = true;
-                } catch (IntentSender.SendIntentException e) {
-                    Log.e("GOOGLE_SIGN", "Could not resolve ConnectionResult.", e);
-                    mIsResolving = false;
-                    mGoogleApiClient.connect();
-                }
-            } else {
-                // Could not resolve the connection result, show the user an
-                // error dialog.
-                Toast.makeText(getApplicationContext(),
-                        connectionResult.toString(), Toast.LENGTH_SHORT).show();
-            }
-        } else {
-            // Show the signed-out UI
-
-            //showSignedOutUI();
-        }
-    }
-
-    /**
-     * todo use this for google sign out later
-     */
-    private void onSignOutClicked() {
-        // Clear the default account so that GoogleApiClient will not automatically
-        // connect in the future.
-        if (mGoogleApiClient.isConnected()) {
-            Plus.AccountApi.clearDefaultAccount(mGoogleApiClient);
-            mGoogleApiClient.disconnect();
-        }
-
-        //showSignedOutUI();
-    }
-    // End Google Login required methods
 
 
     /* (non-Javadoc)
@@ -198,15 +94,8 @@ public class Login extends AccountAuthenticatorActivity implements GoogleApiClie
 	{
 		super.onCreate(savedInstanceState);
 
-       // FacebookSdk.sdkInitialize(getApplicationContext());
 		setContentView(R.layout.login);
 
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Plus.API)
-                .addScope(new Scope(Scopes.PROFILE))
-                .build();
 		
 		mAccountManager = AccountManager.get(getBaseContext());
 
@@ -217,37 +106,6 @@ public class Login extends AccountAuthenticatorActivity implements GoogleApiClie
 		userNameText = (EditText) findViewById(R.id.editTextUserName);
 		passwordText = (EditText) findViewById(R.id.editTextPassword);
 		btnLogin = (Button) findViewById(R.id.btnLogin);
-
-        //btnFacebook = (LoginButton) findViewById(R.id.btnFb);
-        findViewById(id.btnGP).setOnClickListener(this);
-
-        callbackManager = CallbackManager.Factory.create();
-
-        //btnFacebook.setReadPermissions("user_friends");
-/*
-        btnFacebook.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-
-                Log.e("FACEBOOK", "User ID: "
-                        + loginResult.getAccessToken().getUserId()
-                        + "\n" +
-                        "Auth Token: "
-                        + loginResult.getAccessToken().getToken());
-
-            }
-
-            @Override
-            public void onCancel() {
-                Log.e("FACEBOOK", "User cancelled");
-            }
-
-            @Override
-            public void onError(FacebookException exception) {
-                Log.e("FACEBOOK", "Error occurred");
-            }
-        });
-*/
 
 		btnRegister = (Button) findViewById(R.id.btnReg);
         btnForgot = (Button) findViewById(id.btnForgot);
@@ -316,17 +174,6 @@ public class Login extends AccountAuthenticatorActivity implements GoogleApiClie
                 Toast.makeText(getBaseContext(), "Check your email", Toast.LENGTH_SHORT).show();
             else
                 Toast.makeText(getBaseContext(), data.getStringExtra(KEY_MSG), Toast.LENGTH_SHORT).show();
-        } else if (requestCode == RC_SIGN_IN) {
-            // If the error resolution was not successful we should not resolve further.
-            if (resultCode != RESULT_OK) {
-                mShouldResolve = false;
-            }
-
-            mIsResolving = false;
-            mGoogleApiClient.connect();
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 	
@@ -341,7 +188,10 @@ public class Login extends AccountAuthenticatorActivity implements GoogleApiClie
 		new NetCheck().execute();
 	}
 
+    @Override
+    public void onClick(View v) {
 
+    }
 
 
     /////////////////////////////////////////////////////////////////////
