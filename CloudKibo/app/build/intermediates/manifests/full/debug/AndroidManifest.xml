@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cloudkibo"
     android:hardwareAccelerated="true"
-    android:versionCode="3"
+    android:versionCode="11"
     android:versionName="1.1" >
 
     <uses-sdk
@@ -85,6 +85,12 @@
         </activity>
         <activity
             android:name="com.cloudkibo.library.Login"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity
+            android:name="com.cloudkibo.library.DisplayNameReg"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="stateHidden" >
@@ -214,18 +220,18 @@
         <!-- This is for Facebook Account Kit -->
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="1452049518365321" />
-        <meta-data
-            android:name="com.facebook.accountkit.ClientToken"
-            android:value="33be14f45d9b1c7373da1be32d468fef" />
+            android:value="@string/app_id" />
         <meta-data
             android:name="com.facebook.accountkit.ApplicationName"
-            android:value="CloudKibo" />
+            android:value="@string/app_name" />
+        <meta-data
+            android:name="com.facebook.accountkit.ClientToken"
+            android:value="@string/client_token" />
 
         <activity
             android:name="com.facebook.accountkit.ui.AccountKitActivity"
             android:label="@string/com_accountkit_toolbar_title"
-            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
+            android:theme="@style/AppLoginTheme"
             android:windowSoftInputMode="adjustResize" />
         <!-- Ends Facebook Account Kit -->
 

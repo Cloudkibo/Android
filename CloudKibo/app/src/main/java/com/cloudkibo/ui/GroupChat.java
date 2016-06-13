@@ -59,6 +59,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	private String authtoken;
 	
 	String contactName;
+	String contactPhone;
 	String contactId;
 
 	/* (non-Javadoc)
@@ -71,11 +72,13 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		View v = inflater.inflate(R.layout.group_chat, null);
 		
 		contactName = this.getArguments().getString("contactusername");
+
+		contactPhone = this.getArguments().getString("contactphone");
 		
 		contactId = this.getArguments().getString("contactid");
 		
 		authtoken = this.getArguments().getString("authtoken");
-		
+
 		loadConversationList();
 		
 		ListView list = (ListView) v.findViewById(R.id.list);
@@ -83,6 +86,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		list.setAdapter(adp);
 		list.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
 		list.setStackFromBottom(true);
+		adp.notifyDataSetChanged();
 
 		txt = (EditText) v.findViewById(R.id.txt);
 		txt.setInputType(InputType.TYPE_CLASS_TEXT
@@ -125,7 +129,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		
 		MainActivity act1 = (MainActivity)getActivity();
 		
-		act1.sendMessage(contactName, contactId, messageString);
+		act1.sendMessage(contactPhone, contactId, messageString);
 		
 		convList.add(new Conversation(messageString, new Date().toString(), true, true));
 		adp.notifyDataSetChanged();
@@ -152,7 +156,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		
 		loadChatFromDatabase();
 		
-		loadChatMessagesFromServer();
+		//loadChatMessagesFromServer();
 
 	}
 	
@@ -224,24 +228,24 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			
 			MainActivity act1 = (MainActivity)getActivity();
 			
-			JSONArray jsonA = db.getChat(act1.getUserName(), contactName);
+			JSONArray jsonA = db.getChat(act1.getUserPhone(), contactPhone);
 			
 			ArrayList<Conversation> chatList1 = new ArrayList<Conversation>();
 			
 			for (int i=0; i < jsonA.length(); i++) {
 				JSONObject row = jsonA.getJSONObject(i);
 				
-				if(row.getString("toperson").equals(contactName))
+				if(row.getString("toperson").equals(contactPhone))
 					chatList1.add(new Conversation(
 						row.getString("msg"),
 						row.getString("date"),
-						false, true));
+						true, true));
 				else
 					chatList1.add(new Conversation(
 							row.getString("msg"),
 							row.getString("date"),
-							true, true));
-				
+							false, true));
+
 			}
 			
 			convList.clear();

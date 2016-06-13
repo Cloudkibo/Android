@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="app_id">456637644436523</string>
     <string name="app_name">CloudKibo</string>
+    <string name="client_token">97da63ec347d10ac62e84a9d92ce2361</string>
     <string name="host">api.cloudkibo.com</string>
     <string name="port">8443</string>
     

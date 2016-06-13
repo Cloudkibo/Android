@@ -132,7 +132,8 @@ public class ConnectionManager {
         try {
             // defaultHttpClient
             DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(userDataURL + "?access_token="+ authtoken);
+            HttpGet httpGet = new HttpGet(userDataURL);
+            httpGet.addHeader("kibo-token", authtoken);
 
             HttpResponse httpResponse = httpClient.execute(httpGet);
 
@@ -188,7 +189,8 @@ public class ConnectionManager {
         try {
             // defaultHttpClient
             DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpGet httpGet = new HttpGet(userDataURL + "?access_token="+ authtoken);
+            HttpGet httpGet = new HttpGet(userDataURL);
+            httpGet.addHeader("kibo-token", authtoken);
 
             HttpResponse httpResponse = httpClient.execute(httpGet);
 
@@ -245,7 +247,8 @@ public class ConnectionManager {
         try {
             // defaultHttpClient
             DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(userDataURL + "?access_token="+ authtoken);
+            HttpPost httpPost = new HttpPost(userDataURL);
+            httpPost.addHeader("kibo-token", authtoken);
             httpPost.setEntity(new UrlEncodedFormEntity(params));
 
             HttpResponse httpResponse = httpClient.execute(httpPost);
@@ -302,7 +305,8 @@ public class ConnectionManager {
         try {
             // defaultHttpClient
             DefaultHttpClient httpClient = new DefaultHttpClient();
-            HttpPost httpPost = new HttpPost(userDataURL + "?access_token="+ authtoken);
+            HttpPost httpPost = new HttpPost(userDataURL);
+            httpPost.addHeader("kibo-token", authtoken);
             httpPost.setEntity(new UrlEncodedFormEntity(params));
 
             HttpResponse httpResponse = httpClient.execute(httpPost);

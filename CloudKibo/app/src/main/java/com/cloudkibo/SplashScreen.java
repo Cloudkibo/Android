@@ -3,9 +3,18 @@ package com.cloudkibo;
 //import com.cloudkibo.R;
 import com.cloudkibo.R;
 import com.cloudkibo.library.AccountGeneral;
+import com.cloudkibo.library.DisplayNameReg;
 import com.cloudkibo.ui.Invite_Friends;
 import com.facebook.accountkit.AccessToken;
 import com.facebook.accountkit.AccountKit;
+import com.facebook.accountkit.AccountKitLoginResult;
+import com.facebook.accountkit.ui.AccountKitActivity;
+import com.facebook.accountkit.ui.AccountKitConfiguration;
+import com.facebook.accountkit.ui.LoginType;
+import com.github.nkzawa.emitter.Emitter;
+import com.github.nkzawa.socketio.client.Ack;
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
 
 import static com.cloudkibo.library.AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS;
 
@@ -21,8 +30,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.URISyntaxException;
 
 /**
  * The Class SplashScreen will launched at the start of the application. It will
@@ -31,6 +46,7 @@ import android.widget.Toast;
  */
 public class SplashScreen extends Activity
 {
+	final private Boolean isDevelopment = false;
 
 	/** Check if the app is running. */
 	private boolean isRunning;
@@ -38,6 +54,10 @@ public class SplashScreen extends Activity
 	
 	private AlertDialog mAlertDialog;
     private boolean mInvalidate;
+
+	public static int APP_REQUEST_CODE = 99;
+
+	Socket socket;
 
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -48,12 +68,32 @@ public class SplashScreen extends Activity
 
 		super.onCreate(savedInstanceState);
 		mAccountManager = AccountManager.get(this);
-
+		AccountKit.initialize(getApplicationContext());
 
 
 		setContentView(R.layout.splash);
 
 		isRunning = true;
+
+		// for debugging purpose
+		try {
+			socket = IO.socket("https://api.cloudkibo.com");
+			socket.connect();
+
+			socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+
+				@Override
+				public void call(Object... args) {
+
+					Log.w("SOCKET", "CONNECTED");
+
+				}
+
+			});
+
+		} catch (URISyntaxException e ){
+			e.printStackTrace();
+		}
 
 		startSplash();
 
@@ -106,7 +146,7 @@ public class SplashScreen extends Activity
 
 			AccessToken accessToken = null;
 			try {
-				AccountKit.initialize(getApplicationContext());
+
 				accessToken = AccountKit.getCurrentAccessToken();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -115,9 +155,26 @@ public class SplashScreen extends Activity
 			if (accessToken != null) {
 				//Handle Returning User
 
+				socket.emit("logClient", "ANDROID_LOG: Facebook auth token was found on device. The user is already logged in.");
+
+				if(isDevelopment) {
+					Intent i = new Intent(this, DisplayNameReg.class);
+					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					i.putExtra("authtoken", accessToken.getToken());
+					startActivity(i);
+					finish();
+				} else {
+					Intent i = new Intent(this, MainActivity.class);
+					i.putExtra("authtoken", accessToken.getToken());
+					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					startActivity(i);
+					finish();
+				}
+
 
 			} else {
-				//Handle new or logged out user
+				socket.emit("logClient", "ANDROID_LOG: Facebook auth token was not found on device. The user is not logged in. Taking him to facebook login.");
+				onLoginPhone();
 			}
 /*
             if(mAccountManager.getAccountsByType(AccountGeneral.ACCOUNT_TYPE).length < 1){
@@ -128,6 +185,70 @@ public class SplashScreen extends Activity
                         AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS);
             }
 */
+		}
+	}
+
+
+	public void onLoginPhone() {
+		onLogin();
+	}
+
+	private void onLogin() {
+		final Intent intent = new Intent(this, AccountKitActivity.class);
+		AccountKitConfiguration.AccountKitConfigurationBuilder configurationBuilder =
+				new AccountKitConfiguration.AccountKitConfigurationBuilder(
+						LoginType.PHONE,
+						AccountKitActivity.ResponseType.TOKEN); // or .ResponseType.TOKEN
+		// ... perform additional configuration ...
+		intent.putExtra(
+				AccountKitActivity.ACCOUNT_KIT_ACTIVITY_CONFIGURATION,
+				configurationBuilder.build());
+		startActivityForResult(intent, APP_REQUEST_CODE);
+	}
+
+	@Override
+	protected void onActivityResult(
+			final int requestCode,
+			final int resultCode,
+			final Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+		if (requestCode == APP_REQUEST_CODE) { // confirm that this response matches your request
+			AccountKitLoginResult loginResult = data.getParcelableExtra(AccountKitLoginResult.RESULT_KEY);
+			String toastMessage;
+			if (loginResult.getError() != null) {
+				toastMessage = loginResult.getError().getErrorType().getMessage();
+				finish();
+			} else if (loginResult.wasCancelled()) {
+				toastMessage = "Login Cancelled";
+			} else {
+				if (loginResult.getAccessToken() != null) {
+					toastMessage = "Login Successful"; //+ loginResult.getAccessToken().getAccountId();
+
+					Intent i = new Intent(this, DisplayNameReg.class);
+					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+					i.putExtra("authtoken", loginResult.getAccessToken().getToken());
+					startActivity(i);
+					finish();
+				} else {
+					toastMessage = String.format(
+							"Success:%s...",
+							loginResult.getAuthorizationCode().substring(0,10));
+				}
+
+				// If you have an authorization code, retrieve it from
+				// loginResult.getAuthorizationCode()
+				// and pass it to your server and exchange it for an access token.
+
+				// Success! Start your next activity...
+				//goToMyLoggedInActivity();
+			}
+
+			// Surface the result to your user in an appropriate way.
+			Toast.makeText(
+					this,
+					toastMessage,
+					Toast.LENGTH_LONG)
+					.show();
 		}
 	}
 	

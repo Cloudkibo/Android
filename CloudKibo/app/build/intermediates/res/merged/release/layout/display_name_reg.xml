@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    tools:context="com.cloudkibo.library.Login" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/pad_20dp"
+        android:paddingLeft="@dimen/pad_15dp"
+        android:paddingRight="@dimen/pad_15dp"
+        android:paddingTop="@dimen/pad_20dp" >
+
+        <EditText
+            android:id="@+id/editTextDisplayName"
+            style="@style/editext_graybg"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_username"
+            android:layout_marginBottom="@dimen/pad_10dp"
+            android:layout_marginTop="@dimen/pad_5dp"
+            android:hint="Display Name" >
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/btnReg"
+            style="@style/btn_white_large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/pad_10dp"
+            android:layout_marginTop="@dimen/pad_5dp"
+            android:text="@string/register" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_marginBottom="@dimen/pad_10dp"
+            android:layout_marginTop="@dimen/pad_30dp"
+            android:text="Display name is not your username or unique id. \n\nIt is just your full name which would be visible to your contacts."
+            android:id="@+id/hintText"
+            android:layout_gravity="center_horizontal" />
+
+    </LinearLayout>
+
+</ScrollView><!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/layout/display_name_reg.xml -->

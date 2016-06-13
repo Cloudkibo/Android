@@ -88,7 +88,7 @@ public class IncomingCall extends CustomActivity {
                 r.stop();
 
                 Intent i = new Intent(getApplicationContext(), VideoCallView.class);
-                i.putExtra("username", user.get("username"));
+                i.putExtra("username", user.get("phone"));
                 i.putExtra("_id", user.get("_id"));
                 i.putExtra("peer", peerName);
                 i.putExtra("lastmessage", "AcceptCallFromMe");

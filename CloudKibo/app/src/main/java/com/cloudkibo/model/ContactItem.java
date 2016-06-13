@@ -12,8 +12,8 @@ public class ContactItem {
 	/** The firstname. */
 	private String firstname;
 
-	/** The lastname. */
-	private String lastname;
+	/** The on_cloudkibo. */
+	private String on_cloudkibo;
 
 	/** The icon. */
 	private int icon;
@@ -54,7 +54,7 @@ public class ContactItem {
 	 * @param isGroup
 	 *            the is group
 	 */
-	public ContactItem(String userid, String username, String firstname, String lastname, String phone,
+	public ContactItem(String userid, String username, String firstname, String on_cloudkibo, String phone,
 			int icon, boolean online, String city, String status, String details_shared, boolean unreadmessage)
 	{
 		this.userid = userid;
@@ -64,7 +64,7 @@ public class ContactItem {
 		this.city = city;
 		this.firstname = firstname;
 		this.online = online;
-		this.lastname = lastname;
+		this.on_cloudkibo = on_cloudkibo;
 		this.status = status;
 		this.details_shared = details_shared;
 		this.unreadmessage = unreadmessage;
@@ -129,7 +129,7 @@ public class ContactItem {
 	 */
 	public String lastName()
 	{
-		return lastname;
+		return on_cloudkibo;
 	}
 
 	/**
@@ -140,7 +140,7 @@ public class ContactItem {
 	 */
 	public void setLastName(String lastname)
 	{
-		this.lastname = lastname;
+		this.on_cloudkibo = lastname;
 	}
 
 	/**

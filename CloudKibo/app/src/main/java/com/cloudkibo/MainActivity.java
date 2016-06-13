@@ -126,8 +126,8 @@ public class MainActivity extends CustomActivity
 
     HashMap<String, String> user;
 
-    AccountManager am;
-    Account account;
+    //AccountManager am;
+    //Account account;
 
     public static final long SECONDS_PER_MINUTE = 60L;
     public static final long SYNC_INTERVAL_IN_MINUTES = 1440L;
@@ -148,30 +148,33 @@ public class MainActivity extends CustomActivity
 
         authtoken = getIntent().getExtras().getString("authtoken");
 
+
+        setupContainer();
+        setupDrawer();
+
+
         userFunction = new UserFunctions();
 
         if(userFunction.isUserLoggedIn(getApplicationContext()));
         getUserFromSQLiteDatabase();
 
-        am = AccountManager.get(MainActivity.this);
-        account = am.getAccountsByType(AccountGeneral.ACCOUNT_TYPE)[0];
+        //am = AccountManager.get(MainActivity.this);
+        //account = am.getAccountsByType(AccountGeneral.ACCOUNT_TYPE)[0];
 
-        if(!ContentResolver.isSyncActive(account, CloudKiboDatabaseContract.AUTHORITY)) {
-        	
+        //if(!ContentResolver.isSyncActive(account, CloudKiboDatabaseContract.AUTHORITY)) {
+
         	/* todo this starts syncing on very short intervals */
 
-            //ContentResolver.setSyncAutomatically(account, CloudKiboDatabaseContract.AUTHORITY, true);
-            //ContentResolver.requestSync(account, CloudKiboDatabaseContract.AUTHORITY, new Bundle());
+        //ContentResolver.setSyncAutomatically(account, CloudKiboDatabaseContract.AUTHORITY, true);
+        //ContentResolver.requestSync(account, CloudKiboDatabaseContract.AUTHORITY, new Bundle());
 
-            //ContentResolver.addPeriodicSync(account, CloudKiboDatabaseContract.AUTHORITY, Bundle.EMPTY, SYNC_INTERVAL);
+        //ContentResolver.addPeriodicSync(account, CloudKiboDatabaseContract.AUTHORITY, Bundle.EMPTY, SYNC_INTERVAL);
 
-            fetchUserFromServerForFirstTime();
-        }
-        else {
-            startSocketService();
-        }
-        setupContainer();
-        setupDrawer();
+        //fetchUserFromServerForFirstTime();
+        //}
+        //else {
+        startSocketService();
+        //}
     }
 
     public void startSocketService(){
@@ -253,16 +256,6 @@ public class MainActivity extends CustomActivity
 
         drawerLayout.openDrawer(drawerLeft);
 
-        if(userFunction.isUserLoggedIn(getApplicationContext())){
-
-            final TextView userFirstName = (TextView)findViewById(R.id.textViewUserNameOnNavigationBar);
-            userFirstName.setText(user.get("firstname")+" "+user.get("lastname"));
-
-            final TextView userEmail = (TextView)findViewById(R.id.textViewUserEmailOnNavigationBar);
-            userEmail.setText(user.get("email"));
-
-        }
-
     }
 
     /**
@@ -278,10 +271,10 @@ public class MainActivity extends CustomActivity
         //al.add(new Data("Chat", null, R.drawable.ic_chat));
         al.add(new Data("Contacts", null, R.drawable.ic_notes));
         al.add(new Data("Add Requests", null, R.drawable.ic_projects));
-        al.add(new Data("Conference", null, R.drawable.group1));
+        //al.add(new Data("Conference", null, R.drawable.group1));
         //al.add(new Data("Settings", null, R.drawable.ic_setting));
         al.add(new Data("About CloudKibo", null, R.drawable.ic_about));
-        al.add(new Data("Logout", null, R.drawable.ic_logout));
+        //al.add(new Data("Logout", null, R.drawable.ic_logout));
         return al;
     }
 
@@ -305,7 +298,7 @@ public class MainActivity extends CustomActivity
             title = "Add Requests";
             f = new AddRequest();
         }
-        else if(pos == 3){
+        else if(pos == -3){ // this is removing of conference tab
 
             // get prompts.xml view
             LayoutInflater layoutInflater = LayoutInflater.from(getApplicationContext());
@@ -350,14 +343,14 @@ public class MainActivity extends CustomActivity
 
             alertD.show();
         }
-        else if (pos == 4)
+        else if (pos == 3)
         {
             title = "About CloudKibo";
             f = new AboutChat();
         }
-        else if (pos == 5)
+        else if (pos == -4) // this is removing of logout button
         {
-            startActivity(new Intent(this, Login.class));
+            startActivity(new Intent(this, SplashScreen.class));
 
             DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 
@@ -367,9 +360,9 @@ public class MainActivity extends CustomActivity
 
             stopService(new Intent(this, SocketService.class));
 
-            am.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, authtoken);
+            //am.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, authtoken);
 
-            am.removeAccount(account, null, null);
+            //am.removeAccount(account, null, null);
 
         }
         if (f != null)
@@ -463,14 +456,13 @@ public class MainActivity extends CustomActivity
         getActionBar().setTitle(title);
     }
 	
-	/*
+	/**
 	 * Remove these functions and fragments should be able to directly call the service
 	 * Need to think on it, as fragments are short-lived, this might not be good idea to
 	 * bind fragments to service
 	 */
-
-    public void sendSocketMessage(String msg, String peer){
-        socketService.sendSocketMessage(msg, peer);
+    public void sendSocketMessage(String msg, String phoneOfPeer){
+        socketService.sendSocketMessage(msg, phoneOfPeer);
     }
 
     public void callThisPerson(String contact){
@@ -512,17 +504,27 @@ public class MainActivity extends CustomActivity
         user = new HashMap<String, String>();
         user = db.getUserDetails();
 
+        TextView userFirstName = (TextView)findViewById(R.id.textViewUserNameOnNavigationBar);
+        userFirstName.setText(user.get("display_name"));
+
+        TextView userEmail = (TextView)findViewById(R.id.textViewUserEmailOnNavigationBar);
+        userEmail.setText(user.get("phone"));
+
     }
 
     public String getUserName(){
-        return user.get("username");
+        return user.get("display_name");
+    }
+
+    public String getUserPhone(){
+        return user.get("phone");
     }
 
     public String getUserId(){
         return user.get("_id");
     }
 
-    /* (non-Javadoc)
+    /** (non-Javadoc)
      * @see android.app.Activity#onPostCreate(android.os.Bundle)
      */
     @Override

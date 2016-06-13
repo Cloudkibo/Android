@@ -92,20 +92,19 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
-					long arg3)
-			{
+									long arg3) {
 				Log.d("SOJHARO", contactList.get(pos).getUserName());
-				
+
 				final String tempContactId = contactList.get(pos).getUserId();
-				
+
 				//Intent chatIntent = new Intent(getActivity().getApplicationContext(), ChatList.class);
 				//chatIntent.putExtra("contactUserNameToChat", contactList.get(pos).getUserName());
 				//startActivity(chatIntent);
-				
+
 				contactList.get(pos).setUnReadMessage(false);
 				contactAdapter.notifyDataSetChanged();
-				
-				
+
+
 				new AsyncTask<String, String, Boolean>() {
 
 					@Override
@@ -137,50 +136,50 @@ public class ContactList extends CustomFragment implements IFragmentName
 					protected void onPostExecute(Boolean th) {
 
 						if (th == true) {
-							
+
 							new AsyncTask<String, String, JSONObject>() {
 
 								@Override
 								protected JSONObject doInBackground(String... args) {
 									JSONObject result = null;
-									
-									MainActivity act1 = (MainActivity)getActivity();
-									
+
+									MainActivity act1 = (MainActivity) getActivity();
+
 									result = userFunction.markChatAsRead(act1.getUserId(), tempContactId, authtoken);
 
 									return result;
-									
+
 								}
 
 								@Override
 								protected void onPostExecute(JSONObject json) {
-										
+
 								}
-					            
-					        }.execute();
-							
+
+							}.execute();
+
 						} else {
 							/*Toast.makeText(getActivity().getApplicationContext(),
 									"Could not connect to Internet", Toast.LENGTH_SHORT)
 									.show();*/
 						}
 					}
-		            
-		        }.execute();
-				
-				
-				
+
+				}.execute();
+
+
 				Bundle bundle = new Bundle();
-		        bundle.putString("contactusername", contactList.get(pos).getUserName());
-		        bundle.putString("contactid", contactList.get(pos).getUserId());
-		        bundle.putString("authtoken", authtoken);
-		        
-		        GroupChat groupChatFragment = new GroupChat();
-		        groupChatFragment.setArguments(bundle);
-				
+				bundle.putString("contactusername", contactList.get(pos).getUserName());
+				bundle.putString("contactphone", contactList.get(pos).getPhone());
+				bundle.putString("contactid", contactList.get(pos).getUserId());
+				bundle.putString("authtoken", authtoken);
+
+				GroupChat groupChatFragment = new GroupChat();
+				groupChatFragment.setArguments(bundle);
+
 				getFragmentManager().beginTransaction()
-				.replace(R.id.content_frame, groupChatFragment, "groupChatFragmentTag")
-				.addToBackStack(contactList.get(pos).firstName() +" "+ contactList.get(pos).lastName()).commit();
+						.replace(R.id.content_frame, groupChatFragment, "groupChatFragmentTag")
+						.addToBackStack(contactList.get(pos).getUserName()).commit();
 
 			}
 		});
@@ -199,7 +198,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 	      menu.add(0, v.getId(), 0, "Call");  
 	      menu.add(0, v.getId(), 0, "Transfer File");
 		  menu.add(0, v.getId(), 0, "Remove Conversation");
-		  menu.add(0, v.getId(), 0, "Remove Contact");
+		  //menu.add(0, v.getId(), 0, "Remove Contact");
 
     } 
 	
@@ -216,7 +215,7 @@ public class ContactList extends CustomFragment implements IFragmentName
             	 
             	 MainActivity act1 = (MainActivity)getActivity();
          		
-         		 act1.callThisPerson(contactList.get(info.position).getUserName());
+         		 act1.callThisPerson(contactList.get(info.position).getPhone());
          		/* 
          		// custom dialog
       			final Dialog dialog = new Dialog(getActivity().getApplicationContext());
@@ -451,7 +450,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 		}
 		else if (v.getId() == R.id.btnNewChat){
 			//startActivity(new Intent(getActivity(), NewChat.class));
-			
+			/*
 			// get prompts.xml view
 			LayoutInflater layoutInflater = LayoutInflater.from(getActivity().getApplicationContext());
 
@@ -471,7 +470,6 @@ public class ContactList extends CustomFragment implements IFragmentName
 								public void onClick(DialogInterface dialog, int id) {
 									// get user input and send it to server
 									Log.d("SOJHARO", "VALUE = "+ input.getText());
-									
 
 									new AsyncTask<String, String, Boolean>() {
 
@@ -596,9 +594,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 										}
 							            
 							        }.execute();
-									
-									
-									
+
 									
 								}
 							})
@@ -614,81 +610,50 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 			alertD.show();
 
+			*/
+
 
 		}
 	}
 	
-	
-	/**
-	 * This method currently loads a dummy list of Notes. You can write the
-	 * actual implementation of loading Notes.
-	 */
+
 	private void loadContactList()
 	{
 		
 		ArrayList<ContactItem> noteList = new ArrayList<ContactItem>();
 		contactList = new ArrayList<ContactItem>(noteList);
-		loadContactsFromDatabase();
 
-        new AsyncTask<String, String, JSONArray>() {
+		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
 
-            @Override
-            protected JSONArray doInBackground(String... args) {
-                UserFunctions userFunction = new UserFunctions();
-                JSONArray json = userFunction.getContactsList(authtoken);
-                return json;
-            }
+		try {
 
-            @Override
-            protected void onPostExecute(JSONArray jsonA) {
-                try {
+			JSONArray jsonA = db.getContacts();
 
-                    if (jsonA != null) {
+			jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
 
-                        //String res = jsonA.get(0).toString();
+			ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 
-                        ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
+			for (int i=0; i < jsonA.length(); i++) {
+				JSONObject row = jsonA.getJSONObject(i);
 
-                        for (int i=0; i < jsonA.length(); i++) {
-                            JSONObject row = jsonA.getJSONObject(i);
-                            try{
-                            	contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
-                                        row.getJSONObject("contactid").getString("username"),
-                                        row.getJSONObject("contactid").getString("firstname"),
-                                        row.getJSONObject("contactid").getString("lastname"),
-                                        row.getJSONObject("contactid").getString("phone"), 01,
-                                        false, "",
-                                        row.getJSONObject("contactid").getString("status"),
-                                        row.getString("detailsshared"),
-                                        row.getBoolean("unreadMessage")
-                                ));
-                            }catch(JSONException e){
-                            	contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
-                                        row.getJSONObject("contactid").getString("username"),
-                                        row.getJSONObject("contactid").getString("firstname"),
-                                        row.getJSONObject("contactid").getString("lastname"),
-                                        "nill", 01,
-                                        false, "",
-                                        row.getJSONObject("contactid").getString("status"),
-                                        row.getString("detailsshared"),
-                                        row.getBoolean("unreadMessage")
-                                ));
-                            }
-                            
-                        }
+				contactList1.add(new ContactItem(row.getString("_id"),
+						row.getString("display_name"),
+						"", // first name
+						row.getString("on_cloudkibo"),
+						row.getString("phone"),
+						01,
+						false, "",
+						row.getString("status"),
+						row.getString("detailsshared"),
+						false
+				));
+			}
 
-                        loadNewContacts(contactList1);
-                        insertContactsIntoDB(contactList1);
+			loadNewContacts(contactList1);
 
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }.execute();
-
-
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
     }
 	
 	public void loadNewContacts(ArrayList<ContactItem> contactList1){
@@ -696,8 +661,8 @@ public class ContactList extends CustomFragment implements IFragmentName
 			contactList.clear();
 			contactList.addAll(contactList1);
 			contactAdapter.notifyDataSetChanged();
+
 			MainActivity act1 = (MainActivity)getActivity();
-		
 			act1.askFriendsOnlineStatus();
 		}catch(NullPointerException e){}
 	}
@@ -772,39 +737,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 			e.printStackTrace();
 		}
 	}
-	
-	public void loadContactsFromDatabase(){
-		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-		
-		try {
-			
-			JSONArray jsonA = db.getContacts();
-			
-			ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
-			
-			for (int i=0; i < jsonA.length(); i++) {
-				JSONObject row = jsonA.getJSONObject(i);
-				
-				contactList1.add(new ContactItem(row.getString("_id"),
-						row.getString("username"),
-						row.getString("firstname"),
-						row.getString("lastname"),
-						row.getString("phone"),
-						01,
-						false, "",
-						row.getString("status"),
-						row.getString("detailsshared"),
-						false
-				));
-			}
-			
-			contactList.addAll(contactList1);
-			
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		
-	}
+
 
 	/**
 	 * The Class ContactAdapter is the adapter class for Note ListView. The
@@ -853,7 +786,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 			ContactItem c = getItem(pos);
 			TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
-			lbl.setText(c.firstName() +" "+ c.lastName());
+			lbl.setText(c.getUserName());
 
 			lbl = (TextView) v.findViewById(R.id.lblContactPhone);
 			lbl.setText(c.getPhone());
@@ -879,36 +812,5 @@ public class ContactList extends CustomFragment implements IFragmentName
      {
        return "ContactList";
      }
-	
-	/**
-	 * Get an auth token for the account.
-	 * If not exist - add it and then return its auth token.
-	 * If one exist - return its auth token.
-	 * If more than one exists - show a picker and return the select account's auth token.
-	 * @param accountType
-	 * @param authTokenType
-	 */
-/*	private void getTokenForAccountCreateIfNeeded(String accountType, String authTokenType) {
-		final AccountManagerFuture<Bundle> future = mAccountManager.getAuthTokenByFeatures(accountType, authTokenType, null, getActivity(), null, null,
-				new AccountManagerCallback<Bundle>() {
-			@Override
-			public void run(AccountManagerFuture<Bundle> future) {
-				Bundle bnd = null;
-				try {
-					bnd = future.getResult();
-					String authtoken1 = bnd.getString(AccountManager.KEY_AUTHTOKEN);
-					//Toast.makeText(getBaseContext(), ((authtoken != null) ? "SUCCESS!\ntoken: " + authtoken : "FAIL"), Toast.LENGTH_SHORT).show();                            
-					Log.d("SOJHARO", "GetTokenForAccount Bundle is " + bnd);
-					
-					authtoken = authtoken1;
 
-
-				} catch (Exception e) {
-					e.printStackTrace();
-					Toast.makeText(getActivity().getBaseContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-				}
-			}
-		}
-		, null);
-	}*/
 }

@@ -2,6 +2,8 @@ package com.cloudkibo.library;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -24,25 +26,29 @@ public class UserFunctions {
 
     private ConnectionManager connection;
 
+    private static String baseURL = "https://api.cloudkibo.com";
+
     //URL of the NODEJS API
-    private static String loginURL = "https://api.cloudkibo.com/auth/local";
-    private static String registerURL = "https://api.cloudkibo.com/api/users/";
-    private static String userDataURL = "https://api.cloudkibo.com/api/users/me";
-    private static String saveChatURL = "https://api.cloudkibo.com/api/userchat/save";
-    private static String getChatURL = "https://api.cloudkibo.com/api/userchat";
-    private static String markChatReadURL = "https://api.cloudkibo.com/api/userchat/markasread";
-    private static String saveContactURL = "https://api.cloudkibo.com/api/contactslist/addbyusername";
-    private static String forpassURL = "https://api.cloudkibo.com/api/users/resetpasswordrequest";
-    private static String chgpassURL = "https://api.cloudkibo.com/learn2crack_login_api/";
-    private static String getContactsURL = "https://api.cloudkibo.com/api/contactslist/";
-    private static String getPendingContactsURL = "https://api.cloudkibo.com/api/contactslist/pendingcontacts/";
-    private static String approveContactURL = "https://api.cloudkibo.com/api/contactslist/approvefriendrequest/";
-    private static String rejectContactURL = "https://api.cloudkibo.com/api/contactslist/rejectfriendrequest/";
-    private static String removeChatURL = "https://api.cloudkibo.com/api/userchat/removechathistory/";
-    private static String removeContactURL = "https://api.cloudkibo.com/api/contactslist/removefriend/";
-    private static String phoneContactsURL = "https://api.cloudkibo.com/api/users/searchaccountsbyphone/";
-    private static String emailContactsURL = "https://api.cloudkibo.com/api/users/searchaccountsbyemail/";
-    private static String inviteContactsURL = "https://api.cloudkibo.com/api/users/invitebymultipleemail/";
+    private static String loginURL =                baseURL + "/auth/local";
+    private static String registerURL =             baseURL + "/api/users/";
+    private static String userDataURL =             baseURL + "/api/users/me";
+    private static String saveChatURL =             baseURL + "/api/userchat/save";
+    private static String getChatURL =              baseURL + "/api/userchat";
+    private static String markChatReadURL =         baseURL + "/api/userchat/markasread";
+    private static String saveContactURL =          baseURL + "/api/contactslist/addbyusername";
+    private static String forpassURL =              baseURL + "/api/users/resetpasswordrequest";
+    private static String chgpassURL =              baseURL + "/learn2crack_login_api/";
+    private static String getContactsURL =          baseURL + "/api/contactslist/";
+    private static String getPendingContactsURL =   baseURL + "/api/contactslist/pendingcontacts/";
+    private static String approveContactURL =       baseURL + "/api/contactslist/approvefriendrequest/";
+    private static String rejectContactURL =        baseURL + "/api/contactslist/rejectfriendrequest/";
+    private static String removeChatURL =           baseURL + "/api/userchat/removechathistory/";
+    private static String removeContactURL =        baseURL + "/api/contactslist/removefriend/";
+    private static String phoneContactsURL =        baseURL + "/api/users/searchaccountsbyphone/";
+    private static String emailContactsURL =        baseURL + "/api/users/searchaccountsbyemail/";
+    private static String inviteContactsURL =       baseURL + "/api/users/invitebymultipleemail/";
+    private static String saveDisplayNameURL =      baseURL + "/api/users/newuser";
+    private static String getAllChatURL =           baseURL + "/api/userchat/alluserchat";
     
     
     
@@ -180,7 +186,10 @@ public class UserFunctions {
 
 
 
-
+    public JSONObject setDisplayName(List<NameValuePair> params, String authtoken) {
+        JSONObject response = connection.sendObjectToServer(saveDisplayNameURL, authtoken, params);
+        return response;
+    }
 
 	public JSONObject getUserData(String authtoken) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -194,6 +203,13 @@ public class UserFunctions {
 		JSONArray contactslist = connection.getArrayFromServer(getContactsURL, authtoken);
         return contactslist;
 	}
+
+    public JSONObject getAllChatList(String user1, String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("user1", user1));
+        JSONObject response = connection.sendObjectToServer(getAllChatURL, authtoken, params);
+        return response;
+    }
 	
 	public JSONArray getPendingContactsList(String authtoken) {
 		JSONArray contactslist = connection.getArrayFromServer(getPendingContactsURL, authtoken);
@@ -212,6 +228,11 @@ public class UserFunctions {
 
     public JSONObject sendAddressBookEmailContactsToServer(List<NameValuePair> params, String authtoken) {
         JSONObject contactresponse = connection.sendObjectToServer(emailContactsURL, authtoken, params);
+        return contactresponse;
+    }
+
+    public JSONObject sendAddressBookPhoneContactsToServer(List<NameValuePair> params, String authtoken) {
+        JSONObject contactresponse = connection.sendObjectToServer(phoneContactsURL, authtoken, params);
         return contactresponse;
     }
 
@@ -268,6 +289,50 @@ public class UserFunctions {
 		JSONObject response = connection.sendObjectToServer(saveContactURL, authtoken, params);
         return response;
 	}
+
+    public static JSONArray sortJSONArray(JSONArray jsonArr, String key) {
+
+        JSONArray sortedJsonArray = new JSONArray();
+        final String myKey = key;
+
+        try{
+            List<JSONObject> jsonValues = new ArrayList<JSONObject>();
+            for (int i = 0; i < jsonArr.length(); i++) {
+                jsonValues.add(jsonArr.getJSONObject(i));
+            }
+            Collections.sort(jsonValues, new Comparator<JSONObject>() {
+                //You can change "Name" with "ID" if you want to sort by ID
+                private final String KEY_NAME = myKey;
+
+                @Override
+                public int compare(JSONObject a, JSONObject b) {
+                    String valA = new String();
+                    String valB = new String();
+
+                    try {
+                        valA = (String) a.get(KEY_NAME);
+                        valB = (String) b.get(KEY_NAME);
+                    } catch (JSONException e) {
+                        //do something
+                    }
+
+                    return valA.compareTo(valB);
+                    //if you want to change the sort order, simply use the following:
+                    //return -valA.compareTo(valB);
+                }
+            });
+
+            for (int i = 0; i < jsonArr.length(); i++) {
+                sortedJsonArray.put(jsonValues.get(i));
+            }
+        } catch (JSONException ex ){
+            ex.printStackTrace();
+        }
+
+        return sortedJsonArray;
+
+
+    }
 
 }
 

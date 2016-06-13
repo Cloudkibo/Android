@@ -126,7 +126,7 @@ public class SocketService extends Service {
                     try {
 
                         JSONObject userInfo = new JSONObject();
-                        userInfo.put("username", user.get("username"));
+                        userInfo.put("phone", user.get("phone"));
                         userInfo.put("_id", user.get("_id"));
 
                         message.put("user", userInfo);
@@ -387,7 +387,7 @@ public class SocketService extends Service {
 
                         JSONObject message2 = new JSONObject();
 
-                        message2.put("me", user.get("username"));
+                        message2.put("me", user.get("phone"));
                         message2.put("mycaller", payload.getString("caller"));
 
                         if (!amInCall) {
@@ -690,7 +690,7 @@ public class SocketService extends Service {
             message.put("msg", msg);
             message.put("room", room);
             message.put("to", peer);
-            message.put("username", user.get("username"));
+            message.put("username", user.get("phone"));
 
             socket.emit("message", message);//new JSONArray().put(message));
 
@@ -714,7 +714,7 @@ public class SocketService extends Service {
 
     public void stopCallMessageToCallee() {
 
-        sendSocketMessage("Missed Incoming Call: " + user.get("username"), amInCallWith);
+        sendSocketMessage("Missed Incoming Call: " + user.get("display_name"), amInCallWith);
 
         amInCall = false;
         amInCallWith = "";
@@ -769,7 +769,7 @@ public class SocketService extends Service {
             JSONObject message1 = new JSONObject();
 
             message1.put("room", room);
-            message1.put("caller", user.get("username"));
+            message1.put("caller", user.get("phone"));
             message1.put("callee", contact);
 
             socket.emit("callthisperson", message1);//new JSONArray().put(message1));
@@ -785,17 +785,17 @@ public class SocketService extends Service {
         }
     }
 
-    public void sendMessage(String contactUserName, String contactId, String msg) {
+    public void sendMessage(String contactPhone, String contactId, String msg) {
 
         try {
 
             JSONObject message = new JSONObject();
 
-            message.put("from", user.get("username"));
-            message.put("to", contactUserName);
+            message.put("from", user.get("phone"));
+            message.put("to", contactPhone);
             message.put("from_id", user.get("_id"));
             message.put("to_id", contactId);
-            message.put("fromFullName", user.get("firstname") + " " + user.get("lastname"));
+            message.put("fromFullName", user.get("display_name"));
             message.put("msg", msg);
             message.put("date", (new Date().toString()));
 
@@ -807,7 +807,7 @@ public class SocketService extends Service {
             socket.emit("im", completeMessage);//new JSONArray().put(completeMessage));
 
             DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-            db.addChat(contactUserName, user.get("username"), user.get("firstname") + " " + user.get("lastname"),
+            db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
                     msg, (new Date().toString()));
 
 

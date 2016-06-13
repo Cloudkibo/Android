@@ -71,7 +71,7 @@
             <input type="text" placeholder="First Name" ng-model="attendee.firstname">
           </label>
           <label class="item item-input">
-            <input type="text" placeholder="Last Name" ng-model="attendee.lastname">
+            <input type="text" placeholder="Last Name" ng-model="attendee.on_cloudkibo">
           </label>
           <div class="item item-divider">
             Shirt Size
@@ -104,11 +104,11 @@
     <ion-view title="Event Attendees" left-buttons="leftButtons">
       <ion-content>
         <div class="list">
-          <ion-toggle ng-repeat="attendee in attendees | orderBy:'firstname' | orderBy:'lastname'"
+          <ion-toggle ng-repeat="attendee in attendees | orderBy:'firstname' | orderBy:'on_cloudkibo'"
                       ng-model="attendee.arrived"
                       ng-change="arrivedChange(attendee)">
             {{ attendee.firstname }}
-            {{ attendee.lastname }}
+            {{ attendee.on_cloudkibo }}
           </ion-toggle>
           <div class="item item-divider">
             Activity

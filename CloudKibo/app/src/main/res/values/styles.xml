@@ -6,6 +6,8 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <item name="android:homeAsUpIndicator">@drawable/back_arrow</item>
     </style>
+
+    <style name="AppLoginTheme" parent="Theme.AccountKit" />
     
      
      <style name="editext_graybg" parent="android:Widget.EditText">

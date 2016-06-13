@@ -12,5 +12,13 @@
         android:layout_height="wrap_content"
         android:src="@drawable/splash" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Version Code 11"
+        android:id="@+id/textView3"
+        android:layout_gravity="center_horizontal" />
+
 </LinearLayout>
 <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/layout/splash.xml -->

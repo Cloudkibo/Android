@@ -2,6 +2,7 @@ package com.cloudkibo.webrtc.call;
 
 import java.util.HashMap;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.ComponentName;
@@ -129,15 +130,31 @@ public class OutgoingCall extends CustomActivity {
                     }
                     else if(type.equals("Accept Call")){
 
-						Intent i = new Intent(getApplicationContext(), VideoCallView.class);
-	  					i.putExtra("username", user.get("username"));
+                        try {
+
+                            String roomId = Long.toHexString(Double.doubleToLongBits(Math.random()));
+
+                            JSONObject msg = new JSONObject();
+                            msg.put("type", "room_name");
+                            msg.put("room", roomId);
+
+                            socketService.sendSocketMessage(msg.toString(), peerName);
+
+
+
+                        } catch(JSONException e){
+                            e.printStackTrace();
+                        }
+
+						/*Intent i = new Intent(getApplicationContext(), VideoCallView.class);
+	  					i.putExtra("username", user.get("phone"));
 	  					i.putExtra("_id", user.get("_id"));
 	  					i.putExtra("peer", peerName);
 	  					i.putExtra("lastmessage", "AcceptCallFromOther");
 	  					i.putExtra("room", room);
 	  		            startActivity(i);
 
-                        finish();
+                        finish();*/
                     }
 
                 }

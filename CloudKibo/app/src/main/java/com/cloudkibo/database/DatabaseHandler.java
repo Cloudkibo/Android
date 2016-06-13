@@ -7,6 +7,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabaseLockedException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.HashMap;
 
@@ -49,23 +50,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     	
         String CREATE_USER_TABLE = "CREATE TABLE " + User.TABLE_USER_NAME + "("
                 + User.KEY_ID + " INTEGER PRIMARY KEY,"
-                + User.KEY_FIRSTNAME + " TEXT,"
-                + User.KEY_LASTNAME + " TEXT,"
-                + User.KEY_EMAIL + " TEXT UNIQUE,"
-                + User.KEY_USERNAME + " TEXT,"
+                //+ User.KEY_FIRSTNAME + " TEXT,"
+                //+ User.KEY_LASTNAME + " TEXT,"
+                //+ User.KEY_EMAIL + " TEXT UNIQUE,"
+                //+ User.KEY_USERNAME + " TEXT,"
                 + User.KEY_UID + " TEXT,"
+                + "display_name TEXT,"
+                + "phone TEXT,"
+                + "national_number TEXT,"
+                + "country_prefix TEXT,"
                 + User.KEY_CREATED_AT + " TEXT" + ")";
         db.execSQL(CREATE_USER_TABLE);
         
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + Contacts.TABLE_CONTACTS + "("
                 + Contacts.CONTACT_ID + " INTEGER PRIMARY KEY,"
-                + Contacts.CONTACT_FIRSTNAME + " TEXT,"
-                + Contacts.CONTACT_LASTNAME + " TEXT,"
+                //+ Contacts.CONTACT_FIRSTNAME + " TEXT,"
+                //+ Contacts.CONTACT_LASTNAME + " TEXT,"
                 + Contacts.CONTACT_PHONE + " TEXT UNIQUE,"
-                + Contacts.CONTACT_USERNAME + " TEXT,"
+                + "display_name" + " TEXT,"
                 + Contacts.CONTACT_UID + " TEXT,"
                 + Contacts.SHARED_DETAILS + " TEXT,"
-                + Contacts.CONTACT_STATUS + " TEXT" + ")";
+                + Contacts.CONTACT_STATUS + " TEXT,"
+                + "on_cloudkibo" + " TEXT"+ ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
         
         String CREATE_USERCHAT_TABLE = "CREATE TABLE " + UserChat.TABLE_USERCHAT + "("
@@ -108,15 +114,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /////////////////////////////////////////////////////////////////////
     
     
-    public void addUser(String fname, String lname, String email, String uname, String uid, String created_at) {
+    public void addUser(String id, String display_name, String phone, String national_number, String country_prefix, String created_at) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(User.KEY_FIRSTNAME, fname); // FirstName
-        values.put(User.KEY_LASTNAME, lname); // LastName
-        values.put(User.KEY_EMAIL, email); // Email
-        values.put(User.KEY_USERNAME, uname); // UserName
-        values.put(User.KEY_UID, uid); // Email
+        values.put(User.KEY_UID, id); // FirstName    //values.put(User.KEY_FIRSTNAME, id); // FirstName
+        values.put("display_name", display_name); // LastName
+        values.put("phone", phone); // Email
+        values.put("national_number", national_number); // UserName
+        values.put("country_prefix", country_prefix); // Email
         values.put(User.KEY_CREATED_AT, created_at); // Created At
 
         // Inserting Row
@@ -132,21 +138,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /////////////////////////////////////////////////////////////////////
     
     
-    public void addContact(String fname, String lname, String phone, String uname, String uid, String shareddetails,
+    public void addContact(String on_cloudkibo, String lname, String phone, String uname, String uid, String shareddetails,
     		String status) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(Contacts.CONTACT_FIRSTNAME, fname); // FirstName
-        values.put(Contacts.CONTACT_LASTNAME, lname); // LastName
+        //values.put(Contacts.CONTACT_FIRSTNAME, fname); // FirstName
+        //values.put(Contacts.CONTACT_LASTNAME, lname); // LastName
         values.put(Contacts.CONTACT_PHONE, phone); // Phone
-        values.put(Contacts.CONTACT_USERNAME, uname); // UserName
+        values.put("display_name", uname); // UserName
         values.put(Contacts.CONTACT_UID, uid); // Uid
         values.put(Contacts.CONTACT_STATUS, status); // Status
         values.put(Contacts.SHARED_DETAILS, shareddetails); // Created At
+        values.put("on_cloudkibo", on_cloudkibo);
 
         // Inserting Row
-        db.insert(Contacts.TABLE_CONTACTS, null, values);
+        try {
+            db.insert(Contacts.TABLE_CONTACTS, null, values);
+        } catch (android.database.sqlite.SQLiteConstraintException e){
+            Log.e("SQLITE_CONTACTS", uname + " - " + phone);
+        }
         db.close(); // Closing database connection
     }
     
@@ -190,11 +201,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Move to first row
         cursor.moveToFirst();
         if(cursor.getCount() > 0){
-            user.put(User.KEY_FIRSTNAME, cursor.getString(1));
-            user.put(User.KEY_LASTNAME, cursor.getString(2));
-            user.put(User.KEY_EMAIL, cursor.getString(3));
-            user.put(User.KEY_USERNAME, cursor.getString(4));
-            user.put(User.KEY_UID, cursor.getString(5));
+            user.put(User.KEY_UID, cursor.getString(1));
+            user.put("display_name", cursor.getString(2));
+            user.put("phone", cursor.getString(3));
+            user.put("national_number", cursor.getString(4));
+            user.put("country_prefix", cursor.getString(5));
             user.put(User.KEY_CREATED_AT, cursor.getString(6));
         }
         cursor.close();
@@ -214,7 +225,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public JSONArray getContacts() throws JSONException {
     	JSONArray contacts = new JSONArray();
-        String selectQuery = "SELECT  * FROM " + Contacts.TABLE_CONTACTS;
+        String selectQuery = "SELECT  * FROM " + Contacts.TABLE_CONTACTS;// +" where on_cloudkibo='true'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -225,13 +236,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         	while (cursor.isAfterLast() != true) {
         		
         		JSONObject contact = new JSONObject();
-        		contact.put(Contacts.CONTACT_FIRSTNAME, cursor.getString(1));
-        		contact.put(Contacts.CONTACT_LASTNAME, cursor.getString(2));
-        		contact.put(Contacts.CONTACT_PHONE, cursor.getString(3));
-        		contact.put(Contacts.CONTACT_USERNAME, cursor.getString(4));
-        		contact.put(Contacts.CONTACT_UID, cursor.getString(5));
-        		contact.put(Contacts.SHARED_DETAILS, cursor.getString(6));
-        		contact.put(Contacts.CONTACT_STATUS, cursor.getString(7));
+        		//contact.put(Contacts.CONTACT_FIRSTNAME, cursor.getString(1));
+        		//contact.put(Contacts.CONTACT_LASTNAME, cursor.getString(2));
+        		contact.put(Contacts.CONTACT_PHONE, cursor.getString(1));
+        		contact.put("display_name", cursor.getString(2));
+        		contact.put(Contacts.CONTACT_UID, cursor.getString(3));
+        		contact.put(Contacts.SHARED_DETAILS, cursor.getString(4));
+        		contact.put(Contacts.CONTACT_STATUS, cursor.getString(5));
+                contact.put("on_cloudkibo", cursor.getString(6));
         		
         		contacts.put(contact);
         		
@@ -279,6 +291,37 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         		
         		chats.put(contact);
         		
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return chats;
+    }
+
+    public JSONArray getChat() throws JSONException {
+        JSONArray chats = new JSONArray();
+        String selectQuery = "SELECT  * FROM " + UserChat.TABLE_USERCHAT;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put(UserChat.USERCHAT_TO, cursor.getString(1));
+                contact.put(UserChat.USERCHAT_FROM, cursor.getString(2));
+                contact.put(UserChat.USERCHAT_FROM_FULLNAME, cursor.getString(3));
+                contact.put(UserChat.USERCHAT_MSG, cursor.getString(4));
+                contact.put(UserChat.USERCHAT_UID, cursor.getString(5));
+                contact.put(UserChat.USERCHAT_DATE, cursor.getString(6));
+
+                chats.put(contact);
+
                 cursor.moveToNext();
             }
         }
