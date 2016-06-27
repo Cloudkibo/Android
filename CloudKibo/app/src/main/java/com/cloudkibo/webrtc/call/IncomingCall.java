@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.cloudkibo.R;
 import com.cloudkibo.SplashScreen;
 import com.cloudkibo.custom.CustomActivity;
+import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.socket.BoundServiceListener;
 import com.cloudkibo.socket.SocketService;
 import com.cloudkibo.socket.SocketService.SocketBinder;
@@ -77,6 +78,9 @@ public class IncomingCall extends CustomActivity {
             public void onClick(View view) {
                 socketService.rejectCallMessageToCallee();
                 r.stop();
+                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+                db.addCallHistory("received", peerName);
                 finish();
             }
         });
@@ -86,7 +90,11 @@ public class IncomingCall extends CustomActivity {
             public void onClick(View view) {
                 socketService.acceptCallMessageToCallee();
                 r.stop();
+                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 
+                db.addCallHistory("received", peerName);
+
+                /*
                 Intent i = new Intent(getApplicationContext(), VideoCallView.class);
                 i.putExtra("username", user.get("phone"));
                 i.putExtra("_id", user.get("_id"));
@@ -96,6 +104,7 @@ public class IncomingCall extends CustomActivity {
                 startActivity(i);
 
                 finish();
+                */
             }
         });
 
@@ -147,6 +156,10 @@ public class IncomingCall extends CustomActivity {
 
                         notificationManager.notify(0, n);
 
+                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+                        db.addCallHistory("missed", peerName);
+
                         finish();
                         //dialog.dismiss();
                     }
@@ -162,6 +175,19 @@ public class IncomingCall extends CustomActivity {
 	  					i.putExtra("room", room);
 	  		            startActivity(i);
 	  		            */
+                    }
+                    else if(type.equals("call_room")){
+                        Intent i = new Intent(getApplicationContext(), com.cloudkibo.webrtc.conference.VideoCallView.class);
+                        //i.putExtra("username", user.get("phone"));
+                        //i.putExtra("_id", user.get("_id"));
+                        //i.putExtra("peer", peerName);
+                        //i.putExtra("lastmessage", "AcceptCallFromOther");
+                        user.put("username", user.get("display_name"));
+                        i.putExtra("user", user);
+                        i.putExtra("room", body);
+                        startActivity(i);
+
+                        finish();
                     }
 
                 }

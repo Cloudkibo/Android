@@ -1,6 +1,11 @@
 package com.cloudkibo.ui;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -18,8 +23,14 @@ import com.cloudkibo.NewChat;
 //import com.cloudkibo.R;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
+import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.model.ChatItem;
+import com.cloudkibo.model.Conversation;
 import com.cloudkibo.utils.IFragmentName;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * The Class ChatList is the Fragment class that is launched when the user
@@ -34,6 +45,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 	/** The Chat list. */
 	private ArrayList<ChatItem> chatList;
 
+	private String authtoken;
+
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
@@ -42,6 +55,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 			Bundle savedInstanceState)
 	{
 		View v = inflater.inflate(R.layout.chat_list, null);
+
+		authtoken = getActivity().getIntent().getExtras().getString("authtoken");
 
 		loadChatList();
 		ListView list = (ListView) v.findViewById(R.id.list);
@@ -52,14 +67,23 @@ public class ChatList extends CustomFragment implements IFragmentName
 			public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
 					long arg3)
 			{
+
+				Bundle bundle = new Bundle();
+				bundle.putString("contactusername", chatList.get(pos).getName());
+				bundle.putString("contactphone", chatList.get(pos).getTitle());
+				bundle.putString("contactid", chatList.get(pos).getContactId());
+				bundle.putString("authtoken", authtoken);
+
+				GroupChat groupChatFragment = new GroupChat();
+				groupChatFragment.setArguments(bundle);
+
 				getFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, new GroupChat())
-						.addToBackStack("Group Chat").commit();
+						.replace(R.id.content_frame, groupChatFragment, "groupChatFragmentTag")
+						.addToBackStack(chatList.get(pos).getName()).commit();
+
 			}
 		});
 
-		setTouchNClick(v.findViewById(R.id.tab1));
-		setTouchNClick(v.findViewById(R.id.tab2));
 		setTouchNClick(v.findViewById(R.id.btnNewChat));
 		return v;
 	}
@@ -71,17 +95,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 	public void onClick(View v)
 	{
 		super.onClick(v);
-		if (v.getId() == R.id.tab1)
-		{
-			getView().findViewById(R.id.tab2).setEnabled(true);
-			v.setEnabled(false);
-		}
-		else if (v.getId() == R.id.tab2)
-		{
-			getView().findViewById(R.id.tab1).setEnabled(true);
-			v.setEnabled(false);
-		}
-		else if (v.getId() == R.id.btnNewChat)
+		if (v.getId() == R.id.btnNewChat)
 			startActivity(new Intent(getActivity(), NewChat.class));
 	}
 
@@ -91,13 +105,37 @@ public class ChatList extends CustomFragment implements IFragmentName
 	 */
 	private void loadChatList()
 	{
-		ArrayList<ChatItem> chatList = new ArrayList<ChatItem>();
-		chatList.add(new ChatItem("Saba Channa", "Test Subject",
-				"I am testing", "12:10PM", R.drawable.user1, true,
-				false));
-		this.chatList = new ArrayList<ChatItem>(chatList);
-		//this.chatList.addAll(chatList);
-		//this.chatList.addAll(chatList);
+		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+		try{
+
+			ArrayList<ChatItem> chatList1 = new ArrayList<ChatItem>();
+
+			JSONArray chats = db.getChatList();
+
+			for (int i=0; i < chats.length(); i++) {
+				JSONObject row = chats.getJSONObject(i);
+
+				DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ENGLISH);
+				Date date = format.parse("2001-07-04T12:08:56.235-0700");
+
+				chatList1.add(new ChatItem(
+						row.getString("display_name"),
+						row.getString("contact_phone"),
+						row.getString("msg"), row.getString("date"), R.drawable.user1, false,
+						false, row.getString("contact_id")));
+
+			}
+
+			this.chatList = new ArrayList<ChatItem>(chatList1);
+			//this.chatList.addAll(chatList);
+			//this.chatList.addAll(chatList);
+
+		} catch(JSONException e){
+			e.printStackTrace();
+		} catch (ParseException e){
+			e.printStackTrace();
+		}
+
 
 	}
 
@@ -177,4 +215,9 @@ public class ChatList extends CustomFragment implements IFragmentName
      {
        return "ChatList";
      }
+
+	public String getFragmentContactPhone()
+	{
+		return "About Chat";
+	}
 }

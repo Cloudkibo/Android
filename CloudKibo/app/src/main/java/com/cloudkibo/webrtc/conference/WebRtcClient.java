@@ -119,8 +119,8 @@ public class WebRtcClient {
                 Peer peer = addPeer(id, findEndPoint(), body.getString("username"));
                 createOffer(id);
             } else if (type.equals("peer.disconnected")) {
-                mListener.onStatusChanged("Peer disconnect received");
                 removePeer(body.getString("id"));
+                mListener.onStatusChanged("Peer disconnect received");
             } else if (type.equals("msg")) {
                 String msg_type = body.getString("type");
                 if (msg_type.equals("offer")) {

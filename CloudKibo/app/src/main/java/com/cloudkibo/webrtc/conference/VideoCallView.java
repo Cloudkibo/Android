@@ -123,6 +123,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
     private ImageButton sendFile;
     private ImageButton tglChat;
     private ImageButton tglScreen;
+    private ImageButton endCall;
 
     private static final int REQUEST_CHOOSER = 11050;
     private static final int SCREEN_REQUEST_CODE = 10151;
@@ -263,6 +264,17 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
             }
         });
 
+        endCall = (ImageButton) findViewById(R.id.endCallImageButton);
+
+        endCall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                socketService.endCall();
+                finish();
+            }
+        });
+
+
         final Intent intent = getIntent();
         final String action = intent.getAction();
 
@@ -397,11 +409,12 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
 
     @Override
     public void onDestroy() {
+        if(fileServiceIsBound) unbindService(fileTransferConnection);
+        if(isBound) unbindService(socketConnection);
         if(client != null) {
             client.onDestroy();
         }
         super.onDestroy();
-        unbindService(fileTransferConnection);
     }
 
     public void startCam() {
@@ -455,6 +468,10 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
                 Toast.makeText(getApplicationContext(), newStatus, Toast.LENGTH_SHORT).show();
             }
         });
+        if(newStatus.equals("Peer disconnect received")){
+            socketService.endCall();
+            finish();
+        }
     }
 
     @Override

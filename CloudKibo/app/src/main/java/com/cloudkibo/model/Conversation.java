@@ -18,6 +18,10 @@ public class Conversation
 	/** The date. */
 	private String date;
 
+	private String status;
+
+	private String uniqueid;
+
 	/**
 	 * Instantiates a new conversation.
 	 *
@@ -27,7 +31,7 @@ public class Conversation
 	 * @param isSuccess the is success
 	 */
 	public Conversation(String msg, String date, boolean isSent,
-			boolean isSuccess)
+			boolean isSuccess, String status, String uniqueid)
 	{
 		this.msg = msg;
 		this.isSent = isSent;
@@ -36,6 +40,9 @@ public class Conversation
 			this.isSuccess = isSuccess;
 		else
 			this.isSuccess = false;
+
+		this.status = status;
+		this.uniqueid = uniqueid;
 	}
 
 	/**
@@ -117,5 +124,13 @@ public class Conversation
 	{
 		this.date = date;
 	}
+
+	public String getStatus () { return status; }
+
+	public void setStatus (String status) { this.status = status; }
+
+	public String getUniqueid () { return uniqueid; }
+
+	public void setUniqueid (String uniqueid) { this.uniqueid = uniqueid; }
 
 }

@@ -5,38 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/main_color_gray_dk"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/tab1"
-            style="@style/tab_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:enabled="false"
-            android:text="@string/my_chats" />
-
-        <View
-            android:id="@+id/view1"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="8dp"
-            android:layout_marginTop="8dp"
-            android:background="@color/main_color_gray" />
-
-        <Button
-            android:id="@+id/tab2"
-            style="@style/tab_btn"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/all_chats" />
-    </LinearLayout>
-
     <RelativeLayout
         android:id="@+id/rel"
         android:layout_width="match_parent"
@@ -62,6 +30,7 @@
             <Button
                 android:id="@+id/btnNewChat"
                 style="@style/btn"
+                android:visibility="invisible"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/ic_compose" />

@@ -25,10 +25,6 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.Ack;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
-//import com.koushikdutta.async.http.socketio.Acknowledge;
-//import com.koushikdutta.async.http.socketio.ConnectCallback;
-//import com.koushikdutta.async.http.socketio.EventCallback;
-//import com.koushikdutta.async.http.socketio.SocketIOClient;
 
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -86,6 +82,8 @@ public class SocketService extends Service {
     private Boolean otherSideRinging = false;
     private Boolean isSomeOneCalling = false;
 
+    private Boolean isConnected = false;
+
     //nkzawa
     Socket socket;
 
@@ -111,7 +109,7 @@ public class SocketService extends Service {
 
         try {
 
-            socket = IO.socket("https://api.cloudkibo.com");
+            socket = IO.socket("https://api.cloudkibo.com"); // https://api.cloudkibo.com
             socket.connect();
 
             socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
@@ -120,6 +118,8 @@ public class SocketService extends Service {
                 public void call(Object... args) {
 
                     Log.w("SOCKET", "CONNECTED");
+
+                    isConnected = true;
 
                     JSONObject message = new JSONObject();
 
@@ -150,8 +150,21 @@ public class SocketService extends Service {
 
                         JSONObject payload = new JSONObject(args[0].toString());
 
+                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+                        // todo correct current date
+                        db.addChat(payload.getString("to"),
+                                payload.getString("from"),
+                                payload.getString("fromFullName"),
+                                payload.getString("msg"),
+                                (new Date().toString()), "delivered",
+                                payload.has("uniqueid") ? payload.getString("uniqueid") : "");
+
+                        updateReceivedMessageStatusToServer("delivered",
+                                payload.getString("uniqueid"), payload.getString("from"));
+
                         if (isForeground("com.cloudkibo")) {
-                            mListener.receiveSocketMessage("im", payload.getString("msg"));
+                            mListener.receiveSocketJson("im", payload);
                         } else {
                             Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
                             PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
@@ -178,15 +191,6 @@ public class SocketService extends Service {
                             }
                         }
 
-                        // todo Date throws exception
-
-                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-
-                        db.addChat(payload.getString("to"),
-                                payload.getString("from"),
-                                payload.getString("fromFullName"),
-                                payload.getString("msg"),
-                                payload.getString("date")); // DATE THROWS EXCEPTION
 
                     } catch (NullPointerException e) {
                         e.printStackTrace();
@@ -540,10 +544,28 @@ public class SocketService extends Service {
 
                 }
 
+            }).on("messageStatusUpdate", new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+
+                    try {
+                        JSONObject resp = new JSONObject(args[0].toString());
+                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                        db.updateChat(resp.getString("status"), resp.getString("uniqueid"));
+                        mListener.receiveSocketJson("updateSentMessageStatus", resp);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
             }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
 
                 @Override
                 public void call(Object... args) {
+
+                    isConnected = false;
 
                 }
 
@@ -623,6 +645,10 @@ public class SocketService extends Service {
         ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
         Log.e("SOCKET", "Packange name of foreground " + componentInfo.getPackageName());
         return componentInfo.getPackageName().equals(myPackage);
+    }
+
+    public Boolean isSocketConnected(){
+        return isConnected;
     }
 
     public static boolean isAppSentToBackground(final Context context) {
@@ -785,7 +811,7 @@ public class SocketService extends Service {
         }
     }
 
-    public void sendMessage(String contactPhone, String contactId, String msg) {
+    public void sendMessage(String contactPhone, String msg, String uniqueid) {
 
         try {
 
@@ -793,22 +819,33 @@ public class SocketService extends Service {
 
             message.put("from", user.get("phone"));
             message.put("to", contactPhone);
-            message.put("from_id", user.get("_id"));
-            message.put("to_id", contactId);
             message.put("fromFullName", user.get("display_name"));
             message.put("msg", msg);
             message.put("date", (new Date().toString()));
+            message.put("uniqueid", uniqueid);
 
             JSONObject completeMessage = new JSONObject();
 
             completeMessage.put("room", room);
             completeMessage.put("stanza", message);
 
-            socket.emit("im", completeMessage);//new JSONArray().put(completeMessage));
-
             DatabaseHandler db = new DatabaseHandler(getApplicationContext());
             db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
-                    msg, (new Date().toString()));
+                    msg, (new Date().toString()), "pending", uniqueid);
+
+            socket.emit("im", completeMessage, new Ack() {
+                @Override
+                public void call(Object... args) {
+                    try {
+                        JSONObject resp = new JSONObject(args[0].toString());
+                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                        db.updateChat(resp.getString("status"), resp.getString("uniqueid"));
+                        mListener.receiveSocketJson("updateSentMessageStatus", resp);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
 
 
         } catch (JSONException e) {
@@ -817,6 +854,75 @@ public class SocketService extends Service {
             Toast.makeText(getApplicationContext(),
                     "Message not sent. No Internet", Toast.LENGTH_SHORT)
                     .show();
+        }
+    }
+
+    public void sendPendingMessage(String contactPhone, String msg, String uniqueid) {
+
+        try {
+
+            JSONObject message = new JSONObject();
+
+            message.put("from", user.get("phone"));
+            message.put("to", contactPhone);
+            message.put("fromFullName", user.get("display_name"));
+            message.put("msg", msg);
+            message.put("date", (new Date().toString()));
+            message.put("uniqueid", uniqueid);
+
+            JSONObject completeMessage = new JSONObject();
+
+            completeMessage.put("room", room);
+            completeMessage.put("stanza", message);
+
+
+            socket.emit("im", completeMessage, new Ack() {
+                @Override
+                public void call(Object... args) {
+                    try {
+                        JSONObject resp = new JSONObject(args[0].toString());
+                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                        db.updateChat(resp.getString("status"), resp.getString("uniqueid"));
+                        mListener.receiveSocketJson("updateSentMessageStatus", resp);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            Toast.makeText(getApplicationContext(),
+                    "Message not sent. No Internet", Toast.LENGTH_SHORT)
+                    .show();
+        }
+    }
+
+    public void updateReceivedMessageStatusToServer(String status, String uniqueid, String sender) {
+
+        try {
+
+            JSONObject message = new JSONObject();
+
+            message.put("status", status);
+            message.put("sender", sender);;
+            message.put("uniqueid", uniqueid);
+
+            socket.emit("messageStatusUpdate", message, new Ack() {
+                @Override
+                public void call(Object... args) {
+                    // todo keep track of received messages status and see if they are properly communicated to server or not
+                    String test = args.toString();
+                }
+            });
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+
         }
     }
 
@@ -853,6 +959,11 @@ public class SocketService extends Service {
         }
 
 
+    }
+
+    public void endCall(){
+        socket.disconnect();
+        socket.connect();
     }
 
 }

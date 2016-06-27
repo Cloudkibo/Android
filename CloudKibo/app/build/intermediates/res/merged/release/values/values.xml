@@ -736,10 +736,12 @@
     <string name="or">or</string>
     <string name="password">Password</string>
     <string name="phone">Phone</string>
-    <string name="port">8443</string>
+    <string name="port">443</string>
     <string name="publc">Public</string>
     <string name="register">Register</string>
     <string name="search">Search</string>
+    <string name="server_host">192.168.8.103</string>
+    <string name="server_port">8443</string>
     <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
     <eat-comment/>
     <string name="status_bar_notification_info_overflow">999+</string>

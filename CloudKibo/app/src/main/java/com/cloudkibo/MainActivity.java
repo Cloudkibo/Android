@@ -12,6 +12,9 @@ import java.util.List;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.media.MediaPlayer;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.provider.ContactsContract;
 
 import org.json.JSONArray;
@@ -63,8 +66,10 @@ import android.widget.ListView;
 import com.cloudkibo.R;
 
 import com.cloudkibo.custom.CustomActivity;
+import com.cloudkibo.database.BoundKiboSyncListener;
 import com.cloudkibo.database.CloudKiboDatabaseContract;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.database.KiboSyncService;
 import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.AccountGeneral;
 import com.cloudkibo.library.Login;
@@ -78,8 +83,10 @@ import com.cloudkibo.socket.SocketService;
 import com.cloudkibo.socket.SocketService.SocketBinder;
 import com.cloudkibo.ui.AboutChat;
 import com.cloudkibo.ui.AddRequest;
+import com.cloudkibo.ui.CallHistory;
 import com.cloudkibo.ui.ChatList;
 import com.cloudkibo.ui.ContactList;
+import com.cloudkibo.ui.ContactListPending;
 import com.cloudkibo.ui.GroupChat;
 import com.cloudkibo.ui.LeftNavAdapter;
 import com.cloudkibo.ui.ProjectList;
@@ -100,7 +107,9 @@ public class MainActivity extends CustomActivity
 {
 
     SocketService socketService;
+    KiboSyncService kiboSyncService;
     boolean isBound = false;
+    boolean kiboServiceIsBound = false;
 
     /** The drawer layout. */
     private DrawerLayout drawerLayout;
@@ -147,6 +156,7 @@ public class MainActivity extends CustomActivity
         setContentView(R.layout.activity_main);
 
         authtoken = getIntent().getExtras().getString("authtoken");
+        Boolean shouldSync = getIntent().getExtras().getBoolean("sync");
 
 
         setupContainer();
@@ -156,7 +166,7 @@ public class MainActivity extends CustomActivity
         userFunction = new UserFunctions();
 
         if(userFunction.isUserLoggedIn(getApplicationContext()));
-        getUserFromSQLiteDatabase();
+            getUserFromSQLiteDatabase();
 
         //am = AccountManager.get(MainActivity.this);
         //account = am.getAccountsByType(AccountGeneral.ACCOUNT_TYPE)[0];
@@ -175,6 +185,10 @@ public class MainActivity extends CustomActivity
         //else {
         startSocketService();
         //}
+        if(shouldSync) {
+            Intent intentSync = new Intent(getApplicationContext(), KiboSyncService.class);
+            bindService(intentSync, kiboSyncConnection, Context.BIND_AUTO_CREATE);
+        }
     }
 
     public void startSocketService(){
@@ -197,8 +211,11 @@ public class MainActivity extends CustomActivity
             unbindService(socketConnection);
         }
 
+        if(kiboServiceIsBound) unbindService(kiboSyncConnection);
+
         super.onDestroy();
     }
+
 
     /**
      * Setup the drawer layout. This method also includes the method calls for
@@ -268,9 +285,11 @@ public class MainActivity extends CustomActivity
     private ArrayList<Data> getDummyLeftNavItems()
     {
         ArrayList<Data> al = new ArrayList<Data>();
-        //al.add(new Data("Chat", null, R.drawable.ic_chat));
+        al.add(new Data("Chat", null, R.drawable.ic_chat));
         al.add(new Data("Contacts", null, R.drawable.ic_notes));
-        al.add(new Data("Add Requests", null, R.drawable.ic_projects));
+        al.add(new Data("Calls", null, android.R.drawable.sym_action_call));
+        al.add(new Data("Invite", null, R.drawable.ic_notes));
+        //al.add(new Data("Add Requests", null, R.drawable.ic_projects));
         //al.add(new Data("Conference", null, R.drawable.group1));
         //al.add(new Data("Settings", null, R.drawable.ic_setting));
         al.add(new Data("About CloudKibo", null, R.drawable.ic_about));
@@ -291,14 +310,22 @@ public class MainActivity extends CustomActivity
         String title = null;
         if (pos == 1)
         {
+            title = "Chat";
+            f = new ChatList();
+        }
+        else if(pos == 2){
             title = "Contacts";
             f = new ContactList();
         }
-        else if(pos == 2){
-            title = "Add Requests";
-            f = new AddRequest();
+        else if(pos == 3){
+            title = "Calls History";
+            f = new CallHistory();
         }
-        else if(pos == -3){ // this is removing of conference tab
+        else if(pos == 4){
+            title = "Address Book";
+            f = new ContactListPending();
+        }
+        else if(pos == -5){ // this is removing of conference tab
 
             // get prompts.xml view
             LayoutInflater layoutInflater = LayoutInflater.from(getApplicationContext());
@@ -343,30 +370,14 @@ public class MainActivity extends CustomActivity
 
             alertD.show();
         }
-        else if (pos == 3)
+        else if (pos == 5)
         {
             title = "About CloudKibo";
             f = new AboutChat();
         }
-        else if (pos == -4) // this is removing of logout button
-        {
-            startActivity(new Intent(this, SplashScreen.class));
-
-            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-
-            db.resetChatsTable();
-            db.resetContactsTable();
-            db.resetTables();
-
-            stopService(new Intent(this, SocketService.class));
-
-            //am.invalidateAuthToken(AccountGeneral.ACCOUNT_TYPE, authtoken);
-
-            //am.removeAccount(account, null, null);
-
-        }
         if (f != null)
         {
+
             while (getSupportFragmentManager().getBackStackEntryCount() > 0)
             {
                 getSupportFragmentManager().popBackStackImmediate();
@@ -465,14 +476,15 @@ public class MainActivity extends CustomActivity
         socketService.sendSocketMessage(msg, phoneOfPeer);
     }
 
-    public void callThisPerson(String contact){
+    public void callThisPerson(String contactPhone, String contactName){
         Log.d("CALL", "Call this person function called");
-        socketService.callThisPerson(contact);
+        socketService.callThisPerson(contactPhone);
         Log.d("CALL", "After call this person function called");
         Intent i = new Intent(this, OutgoingCall.class);
         i.putExtra("user", user);
         i.putExtra("room", room);
-        i.putExtra("contact", contact);
+        i.putExtra("contact", contactPhone);
+        i.putExtra("contact_name", contactName);
         startActivity(i);
     }
 
@@ -487,8 +499,18 @@ public class MainActivity extends CustomActivity
 
     }
 
-    public void sendMessage(String contactUserName, String contactId, String msg){
-        socketService.sendMessage(contactUserName, contactId, msg);
+    public void sendMessage(String contactPhone, String msg, String uniqueid){
+        socketService.sendMessage(contactPhone, msg, uniqueid);
+    }
+
+    public void sendPendingMessage(String contactPhone, String msg, String uniqueid){
+        socketService.sendPendingMessage(contactPhone, msg, uniqueid);
+    }
+
+    public void sendMessageStatusUsingSocket(String status, String uniqueid, String sender){
+        if(socketService.isSocketConnected()) {
+            socketService.updateReceivedMessageStatusToServer(status, uniqueid, sender);
+        }
     }
 
 
@@ -704,26 +726,7 @@ public class MainActivity extends CustomActivity
                 public void receiveSocketMessage(String type, String msg) {
 
                 	final String message = msg;
-                    if(type.equals("im")){
-
-                        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-
-                        if(myFragment.getFragmentName().equals("GroupChat"))
-                        {
-                            final GroupChat myGroupChatFragment = (GroupChat) myFragment;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-
-                                	myGroupChatFragment.receiveMessage(message);
-
-                               }
-                           });
-                            
-                        }
-
-                    }
-                    else if(type.equals("areyoufreeforcall")){
+                    if(type.equals("areyoufreeforcall")){
 
                         Intent i = new Intent(getApplicationContext(), IncomingCall.class);
                         i.putExtra("user", user);
@@ -745,7 +748,8 @@ public class MainActivity extends CustomActivity
                         if(myFragment.getFragmentName().equals("ContactList"))
                         {
                             ContactList myContactListFragment = (ContactList) myFragment;
-                            myContactListFragment.setOnlineStatus(body); //here you call the method of your current Fragment.
+                            // todo fix it
+                           // myContactListFragment.setOnlineStatus(body); //here you call the method of your current Fragment.
                         }
 
                     }
@@ -771,11 +775,140 @@ public class MainActivity extends CustomActivity
                 }
 
                 @Override
-                public void receiveSocketJson(String type, JSONObject body) {
+                public void receiveSocketJson(String type, final JSONObject body) {
+
+                    try {
+                        if(type.equals("im")){
+
+                            IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+                            if(myFragment == null) return;
+                            if(myFragment.getFragmentName().equals("GroupChat"))
+                            {
+                                if(myFragment.getFragmentContactPhone().equals(body.getString("from"))){
+                                    final GroupChat myGroupChatFragment = (GroupChat) myFragment;
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                            try {
+
+                                                myGroupChatFragment.receiveMessage(body.getString("msg"), body.getString("uniqueid"), body.getString("from"));
+                                            } catch(JSONException e){
+                                                e.printStackTrace();
+                                            }
+
+                                        }
+                                    });
+                                } else {
+                                    Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+                                    PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+                                    Notification n = new Notification.Builder(getApplicationContext())
+                                            .setContentTitle(body.getString("fromFullName"))
+                                            .setContentText("Unread Message")
+                                            .setSmallIcon(R.drawable.icon)
+                                            .setContentIntent(pIntent)
+                                            .setAutoCancel(true)
+                                            .build();
+
+                                    NotificationManager notificationManager =
+                                            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                                    notificationManager.notify(0, n);
+
+                                    try {
+                                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                                        r.play();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+
+
+                            }
+
+                        }
+                        else if(type.equals("updateSentMessageStatus")){
+
+                            IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+                            if(myFragment == null) return;
+                            if(myFragment.getFragmentName().equals("GroupChat"))
+                            {
+                                final GroupChat myGroupChatFragment = (GroupChat) myFragment;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+
+                                        try {
+
+                                            myGroupChatFragment.updateStatusSentMessage(body.getString("status"), body.getString("uniqueid"));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+
+                                    }
+                                });
+
+                            }
+
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                 }
 
             });
+        }
+    };
+
+    private ServiceConnection kiboSyncConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            KiboSyncService.KiboSyncBinder binder = (KiboSyncService.KiboSyncBinder) service;
+            kiboSyncService = binder.getService();
+            kiboServiceIsBound = true;
+
+            binder.setListener(new BoundKiboSyncListener() {
+
+                @Override
+                public void contactsLoaded() {
+
+                    //kiboServiceIsBound = false;
+
+                    //unbindService(kiboSyncConnection);
+                }
+
+                @Override
+                public void chatLoaded() {
+
+
+                }
+
+                @Override
+                public void sendPendingMessageUsingSocket(String contactPhone, String msg, String uniqueid) {
+                    if(socketService.isSocketConnected()) {
+                        sendPendingMessage(contactPhone, msg, uniqueid);
+                    }
+                }
+
+                @Override
+                public void sendMessageStatusUsingSocket(String contactPhone, String status, String uniqueid) {
+                    if(socketService.isSocketConnected()) {
+                        socketService.updateReceivedMessageStatusToServer(status, uniqueid, contactPhone);
+                    }
+                }
+
+            });
+            kiboSyncService.startSyncWithoutAddressBookAccess(authtoken);
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            kiboServiceIsBound = false;
         }
     };
 

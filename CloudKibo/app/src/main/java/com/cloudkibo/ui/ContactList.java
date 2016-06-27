@@ -104,70 +104,6 @@ public class ContactList extends CustomFragment implements IFragmentName
 				contactList.get(pos).setUnReadMessage(false);
 				contactAdapter.notifyDataSetChanged();
 
-
-				new AsyncTask<String, String, Boolean>() {
-
-					@Override
-					protected Boolean doInBackground(String... args) {
-
-						ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-						NetworkInfo netInfo = cm.getActiveNetworkInfo();
-						if (netInfo != null && netInfo.isConnected()) {
-							try {
-								URL url = new URL("http://www.google.com");
-								HttpURLConnection urlc = (HttpURLConnection) url
-										.openConnection();
-								urlc.setConnectTimeout(3000);
-								urlc.connect();
-								if (urlc.getResponseCode() == 200) {
-									return true;
-								}
-							} catch (MalformedURLException e1) {
-								e1.printStackTrace();
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-						}
-						return false;
-
-					}
-
-					@Override
-					protected void onPostExecute(Boolean th) {
-
-						if (th == true) {
-
-							new AsyncTask<String, String, JSONObject>() {
-
-								@Override
-								protected JSONObject doInBackground(String... args) {
-									JSONObject result = null;
-
-									MainActivity act1 = (MainActivity) getActivity();
-
-									result = userFunction.markChatAsRead(act1.getUserId(), tempContactId, authtoken);
-
-									return result;
-
-								}
-
-								@Override
-								protected void onPostExecute(JSONObject json) {
-
-								}
-
-							}.execute();
-
-						} else {
-							/*Toast.makeText(getActivity().getApplicationContext(),
-									"Could not connect to Internet", Toast.LENGTH_SHORT)
-									.show();*/
-						}
-					}
-
-				}.execute();
-
-
 				Bundle bundle = new Bundle();
 				bundle.putString("contactusername", contactList.get(pos).getUserName());
 				bundle.putString("contactphone", contactList.get(pos).getPhone());
@@ -184,9 +120,6 @@ public class ContactList extends CustomFragment implements IFragmentName
 			}
 		});
 
-		setTouchNClick(v.findViewById(R.id.tab1));
-		setTouchNClick(v.findViewById(R.id.tab2));
-		setTouchNClick(v.findViewById(R.id.btnNewChat));
 		return v;
 	}
 	
@@ -197,7 +130,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 	      menu.setHeaderTitle("Select The Action");  
 	      menu.add(0, v.getId(), 0, "Call");  
 	      menu.add(0, v.getId(), 0, "Transfer File");
-		  menu.add(0, v.getId(), 0, "Remove Conversation");
+		  //menu.add(0, v.getId(), 0, "Remove Conversation");
 		  //menu.add(0, v.getId(), 0, "Remove Contact");
 
     } 
@@ -215,7 +148,8 @@ public class ContactList extends CustomFragment implements IFragmentName
             	 
             	 MainActivity act1 = (MainActivity)getActivity();
          		
-         		 act1.callThisPerson(contactList.get(info.position).getPhone());
+         		 act1.callThisPerson(contactList.get(info.position).getPhone(),
+						 contactList.get(info.position).getUserName());
          		/* 
          		// custom dialog
       			final Dialog dialog = new Dialog(getActivity().getApplicationContext());
@@ -438,20 +372,8 @@ public class ContactList extends CustomFragment implements IFragmentName
 	public void onClick(View v)
 	{
 		super.onClick(v);
-		if (v.getId() == R.id.tab1)
-		{
-			getView().findViewById(R.id.tab2).setEnabled(true);
-			v.setEnabled(false);
-		}
-		else if (v.getId() == R.id.tab2)
-		{
-			getView().findViewById(R.id.tab1).setEnabled(true);
-			v.setEnabled(false);
-		}
-		else if (v.getId() == R.id.btnNewChat){
-			//startActivity(new Intent(getActivity(), NewChat.class));
-			/*
-			// get prompts.xml view
+		/*if (v.getId() == R.id.btnNewChat){
+
 			LayoutInflater layoutInflater = LayoutInflater.from(getActivity().getApplicationContext());
 
 			View promptView = layoutInflater.inflate(R.layout.prompt, null);
@@ -610,10 +532,10 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 			alertD.show();
 
-			*/
 
 
-		}
+
+		}*/
 	}
 	
 
@@ -663,7 +585,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 			contactAdapter.notifyDataSetChanged();
 
 			MainActivity act1 = (MainActivity)getActivity();
-			act1.askFriendsOnlineStatus();
+			//act1.askFriendsOnlineStatus();
 		}catch(NullPointerException e){}
 	}
 	
@@ -812,5 +734,7 @@ public class ContactList extends CustomFragment implements IFragmentName
      {
        return "ContactList";
      }
+
+	public String getFragmentContactPhone () { return ""; }
 
 }

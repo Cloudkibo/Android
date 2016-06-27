@@ -123,7 +123,7 @@ public class GroupChat extends Activity {
 
         String messageString = txt.getText().toString();
 
-        convList.add(new Conversation(messageString, new Date().toString(), true, true));
+        convList.add(new Conversation(messageString, new Date().toString(), true, true, "", ""));
         adp.notifyDataSetChanged();
 
         try {
@@ -140,7 +140,7 @@ public class GroupChat extends Activity {
 
     public void receiveMessage(String msg){
 
-        convList.add(new Conversation(msg, new Date().toString(), false, true));
+        convList.add(new Conversation(msg, new Date().toString(), false, true, "", ""));
 
         adp.notifyDataSetChanged();
 

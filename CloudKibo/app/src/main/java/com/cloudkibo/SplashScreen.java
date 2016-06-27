@@ -2,6 +2,7 @@ package com.cloudkibo;
 
 //import com.cloudkibo.R;
 import com.cloudkibo.R;
+import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.AccountGeneral;
 import com.cloudkibo.library.DisplayNameReg;
 import com.cloudkibo.ui.Invite_Friends;
@@ -34,6 +35,7 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -57,8 +59,6 @@ public class SplashScreen extends Activity
 
 	public static int APP_REQUEST_CODE = 99;
 
-	Socket socket;
-
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
@@ -74,26 +74,6 @@ public class SplashScreen extends Activity
 		setContentView(R.layout.splash);
 
 		isRunning = true;
-
-		// for debugging purpose
-		try {
-			socket = IO.socket("https://api.cloudkibo.com");
-			socket.connect();
-
-			socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-
-				@Override
-				public void call(Object... args) {
-
-					Log.w("SOCKET", "CONNECTED");
-
-				}
-
-			});
-
-		} catch (URISyntaxException e ){
-			e.printStackTrace();
-		}
 
 		startSplash();
 
@@ -155,8 +135,6 @@ public class SplashScreen extends Activity
 			if (accessToken != null) {
 				//Handle Returning User
 
-				socket.emit("logClient", "ANDROID_LOG: Facebook auth token was found on device. The user is already logged in.");
-
 				if(isDevelopment) {
 					Intent i = new Intent(this, DisplayNameReg.class);
 					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -166,6 +144,7 @@ public class SplashScreen extends Activity
 				} else {
 					Intent i = new Intent(this, MainActivity.class);
 					i.putExtra("authtoken", accessToken.getToken());
+					i.putExtra("sync", true);
 					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					startActivity(i);
 					finish();
@@ -173,7 +152,6 @@ public class SplashScreen extends Activity
 
 
 			} else {
-				socket.emit("logClient", "ANDROID_LOG: Facebook auth token was not found on device. The user is not logged in. Taking him to facebook login.");
 				onLoginPhone();
 			}
 /*

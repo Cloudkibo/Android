@@ -80,9 +80,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + UserChat.USERCHAT_FROM + " TEXT, "
                 + UserChat.USERCHAT_FROM_FULLNAME + " TEXT, "
                 + UserChat.USERCHAT_MSG + " TEXT, "
-                + UserChat.USERCHAT_UID + " TEXT, "
-                + UserChat.USERCHAT_DATE + " TEXT" + ")";
+                + UserChat.USERCHAT_DATE + " TEXT, "
+                + "status" + " TEXT, "
+                + "uniqueid" + " TEXT, "
+                + "contact_phone" + " TEXT "+ ")";
         db.execSQL(CREATE_USERCHAT_TABLE);
+
+        String CREATE_CALL_HISTORY_TABLE = "CREATE TABLE call_history ("
+                + "id INTEGER PRIMARY KEY, "
+                + "call_date DATETIME DEFAULT CURRENT_TIMESTAMP, "
+                + "type TEXT, " // values : placed, received, missed
+                + "contact_phone TEXT "+ ")";
+        db.execSQL(CREATE_CALL_HISTORY_TABLE);
     }
     
     
@@ -100,6 +109,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + User.TABLE_USER_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + Contacts.TABLE_CONTACTS);
         db.execSQL("DROP TABLE IF EXISTS " + UserChat.TABLE_USERCHAT);
+        db.execSQL("DROP TABLE IF EXISTS call_history");
 
         // Create tables again
         onCreate(db);
@@ -169,7 +179,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /////////////////////////////////////////////////////////////////////
     
     
-    public void addChat(String to, String from, String from_fullname, String msg, String date) {
+    public void addChat(String to, String from, String from_fullname, String msg, String date, String status,
+                        String uniqueid) {
+
+        String myPhone = getUserDetails().get("phone");
+        String contactPhone = "";
+        if(myPhone.equals(to))  contactPhone = from;
+        if(myPhone.equals(from))  contactPhone = to;
+
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -178,15 +195,54 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(UserChat.USERCHAT_FROM_FULLNAME, from_fullname); // FROM FULL NAME
         values.put(UserChat.USERCHAT_MSG, msg); // CHAT MESSAGE
         values.put(UserChat.USERCHAT_DATE, date); // DATE
+        values.put("status", status); // status: pending, sent, delivered, seen
+        values.put("uniqueid", uniqueid);
+        values.put("contact_phone", contactPhone); // Contact
 
         // Inserting Row
         db.insert(UserChat.TABLE_USERCHAT, null, values);
         db.close(); // Closing database connection
-    }    
-    
-    
-    
-    
+    }
+
+    public void updateChat(String status, String uniqueid) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String updateQuery = "UPDATE " + UserChat.TABLE_USERCHAT +
+                " SET status='"+ status +"' WHERE uniqueid='"+uniqueid+"'";
+
+        try {
+            db.execSQL(updateQuery);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        db.close();
+    }
+
+
+
+    /////////////////////////////////////////////////////////////////////
+    // Storing userchat details in database                            //
+    /////////////////////////////////////////////////////////////////////
+
+
+    public void addCallHistory(String type, String contact_phone) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("type", type); // values : placed, received, missed
+        values.put("contact_phone", contact_phone); // FROM
+
+        // Inserting Row
+        db.insert("call_history", null, values);
+        db.close(); // Closing database connection
+    }
+
+
+
+
     /////////////////////////////////////////////////////////////////////
     // Getting user data from database                                 //
     /////////////////////////////////////////////////////////////////////
@@ -225,7 +281,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public JSONArray getContacts() throws JSONException {
     	JSONArray contacts = new JSONArray();
-        String selectQuery = "SELECT  * FROM " + Contacts.TABLE_CONTACTS;// +" where on_cloudkibo='true'";
+        String selectQuery = "SELECT  * FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='true'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -247,6 +303,39 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         		
         		contacts.put(contact);
         		
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return contacts;
+    }
+
+    public JSONArray getContactsOnAddressBook() throws JSONException {
+        JSONArray contacts = new JSONArray();
+        String selectQuery = "SELECT  * FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='false'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                //contact.put(Contacts.CONTACT_FIRSTNAME, cursor.getString(1));
+                //contact.put(Contacts.CONTACT_LASTNAME, cursor.getString(2));
+                contact.put(Contacts.CONTACT_PHONE, cursor.getString(1));
+                contact.put("display_name", cursor.getString(2));
+                contact.put(Contacts.CONTACT_UID, cursor.getString(3));
+                contact.put(Contacts.SHARED_DETAILS, cursor.getString(4));
+                contact.put(Contacts.CONTACT_STATUS, cursor.getString(5));
+                contact.put("on_cloudkibo", cursor.getString(6));
+
+                contacts.put(contact);
+
                 cursor.moveToNext();
             }
         }
@@ -286,8 +375,10 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         		contact.put(UserChat.USERCHAT_FROM, cursor.getString(2));
         		contact.put(UserChat.USERCHAT_FROM_FULLNAME, cursor.getString(3));
         		contact.put(UserChat.USERCHAT_MSG, cursor.getString(4));
-        		contact.put(UserChat.USERCHAT_UID, cursor.getString(5));
-        		contact.put(UserChat.USERCHAT_DATE, cursor.getString(6));
+                contact.put(UserChat.USERCHAT_DATE, cursor.getString(5));
+        		contact.put("status", cursor.getString(6));
+        		contact.put("uniqueid", cursor.getString(7));
+                contact.put("contact_phone", cursor.getString(8));
         		
         		chats.put(contact);
         		
@@ -319,6 +410,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 contact.put(UserChat.USERCHAT_MSG, cursor.getString(4));
                 contact.put(UserChat.USERCHAT_UID, cursor.getString(5));
                 contact.put(UserChat.USERCHAT_DATE, cursor.getString(6));
+                contact.put("contact_phone", cursor.getString(7));
 
                 chats.put(contact);
 
@@ -331,6 +423,111 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return chats;
     }
 
+    public JSONArray getPendingChat() throws JSONException {
+        JSONArray chats = new JSONArray();
+        String selectQuery = "SELECT  * FROM " + UserChat.TABLE_USERCHAT +" WHERE status='pending'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put(UserChat.USERCHAT_TO, cursor.getString(1));
+                contact.put(UserChat.USERCHAT_FROM, cursor.getString(2));
+                contact.put(UserChat.USERCHAT_FROM_FULLNAME, cursor.getString(3));
+                contact.put(UserChat.USERCHAT_MSG, cursor.getString(4));
+                contact.put(UserChat.USERCHAT_DATE, cursor.getString(5));
+                contact.put("status", cursor.getString(6));
+                contact.put("uniqueid", cursor.getString(6));
+                contact.put("contact_phone", cursor.getString(7));
+
+                chats.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return chats;
+    }
+
+
+    public JSONArray getChatList() throws JSONException {
+        JSONArray chats = new JSONArray();
+        String selectQuery =
+                " SELECT "+ UserChat.USERCHAT_DATE +", contact_phone, display_name, " + UserChat.USERCHAT_MSG
+                +", "+ Contacts.TABLE_CONTACTS +"."+ Contacts.CONTACT_UID
+                +" FROM " + UserChat.TABLE_USERCHAT +", "+ Contacts.TABLE_CONTACTS
+                +" WHERE "+ Contacts.TABLE_CONTACTS +"."+ Contacts.CONTACT_PHONE
+                +" = "+ UserChat.TABLE_USERCHAT +".contact_phone"
+                +" GROUP BY contact_phone ORDER BY "+ UserChat.USERCHAT_DATE + " DESC";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("date", cursor.getString(0));
+                contact.put("contact_phone", cursor.getString(1));
+                contact.put("display_name", cursor.getString(2));
+                contact.put("msg", cursor.getString(3));
+                contact.put("contact_id", cursor.getString(4));
+
+                chats.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return chats;
+    }
+
+
+
+
+    public JSONArray getCallHistory() throws JSONException {
+        JSONArray chats = new JSONArray();
+
+        String selectQuery = "SELECT * FROM call_history, "+ Contacts.TABLE_CONTACTS
+                +" WHERE call_history.contact_phone = "+ Contacts.TABLE_CONTACTS +"."+ Contacts.CONTACT_PHONE
+                +" ORDER BY call_date DESC";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("call_date", cursor.getString(1));
+                contact.put("type", cursor.getString(2));
+                contact.put("contact_phone", cursor.getString(3));
+                contact.put("display_name", cursor.getString(6));
+                contact.put("contact_id", cursor.getString(7));
+
+                chats.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return chats;
+    }
 
 
 

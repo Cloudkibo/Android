@@ -565,6 +565,11 @@ public class AddRequest extends CustomFragment implements IFragmentName
      {
        return "PendingList";
      }
+
+	public String getFragmentContactPhone()
+	{
+		return "About Chat";
+	}
 	
 
 }

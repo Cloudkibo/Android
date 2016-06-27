@@ -9,8 +9,10 @@ import java.util.List;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
@@ -18,6 +20,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;
@@ -36,7 +39,9 @@ import android.content.Context;
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.R.id;
+import com.cloudkibo.database.BoundKiboSyncListener;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.database.KiboSyncService;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -51,6 +56,9 @@ import org.json.JSONObject;
  */
 public class DisplayNameReg extends Activity
 {
+
+    KiboSyncService kiboSyncService;
+    boolean kiboServiceIsBound = false;
 
     Button btnRegister;
     EditText userNameText;
@@ -92,6 +100,8 @@ public class DisplayNameReg extends Activity
                 }
             }
         });
+        Intent intentSync = new Intent(getApplicationContext(), KiboSyncService.class);
+        bindService(intentSync, kiboSyncConnection, Context.BIND_AUTO_CREATE);
     }
 
     public void registerDisplayName(){
@@ -185,7 +195,8 @@ public class DisplayNameReg extends Activity
                                             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
                                             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
                                         } else {
-                                            loadContactsFromAddressBook();
+                                            loadContactsFromAddressBook(); // todo this is temporary fix, fix it with 6.0 testing
+                                            //kiboSyncService.startSync(authtoken);
                                         }
                                     }
 
@@ -214,17 +225,20 @@ public class DisplayNameReg extends Activity
         if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 // Permission is granted
-                loadContactsFromAddressBook();
+                loadContactsFromAddressBook(); // todo this is temporary fix, fix it with 6.0 testing
+                //kiboSyncService.startSync(authtoken);
             } else {
                 TextView hintText = (TextView) findViewById(id.hintText);
                 hintText.setText("NOTE: For CloudKibo to work properly, permissions to contacts are necessary. You can give these permissions from settings of Android later. \n\n"+ hintText.getText());
                 hintText.setText(hintText.getText() + "\n"+ "Setting conversations...");
-                loadCurrentContactsFromServer();
+                //loadCurrentContactsFromServer(); // todo this is temporary fix, fix it with 6.0 testing
+                kiboSyncService.startSyncWithoutAddressBookAccess(authtoken);
             }
         }
     }
 
-    public void loadContactsFromAddressBook(){
+    // todo this is temporary fix, fix it with 6.0 testing
+    private void loadContactsFromAddressBook(){
 
         new AsyncTask<String, String, JSONObject>() {
             private ProgressDialog nDialog;
@@ -325,12 +339,15 @@ public class DisplayNameReg extends Activity
 
     }
 
-    public void loadNotFoundContacts(ArrayList<String> contactList1, ArrayList<String> contactList1Phone) {
-
-        TextView hintText = (TextView) findViewById(R.id.hintText);
-        hintText.setText(hintText.getText() + "\n"+ "Setting conversations...");
+    // todo this is temporary fix, fix it with 6.0 testing
+    private void loadNotFoundContacts(ArrayList<String> contactList1, ArrayList<String> contactList1Phone) {
 
         DatabaseHandler db = new DatabaseHandler(
+                getApplicationContext());
+
+        db.resetContactsTable();
+
+        db = new DatabaseHandler(
                 getApplicationContext());
 
         for (int i = 0; i < contactList1.size(); i++) {
@@ -342,7 +359,7 @@ public class DisplayNameReg extends Activity
                     "N/A");
         }
 
-        loadCurrentContactsFromServer();
+        kiboSyncService.startSyncWithoutAddressBookAccess(authtoken);
 
         try {
             JSONArray contacts = db.getContacts();
@@ -352,113 +369,49 @@ public class DisplayNameReg extends Activity
         }
     }
 
-    public void loadCurrentContactsFromServer(){
+    private ServiceConnection kiboSyncConnection = new ServiceConnection() {
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            KiboSyncService.KiboSyncBinder binder = (KiboSyncService.KiboSyncBinder) service;
+            kiboSyncService = binder.getService();
+            kiboServiceIsBound = true;
 
-        new AsyncTask<String, String, JSONArray>() {
+            binder.setListener(new BoundKiboSyncListener() {
 
-            @Override
-            protected JSONArray doInBackground(String... args) {
-                UserFunctions userFunction = new UserFunctions();
-                JSONArray json = userFunction.getContactsList(authtoken);
-                return json;
-            }
-
-            @Override
-            protected void onPostExecute(JSONArray jsonA) {
-                try {
-
-                    if (jsonA != null) {
-
-                        DatabaseHandler db = new DatabaseHandler(
-                                getApplicationContext());
-
-                        for (int i=0; i < jsonA.length(); i++) {
-                            JSONObject row = jsonA.getJSONObject(i);
-
-                            db.addContact("true", "null",
-                                    row.getJSONObject("contactid").getString("phone"),
-                                    row.getJSONObject("contactid").getString("display_name"),
-                                    row.getJSONObject("contactid").getString("_id"),
-                                    row.getString("detailsshared"),
-                                    row.getJSONObject("contactid").getString("status"));
-                        }
-
-                        try {
-                            JSONArray contacts = db.getContacts();
-                            contacts.toString();
-                        }catch(JSONException e){
-                            e.printStackTrace();
-                        }
-
-                        loadChatFromServer();
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+                @Override
+                public void contactsLoaded() {
+                    sendToNextScreen();
                 }
-            }
 
-        }.execute();
+                @Override
+                public void chatLoaded() {
 
-    }
 
-    public void loadChatFromServer() {
-
-        new AsyncTask<String, String, JSONArray>() {
-
-            @Override
-            protected JSONArray doInBackground(String... args) {
-                DatabaseHandler db = new DatabaseHandler(
-                        getApplicationContext());
-                UserFunctions userFunction = new UserFunctions();
-                JSONArray json = new JSONArray();
-                try {
-                    json = userFunction.getAllChatList(db.getUserDetails().get("phone"), authtoken).getJSONArray("msg");
-                } catch(JSONException e){
-                    e.printStackTrace();
                 }
-                return json;
-            }
 
-            @Override
-            protected void onPostExecute(JSONArray jsonA) {
-                try {
+                @Override
+                public void sendPendingMessageUsingSocket(String contactPhone, String msg, String uniqueid) {
 
-                    if (jsonA != null) {
-
-                        DatabaseHandler db = new DatabaseHandler(
-                                getApplicationContext());
-
-                        for (int i=0; i < jsonA.length(); i++) {
-                            JSONObject row = jsonA.getJSONObject(i);
-
-                            db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
-                                    row.getString("msg"), row.getString("date"));
-
-                        }
-
-                        try {
-                            JSONArray chat = db.getChat();
-                            chat.toString();
-                        }catch(JSONException e){
-                            e.printStackTrace();
-                        }
-
-                        sendToNextScreen();
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
 
-        }.execute();
+                @Override
+                public void sendMessageStatusUsingSocket(String contactPhone, String status, String uniqueid) {
 
-    }
+                }
+            });
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            kiboServiceIsBound = false;
+        }
+    };
 
     public void sendToNextScreen(){
+        unbindService(kiboSyncConnection);
         Intent i = new Intent(DisplayNameReg.this, MainActivity.class);
         i.putExtra("authtoken", authtoken);
+        i.putExtra("sync", false);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(i);
         finish();

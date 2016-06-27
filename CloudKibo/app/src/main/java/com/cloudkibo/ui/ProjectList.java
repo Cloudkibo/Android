@@ -175,4 +175,9 @@ public class ProjectList extends CustomFragment implements IFragmentName
      {
        return "ProjectList";
      }
+
+	public String getFragmentContactPhone()
+	{
+		return "About Chat";
+	}
 }

@@ -5,7 +5,10 @@
     <string name="app_name">CloudKibo</string>
     <string name="client_token">97da63ec347d10ac62e84a9d92ce2361</string>
     <string name="host">api.cloudkibo.com</string>
-    <string name="port">8443</string>
+    <string name="port">443</string>
+
+    <string name="server_host">192.168.8.103</string> <!-- api.cloudkibo.com -->
+    <string name="server_port">8443</string> <!-- api.cloudkibo.com -->
     
     <string name="type_msg">Type message</string>    
     

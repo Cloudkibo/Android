@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -121,6 +122,10 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		if (txt.length() == 0)
 			return;
 
+		String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+		uniqueid += (new Date().getYear()) +""+ (new Date().getMonth()) +""+ (new Date().getDay());
+		uniqueid += (new Date().getHours()) +""+ (new Date().getMinutes()) +""+ (new Date().getSeconds());
+
 		InputMethodManager imm = (InputMethodManager) getActivity()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
@@ -129,20 +134,35 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		
 		MainActivity act1 = (MainActivity)getActivity();
 		
-		act1.sendMessage(contactPhone, contactId, messageString);
+		act1.sendMessage(contactPhone, messageString, uniqueid);
 		
-		convList.add(new Conversation(messageString, new Date().toString(), true, true));
+		convList.add(new Conversation(messageString, new Date().toString(), true, true, "pending", uniqueid));
 		adp.notifyDataSetChanged();
 		
 		txt.setText(null);
 	}
 	
-	public void receiveMessage(String msg){
-		
-		convList.add(new Conversation(msg, new Date().toString(), false, true));
+	public void receiveMessage(String msg, String uniqueid, String from){
+
+		final MediaPlayer mp = MediaPlayer.create(getActivity().getApplicationContext(), R.raw.bell);
+		mp.start();
+
+		// todo see if this really needs the uniqueid and status
+		convList.add(new Conversation(msg, new Date().toString(), false, true, "seen", uniqueid));
 		
 		adp.notifyDataSetChanged();
+
+		MainActivity act1 = (MainActivity)getActivity();
+
+		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+		db.updateChat("seen", uniqueid);
+		act1.sendMessageStatusUsingSocket("seen", uniqueid, from);
 		
+	}
+
+	public void updateStatusSentMessage(String status, String uniqueid){
+		loadConversationList();
+		adp.notifyDataSetChanged();
 	}
 	
 
@@ -158,66 +178,6 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		
 		//loadChatMessagesFromServer();
 
-	}
-	
-	/**
-	 * This method loads all the chats from the server and store them on sqlite database server.
-	 */
-	
-	public void loadChatMessagesFromServer()
-	{
-		new AsyncTask<String, String, JSONArray>() {
-
-			@Override
-			protected JSONArray doInBackground(String... args) {
-				MainActivity act1 = (MainActivity)getActivity();
-				
-				UserFunctions userFunction = new UserFunctions();
-				JSONArray json = null;
-				try {
-					json = userFunction.getUserChat(act1.getUserName(), contactName, authtoken).getJSONArray("msg");
-				} catch (JSONException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				catch (NullPointerException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return json;
-			}
-
-			@Override
-			protected void onPostExecute(JSONArray jsonA) {
-				try {
-
-					if (jsonA != null) {
-
-						MainActivity act1 = (MainActivity)getActivity();
-						
-						DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-						
-						db.resetSpecificChat(act1.getUserName(), contactName);
-						
-						for (int i=0; i < jsonA.length(); i++) {
-							JSONObject row = jsonA.getJSONObject(i);
-							db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
-									row.getString("msg"), row.getString("date"));
-						}
-						
-						loadChatFromDatabase();
-						adp.notifyDataSetChanged();
-						
-						
-					}
-				} catch (JSONException e) {
-					e.printStackTrace();
-				} catch (NullPointerException e){
-					e.printStackTrace();
-				}
-			}
-            
-        }.execute();
 	}
 
 	
@@ -239,12 +199,21 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					chatList1.add(new Conversation(
 						row.getString("msg"),
 						row.getString("date"),
-						true, true));
+						true, true, row.getString("status"), row.getString("uniqueid")));
 				else
 					chatList1.add(new Conversation(
 							row.getString("msg"),
 							row.getString("date"),
-							false, true));
+							false, true, row.getString("status"), row.getString("uniqueid")));
+
+				if(row.getString("fromperson").equals(contactPhone)){
+					if(row.getString("status").equals("delivered")){
+						// what if net was closed here and seen was not shown to other party, should we send "seen" in sync
+						db = new DatabaseHandler(getActivity().getApplicationContext());
+						db.updateChat("seen", row.getString("uniqueid"));
+						act1.sendMessageStatusUsingSocket("seen", row.getString("uniqueid"), row.getString("fromperson"));
+					}
+				}
 
 			}
 			
@@ -314,7 +283,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			lbl = (TextView) v.findViewById(R.id.lblContactPhone);
 			if (c.isSuccess())
-				lbl.setText("Delivered");
+				lbl.setText(c.getStatus());
 			else
 				lbl.setText("");
 
@@ -327,4 +296,6 @@ public class GroupChat extends CustomFragment implements IFragmentName
     {
       return "GroupChat";
     }
+
+	public String getFragmentContactPhone() { return contactPhone; }
 }

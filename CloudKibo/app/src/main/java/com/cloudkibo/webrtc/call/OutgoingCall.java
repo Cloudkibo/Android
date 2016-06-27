@@ -18,6 +18,7 @@ import android.widget.Toast;
 
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomActivity;
+import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.socket.BoundServiceListener;
 import com.cloudkibo.socket.SocketService;
 import com.cloudkibo.socket.SocketService.SocketBinder;
@@ -26,6 +27,7 @@ public class OutgoingCall extends CustomActivity {
 
     String peerName;
     Boolean initiator;
+    String peerPhone;
 
     SocketService socketService;
     boolean isBound = false;
@@ -44,6 +46,11 @@ public class OutgoingCall extends CustomActivity {
         user = (HashMap) getIntent().getExtras().get("user");
         room = getIntent().getExtras().getString("room");
         peerName = getIntent().getExtras().getString("contact");
+        peerPhone = getIntent().getExtras().getString("contact_name");
+
+        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+        db.addCallHistory("placed", peerName);
 
         Intent i = new Intent(this, SocketService.class);
         i.putExtra("user", user);
@@ -140,21 +147,24 @@ public class OutgoingCall extends CustomActivity {
 
                             socketService.sendSocketMessage(msg.toString(), peerName);
 
+                            Intent i = new Intent(getApplicationContext(), com.cloudkibo.webrtc.conference.VideoCallView.class);
+                            //i.putExtra("username", user.get("phone"));
+                            //i.putExtra("_id", user.get("_id"));
+                            //i.putExtra("peer", peerName);
+                            //i.putExtra("lastmessage", "AcceptCallFromOther");
+                            user.put("username", user.get("display_name"));
+                            i.putExtra("user", user);
+                            i.putExtra("room", roomId);
+                            startActivity(i);
+
+                            finish();
+
 
 
                         } catch(JSONException e){
                             e.printStackTrace();
                         }
 
-						/*Intent i = new Intent(getApplicationContext(), VideoCallView.class);
-	  					i.putExtra("username", user.get("phone"));
-	  					i.putExtra("_id", user.get("_id"));
-	  					i.putExtra("peer", peerName);
-	  					i.putExtra("lastmessage", "AcceptCallFromOther");
-	  					i.putExtra("room", room);
-	  		            startActivity(i);
-
-                        finish();*/
                     }
 
                 }

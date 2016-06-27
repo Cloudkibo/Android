@@ -28,6 +28,8 @@ public class ChatItem
 	/** The is group. */
 	private boolean isGroup;
 
+	private String contact_id;
+
 	/**
 	 * Instantiates a new chat item.
 	 * 
@@ -47,7 +49,7 @@ public class ChatItem
 	 *            the is group
 	 */
 	public ChatItem(String name, String title, String msg, String date,
-			int icon, boolean online, boolean isGroup)
+			int icon, boolean online, boolean isGroup, String contact_id)
 	{
 		this.name = name;
 		this.date = date;
@@ -56,6 +58,7 @@ public class ChatItem
 		this.msg = msg;
 		this.online = online;
 		this.title = title;
+		this.contact_id = contact_id;
 	}
 
 	/**
@@ -204,5 +207,9 @@ public class ChatItem
 	{
 		this.isGroup = isGroup;
 	}
+
+	public String getContactId () { return contact_id; }
+
+	public void setContactId (String contact_id) { this.contact_id = contact_id; }
 
 }

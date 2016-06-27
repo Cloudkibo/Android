@@ -35,4 +35,9 @@ public class AboutChat extends CustomFragment implements IFragmentName
        return "About Chat";
      }
 
+	public String getFragmentContactPhone()
+	{
+		return "About Chat";
+	}
+
 }

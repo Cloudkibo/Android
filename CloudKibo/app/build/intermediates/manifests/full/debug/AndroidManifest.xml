@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cloudkibo"
     android:hardwareAccelerated="true"
-    android:versionCode="11"
+    android:versionCode="22"
     android:versionName="1.1" >
 
     <uses-sdk
@@ -70,12 +70,6 @@
                     android:host="@string/host"
                     android:scheme="http" />
             </intent-filter>
-        </activity>
-        <activity
-            android:name="com.cloudkibo.webrtc.call.VideoCallView"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="fullUser"
-            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" >
         </activity>
         <activity
             android:name="com.cloudkibo.webrtc.conference.VideoCallView"
@@ -213,6 +207,11 @@
             android:exported="false" />
         <service
             android:name="com.cloudkibo.webrtc.conference.FileTransferService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+        <service
+            android:name="com.cloudkibo.database.KiboSyncService"
             android:enabled="true"
             android:exported="true" >
         </service>
