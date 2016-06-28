@@ -5,7 +5,8 @@
 	<dimen name="pad_15dp">15dp</dimen>
 	<dimen name="pad_20dp">20dp</dimen>
 	<dimen name="pad_30dp">30dp</dimen>
-	<dimen name="pad_chat_item">45dp</dimen>
+	<dimen name="pad_40dp">40dp</dimen>
+	<dimen name="pad_chat_item">25dp</dimen>
 	<dimen name="pad_chat_item1">10dp</dimen>
 	
 	<dimen name="txt_7sp">7sp</dimen>

@@ -2613,6 +2613,7 @@ containing a value of this type.
         public static final int pad_15dp=0x7f0a0006;
         public static final int pad_20dp=0x7f0a0007;
         public static final int pad_30dp=0x7f0a0008;
+        public static final int pad_40dp=0x7f0a009a;
         public static final int pad_5dp=0x7f0a0009;
         public static final int pad_chat_item=0x7f0a000a;
         public static final int pad_chat_item1=0x7f0a000b;

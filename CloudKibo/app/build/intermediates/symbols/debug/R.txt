@@ -582,6 +582,7 @@ int dimen pad_10dp 0x7f0a0005
 int dimen pad_15dp 0x7f0a0006
 int dimen pad_20dp 0x7f0a0007
 int dimen pad_30dp 0x7f0a0008
+int dimen pad_40dp 0x7f0a009a
 int dimen pad_5dp 0x7f0a0009
 int dimen pad_chat_item 0x7f0a000a
 int dimen pad_chat_item1 0x7f0a000b

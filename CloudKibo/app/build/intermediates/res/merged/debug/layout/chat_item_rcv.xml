@@ -9,8 +9,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/pad_15dp"
-        android:layout_marginRight="@dimen/pad_15dp" >
+        android:layout_marginLeft="@dimen/pad_5dp"
+        android:layout_marginRight="@dimen/pad_40dp" >
 
         <LinearLayout
             android:id="@+id/v1"
@@ -20,7 +20,8 @@
             android:background="@drawable/chat_bubble_gray"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/pad_chat_item" 
+            android:paddingLeft="@dimen/pad_chat_item"
+            android:paddingRight="@dimen/pad_15dp"
             android:paddingTop="@dimen/pad_5dp"
             android:paddingBottom="@dimen/pad_5dp">
 
