@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-ms/values-ms.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:Andorra</item>
         <item>971:AE:United Arab Emirates</item>
@@ -256,13 +254,13 @@
     <string name="com_accountkit_button_submit">Hantar</string>
     <string name="com_accountkit_check_email">Buka e-mel anda</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Ketik %1$s untuk menerima <![CDATA[<a href="%2$s">Terma</a>]]>, <![CDATA[<a href="%3$s">Dasar Data</a>]]> dan <![CDATA[<a href="%4$s">penggunaan kuki</a>]]>Facebook.
+        Ketik %1$s untuk menerima &lt;a href="%2$s">Terma&lt;/a>, &lt;a href="%3$s">Dasar Data&lt;/a> dan &lt;a href="%4$s">penggunaan kuki&lt;/a>Facebook.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Ketik %1$s untuk menerima <![CDATA[<a href="%2$s">Terma</a>]]>, <![CDATA[<a href="%3$s">Dasar Data</a>]]>, <![CDATA[<a href="%4$s">penggunaan  kuki</a>]]> dan <![CDATA[<a href="%5$s">Dasar Privasi</a>]]> Facebook untuk %6$s.
+        Ketik %1$s untuk menerima &lt;a href="%2$s">Terma&lt;/a>, &lt;a href="%3$s">Dasar Data&lt;/a>, &lt;a href="%4$s">penggunaan  kuki&lt;/a> dan &lt;a href="%5$s">Dasar Privasi&lt;/a> Facebook untuk %6$s.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Ketik %1$s untuk menerima <![CDATA[<a href="%2$s">Terma</a>]]>, <![CDATA[<a href="%3$s">Dasar Data</a>]]>, <![CDATA[<a href="%4$s">penggunaan  kuki</a>]]> dan <![CDATA[<a href="%5$s">Dasar Privasi</a>]]> serta <![CDATA[<a href="%6$s">Terma Perkhidmatan</a>]]> Facebook untuk %7$s.
+        Ketik %1$s untuk menerima &lt;a href="%2$s">Terma&lt;/a>, &lt;a href="%3$s">Dasar Data&lt;/a>, &lt;a href="%4$s">penggunaan  kuki&lt;/a> dan &lt;a href="%5$s">Dasar Privasi&lt;/a> serta &lt;a href="%6$s">Terma Perkhidmatan&lt;/a> Facebook untuk %7$s.
     </string>
     <string name="com_accountkit_confirmation_code_text">Hantar Kod Baharu</string>
     <string name="com_accountkit_confirmation_code_title">Masukkan kod anda</string>
@@ -270,7 +268,7 @@
     <string name="com_accountkit_email_loading_title">Menghantar e-mel…</string>
     <string name="com_accountkit_email_login_retry_title">Sahkan e-mel anda</string>
     <string name="com_accountkit_email_login_text">
-        Ketik %1$s untuk mendapatkan e-mel pengesahan daripada Kit Akaun yang dikuasakan oleh Facebook. %2$s menggunakan ini untuk membantu anda mendaftar masuk, tetapi anda tidak memerlukan akaun Facebook. <![CDATA[<a href="%3$s">Ketahui lebih lanjut.</a>]]>
+        Ketik %1$s untuk mendapatkan e-mel pengesahan daripada Kit Akaun yang dikuasakan oleh Facebook. %2$s menggunakan ini untuk membantu anda mendaftar masuk, tetapi anda tidak memerlukan akaun Facebook. &lt;a href="%3$s">Ketahui lebih lanjut.&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">Masukkan alamat e-mel anda</string>
     <string name="com_accountkit_email_not_received">Hantar Semula E-mel</string>
@@ -280,7 +278,7 @@
     <string name="com_accountkit_phone_loading_title">Menghantar kod anda…</string>
     <string name="com_accountkit_phone_login_retry_title">Sahkan nombor telefon anda</string>
     <string name="com_accountkit_phone_login_text">
-        Ketik %1$s untuk mendapatkan pengesahan SMS daripada Kit Akaun yang dikuasakan oleh Facebook. %2$s menggunakan ini untuk membantu anda mendaftar masuk, tetapi anda tidak memerlukan akaun Facebook. Kadar mesej dan data boleh dikenakan. <![CDATA[<a href="%3$s">Ketahui lebih lanjut.</a>]]>
+        Ketik %1$s untuk mendapatkan pengesahan SMS daripada Kit Akaun yang dikuasakan oleh Facebook. %2$s menggunakan ini untuk membantu anda mendaftar masuk, tetapi anda tidak memerlukan akaun Facebook. Kadar mesej dan data boleh dikenakan. &lt;a href="%3$s">Ketahui lebih lanjut.&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">Masukkan nombor telefon anda</string>
     <string name="com_accountkit_resend_email_text">Hantar E-mel Baharu</string>

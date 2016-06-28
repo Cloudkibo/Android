@@ -5,4 +5,3 @@
         			   android:label="@string/app_name"
                        android:smallIcon="@drawable/icon"
                        android:accountPreferences="@xml/prefs"/>
-<!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/xml/authenticator.xml -->

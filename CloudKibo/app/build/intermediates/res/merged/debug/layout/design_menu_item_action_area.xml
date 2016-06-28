@@ -17,4 +17,3 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:layout_width="wrap_content"
              android:layout_height="match_parent"/>
-<!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/res/layout/design_menu_item_action_area.xml -->

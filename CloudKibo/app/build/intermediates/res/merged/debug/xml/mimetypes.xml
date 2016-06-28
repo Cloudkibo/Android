@@ -86,4 +86,4 @@
 	<!-- Android specific -->
 	<type extension=".apk" mimetype="application/vnd.android.package-archive" />
 	
-</MimeTypes><!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/xml/mimetypes.xml -->
+</MimeTypes>

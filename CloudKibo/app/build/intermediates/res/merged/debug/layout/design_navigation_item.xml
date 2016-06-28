@@ -22,4 +22,3 @@
         android:paddingRight="?attr/listPreferredItemPaddingRight"
         android:foreground="?attr/selectableItemBackground"
         android:focusable="true"/>
-<!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/res/layout/design_navigation_item.xml -->

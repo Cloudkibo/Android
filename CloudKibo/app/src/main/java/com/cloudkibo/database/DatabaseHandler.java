@@ -92,6 +92,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "type TEXT, " // values : placed, received, missed
                 + "contact_phone TEXT "+ ")";
         db.execSQL(CREATE_CALL_HISTORY_TABLE);
+        
+
     }
     
     

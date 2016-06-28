@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-hr/values-hr.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:Andora</item>
         <item>971:AE:Ujedinjeni Arapski Emirati</item>
@@ -239,8 +237,6 @@
         <item>260:ZM:Zambija</item>
         <item>263:ZW:Zimbabve</item>
     </string-array>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-hr/values-hr.xml -->
-    <eat-comment/>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Idi na početnu"</string>
     <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
     <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
@@ -260,8 +256,6 @@
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Dijeljenje sa"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Dijeljenje sa: %s"</string>
     <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Sažmi"</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-hr/values-hr.xml -->
-    <eat-comment/>
     <string name="com_accountkit_button_begin">Počni</string>
     <string name="com_accountkit_button_cancel">Odustani</string>
     <string name="com_accountkit_button_confirm">Potvrdi</string>
@@ -279,13 +273,13 @@
     <string name="com_accountkit_button_submit">Pošalji</string>
     <string name="com_accountkit_check_email">Otvorite e-poštu</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Dodirnite %1$s da biste prihvatili Facebookove <![CDATA[<a href="%2$s">uvjete</a>]]>, <![CDATA[<a href="%3$s">pravilnik o podacima</a>]]> i <![CDATA[<a href="%4$s">korištenje kolačića</a>]]>.
+        Dodirnite %1$s da biste prihvatili Facebookove &lt;a href="%2$s">uvjete&lt;/a>, &lt;a href="%3$s">pravilnik o podacima&lt;/a> i &lt;a href="%4$s">korištenje kolačića&lt;/a>.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Dodirnite %1$s da biste prihvatili Facebookove <![CDATA[<a href="%2$s">uvjete</a>]]>, <![CDATA[<a href="%3$s">pravilnik o podacima</a>]]>, <![CDATA[<a href="%4$s">korištenje kolačića</a>]]> i <![CDATA[<a href="%5$s">pravila zaštite podataka</a>]]> za %6$s.
+        Dodirnite %1$s da biste prihvatili Facebookove &lt;a href="%2$s">uvjete&lt;/a>, &lt;a href="%3$s">pravilnik o podacima&lt;/a>, &lt;a href="%4$s">korištenje kolačića&lt;/a> i &lt;a href="%5$s">pravila zaštite podataka&lt;/a> za %6$s.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Dodirnite %1$s da biste prihvatili Facebookove <![CDATA[<a href="%2$s">uvjete</a>]]>, <![CDATA[<a href="%3$s">pravilnik o podacima</a>]]>, <![CDATA[<a href="%4$s">korištenje kolačića</a>]]> i <![CDATA[<a href="%5$s">pravila zaštite podataka</a>]]> te <![CDATA[<a href="%6$s">uvjete pružanja usluge</a>]]> za %7$s.
+        Dodirnite %1$s da biste prihvatili Facebookove &lt;a href="%2$s">uvjete&lt;/a>, &lt;a href="%3$s">pravilnik o podacima&lt;/a>, &lt;a href="%4$s">korištenje kolačića&lt;/a> i &lt;a href="%5$s">pravila zaštite podataka&lt;/a> te &lt;a href="%6$s">uvjete pružanja usluge&lt;/a> za %7$s.
     </string>
     <string name="com_accountkit_confirmation_code_text">Pošalji novi kod</string>
     <string name="com_accountkit_confirmation_code_title">Unesite kod</string>
@@ -293,7 +287,7 @@
     <string name="com_accountkit_email_loading_title">Slanje e-pošte…</string>
     <string name="com_accountkit_email_login_retry_title">Potvrdite adresu e-pošte</string>
     <string name="com_accountkit_email_login_text">
-        Dodirnite %1$s da biste od Facebookova kompleta za račune primili poruku e-pošte s potvrdom. %2$s vam time pojednostavnjuje prijavu, ali nije vam potreban račun na Facebooku. <![CDATA[<a href="%3$s">Saznajte više.</a>]]>
+        Dodirnite %1$s da biste od Facebookova kompleta za račune primili poruku e-pošte s potvrdom. %2$s vam time pojednostavnjuje prijavu, ali nije vam potreban račun na Facebooku. &lt;a href="%3$s">Saznajte više.&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">Unesite adresu e-pošte</string>
     <string name="com_accountkit_email_not_received">Ponovno pošalji e-poštu</string>
@@ -303,7 +297,7 @@
     <string name="com_accountkit_phone_loading_title">Slanje koda…</string>
     <string name="com_accountkit_phone_login_retry_title">Potvrdite telefonski broj</string>
     <string name="com_accountkit_phone_login_text">
-        Dodirnite %1$s da biste od Facebookova kompleta za račune primili SMS poruku s potvrdom. %2$s vam time pojednostavnjuje prijavu, ali nije vam potreban račun na Facebooku. Naplaćuju se naknade za poruke i podatkovni promet. <![CDATA[<a href="%3$s">Saznajte više.</a>]]>
+        Dodirnite %1$s da biste od Facebookova kompleta za račune primili SMS poruku s potvrdom. %2$s vam time pojednostavnjuje prijavu, ali nije vam potreban račun na Facebooku. Naplaćuju se naknade za poruke i podatkovni promet. &lt;a href="%3$s">Saznajte više.&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">Unesite telefonski broj</string>
     <string name="com_accountkit_resend_email_text">Pošalji novu poruku e-pošte</string>
@@ -316,7 +310,5 @@
         Nismo mogli potvrditi vaš kod. Unesite ga ponovno:
     </string>
     <string name="com_accountkit_verify_title">Potvrđivanje koda…</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-hr/values-hr.xml -->
-    <eat-comment/>
     <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

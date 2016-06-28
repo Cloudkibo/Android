@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-ko/values-ko.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:안도라</item>
         <item>971:AE:아랍에미리트</item>
@@ -239,8 +237,6 @@
         <item>260:ZM:잠비아</item>
         <item>263:ZW:짐바브웨</item>
     </string-array>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-ko/values-ko.xml -->
-    <eat-comment/>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"홈 탐색"</string>
     <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
     <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
@@ -260,8 +256,6 @@
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"공유 대상"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"%s와(과) 공유"</string>
     <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"접기"</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-ko/values-ko.xml -->
-    <eat-comment/>
     <string name="com_accountkit_button_begin">시작</string>
     <string name="com_accountkit_button_cancel">취소</string>
     <string name="com_accountkit_button_confirm">확인</string>
@@ -279,13 +273,13 @@
     <string name="com_accountkit_button_submit">제출</string>
     <string name="com_accountkit_check_email">이메일 열기</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        %1$s 버튼을 눌러 Facebook의 <![CDATA[<a href="%2$s">약관</a>]]>, <![CDATA[<a href="%3$s">데이터 정책</a>]]>, <![CDATA[<a href="%4$s">쿠키 사용</a>]]>에 동의합니다.
+        %1$s 버튼을 눌러 Facebook의 &lt;a href="%2$s">약관&lt;/a>, &lt;a href="%3$s">데이터 정책&lt;/a>, &lt;a href="%4$s">쿠키 사용&lt;/a>에 동의합니다.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        %1$s 버튼을 눌러 Facebook의 <![CDATA[<a href="%2$s">약관</a>]]>, <![CDATA[<a href="%3$s">데이터 정책</a>]]>, <![CDATA[<a href="%4$s">쿠키 사용</a>]]> 및 %6$s의 <![CDATA[<a href="%5$s">개인정보취급방침</a>]]>에 동의합니다.
+        %1$s 버튼을 눌러 Facebook의 &lt;a href="%2$s">약관&lt;/a>, &lt;a href="%3$s">데이터 정책&lt;/a>, &lt;a href="%4$s">쿠키 사용&lt;/a> 및 %6$s의 &lt;a href="%5$s">개인정보취급방침&lt;/a>에 동의합니다.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        %1$s 버튼을 눌러 Facebook의 <![CDATA[<a href="%2$s">약관</a>]]>, <![CDATA[<a href="%3$s">데이터 정책</a>]]>, <![CDATA[<a href="%4$s">쿠키 사용</a>]]> 및 %7$s의 <![CDATA[<a href="%5$s">개인정보취급방침</a>]]>, <![CDATA[<a href="%6$s">서비스 약관</a>]]>에 동의합니다.
+        %1$s 버튼을 눌러 Facebook의 &lt;a href="%2$s">약관&lt;/a>, &lt;a href="%3$s">데이터 정책&lt;/a>, &lt;a href="%4$s">쿠키 사용&lt;/a> 및 %7$s의 &lt;a href="%5$s">개인정보취급방침&lt;/a>, &lt;a href="%6$s">서비스 약관&lt;/a>에 동의합니다.
     </string>
     <string name="com_accountkit_confirmation_code_text">코드 재전송</string>
     <string name="com_accountkit_confirmation_code_title">코드 입력</string>
@@ -293,7 +287,7 @@
     <string name="com_accountkit_email_loading_title">이메일 보내는 중…</string>
     <string name="com_accountkit_email_login_retry_title">이메일을 확인하세요</string>
     <string name="com_accountkit_email_login_text">
-        %1$s 버튼을 눌러 Facebook Account Kit에서 보내는 확인 이메일을 받으세요. %2$s 앱에서 이 기능을 사용하면 Facebook 계정 없이도 앱에 로그인할 수 있습니다. <![CDATA[<a href="%3$s">더 알아보기.</a>]]>
+        %1$s 버튼을 눌러 Facebook Account Kit에서 보내는 확인 이메일을 받으세요. %2$s 앱에서 이 기능을 사용하면 Facebook 계정 없이도 앱에 로그인할 수 있습니다. &lt;a href="%3$s">더 알아보기.&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">이메일 주소 입력</string>
     <string name="com_accountkit_email_not_received">이메일 다시 보내기</string>
@@ -303,7 +297,7 @@
     <string name="com_accountkit_phone_loading_title">코드를 전송하는 중…</string>
     <string name="com_accountkit_phone_login_retry_title">휴대폰 번호 확인</string>
     <string name="com_accountkit_phone_login_text">
-        %1$s 버튼을 눌러 Facebook Account Kit에서 보내는 확인 이메일을 받으세요. %2$s 앱에서 이 기능을 사용하면 Facebook 계정 없이도 앱에 로그인할 수 있습니다. 메시지 및 데이터 요금이 부과될 수 있습니다. <![CDATA[<a href="%3$s">더 알아보기.</a>]]>
+        %1$s 버튼을 눌러 Facebook Account Kit에서 보내는 확인 이메일을 받으세요. %2$s 앱에서 이 기능을 사용하면 Facebook 계정 없이도 앱에 로그인할 수 있습니다. 메시지 및 데이터 요금이 부과될 수 있습니다. &lt;a href="%3$s">더 알아보기.&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">휴대폰 번호 입력</string>
     <string name="com_accountkit_resend_email_text">새 이메일 보내기</string>
@@ -316,7 +310,5 @@
         코드를 확인할 수 없습니다.\n다시 시도:
     </string>
     <string name="com_accountkit_verify_title">코드를 인증하는 중…</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-ko/values-ko.xml -->
-    <eat-comment/>
     <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

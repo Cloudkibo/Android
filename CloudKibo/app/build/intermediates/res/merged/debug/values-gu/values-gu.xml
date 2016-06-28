@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-gu/values-gu.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:ઍન્ડોરા</item>
         <item>971:AE:સંયુક્ત આરબ અમીરાત</item>
@@ -256,13 +254,13 @@
     <string name="com_accountkit_button_submit">સબમિટ કરો</string>
     <string name="com_accountkit_check_email">તમારી ઈમેઇલ ખોલો</string>
     <string name="com_accountkit_confirmation_code_agreement">
-     Facebook ની <![CDATA[<a href="%2$s">શરતો</a>]]>, <![CDATA[<a href="%3$s">ડેટા નીતિ</a>]]> અને <![CDATA[<a href="%4$s">કુકીનો ઉપયોગ</a>]]> સ્વીકારવા માટે %1$s ટૅપ કરો.
+     Facebook ની &lt;a href="%2$s">શરતો&lt;/a>, &lt;a href="%3$s">ડેટા નીતિ&lt;/a> અને &lt;a href="%4$s">કુકીનો ઉપયોગ&lt;/a> સ્વીકારવા માટે %1$s ટૅપ કરો.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Facebook ની <![CDATA[<a href="%2$s">શરતો</a>]]>, <![CDATA[<a href="%3$s">ડેટા નીતિ</a>]]>, <![CDATA[<a href="%4$s">કુકીનો ઉપયોગ</a>]]> અને %6$s ની <![CDATA[<a href="%5$s">ગોપનીયતા નીતિ</a>]]> સ્વીકારવા માટે %1$s ટૅપ કરો.
+        Facebook ની &lt;a href="%2$s">શરતો&lt;/a>, &lt;a href="%3$s">ડેટા નીતિ&lt;/a>, &lt;a href="%4$s">કુકીનો ઉપયોગ&lt;/a> અને %6$s ની &lt;a href="%5$s">ગોપનીયતા નીતિ&lt;/a> સ્વીકારવા માટે %1$s ટૅપ કરો.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Facebook ની <![CDATA[<a href="%2$s">શરતો</a>]]>, <![CDATA[<a href="%3$s">ડેટા નીતિ</a>]]>, <![CDATA[<a href="%4$s">કુકીનો ઉપયોગ</a>]]> અને %7$s ની <![CDATA[<a href="%5$s">ગોપનીયતા નીતિ</a>]]> અને  <![CDATA[<a href="%6$s">સેવાની શરતો</a>]]> સ્વીકારવા માટે %1$s ટૅપ કરો.
+        Facebook ની &lt;a href="%2$s">શરતો&lt;/a>, &lt;a href="%3$s">ડેટા નીતિ&lt;/a>, &lt;a href="%4$s">કુકીનો ઉપયોગ&lt;/a> અને %7$s ની &lt;a href="%5$s">ગોપનીયતા નીતિ&lt;/a> અને  &lt;a href="%6$s">સેવાની શરતો&lt;/a> સ્વીકારવા માટે %1$s ટૅપ કરો.
     </string>
     <string name="com_accountkit_confirmation_code_text">નવો કોડ મોકલો</string>
     <string name="com_accountkit_confirmation_code_title">તમારો કોડ દાખલ કરો</string>
@@ -270,7 +268,7 @@
     <string name="com_accountkit_email_loading_title">ઇમેઇલ મોકલી રહ્યાં છે…</string>
     <string name="com_accountkit_email_login_retry_title">તમારી ઈમેઇલની પુષ્ટિ કરો</string>
     <string name="com_accountkit_email_login_text">
-        Facebook ની Account Kit માંથી પુષ્ટિકરણ ઇમેઇલ મેળવવા માટે %1$s ટૅપ કરો. %2$s એ આનો ઉપયોગ તમને સાઇન ઇન કરવામાં મદદ માટે કરે છે, પરંતુ તમને ફેસબુક એકાઉન્ટની જરૂર પડતી નથી. <![CDATA[<a href="%3$s">વધુ જાણો</a>.]]>
+        Facebook ની Account Kit માંથી પુષ્ટિકરણ ઇમેઇલ મેળવવા માટે %1$s ટૅપ કરો. %2$s એ આનો ઉપયોગ તમને સાઇન ઇન કરવામાં મદદ માટે કરે છે, પરંતુ તમને ફેસબુક એકાઉન્ટની જરૂર પડતી નથી. &lt;a href="%3$s">વધુ જાણો&lt;/a>.
     </string>
     <string name="com_accountkit_email_login_title">તમારું ઇમેઇલ સરનામું દાખલ કરો</string>
     <string name="com_accountkit_email_not_received">ઇમેઇલ ફરીથી મોકલો</string>
@@ -280,7 +278,7 @@
     <string name="com_accountkit_phone_loading_title">તમારો કોડ મોકલી રહ્યાં છીએ…</string>
     <string name="com_accountkit_phone_login_retry_title">તમારા ફોન નંબરની પુષ્ટિ કરો</string>
     <string name="com_accountkit_phone_login_text">
-        Facebook દ્વારા સંચાલિત Account Kit માંથી SMS પુષ્ટિકરણ મેળવવા માટે %1$s ટૅપ કરો. %2$s એ આનો ઉપયોગ તમને સાઇન ઇન કરવામાં મદદ માટે કરે છે, પરંતુ તમને ફેસબુક એકાઉન્ટની જરૂર પડતી નથી. સંદેશ અને ડેટા દર લાગુ થઈ શકે છે. <![CDATA[<a href="%3$s">વધુ જાણો</a>.]]>
+        Facebook દ્વારા સંચાલિત Account Kit માંથી SMS પુષ્ટિકરણ મેળવવા માટે %1$s ટૅપ કરો. %2$s એ આનો ઉપયોગ તમને સાઇન ઇન કરવામાં મદદ માટે કરે છે, પરંતુ તમને ફેસબુક એકાઉન્ટની જરૂર પડતી નથી. સંદેશ અને ડેટા દર લાગુ થઈ શકે છે. &lt;a href="%3$s">વધુ જાણો&lt;/a>.
     </string>
     <string name="com_accountkit_phone_login_title">તમારો ફોન નંબર દાખલ કરો</string>
     <string name="com_accountkit_resend_email_text">નવી ઇમેઇલ મોકલો</string>

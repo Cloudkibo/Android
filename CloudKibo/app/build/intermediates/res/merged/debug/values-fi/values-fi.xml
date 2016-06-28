@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-fi/values-fi.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:Andorra</item>
         <item>971:AE:Yhdistyneet arabiemiirikunnat</item>
@@ -239,8 +237,6 @@
         <item>260:ZM:Sambia</item>
         <item>263:ZW:Zimbabwe</item>
     </string-array>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-fi/values-fi.xml -->
-    <eat-comment/>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Siirry etusivulle"</string>
     <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
     <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
@@ -260,8 +256,6 @@
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Jakaminen:"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Jakaminen: %s"</string>
     <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Kutista"</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-fi/values-fi.xml -->
-    <eat-comment/>
     <string name="com_accountkit_button_begin">Aloita</string>
     <string name="com_accountkit_button_cancel">Peruuta</string>
     <string name="com_accountkit_button_confirm">Vahvista</string>
@@ -279,13 +273,13 @@
     <string name="com_accountkit_button_submit">Lähetä</string>
     <string name="com_accountkit_check_email">Avaa sähköpostisi</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Hyväksy Facebookin <![CDATA[<a href="%2$s">käyttöehdot</a>]]>, <![CDATA[<a href="%3$s">tietokäytäntö</a>]]> ja <![CDATA[<a href="%4$s">evästeiden käyttöä koskeva käytäntö</a>]]> valitsemalla %1$s.
+        Hyväksy Facebookin &lt;a href="%2$s">käyttöehdot&lt;/a>, &lt;a href="%3$s">tietokäytäntö&lt;/a> ja &lt;a href="%4$s">evästeiden käyttöä koskeva käytäntö&lt;/a> valitsemalla %1$s.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Hyväksy Facebookin <![CDATA[<a href="%2$s">käyttöehdot</a>]]>, <![CDATA[<a href="%3$s">tietokäytäntö</a>]]> ja <![CDATA[<a href="%4$s">evästeiden käyttöä koskeva käytäntö</a>]]> ja sovelluksen %6$s <![CDATA[<a href="%5$s">yksityisyyskäytäntö</a>]]> valitsemalla %1$s.
+        Hyväksy Facebookin &lt;a href="%2$s">käyttöehdot&lt;/a>, &lt;a href="%3$s">tietokäytäntö&lt;/a> ja &lt;a href="%4$s">evästeiden käyttöä koskeva käytäntö&lt;/a> ja sovelluksen %6$s &lt;a href="%5$s">yksityisyyskäytäntö&lt;/a> valitsemalla %1$s.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Hyväksy Facebookin <![CDATA[<a href="%2$s">käyttöehdot</a>]]>, <![CDATA[<a href="%3$s">tietokäytäntö</a>]]> ja <![CDATA[<a href="%4$s">evästeiden käyttöä koskeva käytäntö</a>]]> ja sovelluksen %7$s <![CDATA[<a href="%5$s">yksityisyyskäytäntö</a>]]> ja <![CDATA[<a href="%6$s">käyttöehdot</a>]]> valitsemalla %1$s.
+        Hyväksy Facebookin &lt;a href="%2$s">käyttöehdot&lt;/a>, &lt;a href="%3$s">tietokäytäntö&lt;/a> ja &lt;a href="%4$s">evästeiden käyttöä koskeva käytäntö&lt;/a> ja sovelluksen %7$s &lt;a href="%5$s">yksityisyyskäytäntö&lt;/a> ja &lt;a href="%6$s">käyttöehdot&lt;/a> valitsemalla %1$s.
     </string>
     <string name="com_accountkit_confirmation_code_text">Lähetä koodi uudelleen</string>
     <string name="com_accountkit_confirmation_code_title">Anna koodi</string>
@@ -293,7 +287,7 @@
     <string name="com_accountkit_email_loading_title">Lähetetään sähköpostiviestiä…</string>
     <string name="com_accountkit_email_login_retry_title">Vahvista sähköpostisi</string>
     <string name="com_accountkit_email_login_text">
-        Napauta %1$s, niin saat vahvistuksen Account Kit by Facebookilta sähköpostitse. %2$s käyttää tätä auttaessaan sinua kirjautumaan sisään, mutta et tarvitse Facebook-tiliä. <![CDATA[<a href="%3$s">Lue lisää.</a>]]>
+        Napauta %1$s, niin saat vahvistuksen Account Kit by Facebookilta sähköpostitse. %2$s käyttää tätä auttaessaan sinua kirjautumaan sisään, mutta et tarvitse Facebook-tiliä. &lt;a href="%3$s">Lue lisää.&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">Anna sähköpostiosoitteesi</string>
     <string name="com_accountkit_email_not_received">Lähetä sähköpostiviesti uudelleen</string>
@@ -303,7 +297,7 @@
     <string name="com_accountkit_phone_loading_title">Lähetetään koodiasi…</string>
     <string name="com_accountkit_phone_login_retry_title">Vahvista puhelinnumerosi</string>
     <string name="com_accountkit_phone_login_text">
-        Napauta %1$s, niin saat vahvistuksen Account Kit by Facebookilta tekstiviestitse. %2$s käyttää tätä auttaessaan sinua kirjautumaan sisään, mutta et tarvitse Facebook-tiliä. Viesteistä ja tiedonsiirrosta saatetaan veloittaa. <![CDATA[<a href="%3$s">Lue lisää.</a>]]>
+        Napauta %1$s, niin saat vahvistuksen Account Kit by Facebookilta tekstiviestitse. %2$s käyttää tätä auttaessaan sinua kirjautumaan sisään, mutta et tarvitse Facebook-tiliä. Viesteistä ja tiedonsiirrosta saatetaan veloittaa. &lt;a href="%3$s">Lue lisää.&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">Anna puhelinnumerosi</string>
     <string name="com_accountkit_resend_email_text">Lähetä uusi sähköposti</string>
@@ -316,7 +310,5 @@
         Koodin vahvistaminen epäonnistui. Yritä uudelleen:
     </string>
     <string name="com_accountkit_verify_title">Vahvistetaan koodiasi…</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-fi/values-fi.xml -->
-    <eat-comment/>
     <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

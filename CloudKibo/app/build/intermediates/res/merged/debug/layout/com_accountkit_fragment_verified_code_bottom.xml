@@ -31,4 +31,4 @@
         style="@style/AccountKit.TitleText"
         />
 </com.facebook.accountkit.ui.ConstrainedLinearLayout>
-<!-- From: file:/Users/swiese/fbandroid-sdk/accountkit/accountkitsdk/src/main/res/layout/com_accountkit_fragment_verified_code_bottom.xml --><!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/layout/com_accountkit_fragment_verified_code_bottom.xml -->
+<!-- From: file:/Users/swiese/fbandroid-sdk/accountkit/accountkitsdk/src/main/res/layout/com_accountkit_fragment_verified_code_bottom.xml -->

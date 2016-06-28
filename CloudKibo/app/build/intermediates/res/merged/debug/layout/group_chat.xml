@@ -40,4 +40,4 @@
         android:layout_height="wrap_content"
         layout="@layout/compose_view" />
 
-</LinearLayout><!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/layout/group_chat.xml -->
+</LinearLayout>

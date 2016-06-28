@@ -31,4 +31,3 @@
                  android:drawableStart="?android:attr/listChoiceIndicatorSingle"
                  android:drawablePadding="20dp"
                  android:ellipsize="marquee" />
-<!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/layout/select_dialog_singlechoice_material.xml -->

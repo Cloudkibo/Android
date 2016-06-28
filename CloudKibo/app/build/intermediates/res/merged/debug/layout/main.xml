@@ -66,4 +66,4 @@
         android:layout_toEndOf="@+id/startChat"
         android:layout_marginStart="38dp" />
 
-</RelativeLayout><!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/layout/main.xml -->
+</RelativeLayout>

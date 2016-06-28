@@ -24,4 +24,4 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/com_accountkit_vertical_spacer_large_height"
     />
-<!-- From: file:/Users/swiese/fbandroid-sdk/accountkit/accountkitsdk/src/main/res/layout/com_accountkit_fragment_phone_login_center.xml --><!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/layout/com_accountkit_fragment_phone_login_center.xml -->
+<!-- From: file:/Users/swiese/fbandroid-sdk/accountkit/accountkitsdk/src/main/res/layout/com_accountkit_fragment_phone_login_center.xml -->

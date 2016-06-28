@@ -26,4 +26,4 @@
     <size android:width="2px" />
     <solid android:color="?attr/com_accountkit_input_text_color" />
 </shape>
-<!-- From: file:/Users/swiese/fbandroid-sdk/accountkit/accountkitsdk/src/main/res/drawable-v21/com_accountkit_input_cursor.xml --><!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/drawable-v21/com_accountkit_input_cursor.xml -->
+<!-- From: file:/Users/swiese/fbandroid-sdk/accountkit/accountkitsdk/src/main/res/drawable-v21/com_accountkit_input_cursor.xml -->

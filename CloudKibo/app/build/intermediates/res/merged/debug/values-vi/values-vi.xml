@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-vi/values-vi.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:Andorra</item>
         <item>971:AE:Các Tiểu vương quốc Ả Rập Thống nhất</item>
@@ -239,8 +237,6 @@
         <item>260:ZM:Zambia</item>
         <item>263:ZW:Zimbabwe</item>
     </string-array>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-vi/values-vi.xml -->
-    <eat-comment/>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Điều hướng về trang chủ"</string>
     <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
     <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
@@ -260,8 +256,6 @@
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Chia sẻ với"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Chia sẻ với %s"</string>
     <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Thu gọn"</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-vi/values-vi.xml -->
-    <eat-comment/>
     <string name="com_accountkit_button_begin">Bắt đầu</string>
     <string name="com_accountkit_button_cancel">Hủy</string>
     <string name="com_accountkit_button_confirm">Xác nhận</string>
@@ -279,13 +273,13 @@
     <string name="com_accountkit_button_submit">Gửi</string>
     <string name="com_accountkit_check_email">Mở email của bạn</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Nhấn %1$s để chấp nhận <![CDATA[<a href="%2$s">Điều khoản</a>]]>, <![CDATA[<a href="%3$s">Chính sách dữ liệu</a>]]> và <![CDATA[<a href="%4$s">sử dụng cookie</a>]]> của Facebook.
+        Nhấn %1$s để chấp nhận &lt;a href="%2$s">Điều khoản&lt;/a>, &lt;a href="%3$s">Chính sách dữ liệu&lt;/a> và &lt;a href="%4$s">sử dụng cookie&lt;/a> của Facebook.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Nhấn %1$s để chấp nhận <![CDATA[<a href="%2$s">Điều khoản</a>]]>, <![CDATA[<a href="%3$s">Chính sách dữ liệu</a>]]>, <![CDATA[<a href="%4$s">sử dụng cookie</a>]]> của Facebook và <![CDATA[<a href="%5$s">Chính sách quyền riêng tư</a>]]> của %6$s.
+        Nhấn %1$s để chấp nhận &lt;a href="%2$s">Điều khoản&lt;/a>, &lt;a href="%3$s">Chính sách dữ liệu&lt;/a>, &lt;a href="%4$s">sử dụng cookie&lt;/a> của Facebook và &lt;a href="%5$s">Chính sách quyền riêng tư&lt;/a> của %6$s.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Nhấn %1$s để chấp nhận <![CDATA[<a href="%2$s">Điều khoản</a>]]>, <![CDATA[<a href="%3$s">Chính sách dữ liệu</a>]]>, <![CDATA[<a href="%4$s">sử dụng cookie</a>]]> của Facebook và <![CDATA[<a href="%5$s">Chính sách quyền riêng tư</a>]]>, <![CDATA[<a href="%6$s">Điều khoản dịch vụ</a>]]> của %7$s.
+        Nhấn %1$s để chấp nhận &lt;a href="%2$s">Điều khoản&lt;/a>, &lt;a href="%3$s">Chính sách dữ liệu&lt;/a>, &lt;a href="%4$s">sử dụng cookie&lt;/a> của Facebook và &lt;a href="%5$s">Chính sách quyền riêng tư&lt;/a>, &lt;a href="%6$s">Điều khoản dịch vụ&lt;/a> của %7$s.
     </string>
     <string name="com_accountkit_confirmation_code_text">Gửi lại mã</string>
     <string name="com_accountkit_confirmation_code_title">Nhập mã của bạn</string>
@@ -293,7 +287,7 @@
     <string name="com_accountkit_email_loading_title">Đang gửi email…</string>
     <string name="com_accountkit_email_login_retry_title">Xác nhận email của bạn</string>
     <string name="com_accountkit_email_login_text">
-        Nhấn vào %1$s để nhận email xác nhận từ Account Kit của Facebook. %2$s dùng cách này để giúp bạn đăng nhập, nhưng bạn không cần tài khoản Facebook. <![CDATA[<a href="%3$s">Tìm hiểu thêm.</a>]]>
+        Nhấn vào %1$s để nhận email xác nhận từ Account Kit của Facebook. %2$s dùng cách này để giúp bạn đăng nhập, nhưng bạn không cần tài khoản Facebook. &lt;a href="%3$s">Tìm hiểu thêm.&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">Nhập địa chỉ email của bạn</string>
     <string name="com_accountkit_email_not_received">Gửi lại email</string>
@@ -303,7 +297,7 @@
     <string name="com_accountkit_phone_loading_title">Đang gửi mã của bạn…</string>
     <string name="com_accountkit_phone_login_retry_title">Xác nhận số điện thoại của bạn</string>
     <string name="com_accountkit_phone_login_text">
-        Nhấn vào %1$s để nhận xác nhận bằng SMS từ Account Kit của Facebook. %2$s dùng cách này để giúp bạn đăng nhập, nhưng bạn không cần tài khoản Facebook. Bạn có thể bị tính cước tin nhắn và dữ liệu. <![CDATA[<a href="%3$s">Tìm hiểu thêm.</a>]]>
+        Nhấn vào %1$s để nhận xác nhận bằng SMS từ Account Kit của Facebook. %2$s dùng cách này để giúp bạn đăng nhập, nhưng bạn không cần tài khoản Facebook. Bạn có thể bị tính cước tin nhắn và dữ liệu. &lt;a href="%3$s">Tìm hiểu thêm.&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">Nhập số điện thoại của bạn</string>
     <string name="com_accountkit_resend_email_text">Gửi email mới</string>
@@ -316,7 +310,5 @@
         Chúng tôi không thể xác minh mã của bạn.\nVui lòng thử lại:
     </string>
     <string name="com_accountkit_verify_title">Đang xác minh mã của bạn…</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-vi/values-vi.xml -->
-    <eat-comment/>
     <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

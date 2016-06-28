@@ -20,4 +20,4 @@
           android:layout_height="wrap_content"
           android:ellipsize="end"
           android:gravity="center"
-          android:maxLines="2"/><!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/res/layout/design_layout_tab_text.xml -->
+          android:maxLines="2"/>

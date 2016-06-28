@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-nb/values-nb.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:Andorra</item>
         <item>971:AE:De forente arabiske emirater</item>
@@ -239,8 +237,6 @@
         <item>260:ZM:Zambia</item>
         <item>263:ZW:Zimbabwe</item>
     </string-array>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-nb/values-nb.xml -->
-    <eat-comment/>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Gå til startsiden"</string>
     <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s – %2$s"</string>
     <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s – %2$s – %3$s"</string>
@@ -260,8 +256,6 @@
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Del med"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Del med %s"</string>
     <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Skjul"</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-nb/values-nb.xml -->
-    <eat-comment/>
     <string name="com_accountkit_button_begin">Begynn</string>
     <string name="com_accountkit_button_cancel">Avbryt</string>
     <string name="com_accountkit_button_confirm">Bekreft</string>
@@ -279,13 +273,13 @@
     <string name="com_accountkit_button_submit">Send inn</string>
     <string name="com_accountkit_check_email">Åpne e-posten din</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Trykk på %1$s for å godta Facebooks <![CDATA[<a href="%2$s">betingelser</a>]]>, <![CDATA[<a href="%3$s">retningslinjer for data</a>]]> og <![CDATA[<a href="%4$s">bruk av informasjonskapsler</a>]]>.
+        Trykk på %1$s for å godta Facebooks &lt;a href="%2$s">betingelser&lt;/a>, &lt;a href="%3$s">retningslinjer for data&lt;/a> og &lt;a href="%4$s">bruk av informasjonskapsler&lt;/a>.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Trykk på %1$s for å godta Facebooks <![CDATA[<a href="%2$s">betingelser</a>]]>, <![CDATA[<a href="%3$s">retningslinjer for data</a>]]>, <![CDATA[<a href="%4$s">bruk av informasjonskapsler</a>]]> og <![CDATA[<a href="%5$s">retningslinjer for personvern</a>]]> for %6$s.
+        Trykk på %1$s for å godta Facebooks &lt;a href="%2$s">betingelser&lt;/a>, &lt;a href="%3$s">retningslinjer for data&lt;/a>, &lt;a href="%4$s">bruk av informasjonskapsler&lt;/a> og &lt;a href="%5$s">retningslinjer for personvern&lt;/a> for %6$s.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Trykk på %1$s for å godta Facebooks <![CDATA[<a href="%2$s">betingelser</a>]]>, <![CDATA[<a href="%3$s">retningslinjer for data</a>]]>, <![CDATA[<a href="%4$s">bruk av informasjonskapsler</a>]]> samt <![CDATA[<a href="%5$s">retningslinjer for personvern</a>]]> og <![CDATA[<a href="%6$s">betingelsene</a>]]> for %7$s.
+        Trykk på %1$s for å godta Facebooks &lt;a href="%2$s">betingelser&lt;/a>, &lt;a href="%3$s">retningslinjer for data&lt;/a>, &lt;a href="%4$s">bruk av informasjonskapsler&lt;/a> samt &lt;a href="%5$s">retningslinjer for personvern&lt;/a> og &lt;a href="%6$s">betingelsene&lt;/a> for %7$s.
     </string>
     <string name="com_accountkit_confirmation_code_text">Send koden på nytt</string>
     <string name="com_accountkit_confirmation_code_title">Oppgi koden din</string>
@@ -293,7 +287,7 @@
     <string name="com_accountkit_email_loading_title">Sender e-post …</string>
     <string name="com_accountkit_email_login_retry_title">Bekreft e-postadressen din</string>
     <string name="com_accountkit_email_login_text">
-        Trykk på %1$s for å få e-postbekreftelse fra Account Kit levert av Facebook. %2$s bruker denne teknologien for å hjelpe deg med innlogging, men du trenger ikke en Facebook-konto. <![CDATA[<a href="%3$s">Finn ut mer.</a>]]>
+        Trykk på %1$s for å få e-postbekreftelse fra Account Kit levert av Facebook. %2$s bruker denne teknologien for å hjelpe deg med innlogging, men du trenger ikke en Facebook-konto. &lt;a href="%3$s">Finn ut mer.&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">Skriv inn e-postadressen din</string>
     <string name="com_accountkit_email_not_received">Send e-post på nytt</string>
@@ -303,7 +297,7 @@
     <string name="com_accountkit_phone_loading_title">Sender koden…</string>
     <string name="com_accountkit_phone_login_retry_title">Bekreft telefonnummeret ditt</string>
     <string name="com_accountkit_phone_login_text">
-        Trykk på %1$s for å få SMS-bekreftelse fra Account Kit levert av Facebook. %2$s bruker denne teknologien for å hjelpe deg med innlogging, men du trenger ikke en Facebook-konto. Meldings- og datakostnader kan påløpe. <![CDATA[<a href="%3$s">Finn ut mer.</a>]]>
+        Trykk på %1$s for å få SMS-bekreftelse fra Account Kit levert av Facebook. %2$s bruker denne teknologien for å hjelpe deg med innlogging, men du trenger ikke en Facebook-konto. Meldings- og datakostnader kan påløpe. &lt;a href="%3$s">Finn ut mer.&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">Skriv inn telefonnummeret ditt</string>
     <string name="com_accountkit_resend_email_text">Send ny e-post</string>
@@ -316,7 +310,5 @@
         Vi kunne ikke bekrefte koden din.\nPrøv på nytt:
     </string>
     <string name="com_accountkit_verify_title">Bekrefter koden…</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-nb/values-nb.xml -->
-    <eat-comment/>
     <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

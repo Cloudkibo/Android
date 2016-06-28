@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-zh-rCN/values-zh-rCN.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:安道尔</item>
         <item>971:AE:阿联酋</item>
@@ -239,8 +237,6 @@
         <item>260:ZM:赞比亚</item>
         <item>263:ZW:津巴布韦</item>
     </string-array>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-zh-rCN/values-zh-rCN.xml -->
-    <eat-comment/>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"转到主屏幕"</string>
     <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s：%2$s"</string>
     <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s - %2$s：%3$s"</string>
@@ -260,8 +256,6 @@
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"分享方式"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"通过%s分享"</string>
     <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"收起"</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-zh-rCN/values-zh-rCN.xml -->
-    <eat-comment/>
     <string name="com_accountkit_button_begin">开始</string>
     <string name="com_accountkit_button_cancel">取消</string>
     <string name="com_accountkit_button_confirm">确认</string>
@@ -279,13 +273,13 @@
     <string name="com_accountkit_button_submit">提交</string>
     <string name="com_accountkit_check_email">打开邮件</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        轻触 %1$s 接受 Facebook 的<![CDATA[<a href="%2$s">条款</a>]]>、<![CDATA[<a href="%3$s">数据使用政策</a>]]>和允许使用<![CDATA[<a href="%4$s">cookie</a>]]>。
+        轻触 %1$s 接受 Facebook 的&lt;a href="%2$s">条款&lt;/a>、&lt;a href="%3$s">数据使用政策&lt;/a>和允许使用&lt;a href="%4$s">cookie&lt;/a>。
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        轻触 %1$s 接受 Facebook 的<![CDATA[<a href="%2$s">条款</a>]]>、<![CDATA[<a href="%3$s">数据使用政策</a>]]>和 %6$s 的<![CDATA[<a href="%5$s">隐私权政策</a>]]>，并允许使用 <![CDATA[<a href="%4$s">cookie</a>]]>。
+        轻触 %1$s 接受 Facebook 的&lt;a href="%2$s">条款&lt;/a>、&lt;a href="%3$s">数据使用政策&lt;/a>和 %6$s 的&lt;a href="%5$s">隐私权政策&lt;/a>，并允许使用 &lt;a href="%4$s">cookie&lt;/a>。
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        轻触 %1$s 接受 Facebook 的<![CDATA[<a href="%2$s">条款</a>]]>、<![CDATA[<a href="%3$s">数据使用政策</a>]]>和 %7$s 的<![CDATA[<a href="%5$s">隐私权政策</a>]]>及<![CDATA[<a href="%6$s">服务条款</a>]]>，并允许使用 <![CDATA[<a href="%4$s">cookie</a>]]>。
+        轻触 %1$s 接受 Facebook 的&lt;a href="%2$s">条款&lt;/a>、&lt;a href="%3$s">数据使用政策&lt;/a>和 %7$s 的&lt;a href="%5$s">隐私权政策&lt;/a>及&lt;a href="%6$s">服务条款&lt;/a>，并允许使用 &lt;a href="%4$s">cookie&lt;/a>。
     </string>
     <string name="com_accountkit_confirmation_code_text">重新发送代码</string>
     <string name="com_accountkit_confirmation_code_title">输入你的代码</string>
@@ -293,7 +287,7 @@
     <string name="com_accountkit_email_loading_title">正在发送电子邮件…</string>
     <string name="com_accountkit_email_login_retry_title">确认您的邮箱</string>
     <string name="com_accountkit_email_login_text">
-        轻触 %1$s，接收来自 Facebook Account Kit 的确认邮件。%2$s 利用它帮助您登录，您在这一步不需要 Facebook 帐户。<![CDATA[<a href="%3$s">详细了解</a>]]>。
+        轻触 %1$s，接收来自 Facebook Account Kit 的确认邮件。%2$s 利用它帮助您登录，您在这一步不需要 Facebook 帐户。&lt;a href="%3$s">详细了解&lt;/a>。
     </string>
     <string name="com_accountkit_email_login_title">输入你的电子邮箱</string>
     <string name="com_accountkit_email_not_received">重新发送邮件</string>
@@ -303,7 +297,7 @@
     <string name="com_accountkit_phone_loading_title">发送代码…</string>
     <string name="com_accountkit_phone_login_retry_title">确认电话号码</string>
     <string name="com_accountkit_phone_login_text">
-        轻触 %1$s，接收来自 Facebook Account Kit 的确认短信。%2$s 利用它帮助您登录，您在这一步不需要 Facebook 帐户。可能需支付信息费和流量费。<![CDATA[<a href="%3$s">详细了解</a>]]>。
+        轻触 %1$s，接收来自 Facebook Account Kit 的确认短信。%2$s 利用它帮助您登录，您在这一步不需要 Facebook 帐户。可能需支付信息费和流量费。&lt;a href="%3$s">详细了解&lt;/a>。
     </string>
     <string name="com_accountkit_phone_login_title">输入电话号码</string>
     <string name="com_accountkit_resend_email_text">发送新邮件</string>
@@ -316,7 +310,5 @@
         我们无法验证你的代码。\n请重试：
     </string>
     <string name="com_accountkit_verify_title">正在验证你的代码…</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-zh-rCN/values-zh-rCN.xml -->
-    <eat-comment/>
     <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

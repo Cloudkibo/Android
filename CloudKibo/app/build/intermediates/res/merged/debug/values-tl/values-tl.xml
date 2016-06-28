@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-tl/values-tl.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:Andorra</item>
         <item>971:AE:United Arab Emirates</item>
@@ -239,8 +237,6 @@
         <item>260:ZM:Zambia</item>
         <item>263:ZW:Zimbabwe</item>
     </string-array>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-tl/values-tl.xml -->
-    <eat-comment/>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Mag-navigate patungo sa home"</string>
     <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
     <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
@@ -260,8 +256,6 @@
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Ibahagi sa/kay"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Ibahagi sa/kay %s"</string>
     <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"I-collapse"</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-tl/values-tl.xml -->
-    <eat-comment/>
     <string name="com_accountkit_button_begin">Umpisahan</string>
     <string name="com_accountkit_button_cancel">Kanselahin</string>
     <string name="com_accountkit_button_confirm">Kumpirmahin</string>
@@ -279,13 +273,13 @@
     <string name="com_accountkit_button_submit">Isumite</string>
     <string name="com_accountkit_check_email">Buksan ang iyong email</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        I-tap ang %1$s para tanggapin ang <![CDATA[<a href="%2$s">Mga Tuntunin</a>]]> ng Facebook, <![CDATA[<a href="%3$s">Patakaran ng Data</a>]]> at <![CDATA[<a href="%4$s">paggamit ng cookie</a>]]>.
+        I-tap ang %1$s para tanggapin ang &lt;a href="%2$s">Mga Tuntunin&lt;/a> ng Facebook, &lt;a href="%3$s">Patakaran ng Data&lt;/a> at &lt;a href="%4$s">paggamit ng cookie&lt;/a>.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        I-tap ang %1$s para tanggapin ang <![CDATA[<a href="%2$s">Mga Tuntunin</a>]]> ng Facebook, <![CDATA[<a href="%3$s">Patakaran ng Data</a>]]>, <![CDATA[<a href="%4$s">paggamit ng cookie</a>]]> at ang <![CDATA[<a href="%5$s">Patakaran sa Pagkapribado</a>]]> ng %6$s.
+        I-tap ang %1$s para tanggapin ang &lt;a href="%2$s">Mga Tuntunin&lt;/a> ng Facebook, &lt;a href="%3$s">Patakaran ng Data&lt;/a>, &lt;a href="%4$s">paggamit ng cookie&lt;/a> at ang &lt;a href="%5$s">Patakaran sa Pagkapribado&lt;/a> ng %6$s.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        I-tap ang %1$s para tanggapin ang <![CDATA[<a href="%2$s">Mga Tuntunin</a>]]> ng Facebook, <![CDATA[<a href="%3$s">Patakaran ng Data</a>]]>, <![CDATA[<a href="%4$s">paggamit ng cookie</a>]]> at ang <![CDATA[<a href="%5$s">Patakaran sa Pagkapribado</a>]]> at <![CDATA[<a href="%6$s">Mga Tuntunin ng Serbisyo</a>]]> ng %7$s.
+        I-tap ang %1$s para tanggapin ang &lt;a href="%2$s">Mga Tuntunin&lt;/a> ng Facebook, &lt;a href="%3$s">Patakaran ng Data&lt;/a>, &lt;a href="%4$s">paggamit ng cookie&lt;/a> at ang &lt;a href="%5$s">Patakaran sa Pagkapribado&lt;/a> at &lt;a href="%6$s">Mga Tuntunin ng Serbisyo&lt;/a> ng %7$s.
     </string>
     <string name="com_accountkit_confirmation_code_text">Magpadala ng Bagong Code</string>
     <string name="com_accountkit_confirmation_code_title">Ilagay ang iyong code</string>
@@ -293,7 +287,7 @@
     <string name="com_accountkit_email_loading_title">Ipinapadala ang email…</string>
     <string name="com_accountkit_email_login_retry_title">Kumpirmahin ang iyong email</string>
     <string name="com_accountkit_email_login_text">
-        I-tap ang %1$s para makakuha ng email sa pagkumpirma mula sa Account Kit na pinapagana ng Facebook. Ginagamit ito ng %2$s para tulungan kang mag-sign in, pero hindi mo kailangan ng isang Facebook account. <![CDATA[<a href="%3$s">Alamin pa.</a>]]>
+        I-tap ang %1$s para makakuha ng email sa pagkumpirma mula sa Account Kit na pinapagana ng Facebook. Ginagamit ito ng %2$s para tulungan kang mag-sign in, pero hindi mo kailangan ng isang Facebook account. &lt;a href="%3$s">Alamin pa.&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">Ilagay ang iyong email address</string>
     <string name="com_accountkit_email_not_received">Ipadala Muli ang Email</string>
@@ -303,7 +297,7 @@
     <string name="com_accountkit_phone_loading_title">Ipinapadala ang iyong code…</string>
     <string name="com_accountkit_phone_login_retry_title">Kumpirmahin ang numero ng iyong telepono</string>
     <string name="com_accountkit_phone_login_text">
-        I-tap ang %1$s para makakuha ng pagkumpirma sa SMS mula sa Account Kit na pinapagana ng Facebook. Ginagamit ito ng %2$s para tulungan kang mag-sign in, pero hindi mo kailangan ng isang Facebook account. Maaaring maglapat ng mga singil sa mensahe at data. <![CDATA[<a href="%3$s">Alamin pa.</a>]]>
+        I-tap ang %1$s para makakuha ng pagkumpirma sa SMS mula sa Account Kit na pinapagana ng Facebook. Ginagamit ito ng %2$s para tulungan kang mag-sign in, pero hindi mo kailangan ng isang Facebook account. Maaaring maglapat ng mga singil sa mensahe at data. &lt;a href="%3$s">Alamin pa.&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">Ilagay ang numero ng iyong telepono</string>
     <string name="com_accountkit_resend_email_text">Magpadala ng Bagong Email</string>
@@ -316,7 +310,5 @@
         Hindi namin maberipika ang iyong code. Pakisubukang muli:
     </string>
     <string name="com_accountkit_verify_title">Biniberipika ang iyong code…</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-tl/values-tl.xml -->
-    <eat-comment/>
     <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

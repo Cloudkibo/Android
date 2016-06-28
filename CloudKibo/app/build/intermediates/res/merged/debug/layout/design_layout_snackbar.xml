@@ -20,4 +20,4 @@
       android:layout_width="match_parent"
       android:layout_height="wrap_content"
       android:layout_gravity="bottom"
-      style="@style/Widget.Design.Snackbar" /><!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/res/layout/design_layout_snackbar.xml -->
+      style="@style/Widget.Design.Snackbar" />

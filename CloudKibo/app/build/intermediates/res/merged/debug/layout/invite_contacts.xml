@@ -18,4 +18,4 @@
         android:layout_above="@id/testbutton"
         android:layout_alignParentTop="true"
         android:background="#ff1630" />
-</RelativeLayout><!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/layout/invite_contacts.xml -->
+</RelativeLayout>

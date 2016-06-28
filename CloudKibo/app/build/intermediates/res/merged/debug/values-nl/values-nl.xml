@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-nl/values-nl.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:Andorra</item>
         <item>971:AE:Verenigde Arabische Emiraten</item>
@@ -239,8 +237,6 @@
         <item>260:ZM:Zambia</item>
         <item>263:ZW:Zimbabwe</item>
     </string-array>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-nl/values-nl.xml -->
-    <eat-comment/>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Navigeren naar startpositie"</string>
     <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
     <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
@@ -260,8 +256,6 @@
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Delen met"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Delen met %s"</string>
     <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Samenvouwen"</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-nl/values-nl.xml -->
-    <eat-comment/>
     <string name="com_accountkit_button_begin">Beginnen</string>
     <string name="com_accountkit_button_cancel">Annuleren</string>
     <string name="com_accountkit_button_confirm">Bevestigen</string>
@@ -279,13 +273,13 @@
     <string name="com_accountkit_button_submit">Verzenden</string>
     <string name="com_accountkit_check_email">Open je e-mail</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Tik op %1$s om de <![CDATA[<a href="%2$s">voorwaarden</a>]]>, het <![CDATA[<a href="%3$s">gegevensbeleid</a>]]> en het <![CDATA[<a href="%4$s">cookiebeleid</a>]]> van Facebook te accepteren.
+        Tik op %1$s om de &lt;a href="%2$s">voorwaarden&lt;/a>, het &lt;a href="%3$s">gegevensbeleid&lt;/a> en het &lt;a href="%4$s">cookiebeleid&lt;/a> van Facebook te accepteren.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Tik op %1$s om de <![CDATA[<a href="%2$s">voorwaarden</a>]]>, het <![CDATA[<a href="%3$s">gegevensbeleid</a>]]>, het <![CDATA[<a href="%4$s">cookiebeleid</a>]]> van Facebook en het <![CDATA[<a href="%5$s">privacybeleid</a>]]> van %6$s te accepteren.
+        Tik op %1$s om de &lt;a href="%2$s">voorwaarden&lt;/a>, het &lt;a href="%3$s">gegevensbeleid&lt;/a>, het &lt;a href="%4$s">cookiebeleid&lt;/a> van Facebook en het &lt;a href="%5$s">privacybeleid&lt;/a> van %6$s te accepteren.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Tik op %1$s om de <![CDATA[<a href="%2$s">voorwaarden</a>]]>, het <![CDATA[<a href="%3$s">gegevensbeleid</a>]]>, het <![CDATA[<a href="%4$s">cookiebeleid</a>]]> van Facebook en het <![CDATA[<a href="%5$s">privacybeleid</a>]]> en de <![CDATA[<a href="%6$s">gebruiksvoorwaarden</a>]]> van %7$s te accepteren.
+        Tik op %1$s om de &lt;a href="%2$s">voorwaarden&lt;/a>, het &lt;a href="%3$s">gegevensbeleid&lt;/a>, het &lt;a href="%4$s">cookiebeleid&lt;/a> van Facebook en het &lt;a href="%5$s">privacybeleid&lt;/a> en de &lt;a href="%6$s">gebruiksvoorwaarden&lt;/a> van %7$s te accepteren.
     </string>
     <string name="com_accountkit_confirmation_code_text">Code opnieuw versturen</string>
     <string name="com_accountkit_confirmation_code_title">Voer je code in</string>
@@ -293,7 +287,7 @@
     <string name="com_accountkit_email_loading_title">E-mail verzenden…</string>
     <string name="com_accountkit_email_login_retry_title">Bevestig je e-mailadres</string>
     <string name="com_accountkit_email_login_text">
-        Tik op %1$s om een bevestigingsmail te ontvangen van Account Kit mogelijk gemaakt door Facebook. %2$s gebruikt deze methode om je aan te melden, maar je hebt geen Facebook-account nodig. <![CDATA[<a href="%3$s">Meer informatie.</a>]]>
+        Tik op %1$s om een bevestigingsmail te ontvangen van Account Kit mogelijk gemaakt door Facebook. %2$s gebruikt deze methode om je aan te melden, maar je hebt geen Facebook-account nodig. &lt;a href="%3$s">Meer informatie.&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">Voer je e-mailadres in</string>
     <string name="com_accountkit_email_not_received">E-mail opnieuw verzenden</string>
@@ -303,7 +297,7 @@
     <string name="com_accountkit_phone_loading_title">Je code wordt verzenden…</string>
     <string name="com_accountkit_phone_login_retry_title">Bevestig je telefoonnummer</string>
     <string name="com_accountkit_phone_login_text">
-        Tik op %1$s om een sms-bevestiging te ontvangen van Account Kit mogelijk gemaakt door Facebook. %2$s gebruikt deze methode om je aan te melden, maar je hebt geen Facebook-account nodig. Mogelijk zijn bericht- en datatarieven van toepassing. <![CDATA[<a href="%3$s">Meer informatie.</a>]]>
+        Tik op %1$s om een sms-bevestiging te ontvangen van Account Kit mogelijk gemaakt door Facebook. %2$s gebruikt deze methode om je aan te melden, maar je hebt geen Facebook-account nodig. Mogelijk zijn bericht- en datatarieven van toepassing. &lt;a href="%3$s">Meer informatie.&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">Voer je telefoonnummer in</string>
     <string name="com_accountkit_resend_email_text">Nieuwe e-mail sturen</string>
@@ -316,7 +310,5 @@
         We hebben je code niet kunnen verifiëren.\nProbeer het opnieuw:
     </string>
     <string name="com_accountkit_verify_title">Je code wordt geverifieerd…</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-nl/values-nl.xml -->
-    <eat-comment/>
     <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

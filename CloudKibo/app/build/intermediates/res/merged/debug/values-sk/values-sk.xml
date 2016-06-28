@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-sk/values-sk.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:Andorra</item>
         <item>971:AE:Spojené arabské emiráty</item>
@@ -239,8 +237,6 @@
         <item>260:ZM:Zambia</item>
         <item>263:ZW:Zimbabwe</item>
     </string-array>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-sk/values-sk.xml -->
-    <eat-comment/>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Prejsť na plochu"</string>
     <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
     <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
@@ -260,8 +256,6 @@
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Zdieľať pomocou"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Zdieľať pomocou %s"</string>
     <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Zbaliť"</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-sk/values-sk.xml -->
-    <eat-comment/>
     <string name="com_accountkit_button_begin">Začať</string>
     <string name="com_accountkit_button_cancel">Zrušiť</string>
     <string name="com_accountkit_button_confirm">Potvrdiť</string>
@@ -279,13 +273,13 @@
     <string name="com_accountkit_button_submit">Odoslať</string>
     <string name="com_accountkit_check_email">Otvorte svoj e-mail</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Ťuknutím na %1$s vyjadríte súhlas s <![CDATA[<a href="%2$s">Podmienkami</a>]]> Facebooku a jeho <![CDATA[<a href="%3$s">Zásadami využívania údajov</a>]]> vrátane <![CDATA[<a href="%4$s">používania cookies</a>]]>.
+        Ťuknutím na %1$s vyjadríte súhlas s &lt;a href="%2$s">Podmienkami&lt;/a> Facebooku a jeho &lt;a href="%3$s">Zásadami využívania údajov&lt;/a> vrátane &lt;a href="%4$s">používania cookies&lt;/a>.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Ťuknutím na %1$s vyjadríte súhlas s <![CDATA[<a href="%2$s">Podmienkami</a>]]> Facebooku a jeho <![CDATA[<a href="%3$s">Zásadami využívania údajov</a>]]> vrátane <![CDATA[<a href="%4$s">používania cookies</a>]]>, a tiež so <![CDATA[<a href="%5$s">Zásadami ochrany súkromia</a>]]> služby %6$s.
+        Ťuknutím na %1$s vyjadríte súhlas s &lt;a href="%2$s">Podmienkami&lt;/a> Facebooku a jeho &lt;a href="%3$s">Zásadami využívania údajov&lt;/a> vrátane &lt;a href="%4$s">používania cookies&lt;/a>, a tiež so &lt;a href="%5$s">Zásadami ochrany súkromia&lt;/a> služby %6$s.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Ťuknutím na %1$s vyjadríte súhlas s <![CDATA[<a href="%2$s">Podmienkami</a>]]> Facebooku a jeho <![CDATA[<a href="%3$s">Zásadami využívania údajov</a>]]> vrátane <![CDATA[<a href="%4$s">používania cookies</a>]]>, a tiež so <![CDATA[<a href="%5$s">Zásadami ochrany súkromia</a>]]> a <![CDATA[<a href="%6$s">Zmluvnými podmienkami</a>]]> služby %7$s.
+        Ťuknutím na %1$s vyjadríte súhlas s &lt;a href="%2$s">Podmienkami&lt;/a> Facebooku a jeho &lt;a href="%3$s">Zásadami využívania údajov&lt;/a> vrátane &lt;a href="%4$s">používania cookies&lt;/a>, a tiež so &lt;a href="%5$s">Zásadami ochrany súkromia&lt;/a> a &lt;a href="%6$s">Zmluvnými podmienkami&lt;/a> služby %7$s.
     </string>
     <string name="com_accountkit_confirmation_code_text">Poslať nový kód</string>
     <string name="com_accountkit_confirmation_code_title">Zadajte svoj kód</string>
@@ -293,7 +287,7 @@
     <string name="com_accountkit_email_loading_title">Posiela sa e-mail…</string>
     <string name="com_accountkit_email_login_retry_title">Potvrďte svoju e-mailovú adresu</string>
     <string name="com_accountkit_email_login_text">
-        Ťuknite na %1$s, aby ste dostali potvrdzujúci e-mail od služby Account Kit s technológiou Facebooku. %2$s to používa na vašu registráciu, nepotrebujete však mať účet na Facebooku. <![CDATA[<a href="%3$s">Prečítajte si viac.</a>]]>
+        Ťuknite na %1$s, aby ste dostali potvrdzujúci e-mail od služby Account Kit s technológiou Facebooku. %2$s to používa na vašu registráciu, nepotrebujete však mať účet na Facebooku. &lt;a href="%3$s">Prečítajte si viac.&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">Zadajte svoju e-mailovú adresu</string>
     <string name="com_accountkit_email_not_received">Poslať e-mail znova</string>
@@ -303,7 +297,7 @@
     <string name="com_accountkit_phone_loading_title">Posiela sa vám kód…</string>
     <string name="com_accountkit_phone_login_retry_title">Potvrďte svoje telefónne číslo</string>
     <string name="com_accountkit_phone_login_text">
-        Ťuknite na %1$s, aby ste dostali potvrdzujúcu SMS od služby Account Kit s technológiou Facebooku. %2$s to používa na vašu registráciu, nepotrebujete však mať účet na Facebooku. Môžu sa účtovať poplatky za SMS a dáta. <![CDATA[<a href="%3$s">Prečítajte si viac.</a>]]>
+        Ťuknite na %1$s, aby ste dostali potvrdzujúcu SMS od služby Account Kit s technológiou Facebooku. %2$s to používa na vašu registráciu, nepotrebujete však mať účet na Facebooku. Môžu sa účtovať poplatky za SMS a dáta. &lt;a href="%3$s">Prečítajte si viac.&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">Zadajte svoje telefónne číslo</string>
     <string name="com_accountkit_resend_email_text">Poslať nový e-mail</string>
@@ -316,7 +310,5 @@
         Váš kód sa nepodarilo overiť. Skúste to znova:
     </string>
     <string name="com_accountkit_verify_title">Overuje sa váš potvrdzovací kód…</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-sk/values-sk.xml -->
-    <eat-comment/>
     <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

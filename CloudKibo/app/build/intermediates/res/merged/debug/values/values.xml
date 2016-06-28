@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values/values.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:Andorra</item>
         <item>971:AE:United Arab Emirates</item>
@@ -239,8 +237,6 @@
         <item>260:ZM:Zambia</item>
         <item>263:ZW:Zimbabwe</item>
     </string-array>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <attr format="reference" name="drawerArrowStyle"/>
     <attr format="dimension" name="height"/>
     <attr format="boolean" name="isLightTheme"/>
@@ -253,12 +249,8 @@
     <bool name="abc_config_allowActionMenuItemTextWithIcon">false</bool>
     <bool name="abc_config_closeDialogWhenTouchOutside">true</bool>
     <bool name="abc_config_showMenuShortcutsWhenKeyboardPresent">false</bool>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/values/bool.xml -->
-    <eat-comment/>
     <bool name="use_activity">true</bool>
     <bool name="use_provider">false</bool>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <color name="abc_input_method_navigation_guard">@android:color/black</color>
     <color name="abc_search_url_text_normal">#7fa87f</color>
     <color name="abc_search_url_text_pressed">@android:color/black</color>
@@ -269,11 +261,7 @@
     <color name="background_floating_material_light">@android:color/white</color>
     <color name="background_material_dark">@color/material_grey_850</color>
     <color name="background_material_light">@color/material_grey_50</color>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/values/color.xml -->
-    <eat-comment/>
     <color name="black">#000000</color>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <color name="bright_foreground_disabled_material_dark">#80ffffff</color>
     <color name="bright_foreground_disabled_material_light">#80000000</color>
     <color name="bright_foreground_inverse_material_dark">@color/bright_foreground_material_light</color>
@@ -282,8 +270,6 @@
     <color name="bright_foreground_material_light">@android:color/black</color>
     <color name="button_material_dark">#ff5a595b</color>
     <color name="button_material_light">#ffd6d7d7</color>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <color name="design_fab_shadow_end_color">@android:color/transparent</color>
     <color name="design_fab_shadow_mid_color">#14000000</color>
     <color name="design_fab_shadow_start_color">#44000000</color>
@@ -294,31 +280,21 @@
     <color name="design_snackbar_background_color">#323232</color>
     <color name="design_textinput_error_color_dark">#FFFF6E6E</color>
     <color name="design_textinput_error_color_light">#FFD50000</color>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <color name="dim_foreground_disabled_material_dark">#80bebebe</color>
     <color name="dim_foreground_disabled_material_light">#80323232</color>
     <color name="dim_foreground_material_dark">#ffbebebe</color>
     <color name="dim_foreground_material_light">#ff323232</color>
     <color name="foreground_material_dark">@android:color/white</color>
     <color name="foreground_material_light">@android:color/black</color>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/values/color.xml -->
-    <eat-comment/>
     <color name="gray_light">#e8e8e8</color>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <color name="highlighted_text_material_dark">#6680cbc4</color>
     <color name="highlighted_text_material_light">#66009688</color>
     <color name="hint_foreground_material_dark">@color/bright_foreground_disabled_material_dark</color>
     <color name="hint_foreground_material_light">@color/bright_foreground_disabled_material_light</color>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/values/color.xml -->
-    <eat-comment/>
     <color name="main_color_gray">#7d7d7d</color>
     <color name="main_color_gray_dk">#3b3b3b</color>
     <color name="main_color_gray_lt">#acacac</color>
     <color name="main_color_green">#00b863</color>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <color name="material_blue_grey_800">#ff37474f</color>
     <color name="material_blue_grey_900">#ff263238</color>
     <color name="material_blue_grey_950">#ff21272b</color>
@@ -349,8 +325,6 @@
     <color name="switch_thumb_disabled_material_light">#ffbdbdbd</color>
     <color name="switch_thumb_normal_material_dark">#ffbdbdbd</color>
     <color name="switch_thumb_normal_material_light">#fff1f1f1</color>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/values/color.xml -->
-    <eat-comment/>
     <color name="transparent">#00000000</color>
     <color name="white">#ffffff</color>
     <color name="white_smoke">#F7F7F7</color>
@@ -405,8 +379,6 @@
     <declare-styleable name="View"><attr format="dimension" name="paddingStart"/><attr format="dimension" name="paddingEnd"/><attr name="android:focusable"/><attr format="reference" name="theme"/><attr name="android:theme"/></declare-styleable>
     <declare-styleable name="ViewBackgroundHelper"><attr name="android:background"/><attr format="color" name="backgroundTint"/><attr name="backgroundTintMode"><enum name="src_over" value="3"/><enum name="src_in" value="5"/><enum name="src_atop" value="9"/><enum name="multiply" value="14"/><enum name="screen" value="15"/></attr></declare-styleable>
     <declare-styleable name="ViewStubCompat"><attr name="android:layout"/><attr name="android:inflatedId"/><attr name="android:id"/></declare-styleable>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <dimen name="abc_action_bar_content_inset_material">16dp</dimen>
     <dimen name="abc_action_bar_default_height_material">56dp</dimen>
     <dimen name="abc_action_bar_default_padding_end_material">0dp</dimen>
@@ -474,8 +446,6 @@
     <dimen name="abc_text_size_subtitle_material_toolbar">16dp</dimen>
     <dimen name="abc_text_size_title_material">20sp</dimen>
     <dimen name="abc_text_size_title_material_toolbar">20dp</dimen>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values/values.xml -->
-    <eat-comment/>
     <dimen name="com_accountkit_agreement_text_size">11sp</dimen>
     <dimen name="com_accountkit_button_text_size">12sp</dimen>
     <dimen name="com_accountkit_content_margin_bottom">8dp</dimen>
@@ -506,8 +476,6 @@
     <dimen name="com_accountkit_title_text_size">16sp</dimen>
     <dimen name="com_accountkit_vertical_spacer_large_height">24dp</dimen>
     <dimen name="com_accountkit_vertical_spacer_small_height">12dp</dimen>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <dimen name="design_appbar_elevation">4dp</dimen>
     <dimen name="design_bottom_sheet_modal_elevation">16dp</dimen>
     <dimen name="design_bottom_sheet_modal_peek_height">256dp</dimen>
@@ -537,29 +505,19 @@
     <dimen name="design_tab_scrollable_min_width">72dp</dimen>
     <dimen name="design_tab_text_size">14sp</dimen>
     <dimen name="design_tab_text_size_2line">12sp</dimen>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <item format="float" name="disabled_alpha_material_dark" type="dimen">0.30</item>
     <item format="float" name="disabled_alpha_material_light" type="dimen">0.26</item>
     <item format="float" name="highlight_alpha_material_colored" type="dimen">0.26</item>
     <item format="float" name="highlight_alpha_material_dark" type="dimen">0.20</item>
     <item format="float" name="highlight_alpha_material_light" type="dimen">0.12</item>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <dimen name="item_touch_helper_max_drag_scroll_per_frame">20dp</dimen>
     <dimen name="item_touch_helper_swipe_escape_max_velocity">800dp</dimen>
     <dimen name="item_touch_helper_swipe_escape_velocity">120dp</dimen>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/values/dimens.xml -->
-    <eat-comment/>
     <dimen name="list_item_padding">16dp</dimen>
     <dimen name="list_padding">0dp</dimen>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <dimen name="notification_large_icon_height">64dp</dimen>
     <dimen name="notification_large_icon_width">64dp</dimen>
     <dimen name="notification_subtext_size">12dp</dimen>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/values/dimens.xml -->
-    <eat-comment/>
     <dimen name="pad_10dp">10dp</dimen>
     <dimen name="pad_15dp">15dp</dimen>
     <dimen name="pad_20dp">20dp</dimen>
@@ -575,42 +533,24 @@
     <dimen name="txt_18sp">18sp</dimen>
     <dimen name="txt_20sp">20sp</dimen>
     <dimen name="txt_7sp">7sp</dimen>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <drawable name="notification_template_icon_bg">#3333B5E5</drawable>
     <item name="action_bar_activity_content" type="id"/>
     <item name="action_bar_spinner" type="id"/>
     <item name="action_menu_divider" type="id"/>
     <item name="action_menu_presenter" type="id"/>
     <item name="home" type="id"/>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <item name="item_touch_helper_previous_elevation" type="id"/>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <item name="progress_circular" type="id"/>
     <item name="progress_horizontal" type="id"/>
     <item name="split_action_bar" type="id"/>
     <item name="up" type="id"/>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <item name="view_offset_helper" type="id"/>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <integer name="abc_config_activityDefaultDur">220</integer>
     <integer name="abc_config_activityShortDur">150</integer>
     <integer name="abc_max_action_buttons">2</integer>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <integer name="bottom_sheet_slide_duration">150</integer>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <integer name="cancel_button_image_alpha">127</integer>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <integer name="design_snackbar_text_max_lines">2</integer>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <integer name="status_bar_notification_info_maxnum">999</integer>
     <string name="abc_action_bar_home_description">Navigate home</string>
     <string name="abc_action_bar_home_description_format">%1$s, %2$s</string>
@@ -631,8 +571,6 @@
     <string name="abc_shareactionprovider_share_with">Share with</string>
     <string name="abc_shareactionprovider_share_with_application">Share with %s</string>
     <string name="abc_toolbar_collapse_description">Collapse</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/values/strings.xml -->
-    <eat-comment/>
     <string name="about_txt">CloudKibo is a next generation communication technology. It’s intuitive, cost effective, and rich with functionality. It can be used both for internal and external communications. It provides integrated and unified voice, video, and data communication across web.\n\n CloudKibo lets you invite your friend with a click of a button into a call. Don’t get tied down to a clumsy keypad and cryptic codes to control and manage your calls.\n\n CloudKibo also allows you to invite multiple people to join the Web meeting without installing any complex software. All they need to do is visit a URL and join the meeting.\n\n CloudKibo uses VP8 codec, which allows efficient use of bandwidth estimation for better video quality. VP8 adaptable technology allows you have HD quality. It also includes components to conceal pack loss and clean up noisy images.\n\n CloudKibo stunning HD audio quality lets you experience the full, glorious range of the human voice. Wideband and Narrowband PSTN codec are supported.\n\n Cloudkibo lets you share your weekly project status, share your weekly sales slides, collect feedback on the latest design rendering, and makes sharing a screen easy as clicking the “Share Screen” button.\n\n Cloudkibo makes it simple for you or anyone in your call to instantly share notes, documents, videos, or any other file. File transfer is highly secured. All file transfers are peer to peer with 128 Bit encryption. Current email systems normally limit your attachments to 25MB and multiple copies of your files are left on the mail servers.\n\n Downloading, installing, and updating plugins can be complex, error prone, and annoying. With CloudKibo you are able to join the call straight from your browser without any need to download and install client software. Plugins can be difficult to deploy, debug, troubleshoot, test and maintain and may require licensing and integration with complex, expensive technology.\n\n CloudKibo connects you to social network services like Facebook, Google, and Microsoft. You can connect and import your friends from these social networks.\n\n Cloudkibo is based on modern Web technology like Nodejs, Angularjs, Socket.io, WebRTC etc, thus it is highly scalable. Also as most of the communication is Peer to Peer the need for a large and complex server platform is minimized resulting in a very cost effective solution.\n\n Cloudkibo is highly secured as all communication is 128 Bit encrypted and the base technology uses Peer to Peer communication between two end points. No customer content audio, video, or files are stored on the central server.</string>
     <string name="activity_name">Submit</string>
     <string name="all_chats">All Chats</string>
@@ -641,18 +579,12 @@
     <string name="all_projects">All Projects</string>
     <string name="app_id">456637644436523</string>
     <string name="app_name">CloudKibo</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="bottom_sheet_behavior" translatable="false">android.support.design.widget.BottomSheetBehavior</string>
     <string name="character_counter_pattern" translatable="false">%1$d / %2$d</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/values/strings.xml -->
-    <eat-comment/>
     <string name="choose_file">Select a file</string>
     <string name="choose_project">Choose Project</string>
     <string name="client_token">97da63ec347d10ac62e84a9d92ce2361</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values/values.xml -->
-    <eat-comment/>
     <string name="com_accountkit_button_begin">Begin</string>
     <string name="com_accountkit_button_cancel">Cancel</string>
     <string name="com_accountkit_button_confirm">Confirm</string>
@@ -670,13 +602,13 @@
     <string name="com_accountkit_button_submit">Submit</string>
     <string name="com_accountkit_check_email">Open your Email</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Tap %1$s to accept Facebook\'s <![CDATA[<a href="%2$s">Terms</a>]]>, <![CDATA[<a href="%3$s">Data Policy</a>]]> and <![CDATA[<a href="%4$s">cookie use</a>]]>.
+        Tap %1$s to accept Facebook\'s &lt;a href="%2$s">Terms&lt;/a>, &lt;a href="%3$s">Data Policy&lt;/a> and &lt;a href="%4$s">cookie use&lt;/a>.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Tap %1$s to accept Facebook\'s <![CDATA[<a href="%2$s">Terms</a>]]>, <![CDATA[<a href="%3$s">Data Policy</a>]]>, <![CDATA[<a href="%4$s">cookie use</a>]]> and the <![CDATA[<a href="%5$s">Privacy Policy</a>]]> of %6$s.
+        Tap %1$s to accept Facebook\'s &lt;a href="%2$s">Terms&lt;/a>, &lt;a href="%3$s">Data Policy&lt;/a>, &lt;a href="%4$s">cookie use&lt;/a> and the &lt;a href="%5$s">Privacy Policy&lt;/a> of %6$s.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Tap %1$s to accept Facebook\'s <![CDATA[<a href="%2$s">Terms</a>]]>, <![CDATA[<a href="%3$s">Data Policy</a>]]>, <![CDATA[<a href="%4$s">cookie use</a>]]> and the <![CDATA[<a href="%5$s">Privacy Policy</a>]]> and <![CDATA[<a href="%6$s">Terms of Service</a>]]> of %7$s.
+        Tap %1$s to accept Facebook\'s &lt;a href="%2$s">Terms&lt;/a>, &lt;a href="%3$s">Data Policy&lt;/a>, &lt;a href="%4$s">cookie use&lt;/a> and the &lt;a href="%5$s">Privacy Policy&lt;/a> and &lt;a href="%6$s">Terms of Service&lt;/a> of %7$s.
     </string>
     <string name="com_accountkit_confirmation_code_text">Send New Code</string>
     <string name="com_accountkit_confirmation_code_title">Enter your code</string>
@@ -686,7 +618,7 @@
     <string name="com_accountkit_email_loading_title">Sending email…</string>
     <string name="com_accountkit_email_login_retry_title">Confirm your email</string>
     <string name="com_accountkit_email_login_text">
-        Tap %1$s to get a confirmation email from Account Kit powered by Facebook. %2$s uses this to help you sign in, but you don\'t need a Facebook account. <![CDATA[<a href="%3$s">Learn more.</a>]]>
+        Tap %1$s to get a confirmation email from Account Kit powered by Facebook. %2$s uses this to help you sign in, but you don\'t need a Facebook account. &lt;a href="%3$s">Learn more.&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">Enter your email address</string>
     <string name="com_accountkit_email_not_received">Resend Email</string>
@@ -696,7 +628,7 @@
     <string name="com_accountkit_phone_loading_title">Sending your code…</string>
     <string name="com_accountkit_phone_login_retry_title">Confirm your phone number</string>
     <string name="com_accountkit_phone_login_text">
-    Tap %1$s to get an SMS confirmation from Account Kit powered by Facebook. %2$s uses this to help you sign in, but you don\'t need a Facebook account. Message and data rates may apply. <![CDATA[<a href="%3$s">Learn more.</a>]]>
+    Tap %1$s to get an SMS confirmation from Account Kit powered by Facebook. %2$s uses this to help you sign in, but you don\'t need a Facebook account. Message and data rates may apply. &lt;a href="%3$s">Learn more.&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">Enter your phone number</string>
     <string name="com_accountkit_resend_email_text">Send New Email</string>
@@ -709,8 +641,6 @@
         We couldn\'t verify your code.\nPlease try again:
     </string>
     <string name="com_accountkit_verify_title">Verifying your code…</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/values/strings.xml -->
-    <eat-comment/>
     <string name="credentials">Login Credentials</string>
     <string name="drawer_close">Close</string>
     <string name="drawer_open">Open</string>
@@ -742,19 +672,13 @@
     <string name="search">Search</string>
     <string name="server_host">192.168.8.103</string>
     <string name="server_port">8443</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <string name="status_bar_notification_info_overflow">999+</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/values/strings.xml -->
-    <eat-comment/>
     <string name="storage_removed">Storage was removed or unmounted.</string>
     <string name="submit">Submit</string>
     <string name="to">To:</string>
     <string name="trash">Trash</string>
     <string name="type_msg">Type message</string>
     <string name="username">Username</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values/values.xml -->
-    <eat-comment/>
     <style name="AccountKit.ActionBar" parent="ThemeOverlay.AppCompat.ActionBar">
         <item name="android:background">?attr/com_accountkit_header_background_color</item>
         <item name="colorControlNormal">?attr/com_accountkit_header_text_color</item>
@@ -774,28 +698,20 @@
         <item name="titleTextAppearance">@style/AccountKit.Toolbar.Title</item>
     </style>
     <style name="AccountKit.Toolbar.Title" parent="Base.AccountKit.Toolbar.Title"/>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <style name="AlertDialog.AppCompat" parent="Base.AlertDialog.AppCompat"/>
     <style name="AlertDialog.AppCompat.Light" parent="Base.AlertDialog.AppCompat.Light"/>
     <style name="Animation.AppCompat.Dialog" parent="Base.Animation.AppCompat.Dialog"/>
     <style name="Animation.AppCompat.DropDownUp" parent="Base.Animation.AppCompat.DropDownUp"/>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <style name="Animation.Design.BottomSheetDialog" parent="Animation.AppCompat.Dialog">
         <item name="android:windowEnterAnimation">@anim/design_bottom_sheet_slide_in</item>
         <item name="android:windowExitAnimation">@anim/design_bottom_sheet_slide_out</item>
     </style>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/values/styles.xml -->
-    <eat-comment/>
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
     </style>
     <style name="AppLoginTheme" parent="Theme.AccountKit"/>
     <style name="AppTheme" parent="AppBaseTheme">
         <item name="android:homeAsUpIndicator">@drawable/back_arrow</item>
     </style>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values/values.xml -->
-    <eat-comment/>
     <style name="Base.AccountKit.AgreementText" parent="TextAppearance.AppCompat.Small">
         <item name="android:textColor">?attr/com_accountkit_text_color</item>
         <item name="android:textColorLink">?attr/com_accountkit_text_color</item>
@@ -869,8 +785,6 @@
     <style name="Base.AccountKit.Toolbar.Title" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textColor">?attr/com_accountkit_header_text_color</item>
     </style>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <style name="Base.AlertDialog.AppCompat" parent="android:Widget">
         <item name="android:layout">@layout/abc_alert_dialog_material</item>
         <item name="listLayout">@layout/abc_select_dialog_material</item>
@@ -1048,8 +962,6 @@
     </style>
     <style name="Base.TextAppearance.Widget.AppCompat.Toolbar.Title" parent="TextAppearance.AppCompat.Widget.ActionBar.Title">
     </style>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values/values.xml -->
-    <eat-comment/>
     <style name="Base.Theme.AccountKit" parent="Base.Theme.AppCompat">
         <!-- simple styling attributes -->
         <item name="com_accountkit_primary_color">?android:attr/colorPrimary</item>
@@ -1149,8 +1061,6 @@
         <item name="android:spinnerItemStyle">@style/AccountKit.SpinnerItem</item>
         <item name="android:spinnerStyle">@style/AccountKit.Spinner</item>
     </style>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <style name="Base.Theme.AppCompat" parent="Base.V7.Theme.AppCompat">
     </style>
     <style name="Base.Theme.AppCompat.CompactMenu" parent="">
@@ -1929,8 +1839,6 @@
         <item name="android:minWidth">56dp</item>
         <item name="android:scaleType">center</item>
     </style>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <style name="Base.Widget.Design.TabLayout" parent="android:Widget">
         <item name="tabMaxWidth">@dimen/design_tab_max_width</item>
         <item name="tabIndicatorColor">?attr/colorAccent</item>
@@ -1941,8 +1849,6 @@
         <item name="tabTextAppearance">@style/TextAppearance.Design.Tab</item>
         <item name="tabSelectedTextColor">?android:textColorPrimary</item>
     </style>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <style name="Platform.AppCompat" parent="android:Theme">
         <item name="android:windowNoTitle">true</item>
 
@@ -2143,8 +2049,6 @@
     </style>
     <style name="TextAppearance.AppCompat.Widget.Switch" parent="Base.TextAppearance.AppCompat.Widget.Switch"/>
     <style name="TextAppearance.AppCompat.Widget.TextView.SpinnerItem" parent="Base.TextAppearance.AppCompat.Widget.TextView.SpinnerItem"/>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <style name="TextAppearance.Design.CollapsingToolbar.Expanded" parent="TextAppearance.AppCompat.Display1">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
@@ -2167,8 +2071,6 @@
         <item name="android:textColor">?android:textColorSecondary</item>
         <item name="textAllCaps">true</item>
     </style>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <style name="TextAppearance.StatusBar.EventContent" parent=""/>
     <style name="TextAppearance.StatusBar.EventContent.Info" parent=""/>
     <style name="TextAppearance.StatusBar.EventContent.Line2" parent=""/>
@@ -2180,8 +2082,6 @@
     </style>
     <style name="TextAppearance.Widget.AppCompat.Toolbar.Title" parent="Base.TextAppearance.Widget.AppCompat.Toolbar.Title">
     </style>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values/values.xml -->
-    <eat-comment/>
     <style name="Theme.AccountKit" parent="Base.Theme.AccountKit">
         <item name="com_accountkit_primary_color">#96bdeb</item>
         <item name="com_accountkit_primary_text_color">@android:color/white</item>
@@ -2207,8 +2107,6 @@
         </item>
         <item name="com_accountkit_input_border_color">?attr/com_accountkit_secondary_color</item>
     </style>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <style name="Theme.AppCompat" parent="Base.Theme.AppCompat"/>
     <style name="Theme.AppCompat.CompactMenu" parent="Base.Theme.AppCompat.CompactMenu"/>
     <style name="Theme.AppCompat.DayNight" parent="Theme.AppCompat.Light"/>
@@ -2238,8 +2136,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <style name="Theme.Design" parent="Theme.AppCompat">
         <item name="textColorError">@color/design_textinput_error_color_dark</item>
     </style>
@@ -2264,8 +2160,6 @@
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <style name="ThemeOverlay.AppCompat" parent="Base.ThemeOverlay.AppCompat"/>
     <style name="ThemeOverlay.AppCompat.ActionBar" parent="Base.ThemeOverlay.AppCompat.ActionBar"/>
     <style name="ThemeOverlay.AppCompat.Dark" parent="Base.ThemeOverlay.AppCompat.Dark"/>
@@ -2366,8 +2260,6 @@
     <style name="Widget.AppCompat.TextView.SpinnerItem" parent="Base.Widget.AppCompat.TextView.SpinnerItem"/>
     <style name="Widget.AppCompat.Toolbar" parent="Base.Widget.AppCompat.Toolbar"/>
     <style name="Widget.AppCompat.Toolbar.Button.Navigation" parent="Base.Widget.AppCompat.Toolbar.Button.Navigation"/>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/res/values/values.xml -->
-    <eat-comment/>
     <style name="Widget.Design.AppBarLayout" parent="android:Widget">
         <item name="elevation">@dimen/design_appbar_elevation</item>
         <item name="android:background">?attr/colorPrimary</item>
@@ -2423,8 +2315,6 @@
         <item name="counterTextAppearance">@style/TextAppearance.Design.Counter</item>
         <item name="counterOverflowTextAppearance">@style/TextAppearance.Design.Counter.Overflow</item>
     </style>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/values/styles.xml -->
-    <eat-comment/>
     <style name="btn" parent="android:Widget.Holo.Light.Button">
         <item name="android:minHeight">1dp</item>
         <item name="android:minWidth">1dp</item>

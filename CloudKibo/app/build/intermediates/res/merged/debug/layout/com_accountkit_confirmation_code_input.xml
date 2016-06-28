@@ -34,4 +34,4 @@
     android:selectAllOnFocus="true"
     style="@style/AccountKit.InputText"
     />
-<!-- From: file:/Users/swiese/fbandroid-sdk/accountkit/accountkitsdk/src/main/res/layout/com_accountkit_confirmation_code_input.xml --><!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/layout/com_accountkit_confirmation_code_input.xml -->
+<!-- From: file:/Users/swiese/fbandroid-sdk/accountkit/accountkitsdk/src/main/res/layout/com_accountkit_confirmation_code_input.xml -->

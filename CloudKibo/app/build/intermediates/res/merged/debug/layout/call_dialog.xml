@@ -27,4 +27,4 @@
         android:layout_toRightOf="@+id/imageDialog"
         />
       
-</RelativeLayout><!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/layout/call_dialog.xml -->
+</RelativeLayout>

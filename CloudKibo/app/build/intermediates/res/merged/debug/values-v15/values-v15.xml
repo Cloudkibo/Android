@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-v15/values-v15.xml -->
-    <eat-comment/>
     <style name="AccountKit.AgreementText" parent="Base.AccountKit.AgreementText">
         <item name="android:typeface">sans</item>
     </style>

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-th/values-th.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:อันดอร์รา</item>
         <item>971:AE:สหรัฐอาหรับเอมิเรตส์</item>
@@ -239,8 +237,6 @@
         <item>260:ZM:แซมเบีย</item>
         <item>263:ZW:ซิมบับเว</item>
     </string-array>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-th/values-th.xml -->
-    <eat-comment/>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"นำทางไปหน้าแรก"</string>
     <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
     <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
@@ -260,8 +256,6 @@
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"แชร์กับ"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"แชร์กับ %s"</string>
     <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"ยุบ"</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-th/values-th.xml -->
-    <eat-comment/>
     <string name="com_accountkit_button_begin">เริ่มต้น</string>
     <string name="com_accountkit_button_cancel">ยกเลิก</string>
     <string name="com_accountkit_button_confirm">ยืนยัน</string>
@@ -279,13 +273,13 @@
     <string name="com_accountkit_button_submit">ส่ง</string>
     <string name="com_accountkit_check_email">เปิดอีเมลของคุณ</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        แตะ %1$s เพื่อยอมรับ<![CDATA[<a href="%2$s">ข้อกำหนด</a>]]> <![CDATA[<a href="%3$s">นโยบายข้อมูล</a>]]> และ <![CDATA[<a href="%4$s">การใช้งานคุกกี้</a>]]> ของ Facebook
+        แตะ %1$s เพื่อยอมรับ&lt;a href="%2$s">ข้อกำหนด&lt;/a> &lt;a href="%3$s">นโยบายข้อมูล&lt;/a> และ &lt;a href="%4$s">การใช้งานคุกกี้&lt;/a> ของ Facebook
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        แตะ %1$s เพื่อยอมรับ<![CDATA[<a href="%2$s">ข้อกำหนด</a>]]> <![CDATA[<a href="%3$s">นโยบายข้อมูล</a>]]> <![CDATA[<a href="%4$s">การใช้งานคุกกี้</a>]]> และ <![CDATA[<a href="%5$s">นโยบายความปลอดภัย</a>]]> ของ %6$s ของ Facebook
+        แตะ %1$s เพื่อยอมรับ&lt;a href="%2$s">ข้อกำหนด&lt;/a> &lt;a href="%3$s">นโยบายข้อมูล&lt;/a> &lt;a href="%4$s">การใช้งานคุกกี้&lt;/a> และ &lt;a href="%5$s">นโยบายความปลอดภัย&lt;/a> ของ %6$s ของ Facebook
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        แตะ %1$s เพื่อยอมรับ<![CDATA[<a href="%2$s">ข้อกำหนด</a>]]> <![CDATA[<a href="%3$s">นโยบายข้อมูล</a>]]> <![CDATA[<a href="%4$s">การใช้งานคุกกี้</a>]]> และ <![CDATA[<a href="%5$s">นโยบายความปลอดภัย</a>]]> และ <![CDATA[<a href="%6$s">ข้อกำหนดการให้บริการ</a>]]> ของ %7$s ของ Facebook
+        แตะ %1$s เพื่อยอมรับ&lt;a href="%2$s">ข้อกำหนด&lt;/a> &lt;a href="%3$s">นโยบายข้อมูล&lt;/a> &lt;a href="%4$s">การใช้งานคุกกี้&lt;/a> และ &lt;a href="%5$s">นโยบายความปลอดภัย&lt;/a> และ &lt;a href="%6$s">ข้อกำหนดการให้บริการ&lt;/a> ของ %7$s ของ Facebook
     </string>
     <string name="com_accountkit_confirmation_code_text">ส่งรหัสอีกครั้ง</string>
     <string name="com_accountkit_confirmation_code_title">ป้อนรหัสของคุณ</string>
@@ -293,7 +287,7 @@
     <string name="com_accountkit_email_loading_title">กำลังส่งอีเมล</string>
     <string name="com_accountkit_email_login_retry_title">ยืนยันอีเมลของคุณ</string>
     <string name="com_accountkit_email_login_text">
-        แตะ %1$s เพื่อรับการยืนยันทางอีเมล จากชุดเครื่องมือบัญชีผู้ใช้ของ Facebook %2$S ใช้เพื่อช่วยคุณในการเข้าสู่ระบบ แต่คุณไม่จำเป็นต้องมีบัญชีผู้ใช้ Facebook <![CDATA[<a href="%3$s">เรียนรู้เพิ่มเติม</a>]]>
+        แตะ %1$s เพื่อรับการยืนยันทางอีเมล จากชุดเครื่องมือบัญชีผู้ใช้ของ Facebook %2$S ใช้เพื่อช่วยคุณในการเข้าสู่ระบบ แต่คุณไม่จำเป็นต้องมีบัญชีผู้ใช้ Facebook &lt;a href="%3$s">เรียนรู้เพิ่มเติม&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">ป้อนที่อยู่อีเมลของคุณ</string>
     <string name="com_accountkit_email_not_received">ส่งอีเมลอีกครั้ง</string>
@@ -303,7 +297,7 @@
     <string name="com_accountkit_phone_loading_title">กำลังส่งรหัสถึงคุณ…</string>
     <string name="com_accountkit_phone_login_retry_title">ยืนยันหมายเลขโทรศัพท์ของคุณ</string>
     <string name="com_accountkit_phone_login_text">
-        แตะ %1$s เพื่อรับการยืนยันทาง SMS จากชุดเครื่องมือบัญชีผู้ใช้ของ Facebook  %2$S ใช้สิ่งนี้เพื่อช่วยคุณในการเข้าสู่ระบบ แต่คุณไม่จำเป็นต้องมีบัญชีผู้ใช้ Facebook อาจมีค่าบริการข้อความและข้อมูล <![CDATA[<a href="%3$s">เรียนรู้เพิ่มเติม</a>]]>
+        แตะ %1$s เพื่อรับการยืนยันทาง SMS จากชุดเครื่องมือบัญชีผู้ใช้ของ Facebook  %2$S ใช้สิ่งนี้เพื่อช่วยคุณในการเข้าสู่ระบบ แต่คุณไม่จำเป็นต้องมีบัญชีผู้ใช้ Facebook อาจมีค่าบริการข้อความและข้อมูล &lt;a href="%3$s">เรียนรู้เพิ่มเติม&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">ป้อนหมายเลขโทรศัพท์ของคุณ</string>
     <string name="com_accountkit_resend_email_text">ส่งอีเมลใหม่</string>
@@ -316,7 +310,5 @@
         เราไม่สามารถยืนยันรหัสของคุณ\nโปรดลองอีกครั้ง:
     </string>
     <string name="com_accountkit_verify_title">กำลังยืนยันรหัสของคุณ</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-th/values-th.xml -->
-    <eat-comment/>
     <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

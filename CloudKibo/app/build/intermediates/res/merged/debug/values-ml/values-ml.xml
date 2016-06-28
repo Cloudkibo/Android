@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-ml/values-ml.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:അണ്ടോറ</item>
         <item>971:AE:യുണൈറ്റഡ് അറബ് എമിറേറ്റ്സ്</item>
@@ -256,13 +254,13 @@
     <string name="com_accountkit_button_submit">സമർപ്പിക്കുക</string>
     <string name="com_accountkit_check_email">നിങ്ങളുടെ ഇമെയിൽ തുറക്കുക</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Facebook\' <![CDATA[<a href="%2$s">നിബന്ധനകൾ</a>]]>, <![CDATA[<a href="%3$s">ഡാറ്റ നയം</a>]]>, <![CDATA[<a href="%4$s">കുക്കി ഉപയോഗം</a>]]>എന്നിവ അംഗീകരിക്കാൻ %1$s ടാപ്പ് ചെയ്യുക.
+        Facebook\' &lt;a href="%2$s">നിബന്ധനകൾ&lt;/a>, &lt;a href="%3$s">ഡാറ്റ നയം&lt;/a>, &lt;a href="%4$s">കുക്കി ഉപയോഗം&lt;/a>എന്നിവ അംഗീകരിക്കാൻ %1$s ടാപ്പ് ചെയ്യുക.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Facebook <![CDATA[<a href="%2$s">നിബന്ധനകൾ</a>]]>, <![CDATA[<a href="%3$s">ഡാറ്റ നയം</a>]]>, <![CDATA[<a href="%4$s">ഉപയോഗിക്കുന്ന കുക്കി</a>]]> %6$s-ന്റെ <![CDATA[<a href="%5$s">സ്വകാര്യത നയം </a>]]> എന്നിവ അംഗീകരിക്കാൻ %1$s ടാപ്പ് ചെയ്യുക.
+        Facebook &lt;a href="%2$s">നിബന്ധനകൾ&lt;/a>, &lt;a href="%3$s">ഡാറ്റ നയം&lt;/a>, &lt;a href="%4$s">ഉപയോഗിക്കുന്ന കുക്കി&lt;/a> %6$s-ന്റെ &lt;a href="%5$s">സ്വകാര്യത നയം &lt;/a> എന്നിവ അംഗീകരിക്കാൻ %1$s ടാപ്പ് ചെയ്യുക.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Facebook-ന്റെ <![CDATA[<a href="%2$s">നിബന്ധനകൾ</a>]]>, <![CDATA[<a href="%3$s">ഡാറ്റാ നയം</a>]]>, <![CDATA[<a href="%4$s">കുക്കി ഉപയോഗം</a>]]> %7$s-ന്റെ <![CDATA[<a href="%5$s">സ്വകാര്യത നയം</a>]]>, <![CDATA[<a href="%6$s">സേവന നിബന്ധനകൾ</a>]]> എന്നിവ അംഗീകരിക്കുന്നതിന് %1$s ടാപ്പുചെയ്യുക.
+        Facebook-ന്റെ &lt;a href="%2$s">നിബന്ധനകൾ&lt;/a>, &lt;a href="%3$s">ഡാറ്റാ നയം&lt;/a>, &lt;a href="%4$s">കുക്കി ഉപയോഗം&lt;/a> %7$s-ന്റെ &lt;a href="%5$s">സ്വകാര്യത നയം&lt;/a>, &lt;a href="%6$s">സേവന നിബന്ധനകൾ&lt;/a> എന്നിവ അംഗീകരിക്കുന്നതിന് %1$s ടാപ്പുചെയ്യുക.
     </string>
     <string name="com_accountkit_confirmation_code_text">പുതിയ കോഡ് അയയ്‌ക്കുക</string>
     <string name="com_accountkit_confirmation_code_title">നിങ്ങളുടെ കോഡ് നൽകുക</string>
@@ -270,7 +268,7 @@
     <string name="com_accountkit_email_loading_title">ഇമെയിൽ അയയ്ക്കുന്നു…</string>
     <string name="com_accountkit_email_login_retry_title">നിങ്ങളുടെ ഇമെയിൽ സ്ഥിരീകരിക്കുക</string>
     <string name="com_accountkit_email_login_text">
-        Facebook നൽകുന്ന Account Kit-ൽ നിന്ന് ഇമെയിൽ സ്ഥിരീകരണം ലഭിക്കുന്നതിന് %1$s ടാപ്പുചെയ്യുക. നിങ്ങളെ സൈൻ ഇൻ ചെയ്യാൻ സഹായിക്കുന്നതിന് %2$s ഇത് ഉപയോഗിക്കുന്നു, എന്നാൽ നിങ്ങൾക്കൊരു Facebook അക്കൗണ്ട് ആവശ്യമില്ല. <![CDATA[<a href="%3$s">കൂടുതൽ അറിയുക.</a>]]>
+        Facebook നൽകുന്ന Account Kit-ൽ നിന്ന് ഇമെയിൽ സ്ഥിരീകരണം ലഭിക്കുന്നതിന് %1$s ടാപ്പുചെയ്യുക. നിങ്ങളെ സൈൻ ഇൻ ചെയ്യാൻ സഹായിക്കുന്നതിന് %2$s ഇത് ഉപയോഗിക്കുന്നു, എന്നാൽ നിങ്ങൾക്കൊരു Facebook അക്കൗണ്ട് ആവശ്യമില്ല. &lt;a href="%3$s">കൂടുതൽ അറിയുക.&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">നിങ്ങളുടെ ഇമെയിൽ വിലാസം നൽകുക</string>
     <string name="com_accountkit_email_not_received">ഇമെയിൽ വീണ്ടും അയയ്‌ക്കുക</string>
@@ -280,7 +278,7 @@
     <string name="com_accountkit_phone_loading_title">നിങ്ങളുടെ കോഡ് അയയ്‌ക്കുന്നു…</string>
     <string name="com_accountkit_phone_login_retry_title">നിങ്ങളുടെ ഫോൺ നമ്പർ സ്ഥിരീകരിക്കുക</string>
     <string name="com_accountkit_phone_login_text">
-        Facebook നൽകുന്ന Account Kit-ൽ നിന്ന് SMS സ്ഥിരീകരണം ലഭിക്കുന്നതിന് %1$s ടാപ്പുചെയ്യുക. നിങ്ങളെ സൈൻ ഇൻ ചെയ്യാൻ സഹായിക്കുന്നതിന് %2$s ഇത് ഉപയോഗിക്കുന്നു, എന്നാൽ നിങ്ങൾക്കൊരു Facebook അക്കൗണ്ട് ആവശ്യമില്ല. സന്ദേശ, ഡാറ്റ നിരക്കുകൾ ബാധകമായേക്കാം. <![CDATA[<a href="%3$s">കൂടുതൽ അറിയുക.</a>]]>
+        Facebook നൽകുന്ന Account Kit-ൽ നിന്ന് SMS സ്ഥിരീകരണം ലഭിക്കുന്നതിന് %1$s ടാപ്പുചെയ്യുക. നിങ്ങളെ സൈൻ ഇൻ ചെയ്യാൻ സഹായിക്കുന്നതിന് %2$s ഇത് ഉപയോഗിക്കുന്നു, എന്നാൽ നിങ്ങൾക്കൊരു Facebook അക്കൗണ്ട് ആവശ്യമില്ല. സന്ദേശ, ഡാറ്റ നിരക്കുകൾ ബാധകമായേക്കാം. &lt;a href="%3$s">കൂടുതൽ അറിയുക.&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">നിങ്ങളുടെ ഫോൺ നമ്പർ നൽകുക</string>
     <string name="com_accountkit_resend_email_text">പുതിയ ഇമെയിൽ അയയ്‌ക്കുക</string>

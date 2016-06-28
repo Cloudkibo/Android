@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-ja/values-ja.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:アンドラ</item>
         <item>971:AE:アラブ首長国連邦</item>
@@ -239,8 +237,6 @@
         <item>260:ZM:ザンビア</item>
         <item>263:ZW:ジンバブエ</item>
     </string-array>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-ja/values-ja.xml -->
-    <eat-comment/>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"ホームへ移動"</string>
     <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s、%2$s"</string>
     <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s、%2$s、%3$s"</string>
@@ -260,8 +256,6 @@
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"共有"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"%sと共有"</string>
     <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"折りたたむ"</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-ja/values-ja.xml -->
-    <eat-comment/>
     <string name="com_accountkit_button_begin">開始</string>
     <string name="com_accountkit_button_cancel">キャンセル</string>
     <string name="com_accountkit_button_confirm">確認</string>
@@ -279,13 +273,13 @@
     <string name="com_accountkit_button_submit">送信</string>
     <string name="com_accountkit_check_email">メールを開く</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Facebookの<![CDATA[<a href="%2$s">利用規約</a>]]>、<![CDATA[<a href="%3$s">データに関するポリシー</a>]]>、<![CDATA[<a href="%4$s">Cookieの使用</a>]]>に同意する場合は[%1$s]をタップしてください。
+        Facebookの&lt;a href="%2$s">利用規約&lt;/a>、&lt;a href="%3$s">データに関するポリシー&lt;/a>、&lt;a href="%4$s">Cookieの使用&lt;/a>に同意する場合は[%1$s]をタップしてください。
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Facebookの<![CDATA[<a href="%2$s">利用規約</a>]]>、<![CDATA[<a href="%3$s">データに関するポリシー</a>]]>、<![CDATA[<a href="%4$s">Cookieの使用</a>]]>、%6$sの<![CDATA[<a href="%5$s">プライバシーポリシー</a>]]>に同意する場合は[%1$s]をタップしてください。
+        Facebookの&lt;a href="%2$s">利用規約&lt;/a>、&lt;a href="%3$s">データに関するポリシー&lt;/a>、&lt;a href="%4$s">Cookieの使用&lt;/a>、%6$sの&lt;a href="%5$s">プライバシーポリシー&lt;/a>に同意する場合は[%1$s]をタップしてください。
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Facebookの<![CDATA[<a href="%2$s">利用規約</a>]]>、<![CDATA[<a href="%3$s">データに関するポリシー</a>]]>、<![CDATA[<a href="%4$s">Cookieの使用</a>]]>、%7$sの<![CDATA[<a href="%5$s">プライバシーポリシー</a>]]>と<![CDATA[<a href="%6$s">利用規約</a>]]>に同意する場合は[%1$s]をタップしてください。
+        Facebookの&lt;a href="%2$s">利用規約&lt;/a>、&lt;a href="%3$s">データに関するポリシー&lt;/a>、&lt;a href="%4$s">Cookieの使用&lt;/a>、%7$sの&lt;a href="%5$s">プライバシーポリシー&lt;/a>と&lt;a href="%6$s">利用規約&lt;/a>に同意する場合は[%1$s]をタップしてください。
     </string>
     <string name="com_accountkit_confirmation_code_text">コードを再送信</string>
     <string name="com_accountkit_confirmation_code_title">コードを入力してください</string>
@@ -293,7 +287,7 @@
     <string name="com_accountkit_email_loading_title">メールを送信中…</string>
     <string name="com_accountkit_email_login_retry_title">メールアドレスを確認</string>
     <string name="com_accountkit_email_login_text">
-        %1$sをタップすると、FacebookのAccount Kitから確認メールが送信されます。%2$sにサインインする際にこのメールを使用しますが、Facebookアカウントは不要です。詳しくは<![CDATA[<a href="%3$s">こちら</a>]]>をご覧ください。
+        %1$sをタップすると、FacebookのAccount Kitから確認メールが送信されます。%2$sにサインインする際にこのメールを使用しますが、Facebookアカウントは不要です。詳しくは&lt;a href="%3$s">こちら&lt;/a>をご覧ください。
     </string>
     <string name="com_accountkit_email_login_title">メールアドレスを入力</string>
     <string name="com_accountkit_email_not_received">メールを再送信</string>
@@ -303,7 +297,7 @@
     <string name="com_accountkit_phone_loading_title">コードを送信しています…</string>
     <string name="com_accountkit_phone_login_retry_title">電話番号を認証してください</string>
     <string name="com_accountkit_phone_login_text">
-        %1$sをタップすると、FacebookのAccount KitからSMSによる確認メッセージが送信されます。%2$sにサインインする際にこのメッセージを使用しますが、Facebookアカウントは不要です。メッセージとデータの通信料がかかることがあります。詳しくは<![CDATA[<a href="%3$s">こちら</a>]]>をご覧ください。
+        %1$sをタップすると、FacebookのAccount KitからSMSによる確認メッセージが送信されます。%2$sにサインインする際にこのメッセージを使用しますが、Facebookアカウントは不要です。メッセージとデータの通信料がかかることがあります。詳しくは&lt;a href="%3$s">こちら&lt;/a>をご覧ください。
     </string>
     <string name="com_accountkit_phone_login_title">電話番号を入力してください</string>
     <string name="com_accountkit_resend_email_text">新しいメールを送信</string>
@@ -316,7 +310,5 @@
         コードを確認できませんでした。\nもう一度実行してください。
     </string>
     <string name="com_accountkit_verify_title">コードを認証しています…</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-ja/values-ja.xml -->
-    <eat-comment/>
     <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

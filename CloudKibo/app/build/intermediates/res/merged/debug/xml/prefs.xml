@@ -9,4 +9,4 @@
         android:defaultValue="true"
         android:summary="This option if selected will allow the application to vibrate on incoming calls and messages."
         android:key="vibrateOnAlerts" />
-</PreferenceScreen><!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/xml/prefs.xml -->
+</PreferenceScreen>

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-tr/values-tr.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:Andorra</item>
         <item>971:AE:Birleşik Arap Emirlikleri</item>
@@ -239,8 +237,6 @@
         <item>260:ZM:Zambiya</item>
         <item>263:ZW:Zimbabve</item>
     </string-array>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-tr/values-tr.xml -->
-    <eat-comment/>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Ana ekrana git"</string>
     <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
     <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
@@ -260,8 +256,6 @@
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Şununla paylaş"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"%s ile paylaş"</string>
     <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Daralt"</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-tr/values-tr.xml -->
-    <eat-comment/>
     <string name="com_accountkit_button_begin">Başla</string>
     <string name="com_accountkit_button_cancel">İptal</string>
     <string name="com_accountkit_button_confirm">Onayla</string>
@@ -279,13 +273,13 @@
     <string name="com_accountkit_button_submit">Gönder</string>
     <string name="com_accountkit_check_email">E-postanı aç</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Facebook <![CDATA[<a href="%2$s">Koşulları</a>]]>, <![CDATA[<a href="%3$s">Veri İlkesi</a>]]> ve <![CDATA[<a href="%4$s">çerez kullanımını</a>]]> kabul etmek için %1$s düğmesine dokunun.
+        Facebook &lt;a href="%2$s">Koşulları&lt;/a>, &lt;a href="%3$s">Veri İlkesi&lt;/a> ve &lt;a href="%4$s">çerez kullanımını&lt;/a> kabul etmek için %1$s düğmesine dokunun.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Facebook <![CDATA[<a href="%2$s">Koşulları</a>]]>, <![CDATA[<a href="%3$s">Veri İlkesi</a>]]> ve <![CDATA[<a href="%4$s">çerez kullanımı</a>]]> ile %6$s <![CDATA[<a href="%5$s">Gizlilik İlkesi</a>]]>\'ni kabul etmek için %1$s düğmesine dokunun.
+        Facebook &lt;a href="%2$s">Koşulları&lt;/a>, &lt;a href="%3$s">Veri İlkesi&lt;/a> ve &lt;a href="%4$s">çerez kullanımı&lt;/a> ile %6$s &lt;a href="%5$s">Gizlilik İlkesi&lt;/a>\'ni kabul etmek için %1$s düğmesine dokunun.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Facebook <![CDATA[<a href="%2$s">Koşulları</a>]]>, <![CDATA[<a href="%3$s">Veri İlkesi</a>]]> ve <![CDATA[<a href="%4$s">çerez kullanımını</a>]]> ile %7$s <![CDATA[<a href="%5$s">Gizlilik İlkesi</a>]]> ve <![CDATA[<a href="%6$s">Hizmet Koşulları</a>]]>\'nı kabul etmek için %1$s düğmesine dokunun.
+        Facebook &lt;a href="%2$s">Koşulları&lt;/a>, &lt;a href="%3$s">Veri İlkesi&lt;/a> ve &lt;a href="%4$s">çerez kullanımını&lt;/a> ile %7$s &lt;a href="%5$s">Gizlilik İlkesi&lt;/a> ve &lt;a href="%6$s">Hizmet Koşulları&lt;/a>\'nı kabul etmek için %1$s düğmesine dokunun.
     </string>
     <string name="com_accountkit_confirmation_code_text">Kodu Tekrar Gönder</string>
     <string name="com_accountkit_confirmation_code_title">Kodunuzu girin</string>
@@ -293,7 +287,7 @@
     <string name="com_accountkit_email_loading_title">E-posta gönderiliyor…</string>
     <string name="com_accountkit_email_login_retry_title">E-posta adresinizi onaylayın</string>
     <string name="com_accountkit_email_login_text">
-        Facebook\'un desteğiyle Account Kit\'ten onay e-postası almak için %1$s düğmesine dokunun. %2$s, giriş yapmanıza yardımcı olmak için bundan yararlanmaktadır, ancak Facebook hesabı zorunlu değildir. <![CDATA[<a href="%3$s">Daha fazla bilgi alın.</a>]]>
+        Facebook\'un desteğiyle Account Kit\'ten onay e-postası almak için %1$s düğmesine dokunun. %2$s, giriş yapmanıza yardımcı olmak için bundan yararlanmaktadır, ancak Facebook hesabı zorunlu değildir. &lt;a href="%3$s">Daha fazla bilgi alın.&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">E-posta adresini gir</string>
     <string name="com_accountkit_email_not_received">E-postayı Tekrar Gönder</string>
@@ -303,7 +297,7 @@
     <string name="com_accountkit_phone_loading_title">Kodun gönderiliyor…</string>
     <string name="com_accountkit_phone_login_retry_title">Telefon numaranı onayla</string>
     <string name="com_accountkit_phone_login_text">
-        Facebook\'un desteğiyle Account Kit\'ten SMS onayı almak için %1$s düğmesine dokunun. %2$s, giriş yapmanıza yardımcı olmak için bundan yararlanmaktadır, ancak Facebook hesabı zorunlu değildir. Mesaj ve veri ücretleri geçerli olabilir. <![CDATA[<a href="%3$s">Daha fazla bilgi alın.</a>]]>
+        Facebook\'un desteğiyle Account Kit\'ten SMS onayı almak için %1$s düğmesine dokunun. %2$s, giriş yapmanıza yardımcı olmak için bundan yararlanmaktadır, ancak Facebook hesabı zorunlu değildir. Mesaj ve veri ücretleri geçerli olabilir. &lt;a href="%3$s">Daha fazla bilgi alın.&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">Telefon numaranı gir</string>
     <string name="com_accountkit_resend_email_text">Yeni E-posta Gönder</string>
@@ -316,7 +310,5 @@
         Kodunuzu doğrulayamadık.\nLütfen tekrar deneyin:
     </string>
     <string name="com_accountkit_verify_title">Kodun doğrulanıyor…</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-tr/values-tr.xml -->
-    <eat-comment/>
     <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

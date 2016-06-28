@@ -12,4 +12,4 @@
         android:layout_weight="0.54"
         android:id="@+id/gl_container"></FrameLayout>
 
-</LinearLayout><!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/layout/rtc_activity.xml -->
+</LinearLayout>

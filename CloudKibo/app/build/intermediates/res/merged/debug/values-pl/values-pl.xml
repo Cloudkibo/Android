@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-pl/values-pl.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:Andora</item>
         <item>971:AE:Zjednoczone Emiraty Arabskie</item>
@@ -239,8 +237,6 @@
         <item>260:ZM:Zambia</item>
         <item>263:ZW:Zimbabwe</item>
     </string-array>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-pl/values-pl.xml -->
-    <eat-comment/>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Przejdź do strony głównej"</string>
     <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
     <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
@@ -260,8 +256,6 @@
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Udostępnij dla"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Udostępnij dla %s"</string>
     <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Zwiń"</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-pl/values-pl.xml -->
-    <eat-comment/>
     <string name="com_accountkit_button_begin">Rozpocznij</string>
     <string name="com_accountkit_button_cancel">Anuluj</string>
     <string name="com_accountkit_button_confirm">Potwierdź</string>
@@ -279,13 +273,13 @@
     <string name="com_accountkit_button_submit">Wyślij</string>
     <string name="com_accountkit_check_email">Otwórz e-mail</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Dotknij pozycji %1$s, aby zaakceptować <![CDATA[<a href="%2$s">Regulamin Facebooka</a>]]>, <![CDATA[<a href="%3$s">Zasady wykorzystania danych</a>]]> oraz <![CDATA[<a href="%4$s">Zasady stosowania plików cookie</a>]]>.
+        Dotknij pozycji %1$s, aby zaakceptować &lt;a href="%2$s">Regulamin Facebooka&lt;/a>, &lt;a href="%3$s">Zasady wykorzystania danych&lt;/a> oraz &lt;a href="%4$s">Zasady stosowania plików cookie&lt;/a>.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Dotknij pozycji %1$s, aby zaakceptować <![CDATA[<a href="%2$s">Regulamin Facebooka</a>]]>, <![CDATA[<a href="%3$s">Zasady wykorzystania danych</a>]]>, <![CDATA[<a href="%4$s">Zasady stosowania plików cookie</a>]]> oraz <![CDATA[<a href="%5$s">Zasady ochrony prywatności</a>]]> %6$s.
+        Dotknij pozycji %1$s, aby zaakceptować &lt;a href="%2$s">Regulamin Facebooka&lt;/a>, &lt;a href="%3$s">Zasady wykorzystania danych&lt;/a>, &lt;a href="%4$s">Zasady stosowania plików cookie&lt;/a> oraz &lt;a href="%5$s">Zasady ochrony prywatności&lt;/a> %6$s.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Dotknij pozycji %1$s, aby zaakceptować <![CDATA[<a href="%2$s">Regulamin Facebooka</a>]]>, <![CDATA[<a href="%3$s">Zasady wykorzystania danych</a>]]>, <![CDATA[<a href="%4$s">Zasady stosowania plików cookie</a>]]> oraz <![CDATA[<a href="%5$s">Zasady ochrony prywatności</a>]]> oraz <![CDATA[<a href="%6$s">Regulamin</a>]]> %7$s.
+        Dotknij pozycji %1$s, aby zaakceptować &lt;a href="%2$s">Regulamin Facebooka&lt;/a>, &lt;a href="%3$s">Zasady wykorzystania danych&lt;/a>, &lt;a href="%4$s">Zasady stosowania plików cookie&lt;/a> oraz &lt;a href="%5$s">Zasady ochrony prywatności&lt;/a> oraz &lt;a href="%6$s">Regulamin&lt;/a> %7$s.
     </string>
     <string name="com_accountkit_confirmation_code_text">Ponownie wyślij kod</string>
     <string name="com_accountkit_confirmation_code_title">Wprowadź kod</string>
@@ -293,7 +287,7 @@
     <string name="com_accountkit_email_loading_title">Wysyłanie wiadomości e-mail…</string>
     <string name="com_accountkit_email_login_retry_title">Potwierdź adres e-mail</string>
     <string name="com_accountkit_email_login_text">
-        Dotknij przycisku %1$s, aby otrzymać e-mail z potwierdzeniem z usługi Account Kit obsługiwanej przez Facebooka. Aplikacja %2$s korzysta z tej możliwości, aby umożliwić Ci zarejestrowanie się, ale nie musisz mieć konta na Facebooku. <![CDATA[<a href="%3$s">Więcej informacji.</a>]]>
+        Dotknij przycisku %1$s, aby otrzymać e-mail z potwierdzeniem z usługi Account Kit obsługiwanej przez Facebooka. Aplikacja %2$s korzysta z tej możliwości, aby umożliwić Ci zarejestrowanie się, ale nie musisz mieć konta na Facebooku. &lt;a href="%3$s">Więcej informacji.&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">Wprowadź swój adres e-mail</string>
     <string name="com_accountkit_email_not_received">Wyślij ponownie e-mail</string>
@@ -303,7 +297,7 @@
     <string name="com_accountkit_phone_loading_title">Wysyłanie kodu…</string>
     <string name="com_accountkit_phone_login_retry_title">Potwierdź numer telefonu</string>
     <string name="com_accountkit_phone_login_text">
-        Dotknij przycisku %1$s, aby otrzymać SMS z potwierdzeniem z usługi Account Kit obsługiwanej przez Facebooka. Aplikacja %2$s korzysta z tej możliwości, aby umożliwić Ci zarejestrowanie się, ale nie musisz mieć konta na Facebooku. Mogą zostać naliczone opłaty za przesyłanie wiadomości i danych. <![CDATA[<a href="%3$s">Więcej informacji.</a>]]>
+        Dotknij przycisku %1$s, aby otrzymać SMS z potwierdzeniem z usługi Account Kit obsługiwanej przez Facebooka. Aplikacja %2$s korzysta z tej możliwości, aby umożliwić Ci zarejestrowanie się, ale nie musisz mieć konta na Facebooku. Mogą zostać naliczone opłaty za przesyłanie wiadomości i danych. &lt;a href="%3$s">Więcej informacji.&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">Wprowadź swój numer telefonu</string>
     <string name="com_accountkit_resend_email_text">Wyślij nowy e-mail</string>
@@ -316,7 +310,5 @@
         Nie udało nam się zweryfikować Twojego kodu. Spróbuj ponownie:
     </string>
     <string name="com_accountkit_verify_title">Weryfikowanie kodu…</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-pl/values-pl.xml -->
-    <eat-comment/>
     <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

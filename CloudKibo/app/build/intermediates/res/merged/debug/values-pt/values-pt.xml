@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-pt/values-pt.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:Andorra</item>
         <item>971:AE:Emirados Árabes Unidos</item>
@@ -239,8 +237,6 @@
         <item>260:ZM:Zâmbia</item>
         <item>263:ZW:Zimbábue</item>
     </string-array>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-pt/values-pt.xml -->
-    <eat-comment/>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Navegar para a página inicial"</string>
     <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
     <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
@@ -260,8 +256,6 @@
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Compartilhar com"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Compartilhar com %s"</string>
     <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Recolher"</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-pt/values-pt.xml -->
-    <eat-comment/>
     <string name="com_accountkit_button_begin">Começar</string>
     <string name="com_accountkit_button_cancel">Cancelar</string>
     <string name="com_accountkit_button_confirm">Confirmar</string>
@@ -279,13 +273,13 @@
     <string name="com_accountkit_button_submit">Enviar</string>
     <string name="com_accountkit_check_email">Abra o seu email</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Toque em %1$s para aceitar os <![CDATA[<a href="%2$s">Termos</a>]]>, a <![CDATA[<a href="%3$s">Política de Dados</a>]]> e o <![CDATA[<a href="%4$s">uso de cookies</a>]]> do Facebook.
+        Toque em %1$s para aceitar os &lt;a href="%2$s">Termos&lt;/a>, a &lt;a href="%3$s">Política de Dados&lt;/a> e o &lt;a href="%4$s">uso de cookies&lt;/a> do Facebook.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Toque em %1$s para aceitar os <![CDATA[<a href="%2$s">Termos</a>]]>, a <![CDATA[<a href="%3$s">Política de Dados</a>]]>, o <![CDATA[<a href="%4$s">uso de cookies</a>]]> do Facebook e a <![CDATA[<a href="%5$s">Política de Privacidade</a>]]> do %6$s.
+        Toque em %1$s para aceitar os &lt;a href="%2$s">Termos&lt;/a>, a &lt;a href="%3$s">Política de Dados&lt;/a>, o &lt;a href="%4$s">uso de cookies&lt;/a> do Facebook e a &lt;a href="%5$s">Política de Privacidade&lt;/a> do %6$s.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Toque em %1$s para aceitar os <![CDATA[<a href="%2$s">Termos</a>]]>, a <![CDATA[<a href="%3$s">Política de Dados</a>]]>, o <![CDATA[<a href="%4$s">uso de cookies</a>]]> do Facebook e a <![CDATA[<a href="%5$s">Política de Privacidade</a>]]> e os <![CDATA[<a href="%6$s">Termos de Serviço</a>]]> do %7$s.
+        Toque em %1$s para aceitar os &lt;a href="%2$s">Termos&lt;/a>, a &lt;a href="%3$s">Política de Dados&lt;/a>, o &lt;a href="%4$s">uso de cookies&lt;/a> do Facebook e a &lt;a href="%5$s">Política de Privacidade&lt;/a> e os &lt;a href="%6$s">Termos de Serviço&lt;/a> do %7$s.
     </string>
     <string name="com_accountkit_confirmation_code_text">Reenviar código</string>
     <string name="com_accountkit_confirmation_code_title">Insira seu código</string>
@@ -293,7 +287,7 @@
     <string name="com_accountkit_email_loading_title">Enviando email…</string>
     <string name="com_accountkit_email_login_retry_title">Confirme seu email</string>
     <string name="com_accountkit_email_login_text">
-        Toque em %1$s para receber um email de confirmação do Account Kit desenvolvido pelo Facebook. O aplicativo %2$s usa esse recurso para ajudar você a se conectar, mas você não precisa de uma conta do Facebook. <![CDATA[<a href="%3$s">Saiba mais.</a>]]>
+        Toque em %1$s para receber um email de confirmação do Account Kit desenvolvido pelo Facebook. O aplicativo %2$s usa esse recurso para ajudar você a se conectar, mas você não precisa de uma conta do Facebook. &lt;a href="%3$s">Saiba mais.&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">Digite o seu endereço de email</string>
     <string name="com_accountkit_email_not_received">Reenviar email</string>
@@ -303,7 +297,7 @@
     <string name="com_accountkit_phone_loading_title">Enviando seu código…</string>
     <string name="com_accountkit_phone_login_retry_title">Confirme seu número de telefone</string>
     <string name="com_accountkit_phone_login_text">
-        Toque em %1$s para receber um SMS de confirmação do Account Kit desenvolvido pelo Facebook. O aplicativo %2$s usa esse recurso para ajudar você a se conectar, mas você não precisa de uma conta do Facebook. Sujeito a taxas de mensagem e dados. <![CDATA[<a href="%3$s">Saiba mais.</a>]]>
+        Toque em %1$s para receber um SMS de confirmação do Account Kit desenvolvido pelo Facebook. O aplicativo %2$s usa esse recurso para ajudar você a se conectar, mas você não precisa de uma conta do Facebook. Sujeito a taxas de mensagem e dados. &lt;a href="%3$s">Saiba mais.&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">Digite seu número de telefone</string>
     <string name="com_accountkit_resend_email_text">Enviar novo email</string>
@@ -316,7 +310,5 @@
         Não foi possível verificar seu código.\nTente novamente:
     </string>
     <string name="com_accountkit_verify_title">Verificando seu código…</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-pt/values-pt.xml -->
-    <eat-comment/>
     <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"999+"</string>
 </resources>

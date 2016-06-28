@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-es-rES/values-es-rES.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:Andorra</item>
         <item>971:AE:Emiratos Árabes Unidos</item>
@@ -256,13 +254,13 @@
     <string name="com_accountkit_button_submit">Enviar</string>
     <string name="com_accountkit_check_email">Abre tu correo electrónico</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Toca %1$s para aceptar las <![CDATA[<a href="%2$s">Condiciones</a>]]>, la <![CDATA[<a href="%3$s">Política de datos</a>]]> y el <![CDATA[<a href="%4$s">Uso de cookies</a>]]> de Facebook.
+        Toca %1$s para aceptar las &lt;a href="%2$s">Condiciones&lt;/a>, la &lt;a href="%3$s">Política de datos&lt;/a> y el &lt;a href="%4$s">Uso de cookies&lt;/a> de Facebook.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Toca %1$s para aceptar las <![CDATA[<a href="%2$s">Condiciones</a>]]>, la <![CDATA[<a href="%3$s">Política de datos</a>]]> y el <![CDATA[<a href="%4$s">Uso de cookies</a>]]> de Facebook, y la <![CDATA[<a href="%5$s">Política de privacidad</a>]]> de %6$s.
+        Toca %1$s para aceptar las &lt;a href="%2$s">Condiciones&lt;/a>, la &lt;a href="%3$s">Política de datos&lt;/a> y el &lt;a href="%4$s">Uso de cookies&lt;/a> de Facebook, y la &lt;a href="%5$s">Política de privacidad&lt;/a> de %6$s.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Toca %1$s para aceptar las <![CDATA[<a href="%2$s">Condiciones</a>]]>, la <![CDATA[<a href="%3$s">Política de datos</a>]]>, el <![CDATA[<a href="%4$s">Uso de cookies</a>]]> de Facebook, y la <![CDATA[<a href="%5$s">Política de privacidad</a>]]> y las <![CDATA[<a href="%6$s">Condiciones del servicio</a>]]> de %7$s.
+        Toca %1$s para aceptar las &lt;a href="%2$s">Condiciones&lt;/a>, la &lt;a href="%3$s">Política de datos&lt;/a>, el &lt;a href="%4$s">Uso de cookies&lt;/a> de Facebook, y la &lt;a href="%5$s">Política de privacidad&lt;/a> y las &lt;a href="%6$s">Condiciones del servicio&lt;/a> de %7$s.
     </string>
     <string name="com_accountkit_confirmation_code_text">Volver a enviar el código</string>
     <string name="com_accountkit_confirmation_code_title">Introduce el código</string>
@@ -270,7 +268,7 @@
     <string name="com_accountkit_email_loading_title">Enviando correo electrónico…</string>
     <string name="com_accountkit_email_login_retry_title">Confirma tu correo electrónico</string>
     <string name="com_accountkit_email_login_text">
-        Toca %1$s para recibir un correo electrónico de confirmación de Account Kit de Facebook. %2$s lo utiliza para que inicies sesión, pero no es necesario que tengas una cuenta de Facebook. <![CDATA[<a href="%3$s">Obtén más información</a>.]]>
+        Toca %1$s para recibir un correo electrónico de confirmación de Account Kit de Facebook. %2$s lo utiliza para que inicies sesión, pero no es necesario que tengas una cuenta de Facebook. &lt;a href="%3$s">Obtén más información&lt;/a>.
     </string>
     <string name="com_accountkit_email_login_title">Escribe tu dirección de correo electrónico</string>
     <string name="com_accountkit_email_not_received">Volver a enviar el mensaje</string>
@@ -280,7 +278,7 @@
     <string name="com_accountkit_phone_loading_title">Enviando tu código…</string>
     <string name="com_accountkit_phone_login_retry_title">Confirma tu número de teléfono</string>
     <string name="com_accountkit_phone_login_text">
-        Toca %1$s para recibir un SMS de confirmación de Account Kit de Facebook. %2$s lo utiliza para que inicies sesión, pero no es necesario que tengas una cuenta de Facebook. Pueden aplicarse tasas por envío de mensajes y datos. <![CDATA[<a href="%3$s">Obtén más información</a>.]]>
+        Toca %1$s para recibir un SMS de confirmación de Account Kit de Facebook. %2$s lo utiliza para que inicies sesión, pero no es necesario que tengas una cuenta de Facebook. Pueden aplicarse tasas por envío de mensajes y datos. &lt;a href="%3$s">Obtén más información&lt;/a>.
     </string>
     <string name="com_accountkit_phone_login_title">Escribe tu número de teléfono</string>
     <string name="com_accountkit_resend_email_text">Enviar un nuevo correo electrónico</string>

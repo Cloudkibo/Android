@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-pa/values-pa.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:ਅੰਡੋਰਾ</item>
         <item>971:AE:ਸੰਯੁਕਤ ਅਰਬ ਅਮੀਰਾਤ</item>
@@ -256,13 +254,13 @@
     <string name="com_accountkit_button_submit">ਜਮਾ ਕਰੋ</string>
     <string name="com_accountkit_check_email">ਆਪਣੀ ਈਮੇਲ ਖੋਲ੍ਹੋ</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Facebook ਦੀਆਂ <![CDATA[<a href="%2$s">ਸ਼ਰਤਾਂ</a>]]>, <![CDATA[<a href="%3$s">ਡੇਟਾ ਨੀਤੀ</a>]]> ਅਤੇ <![CDATA[<a href="%4$s">ਕੂਕੀ ਦੀ ਵਰਤੋਂ</a>]]> ਨੂੰ ਸਵੀਕਾਰ ਕਰਨ ਲਈ %1$s ਨੂੰ ਟੈਪ ਕਰੋ।
+        Facebook ਦੀਆਂ &lt;a href="%2$s">ਸ਼ਰਤਾਂ&lt;/a>, &lt;a href="%3$s">ਡੇਟਾ ਨੀਤੀ&lt;/a> ਅਤੇ &lt;a href="%4$s">ਕੂਕੀ ਦੀ ਵਰਤੋਂ&lt;/a> ਨੂੰ ਸਵੀਕਾਰ ਕਰਨ ਲਈ %1$s ਨੂੰ ਟੈਪ ਕਰੋ।
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Facebook ਦੀਆਂ <![CDATA[<a href="%2$s">ਸ਼ਰਤਾਂ</a>]]>, <![CDATA[<a href="%3$s">ਡੇਟਾ ਨੀਤੀ</a>]]>, <![CDATA[<a href="%4$s">ਕੂਕੀ ਦੀ ਵਰਤੋਂ</a>]]> ਅਤੇ %6$s ਦੀ <![CDATA[<a href="%5$s">ਗੋਪਨੀਤਯਾ ਨੀਤੀ</a>]]> ਨੂੰ ਸਵੀਕਾਰ ਕਰਨ ਲਈ %1$s ਨੂੰ ਟੈਪ ਕਰੋ।
+        Facebook ਦੀਆਂ &lt;a href="%2$s">ਸ਼ਰਤਾਂ&lt;/a>, &lt;a href="%3$s">ਡੇਟਾ ਨੀਤੀ&lt;/a>, &lt;a href="%4$s">ਕੂਕੀ ਦੀ ਵਰਤੋਂ&lt;/a> ਅਤੇ %6$s ਦੀ &lt;a href="%5$s">ਗੋਪਨੀਤਯਾ ਨੀਤੀ&lt;/a> ਨੂੰ ਸਵੀਕਾਰ ਕਰਨ ਲਈ %1$s ਨੂੰ ਟੈਪ ਕਰੋ।
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Facebook\'s <![CDATA[<a href="%2$s">ਸ਼ਰਤਾਂ</a>]]>, <![CDATA[<a href="%3$s">ਡੇਟਾ ਨੀਤੀ</a>]]>, <![CDATA[<a href="%4$s">ਕੂਕੀ ਦੀ ਵਰਤੋਂ</a>]]> ਅਤੇ %7$s ਦੀ <![CDATA[<a href="%5$s">ਗੋਪਨੀਤਯਾ ਨੀਤੀ</a>]]> ਅਤੇ <![CDATA[<a href="%6$s">ਗੋਪਨੀਤਯਾ ਨੀਤੀ</a>]]> ਨੂੰ ਸਵੀਕਾਰ ਕਰਨ ਲਈ %1$s ਨੂੰ ਟੈਪ ਕਰੋ।
+        Facebook\'s &lt;a href="%2$s">ਸ਼ਰਤਾਂ&lt;/a>, &lt;a href="%3$s">ਡੇਟਾ ਨੀਤੀ&lt;/a>, &lt;a href="%4$s">ਕੂਕੀ ਦੀ ਵਰਤੋਂ&lt;/a> ਅਤੇ %7$s ਦੀ &lt;a href="%5$s">ਗੋਪਨੀਤਯਾ ਨੀਤੀ&lt;/a> ਅਤੇ &lt;a href="%6$s">ਗੋਪਨੀਤਯਾ ਨੀਤੀ&lt;/a> ਨੂੰ ਸਵੀਕਾਰ ਕਰਨ ਲਈ %1$s ਨੂੰ ਟੈਪ ਕਰੋ।
     </string>
     <string name="com_accountkit_confirmation_code_text">ਨਵਾਂ ਕੋਡ ਭੇਜੋ</string>
     <string name="com_accountkit_confirmation_code_title">ਆਪਣਾ ਕੋਡ ਦਾਖ਼ਲ ਕਰੋ</string>
@@ -270,7 +268,7 @@
     <string name="com_accountkit_email_loading_title">ਈਮੇਲ ਭੇਜ ਰਿਹਾ ਹੈ…</string>
     <string name="com_accountkit_email_login_retry_title">ਆਪਣੀ ਈਮੇਲ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ</string>
     <string name="com_accountkit_email_login_text">
-        Facebook ਰਾਹੀਂ Account Kit ਤੋਂ ਪੁਸ਼ਟੀਕਰਨ ਈਮੇਲ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ %1$s ਨੂੰ ਟੈਪ ਕਰੋ। %2$s ਤੁਹਾਨੂੰ ਸਾਈਨ ਇਨ ਕਰਵਾਉਣ ਲਈ ਇਸਦੀ ਵਰਤੋਂ ਕਰਦਾ ਹੈ, ਲੇਕਿਨ ਤੁਹਾਨੂੰ Facebook ਖਾਤੇ ਦੀ ਲੋੜ ਨਹੀਂ ਹੈ। <![CDATA[<a href="%3$s">ਹੋਰ ਜਾਣੋ</a>]]>
+        Facebook ਰਾਹੀਂ Account Kit ਤੋਂ ਪੁਸ਼ਟੀਕਰਨ ਈਮੇਲ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ %1$s ਨੂੰ ਟੈਪ ਕਰੋ। %2$s ਤੁਹਾਨੂੰ ਸਾਈਨ ਇਨ ਕਰਵਾਉਣ ਲਈ ਇਸਦੀ ਵਰਤੋਂ ਕਰਦਾ ਹੈ, ਲੇਕਿਨ ਤੁਹਾਨੂੰ Facebook ਖਾਤੇ ਦੀ ਲੋੜ ਨਹੀਂ ਹੈ। &lt;a href="%3$s">ਹੋਰ ਜਾਣੋ&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">ਆਪਣਾ ਈਮੇਲ ਪਤਾ ਦਾਖ਼ਲ ਕਰੋ</string>
     <string name="com_accountkit_email_not_received">ਈਮੇਲ ਨੂੰ ਦੁਬਾਰਾ ਭੇਜੋ</string>
@@ -280,7 +278,7 @@
     <string name="com_accountkit_phone_loading_title">ਤੁਹਾਡਾ ਕੋਡ ਭੇਜ ਰਿਹਾ ਹੈ…</string>
     <string name="com_accountkit_phone_login_retry_title">ਆਪਣੇ ਫ਼ੋਨ ਨੰਬਰ ਦੀ ਪੁਸ਼ਟੀ ਕਰੋ</string>
     <string name="com_accountkit_phone_login_text">
-        Facebook ਦੁਆਰਾ ਸੰਚਾਲਿਤ Account Kit ਤੋਂ SMS ਪੁਸ਼ਟੀਕਰਨ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ %1$s ਨੂੰ ਟੈਪ ਕਰੋ। %2$s ਤੁਹਾਨੂੰ ਸਾਈਨ ਇਨ ਕਰਵਾਉਣ ਲਈ ਇਸਦੀ ਵਰਤੋਂ ਕਰਦਾ ਹੈ, ਲੇਕਿਨ ਤੁਹਾਨੂੰ Facebook ਖਾਤੇ ਦੀ ਲੋੜ ਨਹੀਂ ਹੈ। ਸੁਨੇਹਾ ਅਤੇ ਡੇਟਾ ਦਰਾਂ ਲਾਗੂ ਹੋ ਸਕਦੀਆਂ ਹਨ। <![CDATA[<a href="%3$s">ਹੋਰ ਜਾਣੋ</a>]]>
+        Facebook ਦੁਆਰਾ ਸੰਚਾਲਿਤ Account Kit ਤੋਂ SMS ਪੁਸ਼ਟੀਕਰਨ ਪ੍ਰਾਪਤ ਕਰਨ ਲਈ %1$s ਨੂੰ ਟੈਪ ਕਰੋ। %2$s ਤੁਹਾਨੂੰ ਸਾਈਨ ਇਨ ਕਰਵਾਉਣ ਲਈ ਇਸਦੀ ਵਰਤੋਂ ਕਰਦਾ ਹੈ, ਲੇਕਿਨ ਤੁਹਾਨੂੰ Facebook ਖਾਤੇ ਦੀ ਲੋੜ ਨਹੀਂ ਹੈ। ਸੁਨੇਹਾ ਅਤੇ ਡੇਟਾ ਦਰਾਂ ਲਾਗੂ ਹੋ ਸਕਦੀਆਂ ਹਨ। &lt;a href="%3$s">ਹੋਰ ਜਾਣੋ&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">ਆਪਣਾ ਫ਼ੋਨ ਨੰਬਰ ਦਾਖ਼ਲ ਕਰੋ</string>
     <string name="com_accountkit_resend_email_text">ਨਵੀਂ ਈਮੇਲ ਭੇਜੋ</string>

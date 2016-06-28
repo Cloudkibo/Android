@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-bn/values-bn.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:অ্যান্ডোরা</item>
         <item>971:AE:সংযুক্ত আরব আমিরাত</item>
@@ -256,13 +254,13 @@
     <string name="com_accountkit_button_submit">জমা দিন</string>
     <string name="com_accountkit_check_email">আপনার ইমেল খুলুন</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Facebook এর <![CDATA[<a href="%2$s">শ্র্তাবলী</a>]]>, <![CDATA[<a href="%3$s">ডেটা নীতি</a>]]> এবং <![CDATA[<a href="%4$s">কুকির ব্যবহার</a>]]> স্বীকার করার জন্য %1$s এ আলতো চাপ দিন৷
+        Facebook এর &lt;a href="%2$s">শ্র্তাবলী&lt;/a>, &lt;a href="%3$s">ডেটা নীতি&lt;/a> এবং &lt;a href="%4$s">কুকির ব্যবহার&lt;/a> স্বীকার করার জন্য %1$s এ আলতো চাপ দিন৷
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Facebook এর <![CDATA[<a href="%2$s">শ্র্তাবলী</a>]]>, <![CDATA[<a href="%3$s">ডেটা নীতি</a>]]>, <![CDATA[<a href="%4$s">কুকির ব্যবহার</a>]]> এবং %6$s এর <![CDATA[<a href="%5$s">গোপনীয়তা নীতি</a>]]> স্বীকার করার জন্য %1$s এ আলতো চাপ দিন৷
+        Facebook এর &lt;a href="%2$s">শ্র্তাবলী&lt;/a>, &lt;a href="%3$s">ডেটা নীতি&lt;/a>, &lt;a href="%4$s">কুকির ব্যবহার&lt;/a> এবং %6$s এর &lt;a href="%5$s">গোপনীয়তা নীতি&lt;/a> স্বীকার করার জন্য %1$s এ আলতো চাপ দিন৷
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Facebook এর <![CDATA[<a href="%2$s">শ্র্তাবলী</a>]]>, <![CDATA[<a href="%3$s">ডেটা নীতি</a>]]>, <![CDATA[<a href="%4$s">কুকির ব্যবহার</a>]]> এবং <![CDATA[<a href="%5$s">গোপনীয়তা নীতি</a>]]> এবং %7$s এর <![CDATA[<a href="%6$s">পরিষেবার শ্র্তাবলী</a>]]> স্বীকার করার জন্য %1$s এ আলতো চাপ দিন৷
+        Facebook এর &lt;a href="%2$s">শ্র্তাবলী&lt;/a>, &lt;a href="%3$s">ডেটা নীতি&lt;/a>, &lt;a href="%4$s">কুকির ব্যবহার&lt;/a> এবং &lt;a href="%5$s">গোপনীয়তা নীতি&lt;/a> এবং %7$s এর &lt;a href="%6$s">পরিষেবার শ্র্তাবলী&lt;/a> স্বীকার করার জন্য %1$s এ আলতো চাপ দিন৷
     </string>
     <string name="com_accountkit_confirmation_code_text">নতুন কোড পাঠান</string>
     <string name="com_accountkit_confirmation_code_title">আপনার কোড লিখুন</string>
@@ -270,7 +268,7 @@
     <string name="com_accountkit_email_loading_title">ইমেল পাঠানো হচ্ছে…</string>
     <string name="com_accountkit_email_login_retry_title">আপনার ইমেল নিশ্চিত করুন</string>
     <string name="com_accountkit_email_login_text">
-        Facebook এর Account Kit থেকে একটি নিশ্চিতকরণ ইমেল পেতে %1$s এ আলতো চাপ দিন৷ %2$s এটি আপনাকে সাইন ইন করতে সাহায্য করার জন্য ব্যবহার করে, কিন্তু আপনার কোনো Facebook অ্যাকাউণ্টের প্রয়োজন নেই। <![CDATA[<a href="%3$s">আরও জানুন। </a>]]>
+        Facebook এর Account Kit থেকে একটি নিশ্চিতকরণ ইমেল পেতে %1$s এ আলতো চাপ দিন৷ %2$s এটি আপনাকে সাইন ইন করতে সাহায্য করার জন্য ব্যবহার করে, কিন্তু আপনার কোনো Facebook অ্যাকাউণ্টের প্রয়োজন নেই। &lt;a href="%3$s">আরও জানুন। &lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">আপনার ইমেল ঠিকানা লিখুন</string>
     <string name="com_accountkit_email_not_received">ইমেল পুনরায় পাঠান</string>
@@ -280,7 +278,7 @@
     <string name="com_accountkit_phone_loading_title">আপনার কোড পাঠানো হচ্ছে…</string>
     <string name="com_accountkit_phone_login_retry_title">আপনার ফোন নম্বর নিশ্চিত করুন</string>
     <string name="com_accountkit_phone_login_text">
-        Facebook এর Account Kit থেকে একটি নিশ্চিতকরণ ইমেল পেতে %1$s এ আলতো চাপ দিন৷ %2$s এটি আপনাকে সাইন ইন করতে সাহায্য করার জন্য ব্যবহার করে, কিন্তু আপনার কোনো Facebook অ্যাকাউণ্টের প্রয়োজন নেই। বার্তা ও ডেটা রেটগুলি প্রযোজ্য হবে। <![CDATA[<a href="%3$s">আরও জানুন। </a>]]>
+        Facebook এর Account Kit থেকে একটি নিশ্চিতকরণ ইমেল পেতে %1$s এ আলতো চাপ দিন৷ %2$s এটি আপনাকে সাইন ইন করতে সাহায্য করার জন্য ব্যবহার করে, কিন্তু আপনার কোনো Facebook অ্যাকাউণ্টের প্রয়োজন নেই। বার্তা ও ডেটা রেটগুলি প্রযোজ্য হবে। &lt;a href="%3$s">আরও জানুন। &lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">আপনার ফোন নম্বর লিখুন</string>
     <string name="com_accountkit_resend_email_text">নতুন ইমেল পাঠান</string>

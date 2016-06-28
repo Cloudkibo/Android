@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-te/values-te.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:అండోరా</item>
         <item>971:AE:యునైటెడ్ అరబ్ ఎమిరేట్స్</item>
@@ -256,13 +254,13 @@
     <string name="com_accountkit_button_submit">సమర్పించు</string>
     <string name="com_accountkit_check_email">మీ ఇమెయిల్‌ను తెరవండి</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Facebook <![CDATA[<a href="%2$s">నిబంధనలు</a>]]>, <![CDATA[<a href="%3$s">డేటా విధానం</a>]]> మరియు <![CDATA[<a href="%4$s">కుక్కీ వినియోగం</a>]]> ఆమోదించడానికి %1$s నొక్కండి.
+        Facebook &lt;a href="%2$s">నిబంధనలు&lt;/a>, &lt;a href="%3$s">డేటా విధానం&lt;/a> మరియు &lt;a href="%4$s">కుక్కీ వినియోగం&lt;/a> ఆమోదించడానికి %1$s నొక్కండి.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Facebook <![CDATA[<a href="%2$s">నిబంధనలు</a>]]>, <![CDATA[<a href="%3$s">డేటా విధానం</a>]]>, <![CDATA[<a href="%4$s">కుక్కీ వినియోగం</a>]]> మరియు %6$s <![CDATA[<a href="%5$s">గోప్యతా విధానం</a>]]> ఆమోదించడానికి %1$s నొక్కండి.
+        Facebook &lt;a href="%2$s">నిబంధనలు&lt;/a>, &lt;a href="%3$s">డేటా విధానం&lt;/a>, &lt;a href="%4$s">కుక్కీ వినియోగం&lt;/a> మరియు %6$s &lt;a href="%5$s">గోప్యతా విధానం&lt;/a> ఆమోదించడానికి %1$s నొక్కండి.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Facebook <![CDATA[<a href="%2$s">నిబంధనలు</a>]]>, <![CDATA[<a href="%3$s">డేటా విధానం</a>]]>, <![CDATA[<a href="%4$s">కుక్కీ వినియోగం</a>]]> మరియు %7$s <![CDATA[<a href="%5$s">గోప్యతా విధానం</a>]]> మరియు <![CDATA[<a href="%6$s">సేవా నిబంధనలు</a>]]> ఆమోదించడానికి %1$s  నొక్కండి.
+        Facebook &lt;a href="%2$s">నిబంధనలు&lt;/a>, &lt;a href="%3$s">డేటా విధానం&lt;/a>, &lt;a href="%4$s">కుక్కీ వినియోగం&lt;/a> మరియు %7$s &lt;a href="%5$s">గోప్యతా విధానం&lt;/a> మరియు &lt;a href="%6$s">సేవా నిబంధనలు&lt;/a> ఆమోదించడానికి %1$s  నొక్కండి.
     </string>
     <string name="com_accountkit_confirmation_code_text">కొత్త కోడ్‌ను పంపు</string>
     <string name="com_accountkit_confirmation_code_title">మీ కోడ్‌ను నమోదు చేయండి</string>
@@ -270,7 +268,7 @@
     <string name="com_accountkit_email_loading_title">ఇమెయిల్ పంపుతోంది…</string>
     <string name="com_accountkit_email_login_retry_title">మీ ఇమెయిల్‌ను నిర్ధారించండి</string>
     <string name="com_accountkit_email_login_text">
-        Facebook ద్వారా Account Kit నుండి నిర్ధారణ ఇమెయిల్‌ను పొందడానికి %1$s నొక్కండి. సైన్ ఇన్ చేయడంలో మీకు సహాయం చేయడానికి %2$s దీన్ని ఉపయోగిస్తుంది, కానీ మీకు Facebook ఖాతా అవసరం లేదు. <![CDATA[<a href="%3$s">మరింత తెలుసుకోండి.</a>]]>
+        Facebook ద్వారా Account Kit నుండి నిర్ధారణ ఇమెయిల్‌ను పొందడానికి %1$s నొక్కండి. సైన్ ఇన్ చేయడంలో మీకు సహాయం చేయడానికి %2$s దీన్ని ఉపయోగిస్తుంది, కానీ మీకు Facebook ఖాతా అవసరం లేదు. &lt;a href="%3$s">మరింత తెలుసుకోండి.&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">మీ ఇమెయిల్ చిరునామాను నమోదు చేయండి</string>
     <string name="com_accountkit_email_not_received">ఇమెయిల్‌ను మళ్లీ పంపు</string>
@@ -280,7 +278,7 @@
     <string name="com_accountkit_phone_loading_title">మీ కోడ్‌ను పంపుతోంది…</string>
     <string name="com_accountkit_phone_login_retry_title">మీ ఫోన్ నంబర్‌ను నిర్ధారించండి</string>
     <string name="com_accountkit_phone_login_text">
-        Facebook ద్వారా Account Kit నుండి నిర్ధారణ SMS పొందడానికి %1$s నొక్కండి. సైన్ ఇన్ చేయడంలో మీకు సహాయం చేయడానికి %2$s దీన్ని ఉపయోగిస్తుంది, కానీ మీకు Facebook ఖాతా అవసరం లేదు. సందేశ మరియు డేటా ఛార్జీలు వర్తించవచ్చు. <![CDATA[<a href="%3$s">మరింత తెలుసుకోండి.</a>]]>
+        Facebook ద్వారా Account Kit నుండి నిర్ధారణ SMS పొందడానికి %1$s నొక్కండి. సైన్ ఇన్ చేయడంలో మీకు సహాయం చేయడానికి %2$s దీన్ని ఉపయోగిస్తుంది, కానీ మీకు Facebook ఖాతా అవసరం లేదు. సందేశ మరియు డేటా ఛార్జీలు వర్తించవచ్చు. &lt;a href="%3$s">మరింత తెలుసుకోండి.&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">మీ ఫోన్ నంబర్‌ను నమోదు చేయండి</string>
     <string name="com_accountkit_resend_email_text">కొత్త ఇమెయిల్ పంపు</string>

@@ -18,4 +18,3 @@
     <item android:state_accelerated="false" android:color="@color/background_material_light" />
     <item android:color="@android:color/transparent" />
 </selector>
-<!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/color-v11/abc_background_cache_hint_selector_material_light.xml -->

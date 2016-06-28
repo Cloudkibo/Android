@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-ro/values-ro.xml -->
-    <eat-comment/>
     <string-array name="com_accountkit_phone_country_codes">
         <item>376:AD:Andorra</item>
         <item>971:AE:Emiratele Arabe Unite</item>
@@ -239,8 +237,6 @@
         <item>260:ZM:Zambia</item>
         <item>263:ZW:Zimbabwe</item>
     </string-array>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-ro/values-ro.xml -->
-    <eat-comment/>
     <string msgid="4600421777120114993" name="abc_action_bar_home_description">"Navigați la ecranul de pornire"</string>
     <string msgid="1397052879051804371" name="abc_action_bar_home_description_format">"%1$s, %2$s"</string>
     <string msgid="6623331958280229229" name="abc_action_bar_home_subtitle_description_format">"%1$s, %2$s, %3$s"</string>
@@ -260,8 +256,6 @@
     <string msgid="3421042268587513524" name="abc_shareactionprovider_share_with">"Trimiteți la"</string>
     <string msgid="7165123711973476752" name="abc_shareactionprovider_share_with_application">"Trimiteți la %s"</string>
     <string msgid="1603543279005712093" name="abc_toolbar_collapse_description">"Restrângeți"</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-ro/values-ro.xml -->
-    <eat-comment/>
     <string name="com_accountkit_button_begin">Începe</string>
     <string name="com_accountkit_button_cancel">Renunță</string>
     <string name="com_accountkit_button_confirm">Confirmă</string>
@@ -279,13 +273,13 @@
     <string name="com_accountkit_button_submit">Trimite</string>
     <string name="com_accountkit_check_email">Deschide e-mailul</string>
     <string name="com_accountkit_confirmation_code_agreement">
-        Atinge %1$s pentru a accepta <![CDATA[<a href="%2$s">Condițiile de utilizare</a>]]>, <![CDATA[<a href="%3$s">Politica de utilizare a datelor</a>]]> și <![CDATA[<a href="%4$s">utilizarea modulelor cookie</a>]]> de la Facebook.
+        Atinge %1$s pentru a accepta &lt;a href="%2$s">Condițiile de utilizare&lt;/a>, &lt;a href="%3$s">Politica de utilizare a datelor&lt;/a> și &lt;a href="%4$s">utilizarea modulelor cookie&lt;/a> de la Facebook.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy">
-        Atinge %1$s pentru a accepta <![CDATA[<a href="%2$s">Condițiile de utilizare</a>]]>, <![CDATA[<a href="%3$s">Politica de utilizare a datelor</a>]]> și <![CDATA[<a href="%4$s">utilizarea modulelor cookie</a>]]> de la Facebook, precum și <![CDATA[<a href="%5$s">Politica de confidențialitate</a>]]> de la %6$s.
+        Atinge %1$s pentru a accepta &lt;a href="%2$s">Condițiile de utilizare&lt;/a>, &lt;a href="%3$s">Politica de utilizare a datelor&lt;/a> și &lt;a href="%4$s">utilizarea modulelor cookie&lt;/a> de la Facebook, precum și &lt;a href="%5$s">Politica de confidențialitate&lt;/a> de la %6$s.
     </string>
     <string name="com_accountkit_confirmation_code_agreement_app_privacy_policy_and_terms">
-        Atinge %1$s pentru a accepta <![CDATA[<a href="%2$s">Condițiile de utilizare</a>]]>, <![CDATA[<a href="%3$s">Politica de utilizare a datelor</a>]]> și <![CDATA[<a href="%4$s">utilizarea modulelor cookie</a>]]> de la Facebook, precum și <![CDATA[<a href="%5$s">Politica de confidențialitate</a>]]> și <![CDATA[<a href="%6$s">Condițiile de utilizare</a>]]> de la %7$s.
+        Atinge %1$s pentru a accepta &lt;a href="%2$s">Condițiile de utilizare&lt;/a>, &lt;a href="%3$s">Politica de utilizare a datelor&lt;/a> și &lt;a href="%4$s">utilizarea modulelor cookie&lt;/a> de la Facebook, precum și &lt;a href="%5$s">Politica de confidențialitate&lt;/a> și &lt;a href="%6$s">Condițiile de utilizare&lt;/a> de la %7$s.
     </string>
     <string name="com_accountkit_confirmation_code_text">Retrimite codul</string>
     <string name="com_accountkit_confirmation_code_title">Introdu codul</string>
@@ -293,7 +287,7 @@
     <string name="com_accountkit_email_loading_title">Se trimite e-mailul…</string>
     <string name="com_accountkit_email_login_retry_title">Confirmă adresa ta de e-mail</string>
     <string name="com_accountkit_email_login_text">
-        Atinge %1$s pentru a primi un e-mail de confirmare de la Account Kit oferit de Facebook. %2$s folosește asta pentru a te ajuta să te conectezi, însă nu ai nevoie de un cont de Facebook. <![CDATA[<a href="%3$s">Află mai multe.</a>]]>
+        Atinge %1$s pentru a primi un e-mail de confirmare de la Account Kit oferit de Facebook. %2$s folosește asta pentru a te ajuta să te conectezi, însă nu ai nevoie de un cont de Facebook. &lt;a href="%3$s">Află mai multe.&lt;/a>
     </string>
     <string name="com_accountkit_email_login_title">Introdu adresa ta de e-mail</string>
     <string name="com_accountkit_email_not_received">Retrimite e-mailul</string>
@@ -303,7 +297,7 @@
     <string name="com_accountkit_phone_loading_title">Se trimite codul tău…</string>
     <string name="com_accountkit_phone_login_retry_title">Confirmă numărul tău de telefon</string>
     <string name="com_accountkit_phone_login_text">
-        Atinge %1$s pentru a primi un SMS de confirmare de la Account Kit oferit de Facebook. %2$s folosește asta pentru a te ajuta să te conectezi, însă nu ai nevoie de un cont de Facebook. Este posibil să se aplice tarifele de date și mesaje. <![CDATA[<a href="%3$s">Află mai multe.</a>]]>
+        Atinge %1$s pentru a primi un SMS de confirmare de la Account Kit oferit de Facebook. %2$s folosește asta pentru a te ajuta să te conectezi, însă nu ai nevoie de un cont de Facebook. Este posibil să se aplice tarifele de date și mesaje. &lt;a href="%3$s">Află mai multe.&lt;/a>
     </string>
     <string name="com_accountkit_phone_login_title">Introdu numărul tău de telefon</string>
     <string name="com_accountkit_resend_email_text">Trimite un e-mail nou</string>
@@ -316,7 +310,5 @@
         Nu a reușit verificarea codului.\nTe rugăm să încerci din nou:
     </string>
     <string name="com_accountkit_verify_title">Verificăm codul tău…</string>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-ro/values-ro.xml -->
-    <eat-comment/>
     <string msgid="2869576371154716097" name="status_bar_notification_info_overflow">"˃999"</string>
 </resources>

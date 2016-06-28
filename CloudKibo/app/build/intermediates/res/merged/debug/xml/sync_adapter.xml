@@ -5,4 +5,4 @@
               android:userVisible="true"
               android:allowParallelSyncs="false"
               android:isAlwaysSyncable="true"
-              android:supportsUploading="true"/><!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/src/main/res/xml/sync_adapter.xml -->
+              android:supportsUploading="true"/>

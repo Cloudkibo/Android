@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/res/values-v23/values-v23.xml -->
-    <eat-comment/>
     <style name="AccountKit.AgreementText" parent="Base.AccountKit.AgreementText">
         <item name="android:breakStrategy">simple</item>
     </style>
@@ -14,8 +12,6 @@
     <style name="AccountKit.TitleText" parent="Base.AccountKit.TitleText">
         <item name="android:breakStrategy">simple</item>
     </style>
-    <!-- From: file:/media/sojharo/Data/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/res/values-v23/values-v23.xml -->
-    <eat-comment/>
     <style name="Base.TextAppearance.AppCompat.Widget.ActionBar.Menu" parent="android:TextAppearance.Material.Widget.ActionBar.Menu"/>
     <style name="Base.TextAppearance.AppCompat.Widget.Button.Inverse" parent="android:TextAppearance.Material.Widget.Button.Inverse"/>
     <style name="Base.Theme.AppCompat" parent="Base.V23.Theme.AppCompat"/>
