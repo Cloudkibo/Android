@@ -11,6 +11,7 @@ import android.util.Log;
 
 import java.util.HashMap;
 
+import org.acra.ACRA;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -92,7 +93,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "type TEXT, " // values : placed, received, missed
                 + "contact_phone TEXT "+ ")";
         db.execSQL(CREATE_CALL_HISTORY_TABLE);
-        
+
+        String CREATE_CHAT_HISTORY_SYNC_TABLE = "CREATE TABLE chat_history_sync ("
+                + "id INTEGER PRIMARY KEY, "
+                + "status TEXT, "
+                + "uniqueid TEXT, " // values : placed, received, missed
+                + "fromperson TEXT "+ ")";
+        db.execSQL(CREATE_CHAT_HISTORY_SYNC_TABLE);
+
 
     }
     
@@ -112,6 +120,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + Contacts.TABLE_CONTACTS);
         db.execSQL("DROP TABLE IF EXISTS " + UserChat.TABLE_USERCHAT);
         db.execSQL("DROP TABLE IF EXISTS call_history");
+        db.execSQL("DROP TABLE IF EXISTS chat_history_sync");
 
         // Create tables again
         onCreate(db);
@@ -169,6 +178,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             db.insert(Contacts.TABLE_CONTACTS, null, values);
         } catch (android.database.sqlite.SQLiteConstraintException e){
             Log.e("SQLITE_CONTACTS", uname + " - " + phone);
+            ACRA.getErrorReporter().handleSilentException(e);
         }
         db.close(); // Closing database connection
     }
@@ -239,6 +249,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Inserting Row
         db.insert("call_history", null, values);
+        db.close(); // Closing database connection
+    }
+
+    public void addChatSyncHistory(String status, String uniqueid, String fromperson) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("status", status);
+        values.put("uniqueid", uniqueid);
+        values.put("fromperson", fromperson);
+
+        // Inserting Row
+        db.insert("chat_history_sync", null, values);
         db.close(); // Closing database connection
     }
 
@@ -458,6 +482,33 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return chats;
     }
 
+    public JSONArray getChatHistoryStatus() throws JSONException {
+        JSONArray chats = new JSONArray();
+        String selectQuery = "SELECT uniqueid, status, fromperson FROM chat_history_sync";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("uniqueid", cursor.getString(0));
+                contact.put("status", cursor.getString(1));
+                contact.put("fromperson", cursor.getString(2));
+
+                chats.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return chats;
+    }
 
     public JSONArray getChatList() throws JSONException {
         JSONArray chats = new JSONArray();
@@ -617,6 +668,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         String deleteQuery = "DELETE FROM " + Contacts.TABLE_CONTACTS + " WHERE "+ Contacts.CONTACT_USERNAME + "='"+ user2 +"'";
+
+        db.execSQL(deleteQuery);
+        db.close();
+    }
+
+    public void resetSpecificChatHistorySync(String uniqueid){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String deleteQuery = "DELETE FROM chat_history_sync WHERE uniqueid='"+ uniqueid +"'";
 
         db.execSQL(deleteQuery);
         db.close();

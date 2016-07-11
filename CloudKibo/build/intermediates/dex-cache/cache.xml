@@ -2,137 +2,144 @@
 <items version="2" >
 
     <item
-        jar="/Users/sojharo/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/jars/classes.jar"
-        jumboMode="true"
-        revision="23.0.3"
-        sha1="e4d0cbb0b999604b349062f0214a0a228a7fd151">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-appcompat-v7-23.2.1_c58862037c979c5fa4795f6037c6dd2e27416644/classes.dex" />
-    </item>
-    <item
         jar="/Users/sojharo/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp/2.4.0/40340c0748190fe897baf7bffbc1b282734294e5/okhttp-2.4.0.jar"
         jumboMode="true"
         revision="23.0.3"
         sha1="40340c0748190fe897baf7bffbc1b282734294e5">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/okhttp-2.4.0_b26df40345419a4097633fd89b52b760be2c2442/classes.dex" />
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/okhttp-2.4.0_b26df40345419a4097633fd89b52b760be2c2442/classes.dex" />
     </item>
     <item
         jar="/Users/sojharo/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.2.1/support-annotations-23.2.1.jar"
         jumboMode="true"
         revision="23.0.3"
         sha1="ccb693bc0774fcb637246f7360de25b4af7df318">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-23.2.1_701ade946d4174361f4e2d15e3ea4f37a1706328/classes.dex" />
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-23.2.1_701ade946d4174361f4e2d15e3ea4f37a1706328/classes.dex" />
     </item>
     <item
-        jar="/Users/sojharo/Android/CloudKibo/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/jars/classes.jar"
         jumboMode="true"
         revision="23.0.3"
-        sha1="63c469ae76bcc7049afea1dd180acf2e60946345">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_aafe7a52df54b9a5275111cad1b710cb7fdcbf0e/classes.dex" />
+        sha1="ff7a7dab65682118157779edae0de8467be01541">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.facebook.android-account-kit-sdk-4.11.0_4ddc791b76106d0d6ca08b61800401aab013a1be/classes.dex" />
     </item>
     <item
-        jar="/Users/sojharo/Android/CloudKibo/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
-        jumboMode="true"
-        revision="23.0.3"
-        sha1="cd0efdba0b1a392beb1c74b044a7499fe48410f3">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_4e9498452b3f35ad905317d6c409950c27280abd/classes.dex" />
-    </item>
-    <item
-        jar="/Users/sojharo/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/jars/classes.jar"
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/jars/classes.jar"
         jumboMode="true"
         revision="23.0.3"
         sha1="72961d8b453b46e277702f18de9d210bc019e36e">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-design-23.2.1_1fbb04718ab4de37372d5de5522ec703c3334873/classes.dex" />
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-design-23.2.1_dd7dea16093fe1db032e54c8885f14a124281995/classes.dex" />
     </item>
     <item
-        jar="/Users/sojharo/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/23.2.1/jars/classes.jar"
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/jars/classes.jar"
         jumboMode="true"
         revision="23.0.3"
-        sha1="3469cb457f10f74c28cbc05f069b6c894f6cbdd0">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-animated-vector-drawable-23.2.1_a22ec218b230c9f8eb07a0f8b75829de01679c5e/classes.dex" />
+        sha1="e4d0cbb0b999604b349062f0214a0a228a7fd151">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-appcompat-v7-23.2.1_f03f217b8b84c48d409cf2d4761efc322171b969/classes.dex" />
     </item>
     <item
         jar="/Users/sojharo/.gradle/caches/modules-2/files-2.1/com.google.code.gson/gson/2.2.2/1f96456ca233dec780aa224bff076d8e8bca3908/gson-2.2.2.jar"
         jumboMode="true"
         revision="23.0.3"
         sha1="1f96456ca233dec780aa224bff076d8e8bca3908">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/gson-2.2.2_46a2d74229801be27a9f995ba460f1c85555bed8/classes.dex" />
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/gson-2.2.2_46a2d74229801be27a9f995ba460f1c85555bed8/classes.dex" />
     </item>
     <item
         jar="/Users/sojharo/.gradle/caches/modules-2/files-2.1/com.parse.bolts/bolts-android/1.2.1/44780c2cf98f6a3cf4e77f1234d644758b329201/bolts-android-1.2.1.jar"
         jumboMode="true"
         revision="23.0.3"
         sha1="44780c2cf98f6a3cf4e77f1234d644758b329201">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/bolts-android-1.2.1_ce88c2cd4985dc1770798ee8b77750c6717ed315/classes.dex" />
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/bolts-android-1.2.1_ce88c2cd4985dc1770798ee8b77750c6717ed315/classes.dex" />
     </item>
     <item
-        jar="/Users/sojharo/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/jars/classes.jar"
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/23.2.1/jars/classes.jar"
         jumboMode="true"
         revision="23.0.3"
-        sha1="ff7a7dab65682118157779edae0de8467be01541">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.facebook.android-account-kit-sdk-4.11.0_403c7812cca3dfacfb79a8b77148bf876934a11c/classes.dex" />
+        sha1="673d77a5bbddd766037f088e775df525c46407f0">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-vector-drawable-23.2.1_dd28f60ac9dcbd5c46c4ea91921b0f0b8f0e7552/classes.dex" />
     </item>
     <item
-        jar="/Users/sojharo/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.2.1/jars/classes.jar"
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/io.pristine/libjingle/8871/jars/libs/libjingle_peerconnection.jar"
         jumboMode="true"
         revision="23.0.3"
-        sha1="e3885783ff8926ed9e2fdcd16816c2e1e73e7aee">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-recyclerview-v7-23.2.1_0409269af102624c138de59e16427534ad2c4763/classes.dex" />
-    </item>
-    <item
-        jar="/Users/sojharo/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/jars/libs/internal_impl-23.2.1.jar"
-        jumboMode="true"
-        revision="23.0.3"
-        sha1="607a3d0b8013b4ccbfeb0b7cb293351994e021fb">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/internal_impl-23.2.1_bd39f6b7c696fbeb94a0523b5e11cac9d1e78680/classes.dex" />
+        sha1="7cd875d97fa42a609ec2bda816d6047d5a3ac26a">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/libjingle_peerconnection_c8679de4185ef92ff45deb81b64486380c02beaa/classes.dex" />
     </item>
     <item
         jar="/Users/sojharo/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp-ws/2.4.0/69206d28966656052a982ceded583abdeb41cf63/okhttp-ws-2.4.0.jar"
         jumboMode="true"
         revision="23.0.3"
         sha1="69206d28966656052a982ceded583abdeb41cf63">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/okhttp-ws-2.4.0_b5d3df3145b9428c69d8df5a5971cf0d0de5d019/classes.dex" />
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/okhttp-ws-2.4.0_b5d3df3145b9428c69d8df5a5971cf0d0de5d019/classes.dex" />
     </item>
     <item
         jar="/Users/sojharo/.gradle/caches/modules-2/files-2.1/com.github.nkzawa/socket.io-client/0.5.1/f83dcb739e03bcc6f2e6b784d470002e993ce25f/socket.io-client-0.5.1.jar"
         jumboMode="true"
         revision="23.0.3"
         sha1="f83dcb739e03bcc6f2e6b784d470002e993ce25f">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/socket.io-client-0.5.1_a8f1981170d7d5780b82b55ef891c2ddf0ba9a17/classes.dex" />
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/socket.io-client-0.5.1_a8f1981170d7d5780b82b55ef891c2ddf0ba9a17/classes.dex" />
     </item>
     <item
         jar="/Users/sojharo/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio/1.4.0/5b72bf48563ea8410e650de14aa33ff69a3e8c35/okio-1.4.0.jar"
         jumboMode="true"
         revision="23.0.3"
         sha1="5b72bf48563ea8410e650de14aa33ff69a3e8c35">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/okio-1.4.0_6126d94d9e1b61cf25bd8793ff42a71d49fed87d/classes.dex" />
-    </item>
-    <item
-        jar="/Users/sojharo/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/jars/classes.jar"
-        jumboMode="true"
-        revision="23.0.3"
-        sha1="3be474b1b21b31cf2fa93fe6bd641ae108d96452">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-v4-23.2.1_b0f0c3b9ce6b2cd879490b79a93d430c607f40e4/classes.dex" />
-    </item>
-    <item
-        jar="/Users/sojharo/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-vector-drawable/23.2.1/jars/classes.jar"
-        jumboMode="true"
-        revision="23.0.3"
-        sha1="673d77a5bbddd766037f088e775df525c46407f0">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-vector-drawable-23.2.1_2de2e14b2c75ba3ba3ae7dd3329762a534bc21a9/classes.dex" />
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/okio-1.4.0_6126d94d9e1b61cf25bd8793ff42a71d49fed87d/classes.dex" />
     </item>
     <item
         jar="/Users/sojharo/.gradle/caches/modules-2/files-2.1/com.github.nkzawa/engine.io-client/0.5.1/c83503e6668d63b3d5b2a27edf6e3a54d9eb7a66/engine.io-client-0.5.1.jar"
         jumboMode="true"
         revision="23.0.3"
         sha1="c83503e6668d63b3d5b2a27edf6e3a54d9eb7a66">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/engine.io-client-0.5.1_c33a67328fe70eb56ad16df8f30421bf7a267afb/classes.dex" />
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/engine.io-client-0.5.1_c33a67328fe70eb56ad16df8f30421bf7a267afb/classes.dex" />
     </item>
     <item
-        jar="/Users/sojharo/Android/CloudKibo/app/build/intermediates/exploded-aar/io.pristine/libjingle/8871/jars/libs/libjingle_peerconnection.jar"
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/jars/classes.jar"
         jumboMode="true"
         revision="23.0.3"
-        sha1="7cd875d97fa42a609ec2bda816d6047d5a3ac26a">
-        <dex dex="/Users/sojharo/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/libjingle_peerconnection_fbade4df3a99d16aa20918e0de820b48a96c39e4/classes.dex" />
+        sha1="3be474b1b21b31cf2fa93fe6bd641ae108d96452">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-support-v4-23.2.1_363d05e5bb6a9386c93fafa7a2de8329978f1cab/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/ch.acra/acra/4.8.5/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="553933c766d5b677a7640ce2616577bfade1071e">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/ch.acra-acra-4.8.5_5391974315c76f8433e993d096935ef7614bf30f/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/animated-vector-drawable/23.2.1/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="3469cb457f10f74c28cbc05f069b6c894f6cbdd0">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-animated-vector-drawable-23.2.1_419e1f71a050191d50f9774c6e51d566add3bd36/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="9958d1dc75c1c6b13ac7e97d8f4e73309471f914">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_d6bcf9c86b11cd601c3b723d18da598bf7be42f5/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="268cea2357bb4223b1844e8e0ca808b2473b1a55">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_c0ff77ac45ae9c282d8a9c7e690ea418cd2fb9ab/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/recyclerview-v7/23.2.1/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="e3885783ff8926ed9e2fdcd16816c2e1e73e7aee">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-recyclerview-v7-23.2.1_fd6b56a4e9527fd77d8d344500edded4be6e232b/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/jars/libs/internal_impl-23.2.1.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="607a3d0b8013b4ccbfeb0b7cb293351994e021fb">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/internal_impl-23.2.1_29c46a6b3f915be7f9c7bcc2a930be40a483e04a/classes.dex" />
     </item>
 
 </items>

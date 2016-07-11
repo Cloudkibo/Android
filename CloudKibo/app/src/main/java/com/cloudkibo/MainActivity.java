@@ -216,6 +216,16 @@ public class MainActivity extends CustomActivity
         super.onDestroy();
     }
 
+    @Override
+    protected void onResume() {
+        Intent i = new Intent(this, SocketService.class);
+        i.putExtra("user", user);
+        i.putExtra("room", room);
+        startService(i);
+        bindService(i, socketConnection, Context.BIND_AUTO_CREATE);
+
+        super.onResume();
+    }
 
     /**
      * Setup the drawer layout. This method also includes the method calls for
@@ -513,6 +523,10 @@ public class MainActivity extends CustomActivity
         }
     }
 
+    public Boolean isSocketConnected() {
+        return socketService.isSocketConnected();
+    }
+
 
     public void askFriendsOnlineStatus(){
         socketService.askFriendsOnlineStatus();
@@ -725,16 +739,6 @@ public class MainActivity extends CustomActivity
                 @Override
                 public void receiveSocketMessage(String type, String msg) {
 
-                	final String message = msg;
-                    if(type.equals("areyoufreeforcall")){
-
-                        Intent i = new Intent(getApplicationContext(), IncomingCall.class);
-                        i.putExtra("user", user);
-                        i.putExtra("room", room);
-                        i.putExtra("contact", msg);
-                        startActivity(i);
-
-                    }
 
                 }
 
@@ -804,9 +808,12 @@ public class MainActivity extends CustomActivity
                                     Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
                                     PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
 
+                                    String message = body.getString("msg");
+                                    String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
+
                                     Notification n = new Notification.Builder(getApplicationContext())
                                             .setContentTitle(body.getString("fromFullName"))
-                                            .setContentText("Unread Message")
+                                            .setContentText(subMsg)
                                             .setSmallIcon(R.drawable.icon)
                                             .setContentIntent(pIntent)
                                             .setAutoCancel(true)
@@ -827,6 +834,33 @@ public class MainActivity extends CustomActivity
                                 }
 
 
+                            } else {
+                                Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+                                PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+                                String message = body.getString("msg");
+                                String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
+
+                                Notification n = new Notification.Builder(getApplicationContext())
+                                        .setContentTitle(body.getString("fromFullName"))
+                                        .setContentText(subMsg)
+                                        .setSmallIcon(R.drawable.icon)
+                                        .setContentIntent(pIntent)
+                                        .setAutoCancel(true)
+                                        .build();
+
+                                NotificationManager notificationManager =
+                                        (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                                notificationManager.notify(0, n);
+
+                                try {
+                                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                                    r.play();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
                             }
 
                         }

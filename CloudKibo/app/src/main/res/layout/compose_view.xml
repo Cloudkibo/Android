@@ -12,7 +12,7 @@
         android:id="@+id/btnCamera"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ic_camera" />
+        android:background="@android:drawable/ic_menu_call" />
 
     <EditText
         android:id="@+id/txt"
@@ -20,6 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:maxLength="100"
         android:hint="@string/type_msg" >
 
         

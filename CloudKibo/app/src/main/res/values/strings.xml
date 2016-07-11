@@ -59,6 +59,8 @@
 
     <string name="facebook_app_id">456637644436523</string>
 
+    <string name="crash_toast_text">CloudKibo crashed! The report has been sent to developer.</string>
+
 
     
 

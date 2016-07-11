@@ -642,6 +642,7 @@
         We couldn\'t verify your code.\nPlease try again:
     </string>
     <string name="com_accountkit_verify_title">Verifying your code…</string>
+    <string name="crash_toast_text">CloudKibo crashed! The report has been sent to developer.</string>
     <string name="credentials">Login Credentials</string>
     <string name="drawer_close">Close</string>
     <string name="drawer_open">Open</string>

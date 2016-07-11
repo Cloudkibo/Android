@@ -84,6 +84,20 @@ public class KiboSyncService extends Service {
                 );
 
             }
+
+            JSONArray seenChats = db.getChatHistoryStatus();
+
+            for (int i=0; i < seenChats.length(); i++) {
+                JSONObject row = seenChats.getJSONObject(i);
+
+                mListener.sendMessageStatusUsingSocket(
+                        row.getString("fromperson"),
+                        row.getString("status"), row.getString("uniqueid")
+                );
+
+            }
+
+
         }catch(JSONException e ){
             e.printStackTrace();
         }
@@ -250,32 +264,6 @@ public class KiboSyncService extends Service {
                                     row.getString("detailsshared"),
                                     row.getJSONObject("contactid").getString("status"));
 
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-
-                            if(row.getBoolean("unreadMessage")){
-                                Notification n = new Notification.Builder(getApplicationContext())
-                                        .setContentTitle(row.getJSONObject("contactid").getString("display_name"))
-                                        .setContentText("Unread Message")
-                                        .setSmallIcon(R.drawable.icon)
-                                        .setContentIntent(pIntent)
-                                        .setAutoCancel(true)
-                                        .build();
-
-                                NotificationManager notificationManager =
-                                        (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-                                notificationManager.notify(0, n);
-
-                                try {
-                                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                                    r.play();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-
                         }
 
                         /*try {
@@ -351,6 +339,35 @@ public class KiboSyncService extends Service {
                                     db.updateChat("delivered", row.getString("uniqueid"));
                                     mListener.sendMessageStatusUsingSocket(row.getString("from"),
                                             "delivered", row.getString("uniqueid"));
+
+
+
+                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+                                    String message = row.getString("msg");
+                                    String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
+
+                                    Notification n = new Notification.Builder(getApplicationContext())
+                                            .setContentTitle(row.getString("fromFullName"))
+                                            .setContentText(subMsg)
+                                            .setSmallIcon(R.drawable.icon)
+                                            .setContentIntent(pIntent)
+                                            .setAutoCancel(true)
+                                            .build();
+
+                                    NotificationManager notificationManager =
+                                            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                                    notificationManager.notify(0, n);
+
+                                    try {
+                                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                                        r.play();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
 
                                 }
                             }

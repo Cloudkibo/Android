@@ -42,4 +42,5 @@ dependencies {
     compile 'io.pristine:libjingle:8871@aar'
     //compile 'com.facebook.android:facebook-android-sdk:4.0.0'
     compile 'com.facebook.android:account-kit-sdk:4.11.0'
+    compile 'ch.acra:acra:4.8.5'
 }

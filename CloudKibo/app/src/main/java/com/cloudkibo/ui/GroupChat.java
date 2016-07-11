@@ -17,7 +17,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -108,6 +111,11 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		if (v.getId() == R.id.btnSend)
 		{
 			sendMessage();
+		} else if (v.getId() == R.id.btnCamera) {
+			MainActivity act1 = (MainActivity)getActivity();
+
+			act1.callThisPerson(contactPhone,
+					 contactName);
 		}
 
 	}
@@ -208,10 +216,14 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 				if(row.getString("fromperson").equals(contactPhone)){
 					if(row.getString("status").equals("delivered")){
-						// what if net was closed here and seen was not shown to other party, should we send "seen" in sync
-						db = new DatabaseHandler(getActivity().getApplicationContext());
-						db.updateChat("seen", row.getString("uniqueid"));
-						act1.sendMessageStatusUsingSocket("seen", row.getString("uniqueid"), row.getString("fromperson"));
+						if(act1.isSocketConnected()){
+							db = new DatabaseHandler(getActivity().getApplicationContext());
+							db.updateChat("seen", row.getString("uniqueid"));
+							act1.sendMessageStatusUsingSocket("seen", row.getString("uniqueid"), row.getString("fromperson"));
+						} else {
+							db = new DatabaseHandler(getActivity().getApplicationContext());
+							db.addChatSyncHistory("seen", row.getString("uniqueid"), row.getString("fromperson"));
+						}
 					}
 				}
 

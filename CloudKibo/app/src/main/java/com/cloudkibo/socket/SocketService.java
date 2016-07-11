@@ -152,11 +152,19 @@ public class SocketService extends Service {
 
                         DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 
+                        String message = payload.getString("msg");
+
+                        if(message.length() > 100){
+                            message = message.substring(0, 97) +"...";
+                            payload.remove("msg");
+                            payload.put("msg", message);
+                        }
+
                         // todo correct current date
                         db.addChat(payload.getString("to"),
                                 payload.getString("from"),
                                 payload.getString("fromFullName"),
-                                payload.getString("msg"),
+                                message,
                                 (new Date().toString()), "delivered",
                                 payload.has("uniqueid") ? payload.getString("uniqueid") : "");
 
@@ -169,9 +177,10 @@ public class SocketService extends Service {
                             Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
                             PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
 
+                            String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
                             Notification n = new Notification.Builder(getApplicationContext())
                                     .setContentTitle(payload.getString("fromFullName"))
-                                    .setContentText("Unread Message")
+                                    .setContentText(subMsg)
                                     .setSmallIcon(R.drawable.icon)
                                     .setContentIntent(pIntent)
                                     .setAutoCancel(true)
@@ -404,16 +413,12 @@ public class SocketService extends Service {
 
                             socket.emit("yesiamfreeforcall", message2);
 
-                            if (isForeground("com.cloudkibo")) {
-                                mListener.receiveSocketMessage("areyoufreeforcall", amInCallWith);
-                            } else {
-                                Intent i = new Intent(getApplicationContext(), IncomingCall.class);
-                                i.putExtra("user", user);
-                                i.putExtra("room", room);
-                                i.putExtra("contact", amInCallWith);
-                                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                startActivity(i);
-                            }
+                            Intent i = new Intent(getApplicationContext(), IncomingCall.class);
+                            i.putExtra("user", user);
+                            i.putExtra("room", room);
+                            i.putExtra("contact", amInCallWith);
+                            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(i);
 
                         } else {
 
@@ -915,6 +920,16 @@ public class SocketService extends Service {
                 public void call(Object... args) {
                     // todo keep track of received messages status and see if they are properly communicated to server or not
                     String test = args.toString();
+
+                    try {
+                        JSONObject resp = new JSONObject(args[0].toString());
+                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                        db.resetSpecificChatHistorySync(resp.getString("uniqueid"));
+                        db = new DatabaseHandler(getApplicationContext());
+                        db.updateChat("seen", resp.getString("uniqueid"));
+                    } catch (JSONException e ){
+                        e.printStackTrace();
+                    }
                 }
             });
 
