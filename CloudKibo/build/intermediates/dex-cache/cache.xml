@@ -117,14 +117,14 @@
         jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
         jumboMode="true"
         revision="23.0.3"
-        sha1="9958d1dc75c1c6b13ac7e97d8f4e73309471f914">
+        sha1="a71739ba1c29e15742e9c70bb3d84ceb4665f1a4">
         <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_d6bcf9c86b11cd601c3b723d18da598bf7be42f5/classes.dex" />
     </item>
     <item
         jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
         jumboMode="true"
         revision="23.0.3"
-        sha1="268cea2357bb4223b1844e8e0ca808b2473b1a55">
+        sha1="3a03a8c177a48c71efb4d035d8ed4d6cc737f399">
         <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_c0ff77ac45ae9c282d8a9c7e690ea418cd2fb9ab/classes.dex" />
     </item>
     <item

@@ -123,6 +123,7 @@ public class WebRtcClient {
                 mListener.onStatusChanged("Peer disconnect received");
             } else if (type.equals("msg")) {
                 String msg_type = body.getString("type");
+                Log.w("IncomingSignaling", body.getString("type"));
                 if (msg_type.equals("offer")) {
                     if(!peers.containsKey(body.getString("by"))){
                         int endPoint = findEndPoint();

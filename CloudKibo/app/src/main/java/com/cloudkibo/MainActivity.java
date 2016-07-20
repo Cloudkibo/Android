@@ -483,7 +483,7 @@ public class MainActivity extends CustomActivity
 	 * bind fragments to service
 	 */
     public void sendSocketMessage(String msg, String phoneOfPeer){
-        socketService.sendSocketMessage(msg, phoneOfPeer);
+        //socketService.sendSocketMessage(msg, phoneOfPeer);
     }
 
     public void callThisPerson(String contactPhone, String contactName){
@@ -743,37 +743,24 @@ public class MainActivity extends CustomActivity
                 }
 
                 @Override
-                public void receiveSocketArray(String type, JSONArray body) {
+                public void receiveSocketArray(String type, final JSONArray body) {
 
                     if(type.equals("theseareonline")){
 
                         IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 
+                        if(myFragment == null) return;
                         if(myFragment.getFragmentName().equals("ContactList"))
                         {
-                            ContactList myContactListFragment = (ContactList) myFragment;
-                            // todo fix it
-                           // myContactListFragment.setOnlineStatus(body); //here you call the method of your current Fragment.
+                            final ContactList myContactListFragment = (ContactList) myFragment;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    myContactListFragment.setOnlineStatus(body); //here you call the method of your current Fragment.
+                                }
+                            });
                         }
 
-                    }
-                    else if(type.equals("offline")){
-                        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-
-                        if(myFragment.getFragmentName().equals("ContactList"))
-                        {
-                            ContactList myContactListFragment = (ContactList) myFragment;
-                            myContactListFragment.setOfflineStatusIndividual(body); //here you call the method of your current Fragment.
-                        }
-                    }
-                    else if(type.equals("online")){
-                        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-
-                        if(myFragment.getFragmentName().equals("ContactList"))
-                        {
-                            ContactList myContactListFragment = (ContactList) myFragment;
-                            myContactListFragment.setOfflineStatusIndividual(body); //here you call the method of your current Fragment.
-                        }
                     }
 
                 }
@@ -875,19 +862,46 @@ public class MainActivity extends CustomActivity
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-
                                         try {
-
                                             myGroupChatFragment.updateStatusSentMessage(body.getString("status"), body.getString("uniqueid"));
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-
                                     }
                                 });
 
                             }
 
+                        }
+                        else if(type.equals("offline")){
+                            IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+                            if(myFragment == null) return;
+                            if(myFragment.getFragmentName().equals("ContactList"))
+                            {
+                                final ContactList myContactListFragment = (ContactList) myFragment;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        myContactListFragment.setOfflineStatusIndividual(body); //here you call the method of your current Fragment.
+                                    }
+                                });
+                            }
+                        }
+                        else if(type.equals("online")){
+                            IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+                            if(myFragment == null) return;
+                            if(myFragment.getFragmentName().equals("ContactList"))
+                            {
+                                final ContactList myContactListFragment = (ContactList) myFragment;
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        myContactListFragment.setOnlineStatusIndividual(body); //here you call the method of your current Fragment.
+                                    }
+                                });
+                            }
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();

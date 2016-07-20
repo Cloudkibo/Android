@@ -31,6 +31,7 @@ import com.cloudkibo.utils.IFragmentName;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 /**
  * The Class ChatList is the Fragment class that is launched when the user
@@ -122,7 +123,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 						row.getString("display_name"),
 						row.getString("contact_phone"),
 						row.getString("msg"), row.getString("date"), R.drawable.user1, false,
-						false, row.getString("contact_id")));
+						false, row.getString("contact_id"), Integer.parseInt(row.getString("pendingMsgs"))));
 
 			}
 
@@ -187,6 +188,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 			ChatItem c = getItem(pos);
 			TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
 			lbl.setText(c.getName());
+			if(c.getPendingMsgs() > 0) lbl.setTextColor(getResources().getColor(R.color.black));
 
 			lbl = (TextView) v.findViewById(R.id.lbl2);
 			lbl.setText(c.getDate());
@@ -194,8 +196,13 @@ public class ChatList extends CustomFragment implements IFragmentName
 			lbl = (TextView) v.findViewById(R.id.lblContactPhone);
 			lbl.setText(c.getTitle());
 
+			lbl = (TextView) v.findViewById(R.id.lblPendingMsgs);
+			if(c.getPendingMsgs() > 0) lbl.setText(Integer.toString(c.getPendingMsgs()));
+			else lbl.setText("");
+
 			lbl = (TextView) v.findViewById(R.id.lblContactStatus);
 			lbl.setText(c.getMsg());
+			if(c.getPendingMsgs() > 0) lbl.setTextColor(getResources().getColor(R.color.black));
 
 			ImageView img = (ImageView) v.findViewById(R.id.img1);
 			img.setImageResource(c.getIcon());

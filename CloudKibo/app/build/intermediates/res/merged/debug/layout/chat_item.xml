@@ -84,14 +84,27 @@
             android:id="@+id/imageView1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="invisible"
             android:src="@drawable/arrow" />
 
         <ImageView
             android:id="@+id/img2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="invisible"
             android:src="@drawable/ic_lock"
             android:layout_marginTop="@dimen/pad_5dp" />
+
+        <TextView
+            android:id="@+id/lblPendingMsgs"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="@dimen/txt_12sp"
+            android:textColor="@color/main_color_gray_lt"
+            android:maxLines="2"
+            android:ellipsize="end"
+            />
 
     </LinearLayout>
 

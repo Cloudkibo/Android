@@ -1,6 +1,13 @@
 package com.cloudkibo.webrtc.call;
 
 import java.util.HashMap;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,6 +29,7 @@ import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.socket.BoundServiceListener;
 import com.cloudkibo.socket.SocketService;
 import com.cloudkibo.socket.SocketService.SocketBinder;
+
 
 public class OutgoingCall extends CustomActivity {
 
@@ -70,6 +78,9 @@ public class OutgoingCall extends CustomActivity {
             }
         });
 
+
+
+
     }
 
     protected void onDestroy() {
@@ -100,71 +111,8 @@ public class OutgoingCall extends CustomActivity {
                 public void receiveSocketMessage(String type, String body) {
 
                     Log.e(type, body);
-                    if(type.equals("Reject Call")){
-                        //Toast.makeText(getApplicationContext(),
-                        //        body +
-                        //                " is busy", Toast.LENGTH_SHORT).show();
-                        Log.e("OutGoingCall", "Reject call is sent");
+                    if (type.equals("NoAck")){
                         finish();
-                    }
-                    else if(type.equals("othersideringing")){
-                        /*dialog = new Dialog(MainActivity.this);
-                        dialog.setContentView(R.layout.call_dialog);
-                        dialog.setTitle(msg);
-
-                        // set the custom dialog components - text, image and button
-                        TextView text = (TextView) dialog.findViewById(R.id.textDialog);
-                        text.setText(msg);
-                        ImageView image = (ImageView) dialog.findViewById(R.id.imageDialog);
-                        image.setImageResource(R.drawable.ic_launcher);
-
-                        Button dialogButton = (Button) dialog.findViewById(R.id.declineButton);
-                        // if button is clicked, close the custom dialog
-                        dialogButton.setOnClickListener(new OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-
-                                socketService.stopCallMessageToCallee();
-
-                                dialog.dismiss();
-                            }
-                        });
-
-                        dialog.show();*/
-                    }
-                    else if(type.equals("calleeisoffline") || type.equals("calleeisbusy")){
-                        finish();
-                    }
-                    else if(type.equals("Accept Call")){
-
-                        try {
-
-                            String roomId = Long.toHexString(Double.doubleToLongBits(Math.random()));
-
-                            JSONObject msg = new JSONObject();
-                            msg.put("type", "room_name");
-                            msg.put("room", roomId);
-
-                            socketService.sendSocketMessage(msg.toString(), peerName);
-
-                            Intent i = new Intent(getApplicationContext(), com.cloudkibo.webrtc.conference.VideoCallView.class);
-                            //i.putExtra("username", user.get("phone"));
-                            //i.putExtra("_id", user.get("_id"));
-                            //i.putExtra("peer", peerName);
-                            //i.putExtra("lastmessage", "AcceptCallFromOther");
-                            user.put("username", user.get("display_name"));
-                            i.putExtra("user", user);
-                            i.putExtra("room", roomId);
-                            startActivity(i);
-
-                            finish();
-
-
-
-                        } catch(JSONException e){
-                            e.printStackTrace();
-                        }
-
                     }
 
                 }
@@ -179,6 +127,40 @@ public class OutgoingCall extends CustomActivity {
                 @Override
                 public void receiveSocketJson(String type, JSONObject body) {
 
+                    try{
+
+                        if (type.equals("call")) {
+                            String status = body.getString("status");
+                            if(status.equals("calleeoffline") || status.equals("calleeisbusy")){
+                                finish();
+                            } else if(status.equals("calleeisavailable")){
+
+                            } else if(status.equals("callrejected")){
+                                Log.e("OutGoingCall", "Reject call is sent");
+                                finish();
+                            } else if(status.equals("callaccepted")){
+                                String roomId = Long.toHexString(Double.doubleToLongBits(Math.random()));
+
+                                socketService.sendRoomNameToCallee(roomId);
+
+                                Intent i = new Intent(getApplicationContext(), com.cloudkibo.webrtc.conference.VideoCallView.class);
+                                //i.putExtra("username", user.get("phone"));
+                                //i.putExtra("_id", user.get("_id"));
+                                //i.putExtra("peer", peerName);
+                                //i.putExtra("lastmessage", "AcceptCallFromOther");
+                                user.put("username", user.get("display_name"));
+                                i.putExtra("user", user);
+                                i.putExtra("room", roomId);
+                                startActivity(i);
+
+                                finish();
+                            }
+
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }

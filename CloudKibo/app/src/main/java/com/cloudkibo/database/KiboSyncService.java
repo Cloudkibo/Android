@@ -180,19 +180,24 @@ public class KiboSyncService extends Service {
 
                 try {
 
+                    ArrayList<String> contactList1Available = new ArrayList<String>();
+                    ArrayList<String> contactList1PhoneAvailable = new ArrayList<String>();
+
                     if(json != null){
 
                         JSONArray jArray = json.getJSONArray("available");
 
                         for(int i = 0; i<jArray.length(); i++){
+                            contactList1Available.add(contactList1.get(contactList1Phone.indexOf(jArray.get(i).toString())));
+                            contactList1PhoneAvailable.add(contactList1Phone.get(contactList1Phone.indexOf(jArray.get(i).toString())));
                             contactList1.remove(contactList1Phone.indexOf(jArray.get(i).toString()));
                             contactList1Phone.remove(contactList1Phone.indexOf(jArray.get(i).toString()));
                             Log.w("REMOVING", jArray.get(i).toString());
                         }
 
-                        loadNotFoundContacts(contactList1, contactList1Phone);
-
                     }
+                    loadNotFoundContacts(contactList1, contactList1Phone);
+                    loadFoundContacts(contactList1Available, contactList1PhoneAvailable);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -224,14 +229,36 @@ public class KiboSyncService extends Service {
                     "N/A");
         }
 
-        loadCurrentContactsFromServer();
-
         /*try {
             JSONArray contacts = db.getContacts();
             contacts.toString();
         }catch(JSONException e){
             e.printStackTrace();
         }*/
+    }
+
+    private void loadFoundContacts(ArrayList<String> contactList1, ArrayList<String> contactList1Phone) {
+
+        DatabaseHandler db = new DatabaseHandler(
+                getApplicationContext());
+
+        for (int i = 0; i < contactList1.size(); i++) {
+            db.addContact("true", "null",
+                    contactList1Phone.get(i),
+                    contactList1.get(i),
+                    "null",
+                    "Yes",
+                    "N/A");
+        }
+
+        loadCurrentContactsFromServer();
+
+        try {
+            JSONArray contacts = db.getContacts();
+            contacts.toString();
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
     }
 
     private void loadCurrentContactsFromServer(){
@@ -257,28 +284,24 @@ public class KiboSyncService extends Service {
                         for (int i=0; i < jsonA.length(); i++) {
                             JSONObject row = jsonA.getJSONObject(i);
 
-                            db.addContact("true", "null",
+                            /*db.addContact("true", "null",
                                     row.getJSONObject("contactid").getString("phone"),
                                     row.getJSONObject("contactid").getString("display_name"),
                                     row.getJSONObject("contactid").getString("_id"),
                                     row.getString("detailsshared"),
-                                    row.getJSONObject("contactid").getString("status"));
+                                    row.getJSONObject("contactid").getString("status"));*/
+
+                            db.updateContact(row.getJSONObject("contactid").getString("status"),
+                                    row.getJSONObject("contactid").getString("phone"),
+                                    row.getJSONObject("contactid").getString("_id"));
 
                         }
-
-                        /*try {
-                            JSONArray contacts = db.getContacts();
-                            contacts.toString();
-                        }catch(JSONException e){
-                            e.printStackTrace();
-                        }*/
-
-                        mListener.contactsLoaded();
 
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                mListener.contactsLoaded();
             }
 
         }.execute();
@@ -309,70 +332,67 @@ public class KiboSyncService extends Service {
 
                     if (jsonA != null) {
 
-                        if(jsonA.length() == 0) return;
+                        if(jsonA.length() > 0) {
+                            DatabaseHandler db = new DatabaseHandler(
+                                    getApplicationContext());
 
-                        DatabaseHandler db = new DatabaseHandler(
-                                getApplicationContext());
+                            db.resetChatsTable();
 
-                        db.resetChatsTable();
+                            db = new DatabaseHandler(
+                                    getApplicationContext());
 
-                        db = new DatabaseHandler(
-                                getApplicationContext());
+                            HashMap<String, String> user = db.getUserDetails();
 
-                        HashMap<String, String> user = db.getUserDetails();
+                            db = new DatabaseHandler(
+                                    getApplicationContext());
 
-                        db = new DatabaseHandler(
-                                getApplicationContext());
+                            for (int i=0; i < jsonA.length(); i++) {
+                                JSONObject row = jsonA.getJSONObject(i);
 
-                        for (int i=0; i < jsonA.length(); i++) {
-                            JSONObject row = jsonA.getJSONObject(i);
+                                db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
+                                        row.getString("msg"), row.getString("date"),
+                                        row.has("status") ? row.getString("status") : "",
+                                        row.has("uniqueid") ? row.getString("uniqueid") : "");
 
-                            db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
-                                    row.getString("msg"), row.getString("date"),
-                                    row.has("status") ? row.getString("status") : "",
-                                    row.has("uniqueid") ? row.getString("uniqueid") : "");
+                                if(row.has("status")){
+                                    if(row.getString("to").equals(db.getUserDetails().get("phone")) && row.getString("status").equals("sent")){
+                                        db = new DatabaseHandler(
+                                                getApplicationContext());
+                                        db.updateChat("delivered", row.getString("uniqueid"));
+                                        mListener.sendMessageStatusUsingSocket(row.getString("from"),
+                                                "delivered", row.getString("uniqueid"));
 
-                            if(row.has("status")){
-                                if(row.getString("to").equals(db.getUserDetails().get("phone")) && row.getString("status").equals("sent")){
-                                    db = new DatabaseHandler(
-                                            getApplicationContext());
-                                    db.updateChat("delivered", row.getString("uniqueid"));
-                                    mListener.sendMessageStatusUsingSocket(row.getString("from"),
-                                            "delivered", row.getString("uniqueid"));
+                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                        PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
 
+                                        String message = row.getString("msg");
+                                        String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
 
+                                        Notification n = new Notification.Builder(getApplicationContext())
+                                                .setContentTitle(row.getString("fromFullName"))
+                                                .setContentText(subMsg)
+                                                .setSmallIcon(R.drawable.icon)
+                                                .setContentIntent(pIntent)
+                                                .setAutoCancel(true)
+                                                .build();
 
-                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                    PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+                                        NotificationManager notificationManager =
+                                                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-                                    String message = row.getString("msg");
-                                    String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
+                                        notificationManager.notify(0, n);
 
-                                    Notification n = new Notification.Builder(getApplicationContext())
-                                            .setContentTitle(row.getString("fromFullName"))
-                                            .setContentText(subMsg)
-                                            .setSmallIcon(R.drawable.icon)
-                                            .setContentIntent(pIntent)
-                                            .setAutoCancel(true)
-                                            .build();
+                                        try {
+                                            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                                            r.play();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
 
-                                    NotificationManager notificationManager =
-                                            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-                                    notificationManager.notify(0, n);
-
-                                    try {
-                                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                                        r.play();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
                                     }
-
                                 }
-                            }
 
-                        }
+                            }
 
                         /*try {
                             JSONArray chat = db.getChat();
@@ -381,18 +401,17 @@ public class KiboSyncService extends Service {
                             e.printStackTrace();
                         }*/
 
-                        if(startWithAddressBook)
-                            loadContactsFromAddressBook();
-                        else {
-                            loadCurrentContactsFromServer();
+                            mListener.chatLoaded();
                         }
-
-                        mListener.chatLoaded();
-
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                if(startWithAddressBook)
+                    loadContactsFromAddressBook();
+                else
+                    loadCurrentContactsFromServer();
+
             }
 
         }.execute();

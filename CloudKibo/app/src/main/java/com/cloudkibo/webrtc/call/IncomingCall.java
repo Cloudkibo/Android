@@ -3,6 +3,7 @@ package com.cloudkibo.webrtc.call;
 import java.util.HashMap;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 
@@ -29,6 +30,7 @@ import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.socket.BoundServiceListener;
 import com.cloudkibo.socket.SocketService;
 import com.cloudkibo.socket.SocketService.SocketBinder;
+import com.cloudkibo.ui.CallHistory;
 
 public class IncomingCall extends CustomActivity {
 
@@ -136,59 +138,6 @@ public class IncomingCall extends CustomActivity {
 
                 @Override
                 public void receiveSocketMessage(String type, String body) {
-                    if(type.equals("Missed")){
-
-                        Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
-                        PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-
-                        r.stop();
-
-                        Notification n = new Notification.Builder(getApplicationContext())
-                                .setContentTitle(body)
-                                .setContentText("Missed Call")
-                                .setSmallIcon(R.drawable.icon)
-                                .setContentIntent(pIntent)
-                                .setAutoCancel(true)
-                                .build();
-
-                        NotificationManager notificationManager =
-                                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-                        notificationManager.notify(0, n);
-
-                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-
-                        db.addCallHistory("missed", peerName);
-
-                        finish();
-                        //dialog.dismiss();
-                    }
-                    else if(type.equals("got user media")){
-
-                        finish();
-/*
-	  					Intent i = new Intent(getApplicationContext(), CordovaApp.class);
-	  					i.putExtra("username", user.get("username"));
-	  					i.putExtra("_id", user.get("_id"));
-	  					i.putExtra("peer", msg);
-	  					i.putExtra("lastmessage", "GotUserMedia");
-	  					i.putExtra("room", room);
-	  		            startActivity(i);
-	  		            */
-                    }
-                    else if(type.equals("call_room")){
-                        Intent i = new Intent(getApplicationContext(), com.cloudkibo.webrtc.conference.VideoCallView.class);
-                        //i.putExtra("username", user.get("phone"));
-                        //i.putExtra("_id", user.get("_id"));
-                        //i.putExtra("peer", peerName);
-                        //i.putExtra("lastmessage", "AcceptCallFromOther");
-                        user.put("username", user.get("display_name"));
-                        i.putExtra("user", user);
-                        i.putExtra("room", body);
-                        startActivity(i);
-
-                        finish();
-                    }
 
                 }
 
@@ -201,6 +150,53 @@ public class IncomingCall extends CustomActivity {
 
                 @Override
                 public void receiveSocketJson(String type, JSONObject body) {
+
+                    try{
+
+                        if (type.equals("call")) {
+                            String status = body.getString("status");
+                            if(status.equals("missing")){
+                                Intent intent = new Intent(getApplicationContext(), CallHistory.class);
+                                PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+                                r.stop();
+
+                                Notification n = new Notification.Builder(getApplicationContext())
+                                        .setContentTitle(body.getString("callerphone"))
+                                        .setContentText("Missed Call")
+                                        .setSmallIcon(R.drawable.icon)
+                                        .setContentIntent(pIntent)
+                                        .setAutoCancel(true)
+                                        .build();
+
+                                NotificationManager notificationManager =
+                                        (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                                notificationManager.notify(0, n);
+
+                                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+                                db.addCallHistory("missed", peerName);
+
+                                finish();
+                            }
+                        } else if(type.equals("room_name")){
+                            Intent i = new Intent(getApplicationContext(), com.cloudkibo.webrtc.conference.VideoCallView.class);
+                            //i.putExtra("username", user.get("phone"));
+                            //i.putExtra("_id", user.get("_id"));
+                            //i.putExtra("peer", peerName);
+                            //i.putExtra("lastmessage", "AcceptCallFromOther");
+                            user.put("username", user.get("display_name"));
+                            i.putExtra("user", user);
+                            i.putExtra("room", body.getString("room_name"));
+                            startActivity(i);
+
+                            finish();
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                 }
             });

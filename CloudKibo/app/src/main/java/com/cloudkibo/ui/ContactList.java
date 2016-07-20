@@ -80,10 +80,11 @@ public class ContactList extends CustomFragment implements IFragmentName
 		
 		authtoken = getActivity().getIntent().getExtras().getString("authtoken");
 		
-		loadContactList();
+
 		
 		ListView list = (ListView) v.findViewById(R.id.list);
 		contactAdapter = new ContactAdapter();
+		loadContactList();
 		list.setAdapter(contactAdapter);
 		
 		registerForContextMenu(list);
@@ -580,13 +581,16 @@ public class ContactList extends CustomFragment implements IFragmentName
 	
 	public void loadNewContacts(ArrayList<ContactItem> contactList1){
 		try{
+
+			MainActivity act1 = (MainActivity)getActivity();
+			act1.askFriendsOnlineStatus();
+
 			contactList.clear();
 			contactList.addAll(contactList1);
 			contactAdapter.notifyDataSetChanged();
-
-			MainActivity act1 = (MainActivity)getActivity();
-			//act1.askFriendsOnlineStatus();
-		}catch(NullPointerException e){}
+		}catch(NullPointerException e){
+			e.printStackTrace();
+		}
 	}
 	
 	public void setOnlineStatus(JSONArray contacts){
@@ -597,7 +601,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 		try{
 			for(int j=0; j<contacts.length(); j++)
 				for(int i=0; i<contactList.size(); i++){
-					if(contactList.get(i).getUserName().equals(contacts.getJSONArray(0).getJSONObject(j).getString("username"))){
+					if(contactList.get(i).getPhone().equals(contacts.getJSONObject(j).getString("phone"))){
 						contactList.get(i).setOnline(true);
 						break;
 					}
@@ -613,10 +617,10 @@ public class ContactList extends CustomFragment implements IFragmentName
 		}
 	}
 	
-	public void setOfflineStatusIndividual(JSONArray individual){
+	public void setOfflineStatusIndividual(JSONObject individual){
 			for(int i=0; i<contactList.size(); i++){
 				try {
-					if(contactList.get(i).getUserName().equals(individual.getJSONObject(0).getString("username"))){
+					if(contactList.get(i).getPhone().equals(individual.getString("phone"))){
 						contactList.get(i).setOnline(false);
 						break;
 					}
@@ -628,10 +632,10 @@ public class ContactList extends CustomFragment implements IFragmentName
 			contactAdapter.notifyDataSetChanged();
 	}
 	
-	public void setOnlineStatusIndividual(JSONArray individual){
+	public void setOnlineStatusIndividual(JSONObject individual){
 		for(int i=0; i<contactList.size(); i++){
 			try {
-				if(contactList.get(i).getUserName().equals(individual.getJSONObject(0).getString("username"))){
+				if(contactList.get(i).getPhone().equals(individual.getString("phone"))){
 					contactList.get(i).setOnline(true);
 					break;
 				}

@@ -496,9 +496,13 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
         else
             remoteStream.videoTracks.get(0).addRenderer(new VideoRenderer(screenRender));
 
-        VideoRendererGui.update(remoteRender,
+        /*VideoRendererGui.update(remoteRender,
                 REMOTE_X, REMOTE_Y,
-                REMOTE_WIDTH, REMOTE_HEIGHT, scalingType);
+                REMOTE_WIDTH, REMOTE_HEIGHT, scalingType);*/
+
+        VideoRendererGui.update(remoteRender,
+                0, 0,
+                1, 1, scalingType);
         VideoRendererGui.update(localRender,
                 LOCAL_X_HIDDEN, LOCAL_Y_HIDDEN,
                 LOCAL_WIDTH_HIDDEN, LOCAL_HEIGHT_HIDDEN,

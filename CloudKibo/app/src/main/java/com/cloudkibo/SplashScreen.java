@@ -5,6 +5,7 @@ import com.cloudkibo.R;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.AccountGeneral;
 import com.cloudkibo.library.DisplayNameReg;
+import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.ui.Invite_Friends;
 import com.facebook.accountkit.AccessToken;
 import com.facebook.accountkit.AccountKit;
@@ -70,7 +71,6 @@ public class SplashScreen extends Activity
 		mAccountManager = AccountManager.get(this);
 		AccountKit.initialize(getApplicationContext());
 
-
 		setContentView(R.layout.splash);
 
 		isRunning = true;
@@ -126,7 +126,6 @@ public class SplashScreen extends Activity
 
 			AccessToken accessToken = null;
 			try {
-
 				accessToken = AccountKit.getCurrentAccessToken();
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -134,7 +133,6 @@ public class SplashScreen extends Activity
 
 			if (accessToken != null) {
 				//Handle Returning User
-
 				if(isDevelopment) {
 					Intent i = new Intent(this, DisplayNameReg.class);
 					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -142,12 +140,22 @@ public class SplashScreen extends Activity
 					startActivity(i);
 					finish();
 				} else {
-					Intent i = new Intent(this, MainActivity.class);
-					i.putExtra("authtoken", accessToken.getToken());
-					i.putExtra("sync", true);
-					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-					startActivity(i);
-					finish();
+					UserFunctions fn = new UserFunctions();
+					if(fn.isUserLoggedIn(getApplicationContext())){
+						Intent i = new Intent(this, MainActivity.class);
+						i.putExtra("authtoken", accessToken.getToken());
+						i.putExtra("sync", true);
+						i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						startActivity(i);
+						finish();
+					} else {
+						Intent i = new Intent(this, DisplayNameReg.class);
+						i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+						i.putExtra("authtoken", accessToken.getToken());
+						startActivity(i);
+						finish();
+					}
+
 				}
 
 

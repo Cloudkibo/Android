@@ -30,6 +30,8 @@ public class ChatItem
 
 	private String contact_id;
 
+	private int pendingMsgs;
+
 	/**
 	 * Instantiates a new chat item.
 	 * 
@@ -49,7 +51,7 @@ public class ChatItem
 	 *            the is group
 	 */
 	public ChatItem(String name, String title, String msg, String date,
-			int icon, boolean online, boolean isGroup, String contact_id)
+			int icon, boolean online, boolean isGroup, String contact_id, int pending)
 	{
 		this.name = name;
 		this.date = date;
@@ -59,6 +61,7 @@ public class ChatItem
 		this.online = online;
 		this.title = title;
 		this.contact_id = contact_id;
+		this.pendingMsgs = pending;
 	}
 
 	/**
@@ -211,5 +214,13 @@ public class ChatItem
 	public String getContactId () { return contact_id; }
 
 	public void setContactId (String contact_id) { this.contact_id = contact_id; }
+
+	public int getPendingMsgs() {
+		return pendingMsgs;
+	}
+
+	public void setPendingMsgs(int pendingMsgs) {
+		this.pendingMsgs = pendingMsgs;
+	}
 
 }

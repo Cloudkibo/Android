@@ -104,6 +104,76 @@ public class DisplayNameReg extends Activity
         bindService(intentSync, kiboSyncConnection, Context.BIND_AUTO_CREATE);
     }
 
+    // todo this is temporary fix, fix it with 6.0 testing
+    private void loadNotFoundContacts(ArrayList<String> contactList1, ArrayList<String> contactList1Phone) {
+
+        DatabaseHandler db = new DatabaseHandler(
+                getApplicationContext());
+
+        db.resetContactsTable();
+
+        db = new DatabaseHandler(
+                getApplicationContext());
+
+        for (int i = 0; i < contactList1.size(); i++) {
+            db.addContact("false", "null",
+                    contactList1Phone.get(i),
+                    contactList1.get(i),
+                    "null",
+                    "No",
+                    "N/A");
+        }
+
+        try {
+            JSONArray contacts = db.getContacts();
+            contacts.toString();
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void loadFoundContacts(ArrayList<String> contactList1, ArrayList<String> contactList1Phone) {
+
+        DatabaseHandler db = new DatabaseHandler(
+                getApplicationContext());
+
+        for (int i = 0; i < contactList1.size(); i++) {
+            db.addContact("true", "null",
+                    contactList1Phone.get(i),
+                    contactList1.get(i),
+                    "null",
+                    "Yes",
+                    "N/A");
+        }
+
+        kiboSyncService.startSyncWithoutAddressBookAccess(authtoken);
+
+        try {
+            JSONArray contacts = db.getContacts();
+            contacts.toString();
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                loadContactsFromAddressBook(); // todo this is temporary fix, fix it with 6.0 testing
+                //kiboSyncService.startSync(authtoken);
+            } else {
+                TextView hintText = (TextView) findViewById(id.hintText);
+                hintText.setText("NOTE: For CloudKibo to work properly, permissions to contacts are necessary. You can give these permissions from settings of Android later. \n\n"+ hintText.getText());
+                hintText.setText(hintText.getText() + "\n"+ "Setting conversations...");
+                //loadCurrentContactsFromServer(); // todo this is temporary fix, fix it with 6.0 testing
+                kiboSyncService.startSyncWithoutAddressBookAccess(authtoken);
+            }
+        }
+    }
+
     public void registerDisplayName(){
         final TextView hintText = (TextView) findViewById(id.hintText);
         final EditText displayNameText = (EditText) findViewById(R.id.editTextDisplayName);
@@ -219,24 +289,6 @@ public class DisplayNameReg extends Activity
         }.execute();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                           int[] grantResults) {
-        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // Permission is granted
-                loadContactsFromAddressBook(); // todo this is temporary fix, fix it with 6.0 testing
-                //kiboSyncService.startSync(authtoken);
-            } else {
-                TextView hintText = (TextView) findViewById(id.hintText);
-                hintText.setText("NOTE: For CloudKibo to work properly, permissions to contacts are necessary. You can give these permissions from settings of Android later. \n\n"+ hintText.getText());
-                hintText.setText(hintText.getText() + "\n"+ "Setting conversations...");
-                //loadCurrentContactsFromServer(); // todo this is temporary fix, fix it with 6.0 testing
-                kiboSyncService.startSyncWithoutAddressBookAccess(authtoken);
-            }
-        }
-    }
-
     // todo this is temporary fix, fix it with 6.0 testing
     private void loadContactsFromAddressBook(){
 
@@ -267,12 +319,19 @@ public class DisplayNameReg extends Activity
                                     ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
                                     new String[]{id}, null);
                             while (pCur.moveToNext()) {
+                                DatabaseHandler db = new DatabaseHandler(
+                                        getApplicationContext());
                                 String phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                                if(phone.charAt(0) != '+') continue;
+                                if(phone.charAt(0) != '+') {
+                                    if(phone.charAt(0) == '0') phone = phone.substring(1, phone.length());
+                                    if(phone.charAt(0) == '1') phone = "+" + phone;
+                                    else phone = "+" + db.getUserDetails().get("country_prefix") + phone;
+                                }
                                 if(contactList1Phone.contains(phone)) continue;
-                                if(Character.isLetter(name.charAt(0)))
-                                    name = name.substring(0, 1).toUpperCase() + name.substring(1);
+                                //if(Character.isLetter(name.charAt(0)))
+                                //    name = name.substring(0, 1).toUpperCase() + name.substring(1);
                                 phone = phone.replaceAll("\\s+","");
+                                phone = phone.replaceAll("\\p{P}","");
                                 phones.add(new BasicNameValuePair("phonenumbers", phone));
                                 Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
                                 contactList1.add(name);
@@ -314,19 +373,24 @@ public class DisplayNameReg extends Activity
 
                 try {
 
+                    ArrayList<String> contactList1Available = new ArrayList<String>();
+                    ArrayList<String> contactList1PhoneAvailable = new ArrayList<String>();
+
                     if(json != null){
 
                         JSONArray jArray = json.getJSONArray("available");
 
                         for(int i = 0; i<jArray.length(); i++){
+                            contactList1Available.add(contactList1.get(contactList1Phone.indexOf(jArray.get(i).toString())));
+                            contactList1PhoneAvailable.add(contactList1Phone.get(contactList1Phone.indexOf(jArray.get(i).toString())));
                             contactList1.remove(contactList1Phone.indexOf(jArray.get(i).toString()));
                             contactList1Phone.remove(contactList1Phone.indexOf(jArray.get(i).toString()));
                             Log.w("REMOVING", jArray.get(i).toString());
                         }
 
-                        loadNotFoundContacts(contactList1, contactList1Phone);
-
                     }
+                    loadNotFoundContacts(contactList1, contactList1Phone);
+                    loadFoundContacts(contactList1Available, contactList1PhoneAvailable);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -337,36 +401,6 @@ public class DisplayNameReg extends Activity
 
         }.execute();
 
-    }
-
-    // todo this is temporary fix, fix it with 6.0 testing
-    private void loadNotFoundContacts(ArrayList<String> contactList1, ArrayList<String> contactList1Phone) {
-
-        DatabaseHandler db = new DatabaseHandler(
-                getApplicationContext());
-
-        db.resetContactsTable();
-
-        db = new DatabaseHandler(
-                getApplicationContext());
-
-        for (int i = 0; i < contactList1.size(); i++) {
-            db.addContact("false", "null",
-                    contactList1Phone.get(i),
-                    contactList1.get(i),
-                    "null",
-                    "No",
-                    "N/A");
-        }
-
-        kiboSyncService.startSyncWithoutAddressBookAccess(authtoken);
-
-        try {
-            JSONArray contacts = db.getContacts();
-            contacts.toString();
-        }catch(JSONException e){
-            e.printStackTrace();
-        }
     }
 
     private ServiceConnection kiboSyncConnection = new ServiceConnection() {

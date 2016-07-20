@@ -233,6 +233,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
+    public void updateContact(String status, String phone, String id) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String updateQuery = "UPDATE " + Contacts.TABLE_CONTACTS +
+                " SET "+ Contacts.CONTACT_STATUS +"='"+ status +"', " + Contacts.CONTACT_UID +"='"+ id +"' "+
+                " WHERE "+ Contacts.CONTACT_PHONE +"='"+phone+"'";
+
+        try {
+            db.execSQL(updateQuery);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        db.close();
+    }
+
 
     /////////////////////////////////////////////////////////////////////
     // Storing userchat details in database                            //
@@ -534,6 +551,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 contact.put("display_name", cursor.getString(2));
                 contact.put("msg", cursor.getString(3));
                 contact.put("contact_id", cursor.getString(4));
+                contact.put("pendingMsgs", getUnReadMessagesCount(cursor.getString(1)));
 
                 chats.put(contact);
 
@@ -597,6 +615,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * */
     public int getRowCount() {
         String countQuery = "SELECT  * FROM " + User.TABLE_USER_NAME;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int rowCount = cursor.getCount();
+        db.close();
+        cursor.close();
+
+        // return row count
+        return rowCount;
+    }
+
+    public int getUnReadMessagesCount(String contact_phone) {
+        String countQuery = "SELECT  * FROM " + UserChat.TABLE_USERCHAT + " WHERE status = 'delivered' AND fromperson = '"+ contact_phone +"'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         int rowCount = cursor.getCount();

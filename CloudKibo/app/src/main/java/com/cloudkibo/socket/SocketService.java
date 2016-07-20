@@ -81,6 +81,7 @@ public class SocketService extends Service {
     private Boolean amInCall = false;
     private Boolean otherSideRinging = false;
     private Boolean isSomeOneCalling = false;
+    private Boolean isCallAckReceived = false;
 
     private Boolean isConnected = false;
 
@@ -133,7 +134,6 @@ public class SocketService extends Service {
                         message.put("room", room);
 
                         socket.emit("join global chatroom", message);//new JSONArray().put(message));
-
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -200,7 +200,6 @@ public class SocketService extends Service {
                             }
                         }
 
-
                     } catch (NullPointerException e) {
                         e.printStackTrace();
                     } catch (JSONException e) {
@@ -232,65 +231,56 @@ public class SocketService extends Service {
                 public void call(Object... args) {
 
                     Log.e("SOCKET", args[0].toString());
+
                     try {
-
-                        if (args[0].toString().equals("Reject Call")) {
-
-
-                            amInCall = false;
-
-                            mListener.receiveSocketMessage("Reject Call", amInCallWith);
-
-                            otherSideRinging = false;
-
-                            amInCallWith = "";
-
-                        } else if (args[0].toString().equals("got user media")) {
-
-                            // todo not sure about this. check if cordova app can access service run by
-                            // our main app
-
-
-                            //client.disconnect();
-
-                            mListener.receiveSocketMessage("got user media", amInCallWith);
-
-
-                        } else if (args[0].toString().equals("Accept Call")) {
-
-                            otherSideRinging = false;
-
-                            areYouCallingSomeone = false;
-
-                            mListener.receiveSocketMessage("Accept Call", amInCallWith);
-
-                            // todo not sure about this. check if cordova app can access service run by
-                            // our main app
-
-
-                            //client.disconnect();
-
-
-                        } else if (args[0].toString().startsWith("Missed")) {
-
-
-                            mListener.receiveSocketMessage("Missed", amInCallWith);
-
-                            amInCall = false;
-
-                            ringing = false;
-
-                            amInCallWith = "";
-
-                        }
-
 
                         JSONObject payload = new JSONObject(args[0].toString());
 
-                        if (payload.getString("type").equals("room_name")) {
+                        mListener.receiveSocketJson(payload.getString("type"), payload);
 
-                            mListener.receiveSocketMessage("call_room", payload.getString("room"));
-
+                        if (payload.getString("type").equals("call")) {
+                            String status = payload.getString("status");
+                            if(status.equals("calleeoffline")){
+                                Toast.makeText(getApplicationContext(),
+                                        "Other person is Offline.", Toast.LENGTH_SHORT)
+                                        .show();
+                                amInCall = false;
+                                amInCallWith = "";
+                                isCallAckReceived = false;
+                            }
+                            if(status.equals("calleeisbusy")){
+                                Toast.makeText(getApplicationContext(),
+                                        "Other person is Busy.", Toast.LENGTH_SHORT)
+                                        .show();
+                                amInCall = false;
+                                amInCallWith = "";
+                                isCallAckReceived = false;
+                            }
+                            else if(status.equals("calleeisavailable")){
+                                amInCall = true;
+                                otherSideRinging = true;
+                                amInCallWith = payload.getString("calleephone");
+                            }
+                            else if(status.equals("missing")){
+                                isSomeOneCalling = false;
+                                ringing = false;
+                                amInCall = false;
+                                amInCallWith = "";
+                            }
+                            else if(status.equals("callrejected")){
+                                Toast.makeText(getApplicationContext(),
+                                        "Other person is Busy.", Toast.LENGTH_SHORT)
+                                        .show();
+                                amInCall = false;
+                                otherSideRinging = false;
+                                amInCallWith = "";
+                                isCallAckReceived = false;
+                            }
+                            else if(status.equals("callaccepted")){
+                                otherSideRinging = false;
+                                areYouCallingSomeone = false;
+                                isCallAckReceived = false;
+                            }
                         }
 
                     } catch (JSONException e) {
@@ -316,79 +306,6 @@ public class SocketService extends Service {
 
                 }
 
-            }).on("calleeisoffline", new Emitter.Listener() {
-
-                @Override
-                public void call(Object... args) {
-
-                    try {
-
-                        JSONObject payload = new JSONObject(args[0].toString());
-
-                        amInCall = false;
-
-                        amInCallWith = "";
-
-                        mListener.receiveSocketMessage("calleeisoffline", "");
-
-                        //Toast.makeText(getApplicationContext(),
-                        //        payload.toString() +
-                        //                " is offline", Toast.LENGTH_SHORT).show();
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-            }).on("calleeisbusy", new Emitter.Listener() {
-
-                @Override
-                public void call(Object... args) {
-
-                    try {
-
-                        JSONObject payload = new JSONObject(args[0].toString());
-
-                        amInCall = false;
-
-                        amInCallWith = "";
-
-                        mListener.receiveSocketMessage("calleeisbusy", "");
-
-                        //Toast.makeText(getApplicationContext(),
-                        //        payload.toString() +
-                        //                " is busy", Toast.LENGTH_SHORT).show();
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-            }).on("othersideringing", new Emitter.Listener() {
-
-                @Override
-                public void call(Object... args) {
-
-                    try {
-
-                        JSONObject payload = new JSONObject(args[0].toString());
-
-                        amInCall = true;
-
-                        otherSideRinging = true;
-
-                        amInCallWith = payload.getString("callee");
-
-                        mListener.receiveSocketMessage("othersideringing", amInCallWith);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
             }).on("areyoufreeforcall", new Emitter.Listener() {
 
                 @Override
@@ -400,8 +317,10 @@ public class SocketService extends Service {
 
                         JSONObject message2 = new JSONObject();
 
-                        message2.put("me", user.get("phone"));
-                        message2.put("mycaller", payload.getString("caller"));
+                        message2.put("calleephone", user.get("phone"));
+                        message2.put("callerphone", payload.getString("callerphone"));
+                        message2.put("type", "call");
+
 
                         if (!amInCall) {
 
@@ -409,9 +328,16 @@ public class SocketService extends Service {
                             ringing = true;
                             amInCall = true;
 
-                            amInCallWith = payload.getString("caller");
+                            amInCallWith = payload.getString("callerphone");
 
-                            socket.emit("yesiamfreeforcall", message2);
+                            message2.put("status", "calleeisavailable");
+
+                            JSONObject message3 = new JSONObject();
+
+                            message3.put("msg", message2);
+                            message3.put("to", payload.getString("callerphone"));
+
+                            socket.emit("message", message3);
 
                             Intent i = new Intent(getApplicationContext(), IncomingCall.class);
                             i.putExtra("user", user);
@@ -422,7 +348,14 @@ public class SocketService extends Service {
 
                         } else {
 
-                            socket.emit("noiambusy", message2);
+                            message2.put("status", "calleeisbusy");
+
+                            JSONObject message3 = new JSONObject();
+
+                            message3.put("msg", message2);
+                            message3.put("to", payload.getString("callerphone"));
+
+                            socket.emit("message", message3);
                         }
 
                     } catch (JSONException e) {
@@ -438,9 +371,9 @@ public class SocketService extends Service {
 
                     try {
 
-                        JSONArray payload = new JSONArray(args[0].toString());
+                        JSONObject payload = new JSONObject(args[0].toString());
 
-                        mListener.receiveSocketArray("online", payload);
+                        mListener.receiveSocketJson("online", payload);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -455,9 +388,9 @@ public class SocketService extends Service {
 
                     try {
 
-                        JSONArray payload = new JSONArray(args[0].toString());
+                        JSONObject payload = new JSONObject(args[0].toString());
 
-                        mListener.receiveSocketArray("offline", payload);
+                        mListener.receiveSocketJson("offline", payload);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -745,7 +678,25 @@ public class SocketService extends Service {
 
     public void stopCallMessageToCallee() {
 
-        sendSocketMessage("Missed Incoming Call: " + user.get("display_name"), amInCallWith);
+        try {
+            JSONObject message2 = new JSONObject();
+
+            message2.put("calleephone", amInCallWith);
+            message2.put("callerphone", user.get("phone"));
+            message2.put("type", "call");
+            message2.put("status", "missing");
+
+            JSONObject message3 = new JSONObject();
+
+            message3.put("msg", message2);
+            message3.put("to", amInCallWith);
+
+            socket.emit("message", message3);
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        //sendSocketMessage("Missed Incoming Call: " + user.get("display_name"), amInCallWith);
 
         amInCall = false;
         amInCallWith = "";
@@ -755,7 +706,24 @@ public class SocketService extends Service {
     }
 
     public void acceptCallMessageToCallee() {
-        sendSocketMessage("Accept Call", amInCallWith);
+        try {
+            JSONObject message2 = new JSONObject();
+
+            message2.put("calleephone", user.get("phone"));
+            message2.put("callerphone", amInCallWith);
+            message2.put("type", "call");
+            message2.put("status", "callaccepted");
+
+            JSONObject message3 = new JSONObject();
+
+            message3.put("msg", message2);
+            message3.put("to", amInCallWith);
+
+            socket.emit("message", message3);
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+        //sendSocketMessage("Accept Call", amInCallWith);
 
         isSomeOneCalling = false;
         ringing = false;
@@ -764,11 +732,54 @@ public class SocketService extends Service {
     }
 
     public void rejectCallMessageToCallee() {
-        sendSocketMessage("Reject Call", amInCallWith);
+        try {
+            JSONObject message2 = new JSONObject();
+
+            message2.put("calleephone", user.get("phone"));
+            message2.put("callerphone", amInCallWith);
+            message2.put("type", "call");
+            message2.put("status", "callrejected");
+
+            JSONObject message3 = new JSONObject();
+
+            message3.put("msg", message2);
+            message3.put("to", amInCallWith);
+
+            socket.emit("message", message3);
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+        //sendSocketMessage("Reject Call", amInCallWith);
 
         isSomeOneCalling = false;
         ringing = false;
         amInCall = false;
+    }
+
+    public void sendRoomNameToCallee(String roomId) {
+        try {
+            JSONObject message2 = new JSONObject();
+
+            message2.put("calleephone", amInCallWith);
+            message2.put("callerphone", user.get("phone"));
+            message2.put("type", "room_name");
+            message2.put("room_name", roomId);
+
+            JSONObject message3 = new JSONObject();
+
+            message3.put("msg", message2);
+            message3.put("to", amInCallWith);
+
+            socket.emit("message", message3);
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+        //sendSocketMessage("Accept Call", amInCallWith);
+
+        isSomeOneCalling = false;
+        ringing = false;
+        amInCall = false;
+        amInCallWith = "";
     }
 
     public void sendSocketMessageDataChannel(String msg, String filePeer) {
@@ -800,10 +811,32 @@ public class SocketService extends Service {
             JSONObject message1 = new JSONObject();
 
             message1.put("room", room);
-            message1.put("caller", user.get("phone"));
-            message1.put("callee", contact);
+            message1.put("callerphone", user.get("phone"));
+            message1.put("calleephone", contact);
 
-            socket.emit("callthisperson", message1);//new JSONArray().put(message1));
+            socket.emit("callthisperson", message1, new Ack() {
+                @Override
+                public void call(Object... args) {
+                    isCallAckReceived = true;
+                }
+            });//new JSONArray().put(message1));
+
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            Log.i("tag", "This'll run 3000 milliseconds later");
+                            if(!isCallAckReceived){
+                                Toast.makeText(getApplicationContext(),
+                                        "Can't connect to server.", Toast.LENGTH_SHORT)
+                                        .show();
+                                areYouCallingSomeone = false;
+                                mListener.receiveSocketMessage("NoAck", "NoAck");
+                            } else {
+                                isCallAckReceived = false;
+                            }
+                        }
+                    },
+                    3000);
 
             areYouCallingSomeone = true;
 
@@ -933,7 +966,6 @@ public class SocketService extends Service {
                 }
             });
 
-
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (NullPointerException e) {
@@ -973,10 +1005,13 @@ public class SocketService extends Service {
             e.printStackTrace();
         }
 
-
     }
 
     public void endCall(){
+        amInCall = false;
+        otherSideRinging = false;
+        amInCallWith = "";
+
         socket.disconnect();
         socket.connect();
     }
