@@ -1,11 +1,8 @@
 package com.cloudkibo.ui;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,14 +10,8 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.media.MediaPlayer;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputType;
-import android.text.TextWatcher;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,15 +21,12 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cloudkibo.MainActivity;
 //import com.cloudkibo.R;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
-import com.cloudkibo.library.UserFunctions;
-import com.cloudkibo.model.ContactItem;
 import com.cloudkibo.model.Conversation;
 import com.cloudkibo.utils.IFragmentName;
 
@@ -61,10 +49,11 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	private EditText txt;
 	
 	private String authtoken;
+
+	private HashMap<String, String> user;
 	
 	String contactName;
 	String contactPhone;
-	String contactId;
 
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -78,10 +67,12 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		contactName = this.getArguments().getString("contactusername");
 
 		contactPhone = this.getArguments().getString("contactphone");
-		
-		contactId = this.getArguments().getString("contactid");
-		
+
 		authtoken = this.getArguments().getString("authtoken");
+
+		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+
+		user = db.getUserDetails();
 
 		loadConversationList();
 		
@@ -143,6 +134,10 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		MainActivity act1 = (MainActivity)getActivity();
 		
 		act1.sendMessage(contactPhone, messageString, uniqueid);
+
+		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+		db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
+				messageString, (new Date().toString()), "pending", uniqueid);
 		
 		convList.add(new Conversation(messageString, new Date().toString(), true, true, "pending", uniqueid));
 		adp.notifyDataSetChanged();
@@ -221,6 +216,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							db.updateChat("seen", row.getString("uniqueid"));
 							act1.sendMessageStatusUsingSocket("seen", row.getString("uniqueid"), row.getString("fromperson"));
 						} else {
+							db = new DatabaseHandler(getActivity().getApplicationContext());
+							db.updateChat("seen", row.getString("uniqueid"));
 							db = new DatabaseHandler(getActivity().getApplicationContext());
 							db.addChatSyncHistory("seen", row.getString("uniqueid"), row.getString("fromperson"));
 						}

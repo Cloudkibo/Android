@@ -2,6 +2,27 @@
 <items version="2" >
 
     <item
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/9.2.0/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="30489a97b06cc3945bdbcc1770089af9e3b3b64d">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.android.gms-play-services-base-9.2.0_08543d0851ded1167ed1fa57e3979ee9df870c9b/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-gcm/9.2.0/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="535d4497b5fa5d451e07a043e9e220d5c25ab7c7">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.android.gms-play-services-gcm-9.2.0_2e2a590efed6d24d97629055f6894478e63f2427/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.microsoft.azure/notification-hubs-android-sdk/0.4/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="9f06148f757711c324c90a89cbf1de10dcfcb359">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.microsoft.azure-notification-hubs-android-sdk-0.4_40eefeff2100c34484eb53d952ecb29a0c7be25b/classes.dex" />
+    </item>
+    <item
         jar="/Users/sojharo/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp/2.4.0/40340c0748190fe897baf7bffbc1b282734294e5/okhttp-2.4.0.jar"
         jumboMode="true"
         revision="23.0.3"
@@ -16,11 +37,25 @@
         <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/support-annotations-23.2.1_701ade946d4174361f4e2d15e3ea4f37a1706328/classes.dex" />
     </item>
     <item
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-tasks/9.2.0/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="593fbaec1c3e100480a2bd72457b64b7dde6ac2d">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.android.gms-play-services-tasks-9.2.0_d5f0cb872029f228873ebd3a1ee37da1868b1378/classes.dex" />
+    </item>
+    <item
         jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/jars/classes.jar"
         jumboMode="true"
         revision="23.0.3"
         sha1="ff7a7dab65682118157779edae0de8467be01541">
         <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.facebook.android-account-kit-sdk-4.11.0_4ddc791b76106d0d6ca08b61800401aab013a1be/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.microsoft.azure/azure-notifications-handler/1.0.1/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="c322af100020e6db539f2aa367698d4b88fc453f">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.microsoft.azure-azure-notifications-handler-1.0.1_4393a81d901cd0e2a7360e047e2d8f3d2b955c3b/classes.dex" />
     </item>
     <item
         jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/design/23.2.1/jars/classes.jar"
@@ -63,6 +98,13 @@
         revision="23.0.3"
         sha1="7cd875d97fa42a609ec2bda816d6047d5a3ac26a">
         <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/libjingle_peerconnection_c8679de4185ef92ff45deb81b64486380c02beaa/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-iid/9.2.0/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="fbb50f7f89342c915898c9376a67229e2fcee286">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.android.gms-play-services-iid-9.2.0_02b26279420e317fe1257f26c5b24b57b57440ca/classes.dex" />
     </item>
     <item
         jar="/Users/sojharo/.gradle/caches/modules-2/files-2.1/com.squareup.okhttp/okhttp-ws/2.4.0/69206d28966656052a982ceded583abdeb41cf63/okhttp-ws-2.4.0.jar"
@@ -117,14 +159,14 @@
         jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/incremental-classes/debug/instant-run-bootstrap.jar"
         jumboMode="true"
         revision="23.0.3"
-        sha1="a71739ba1c29e15742e9c70bb3d84ceb4665f1a4">
+        sha1="d1b591b1bcddf52bc761db243b3cea84f932e39b">
         <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run-bootstrap_d6bcf9c86b11cd601c3b723d18da598bf7be42f5/classes.dex" />
     </item>
     <item
         jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/incremental-runtime-classes/debug/instant-run.jar"
         jumboMode="true"
         revision="23.0.3"
-        sha1="3a03a8c177a48c71efb4d035d8ed4d6cc737f399">
+        sha1="9505b756413427cc4f2771b410d72ae78517732b">
         <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/instant-run_c0ff77ac45ae9c282d8a9c7e690ea418cd2fb9ab/classes.dex" />
     </item>
     <item
@@ -133,6 +175,13 @@
         revision="23.0.3"
         sha1="e3885783ff8926ed9e2fdcd16816c2e1e73e7aee">
         <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.android.support-recyclerview-v7-23.2.1_fd6b56a4e9527fd77d8d344500edded4be6e232b/classes.dex" />
+    </item>
+    <item
+        jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/jars/classes.jar"
+        jumboMode="true"
+        revision="23.0.3"
+        sha1="dd7676ac12aa6653718b7ea33d93ce9d6915d526">
+        <dex dex="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/transforms/dex/debug/folders/1000/10/com.google.android.gms-play-services-basement-9.2.0_808bb491ce2622d8ff91b7fcdce17f666385044b/classes.dex" />
     </item>
     <item
         jar="/Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/jars/libs/internal_impl-23.2.1.jar"

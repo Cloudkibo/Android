@@ -755,7 +755,7 @@ public class ContactListPending extends CustomFragment implements IFragmentName
 
     public String getFragmentName()
     {
-        return "ContactList";
+        return "ContactListPending";
     }
 
     public String getFragmentContactPhone () { return ""; }

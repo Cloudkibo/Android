@@ -11,6 +11,7 @@ import java.util.concurrent.TimeoutException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -21,6 +22,8 @@ import android.os.IBinder;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloudkibo.R;
@@ -43,7 +46,9 @@ public class OutgoingCall extends CustomActivity {
     private HashMap<String, String> user;
     private String room;
 
-    Button btnEndCall;
+    ImageButton btnEndCall;
+    TextView nameTextView;
+    TextView statusTextView;
 
     @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,20 +71,20 @@ public class OutgoingCall extends CustomActivity {
         startService(i);
         bindService(i, socketConnection, Context.BIND_AUTO_CREATE);
 
-        btnEndCall = (Button) findViewById(R.id.endCall);
+        btnEndCall = (ImageButton) findViewById(R.id.endCall);
 
         btnEndCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 socketService.stopCallMessageToCallee();
                 finish();
-
             }
         });
 
+        nameTextView = (TextView) findViewById(R.id.nameOfCalleeTextView);
+        nameTextView.setText(peerPhone);
 
-
+        statusTextView = (TextView) findViewById(R.id.outGoingCallStatusTextView);
 
     }
 
@@ -131,14 +136,55 @@ public class OutgoingCall extends CustomActivity {
 
                         if (type.equals("call")) {
                             String status = body.getString("status");
-                            if(status.equals("calleeoffline") || status.equals("calleeisbusy")){
+                            if(status.equals("calleeoffline")){
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(),
+                                                "Other person is Offline.", Toast.LENGTH_SHORT)
+                                                .show();
+                                    }
+                                });
                                 finish();
+                            } else if(status.equals("calleeisbusy")) {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(),
+                                                "Other person is Busy.", Toast.LENGTH_SHORT)
+                                                .show();
+                                    }
+                                });
                             } else if(status.equals("calleeisavailable")){
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(),
+                                                "Other side is ringing.", Toast.LENGTH_SHORT)
+                                                .show();
+                                    }
+                                });
 
                             } else if(status.equals("callrejected")){
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(),
+                                                "Other person is Busy.", Toast.LENGTH_SHORT)
+                                                .show();
+                                    }
+                                });
                                 Log.e("OutGoingCall", "Reject call is sent");
                                 finish();
                             } else if(status.equals("callaccepted")){
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getApplicationContext(),
+                                                "Your call is answered. Connecting Now...", Toast.LENGTH_SHORT)
+                                                .show();
+                                    }
+                                });
                                 String roomId = Long.toHexString(Double.doubleToLongBits(Math.random()));
 
                                 socketService.sendRoomNameToCallee(roomId);

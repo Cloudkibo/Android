@@ -154,19 +154,13 @@ public class SocketService extends Service {
 
                         String message = payload.getString("msg");
 
-                        if(message.length() > 100){
-                            message = message.substring(0, 97) +"...";
-                            payload.remove("msg");
-                            payload.put("msg", message);
-                        }
-
                         // todo correct current date
                         db.addChat(payload.getString("to"),
                                 payload.getString("from"),
                                 payload.getString("fromFullName"),
                                 message,
                                 (new Date().toString()), "delivered",
-                                payload.has("uniqueid") ? payload.getString("uniqueid") : "");
+                                payload.getString("uniqueid"));
 
                         updateReceivedMessageStatusToServer("delivered",
                                 payload.getString("uniqueid"), payload.getString("from"));
@@ -217,7 +211,8 @@ public class SocketService extends Service {
 
                         JSONObject payload = new JSONObject(args[0].toString());
 
-                        mListener.receiveSocketJson("messagefordatachannel", payload);
+                        if (isForeground("com.cloudkibo"))
+                            mListener.receiveSocketJson("messagefordatachannel", payload);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -241,25 +236,20 @@ public class SocketService extends Service {
                         if (payload.getString("type").equals("call")) {
                             String status = payload.getString("status");
                             if(status.equals("calleeoffline")){
-                                Toast.makeText(getApplicationContext(),
-                                        "Other person is Offline.", Toast.LENGTH_SHORT)
-                                        .show();
                                 amInCall = false;
                                 amInCallWith = "";
-                                isCallAckReceived = false;
+                                isCallAckReceived = true;
                             }
                             if(status.equals("calleeisbusy")){
-                                Toast.makeText(getApplicationContext(),
-                                        "Other person is Busy.", Toast.LENGTH_SHORT)
-                                        .show();
                                 amInCall = false;
                                 amInCallWith = "";
-                                isCallAckReceived = false;
+                                isCallAckReceived = true;
                             }
                             else if(status.equals("calleeisavailable")){
                                 amInCall = true;
                                 otherSideRinging = true;
                                 amInCallWith = payload.getString("calleephone");
+                                isCallAckReceived = true;
                             }
                             else if(status.equals("missing")){
                                 isSomeOneCalling = false;
@@ -268,18 +258,13 @@ public class SocketService extends Service {
                                 amInCallWith = "";
                             }
                             else if(status.equals("callrejected")){
-                                Toast.makeText(getApplicationContext(),
-                                        "Other person is Busy.", Toast.LENGTH_SHORT)
-                                        .show();
                                 amInCall = false;
                                 otherSideRinging = false;
                                 amInCallWith = "";
-                                isCallAckReceived = false;
                             }
                             else if(status.equals("callaccepted")){
                                 otherSideRinging = false;
                                 areYouCallingSomeone = false;
-                                isCallAckReceived = false;
                             }
                         }
 
@@ -298,7 +283,8 @@ public class SocketService extends Service {
 
                         JSONArray payload = new JSONArray(args[0].toString());
 
-                        mListener.receiveSocketArray("theseareonline", payload);
+                        if (isForeground("com.cloudkibo"))
+                            mListener.receiveSocketArray("theseareonline", payload);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -320,6 +306,9 @@ public class SocketService extends Service {
                         message2.put("calleephone", user.get("phone"));
                         message2.put("callerphone", payload.getString("callerphone"));
                         message2.put("type", "call");
+
+                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                        JSONObject callerObj = db.getSpecificContact(payload.getString("callerphone")).getJSONObject(0);
 
 
                         if (!amInCall) {
@@ -343,6 +332,7 @@ public class SocketService extends Service {
                             i.putExtra("user", user);
                             i.putExtra("room", room);
                             i.putExtra("contact", amInCallWith);
+                            i.putExtra("contact_name", callerObj.getString("display_name"));
                             i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                             startActivity(i);
 
@@ -373,7 +363,8 @@ public class SocketService extends Service {
 
                         JSONObject payload = new JSONObject(args[0].toString());
 
-                        mListener.receiveSocketJson("online", payload);
+                        if (isForeground("com.cloudkibo"))
+                            mListener.receiveSocketJson("online", payload);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -390,7 +381,8 @@ public class SocketService extends Service {
 
                         JSONObject payload = new JSONObject(args[0].toString());
 
-                        mListener.receiveSocketJson("offline", payload);
+                        if (isForeground("com.cloudkibo"))
+                            mListener.receiveSocketJson("offline", payload);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -808,6 +800,8 @@ public class SocketService extends Service {
 
             Log.d("CALL", "Making Call to " + contact);
 
+            isCallAckReceived = false;
+
             JSONObject message1 = new JSONObject();
 
             message1.put("room", room);
@@ -866,10 +860,6 @@ public class SocketService extends Service {
 
             completeMessage.put("room", room);
             completeMessage.put("stanza", message);
-
-            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-            db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
-                    msg, (new Date().toString()), "pending", uniqueid);
 
             socket.emit("im", completeMessage, new Ack() {
                 @Override
@@ -948,6 +938,8 @@ public class SocketService extends Service {
             message.put("sender", sender);;
             message.put("uniqueid", uniqueid);
 
+            final String ackStatus = status;
+
             socket.emit("messageStatusUpdate", message, new Ack() {
                 @Override
                 public void call(Object... args) {
@@ -959,7 +951,7 @@ public class SocketService extends Service {
                         DatabaseHandler db = new DatabaseHandler(getApplicationContext());
                         db.resetSpecificChatHistorySync(resp.getString("uniqueid"));
                         db = new DatabaseHandler(getApplicationContext());
-                        db.updateChat("seen", resp.getString("uniqueid"));
+                        db.updateChat(ackStatus, resp.getString("uniqueid"));
                     } catch (JSONException e ){
                         e.printStackTrace();
                     }

@@ -17,6 +17,7 @@ import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
@@ -53,7 +54,14 @@ public class KiboSyncService extends Service {
 
         doUpwardSync();
 
-        loadChatFromServer();
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        Log.i("tag", "This'll run 3000 milliseconds later");
+                        loadChatFromServer();
+                    }
+                },
+                3000);
 
     }
 
@@ -65,7 +73,14 @@ public class KiboSyncService extends Service {
 
         doUpwardSync();
 
-        loadChatFromServer();
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        Log.i("tag", "This'll run 3000 milliseconds later");
+                        loadChatFromServer();
+                    }
+                },
+                3000);
 
     }
 
@@ -133,12 +148,23 @@ public class KiboSyncService extends Service {
                                     ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
                                     new String[]{id}, null);
                             while (pCur.moveToNext()) {
+                                DatabaseHandler db = new DatabaseHandler(
+                                        getApplicationContext());
                                 String phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                                if(phone.charAt(0) != '+') continue;
+                                if(phone.length() < 6) continue;
+                                if(phone.charAt(0) != '+') {
+                                    if(phone.charAt(0) == '0') phone = phone.substring(1, phone.length());
+                                    if(phone.charAt(0) == '1') phone = "+" + phone;
+                                    else phone = "+" + db.getUserDetails().get("country_prefix") + phone;
+                                }
                                 if(contactList1Phone.contains(phone)) continue;
-                                if(Character.isLetter(name.charAt(0)))
-                                    name = name.substring(0, 1).toUpperCase() + name.substring(1);
+                                //if(Character.isLetter(name.charAt(0)))
+                                //    name = name.substring(0, 1).toUpperCase() + name.substring(1);
                                 phone = phone.replaceAll("\\s+","");
+                                phone = phone.replaceAll("\\p{P}","");
+                                db = new DatabaseHandler(getApplicationContext());
+                                String userPhone = db.getUserDetails().get("phone");
+                                if(userPhone.equals(phone)) continue;
                                 phones.add(new BasicNameValuePair("phonenumbers", phone));
                                 Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
                                 contactList1.add(name);

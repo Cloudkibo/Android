@@ -21,6 +21,8 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloudkibo.R;
@@ -36,15 +38,17 @@ public class IncomingCall extends CustomActivity {
 
     String peerName;
     Boolean initiator;
+    String contactName;
 
     SocketService socketService;
     boolean isBound = false;
 
     private HashMap<String, String> user;
-    private String room;
 
-    Button btnAcceptCall;
-    Button btnRejectCall;
+    ImageButton btnAcceptCall;
+    ImageButton btnRejectCall;
+
+    TextView contactNameView;
 
     Ringtone r;
 
@@ -55,8 +59,9 @@ public class IncomingCall extends CustomActivity {
         setContentView(R.layout.incoming_call);
 
         user = (HashMap) getIntent().getExtras().get("user");
-        room = getIntent().getExtras().getString("room");
+        String room = getIntent().getExtras().getString("room");
         peerName = getIntent().getExtras().getString("contact");
+        contactName = getIntent().getExtras().getString("contact_name");
 
         Intent i = new Intent(this, SocketService.class);
         i.putExtra("user", user);
@@ -72,8 +77,11 @@ public class IncomingCall extends CustomActivity {
             e.printStackTrace();
         }
 
-        btnAcceptCall = (Button) findViewById(R.id.pickCall);
-        btnRejectCall = (Button) findViewById(R.id.rejectCall);
+        btnAcceptCall = (ImageButton) findViewById(R.id.pickCall);
+        btnRejectCall = (ImageButton) findViewById(R.id.rejectCall);
+
+        contactNameView = (TextView) findViewById(R.id.nameOfCallerTextView);
+        contactNameView.setText(contactName);
 
         btnRejectCall.setOnClickListener(new View.OnClickListener() {
             @Override

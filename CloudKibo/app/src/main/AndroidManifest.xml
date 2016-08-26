@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cloudkibo"
     android:hardwareAccelerated="true"
-    android:versionCode="33"
+    android:versionCode="41"
     android:versionName="1.1">
 
     <uses-sdk
@@ -44,6 +44,8 @@
 
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+
+
 
     <application
         android:allowBackup="true"
@@ -221,6 +223,30 @@
             android:exported="true" >
         </service>
 
+        <receiver android:name="com.cloudkibo.library.NetworkStateReceiver">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+        <service android:name="com.cloudkibo.push.MyInstanceIDService" android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID"/>
+            </intent-filter>
+        </service>
+
+        <service
+            android:name="com.cloudkibo.push.RegistrationIntentService"
+            android:exported="false">
+        </service>
+
+        <receiver android:name="com.microsoft.windowsazure.notifications.NotificationsBroadcastReceiver"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="com.cloudkibo" />
+            </intent-filter>
+        </receiver>
 
         <!-- This is for Facebook Account Kit -->
         <meta-data
@@ -233,6 +259,9 @@
             android:name="com.facebook.accountkit.ClientToken"
             android:value="@string/client_token" />
 
+        <meta-data android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
         <activity
             android:name="com.facebook.accountkit.ui.AccountKitActivity"
             android:theme="@style/AppLoginTheme"
@@ -240,5 +269,11 @@
         <!-- Ends Facebook Account Kit -->
 
     </application>
+
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+
+    <permission android:name="com.cloudkibo.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+    <uses-permission android:name="com.cloudkibo.permission.C2D_MESSAGE"/>
 
 </manifest>

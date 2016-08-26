@@ -97,7 +97,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_CHAT_HISTORY_SYNC_TABLE = "CREATE TABLE chat_history_sync ("
                 + "id INTEGER PRIMARY KEY, "
                 + "status TEXT, "
-                + "uniqueid TEXT, " // values : placed, received, missed
+                + "uniqueid TEXT, "
                 + "fromperson TEXT "+ ")";
         db.execSQL(CREATE_CHAT_HISTORY_SYNC_TABLE);
 
@@ -293,7 +293,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public HashMap<String, String> getUserDetails(){
         HashMap<String,String> user = new HashMap<String,String>();
-        String selectQuery = "SELECT  * FROM " + User.TABLE_USER_NAME;
+        String selectQuery = "SELECT * FROM " + User.TABLE_USER_NAME;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -358,6 +358,39 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public JSONArray getContactsOnAddressBook() throws JSONException {
         JSONArray contacts = new JSONArray();
         String selectQuery = "SELECT  * FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='false'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                //contact.put(Contacts.CONTACT_FIRSTNAME, cursor.getString(1));
+                //contact.put(Contacts.CONTACT_LASTNAME, cursor.getString(2));
+                contact.put(Contacts.CONTACT_PHONE, cursor.getString(1));
+                contact.put("display_name", cursor.getString(2));
+                contact.put(Contacts.CONTACT_UID, cursor.getString(3));
+                contact.put(Contacts.SHARED_DETAILS, cursor.getString(4));
+                contact.put(Contacts.CONTACT_STATUS, cursor.getString(5));
+                contact.put("on_cloudkibo", cursor.getString(6));
+
+                contacts.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return contacts;
+    }
+
+    public JSONArray getSpecificContact(String phone) throws JSONException {
+        JSONArray contacts = new JSONArray();
+        String selectQuery = "SELECT  * FROM " + Contacts.TABLE_CONTACTS +" where phone='"+ phone +"'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -485,8 +518,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 contact.put(UserChat.USERCHAT_MSG, cursor.getString(4));
                 contact.put(UserChat.USERCHAT_DATE, cursor.getString(5));
                 contact.put("status", cursor.getString(6));
-                contact.put("uniqueid", cursor.getString(6));
-                contact.put("contact_phone", cursor.getString(7));
+                contact.put("uniqueid", cursor.getString(7));
+                contact.put("contact_phone", cursor.getString(8));
 
                 chats.put(contact);
 
@@ -530,11 +563,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public JSONArray getChatList() throws JSONException {
         JSONArray chats = new JSONArray();
         String selectQuery =
-                " SELECT "+ UserChat.USERCHAT_DATE +", contact_phone, display_name, " + UserChat.USERCHAT_MSG
-                +", "+ Contacts.TABLE_CONTACTS +"."+ Contacts.CONTACT_UID
-                +" FROM " + UserChat.TABLE_USERCHAT +", "+ Contacts.TABLE_CONTACTS
-                +" WHERE "+ Contacts.TABLE_CONTACTS +"."+ Contacts.CONTACT_PHONE
-                +" = "+ UserChat.TABLE_USERCHAT +".contact_phone"
+                " SELECT "+ UserChat.USERCHAT_DATE +", contact_phone, " + UserChat.USERCHAT_MSG
+                +" FROM " + UserChat.TABLE_USERCHAT
                 +" GROUP BY contact_phone ORDER BY "+ UserChat.USERCHAT_DATE + " DESC";
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -548,10 +578,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 JSONObject contact = new JSONObject();
                 contact.put("date", cursor.getString(0));
                 contact.put("contact_phone", cursor.getString(1));
-                contact.put("display_name", cursor.getString(2));
-                contact.put("msg", cursor.getString(3));
-                contact.put("contact_id", cursor.getString(4));
+                contact.put("msg", cursor.getString(2));
                 contact.put("pendingMsgs", getUnReadMessagesCount(cursor.getString(1)));
+                JSONArray contactInAddressBook = getSpecificContact(cursor.getString(1));
+                if(contactInAddressBook.length() > 0) {
+                    contact.put("display_name", contactInAddressBook.getJSONObject(0).getString("display_name"));
+                } else {
+                    contact.put("display_name", cursor.getString(1));
+                }
 
                 chats.put(contact);
 

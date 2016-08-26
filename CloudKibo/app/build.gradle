@@ -35,7 +35,14 @@ repositories {
     mavenCentral()
 }
 
+repositories {
+    maven {
+        url "http://dl.bintray.com/microsoftazuremobile/SDK"
+    }
+}
+
 dependencies {
+    compile 'com.google.android.gms:play-services-gcm:9.2.0'
     compile 'com.github.nkzawa:socket.io-client:0.5.1'
     compile 'com.android.support:support-v4:23.1.0'
     compile 'com.google.code.gson:gson:2.2.2'
@@ -43,4 +50,6 @@ dependencies {
     //compile 'com.facebook.android:facebook-android-sdk:4.0.0'
     compile 'com.facebook.android:account-kit-sdk:4.11.0'
     compile 'ch.acra:acra:4.8.5'
+    compile 'com.microsoft.azure:notification-hubs-android-sdk:0.4@aar'
+    compile 'com.microsoft.azure:azure-notifications-handler:1.0.1@aar'
 }

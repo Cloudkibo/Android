@@ -72,7 +72,6 @@ public class ChatList extends CustomFragment implements IFragmentName
 				Bundle bundle = new Bundle();
 				bundle.putString("contactusername", chatList.get(pos).getName());
 				bundle.putString("contactphone", chatList.get(pos).getTitle());
-				bundle.putString("contactid", chatList.get(pos).getContactId());
 				bundle.putString("authtoken", authtoken);
 
 				GroupChat groupChatFragment = new GroupChat();
@@ -123,7 +122,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 						row.getString("display_name"),
 						row.getString("contact_phone"),
 						row.getString("msg"), row.getString("date"), R.drawable.user1, false,
-						false, row.getString("contact_id"), Integer.parseInt(row.getString("pendingMsgs"))));
+						false, Integer.parseInt(row.getString("pendingMsgs"))));
 
 			}
 
@@ -189,6 +188,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 			TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
 			lbl.setText(c.getName());
 			if(c.getPendingMsgs() > 0) lbl.setTextColor(getResources().getColor(R.color.black));
+			else lbl.setTextColor(getResources().getColor(R.color.main_color_green));
 
 			lbl = (TextView) v.findViewById(R.id.lbl2);
 			lbl.setText(c.getDate());
@@ -203,6 +203,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 			lbl = (TextView) v.findViewById(R.id.lblContactStatus);
 			lbl.setText(c.getMsg());
 			if(c.getPendingMsgs() > 0) lbl.setTextColor(getResources().getColor(R.color.black));
+			else lbl.setTextColor(getResources().getColor(R.color.main_color_gray_lt));
 
 			ImageView img = (ImageView) v.findViewById(R.id.img1);
 			img.setImageResource(c.getIcon());

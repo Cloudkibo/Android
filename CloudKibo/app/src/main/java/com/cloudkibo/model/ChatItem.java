@@ -51,7 +51,7 @@ public class ChatItem
 	 *            the is group
 	 */
 	public ChatItem(String name, String title, String msg, String date,
-			int icon, boolean online, boolean isGroup, String contact_id, int pending)
+			int icon, boolean online, boolean isGroup, int pending)
 	{
 		this.name = name;
 		this.date = date;
@@ -60,7 +60,6 @@ public class ChatItem
 		this.msg = msg;
 		this.online = online;
 		this.title = title;
-		this.contact_id = contact_id;
 		this.pendingMsgs = pending;
 	}
 

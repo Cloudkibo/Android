@@ -1,6 +1,6 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:2:1-244:12
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:2:1-279:12
 	package
 		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:4:5-28
 		INJECTED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml
@@ -21,6 +21,24 @@ ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifes
 		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:2:11-69
 uses-sdk
 ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:9:5-11:41
+MERGED from [com.google.android.gms:play-services-gcm:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-gcm/9.2.0/AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-base:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/9.2.0/AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:20:5-43
+MERGED from [com.google.android.gms:play-services-tasks:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-tasks/9.2.0/AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:20:5-43
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:20:5-43
+MERGED from [com.google.android.gms:play-services-iid:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-iid/9.2.0/AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-base:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/9.2.0/AndroidManifest.xml:18:5-42
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:20:5-43
+MERGED from [com.google.android.gms:play-services-tasks:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-tasks/9.2.0/AndroidManifest.xml:4:5-43
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:20:5-43
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:18:5-42
+MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:20:5-43
 MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:20:5-43
 MERGED from [io.pristine:libjingle:8871] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/io.pristine/libjingle/8871/AndroidManifest.xml:7:5-9:41
 MERGED from [com.facebook.android:account-kit-sdk:4.11.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/AndroidManifest.xml:24:5-26:41
@@ -45,6 +63,8 @@ MERGED from [com.android.support:support-vector-drawable:23.2.1] /Users/sojharo/
 MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:20:5-43
 MERGED from [ch.acra:acra:4.8.5] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/ch.acra/acra/4.8.5/AndroidManifest.xml:37:5-72
 MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:20:5-43
+MERGED from [com.microsoft.azure:notification-hubs-android-sdk:0.4] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.microsoft.azure/notification-hubs-android-sdk/0.4/AndroidManifest.xml:7:5-9:41
+MERGED from [com.microsoft.azure:azure-notifications-handler:1.0.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.microsoft.azure/azure-notifications-handler/1.0.1/AndroidManifest.xml:7:5-9:41
 	tools:overrideLibrary
 		ADDED from [com.android.support:appcompat-v7:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.2.1/AndroidManifest.xml:23:9-75
 	android:targetSdkVersion
@@ -83,6 +103,8 @@ ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifes
 		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:23:22-68
 uses-permission#android.permission.INTERNET
 ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:24:5-67
+MERGED from [com.google.android.gms:play-services-gcm:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-gcm/9.2.0/AndroidManifest.xml:22:5-67
+MERGED from [com.google.android.gms:play-services-iid:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-iid/9.2.0/AndroidManifest.xml:22:5-67
 	android:name
 		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:24:22-64
 uses-permission#android.permission.ACCESS_NETWORK_STATE
@@ -154,7 +176,25 @@ ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifes
 	android:name
 		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:46:22-67
 application
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:48:5-242:19
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:50:5-271:19
+MERGED from [com.google.android.gms:play-services-gcm:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-gcm/9.2.0/AndroidManifest.xml:24:5-20
+MERGED from [com.google.android.gms:play-services-base:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/9.2.0/AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:20:5-24:19
+MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-tasks:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-tasks/9.2.0/AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:20:5-24:19
+MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:20:5-24:19
+MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-iid:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-iid/9.2.0/AndroidManifest.xml:24:5-20
+MERGED from [com.google.android.gms:play-services-base:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/9.2.0/AndroidManifest.xml:19:5-23:19
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:20:5-24:19
+MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-tasks:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-tasks/9.2.0/AndroidManifest.xml:5:5-20
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:20:5-24:19
+MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:22:5-20
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:20:5-24:19
+MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:22:5-20
 MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:22:5-20
 MERGED from [io.pristine:libjingle:8871] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/io.pristine/libjingle/8871/AndroidManifest.xml:11:5-12:19
 MERGED from [com.facebook.android:account-kit-sdk:4.11.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/AndroidManifest.xml:28:5-37:19
@@ -178,328 +218,410 @@ MERGED from [com.android.support:support-vector-drawable:23.2.1] /Users/sojharo/
 MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:22:5-20
 MERGED from [ch.acra:acra:4.8.5] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/ch.acra/acra/4.8.5/AndroidManifest.xml:39:5-43:19
 MERGED from [com.android.support:support-v4:23.2.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.2.1/AndroidManifest.xml:22:5-20
+MERGED from [com.microsoft.azure:azure-notifications-handler:1.0.1] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.microsoft.azure/azure-notifications-handler/1.0.1/AndroidManifest.xml:11:5-15:19
 	android:label
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:52:9-41
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:54:9-41
 	android:hardwareAccelerated
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:50:9-43
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:52:9-43
 	android:allowBackup
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:49:9-35
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:51:9-35
 	android:icon
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:51:9-45
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:53:9-45
 	android:theme
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:54:9-40
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:56:9-40
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:53:9-38
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:55:9-38
 activity#com.cloudkibo.SplashScreen
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:56:9-77:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:58:9-79:20
 	android:screenOrientation
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:59:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:61:13-49
 	android:label
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:58:13-45
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:60:13-45
 	android:windowSoftInputMode
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:61:13-54
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:63:13-54
 	android:theme
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:60:13-77
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:62:13-77
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:57:13-41
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:59:13-41
 intent-filter#android.intent.action.MAIN+android.intent.category.LAUNCHER
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:62:13-66:29
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:64:13-68:29
 action#android.intent.action.MAIN
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:63:17-69
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:65:17-69
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:63:25-66
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:65:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:65:17-77
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:67:17-77
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:65:27-74
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:67:27-74
 intent-filter#android.intent.action.VIEW+android.intent.category.BROWSABLE+android.intent.category.DEFAULT
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:67:13-76:29
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:69:13-78:29
 action#android.intent.action.VIEW
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:68:17-69
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:70:17-69
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:68:25-66
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:70:25-66
 category#android.intent.category.DEFAULT
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:70:17-76
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:72:17-76
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:70:27-73
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:72:27-73
 category#android.intent.category.BROWSABLE
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:71:17-78
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:73:17-78
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:71:27-75
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:73:27-75
 data
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:73:17-75:45
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:75:17-77:45
 	android:host
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:74:21-48
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:76:21-48
 	android:scheme
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:75:21-42
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:77:21-42
 activity#com.cloudkibo.webrtc.conference.VideoCallView
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:78:9-83:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:80:9-85:20
 	android:screenOrientation
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:81:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:83:13-49
 	android:configChanges
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:80:13-59
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:82:13-59
 	android:theme
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:82:13-77
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:84:13-77
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:79:13-60
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:81:13-60
 activity#com.cloudkibo.library.Login
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:84:9-89:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:86:9-91:20
 	android:screenOrientation
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:86:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:88:13-49
 	android:windowSoftInputMode
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:88:13-54
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:90:13-54
 	android:theme
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:87:13-77
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:89:13-77
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:85:13-42
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:87:13-42
 activity#com.cloudkibo.library.DisplayNameReg
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:90:9-95:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:92:9-97:20
 	android:screenOrientation
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:92:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:94:13-49
 	android:windowSoftInputMode
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:94:13-54
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:96:13-54
 	android:theme
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:93:13-77
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:95:13-77
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:91:13-51
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:93:13-51
 activity#com.cloudkibo.library.Register
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:96:9-101:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:98:9-103:20
 	android:screenOrientation
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:98:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:100:13-49
 	android:windowSoftInputMode
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:100:13-54
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:102:13-54
 	android:theme
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:99:13-77
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:101:13-77
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:97:13-45
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:99:13-45
 activity#com.cloudkibo.library.ForgotPassword
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:102:9-107:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:104:9-109:20
 	android:screenOrientation
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:104:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:106:13-49
 	android:windowSoftInputMode
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:106:13-54
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:108:13-54
 	android:theme
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:105:13-77
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:107:13-77
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:103:13-51
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:105:13-51
 activity#com.cloudkibo.MainActivity
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:108:9-114:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:110:9-116:20
 	android:screenOrientation
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:112:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:114:13-49
 	android:label
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:110:13-45
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:112:13-45
 	android:launchMode
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:111:13-44
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:113:13-44
 	android:windowSoftInputMode
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:113:13-67
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:115:13-67
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:109:13-41
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:111:13-41
 activity#com.cloudkibo.webrtc.filesharing.FileConnection
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:115:9-120:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:117:9-122:20
 	android:screenOrientation
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:117:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:119:13-49
 	android:windowSoftInputMode
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:119:13-54
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:121:13-54
 	android:theme
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:118:13-77
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:120:13-77
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:116:13-62
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:118:13-62
 activity#com.cloudkibo.webrtc.conference.GroupChat
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:121:9-126:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:123:9-128:20
 	android:screenOrientation
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:123:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:125:13-49
 	android:windowSoftInputMode
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:125:13-54
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:127:13-54
 	android:theme
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:124:13-77
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:126:13-77
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:122:13-56
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:124:13-56
 activity#com.cloudkibo.webrtc.call.IncomingCall
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:127:9-132:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:129:9-134:20
 	android:screenOrientation
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:129:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:131:13-49
 	android:windowSoftInputMode
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:131:13-54
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:133:13-54
 	android:theme
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:130:13-77
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:132:13-77
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:128:13-53
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:130:13-53
 activity#com.cloudkibo.webrtc.call.OutgoingCall
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:133:9-138:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:135:9-140:20
 	android:screenOrientation
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:135:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:137:13-49
 	android:windowSoftInputMode
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:137:13-54
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:139:13-54
 	android:theme
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:136:13-77
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:138:13-77
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:134:13-53
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:136:13-53
 activity#com.cloudkibo.NewChat
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:139:9-145:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:141:9-147:20
 	android:screenOrientation
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:143:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:145:13-49
 	android:label
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:141:13-45
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:143:13-45
 	android:launchMode
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:142:13-44
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:144:13-44
 	android:windowSoftInputMode
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:144:13-67
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:146:13-67
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:140:13-36
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:142:13-36
 activity#com.cloudkibo.ui.Invite_Friends
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:146:9-149:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:148:9-151:20
 	android:label
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:148:13-45
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:150:13-45
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:147:13-46
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:149:13-46
 activity#com.cloudkibo.ui.ResultActivity
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:150:9-153:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:152:9-155:20
 	android:label
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:152:13-45
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:154:13-45
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:151:13-46
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:153:13-46
 activity#com.cloudkibo.file.filechooser.FileChooserActivity
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:154:9-168:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:156:9-170:20
 	android:enabled
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:156:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:158:13-49
 	android:label
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:159:13-48
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:161:13-48
 	android:exported
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:157:13-36
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:159:13-36
 	android:icon
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:158:13-48
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:160:13-48
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:155:13-65
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:157:13-65
 intent-filter#android.intent.action.GET_CONTENT+android.intent.category.DEFAULT+android.intent.category.OPENABLE
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:160:13-167:29
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:162:13-169:29
 action#android.intent.action.GET_CONTENT
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:161:17-76
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:163:17-76
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:161:25-73
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:163:25-73
 category#android.intent.category.OPENABLE
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:164:17-77
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:166:17-77
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:164:27-74
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:166:27-74
 provider#com.cloudkibo.file.localstorage.LocalStorageProvider
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:170:9-180:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:172:9-182:20
 	android:authorities
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:172:13-76
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:174:13-76
 	android:enabled
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:173:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:175:13-49
 	android:grantUriPermissions
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:175:13-47
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:177:13-47
 	android:exported
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:174:13-36
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:176:13-36
 	android:permission
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:176:13-69
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:178:13-69
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:171:13-67
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:173:13-67
 intent-filter#android.content.action.DOCUMENTS_PROVIDER
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:177:13-179:29
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:179:13-181:29
 action#android.content.action.DOCUMENTS_PROVIDER
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:178:17-84
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:180:17-84
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:178:25-81
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:180:25-81
 provider#com.cloudkibo.database.CloudKiboContentProvider
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:181:9-187:20
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:183:9-189:20
 	android:authorities
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:183:13-82
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:185:13-82
 	android:label
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:185:13-53
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:187:13-53
 	android:multiprocess
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:186:13-40
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:188:13-40
 	android:exported
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:184:13-36
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:186:13-36
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:182:13-62
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:184:13-62
 service#com.cloudkibo.library.KiboAuthenticatorService
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:189:9-197:19
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:191:9-199:19
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:189:18-66
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:191:18-66
 intent-filter#android.accounts.AccountAuthenticator
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:190:13-192:29
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:192:13-194:29
 action#android.accounts.AccountAuthenticator
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:191:17-80
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:193:17-80
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:191:25-77
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:193:25-77
 meta-data#android.accounts.AccountAuthenticator
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:194:13-196:57
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:196:13-198:57
 	android:resource
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:196:17-54
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:198:17-54
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:195:17-69
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:197:17-69
 service#com.cloudkibo.database.SyncAdapterService
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:198:9-208:19
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:200:9-210:19
 	android:exported
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:200:13-36
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:202:13-36
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:199:13-56
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:201:13-56
 intent-filter#android.content.SyncAdapter
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:201:13-203:29
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:203:13-205:29
 action#android.content.SyncAdapter
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:202:17-70
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:204:17-70
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:202:25-67
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:204:25-67
 meta-data#android.content.SyncAdapter
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:205:13-207:56
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:207:13-209:56
 	android:resource
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:207:17-53
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:209:17-53
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:206:17-59
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:208:17-59
 service#com.cloudkibo.socket.SocketService
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:209:9-211:40
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:211:9-213:40
 	android:exported
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:211:13-37
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:213:13-37
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:210:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:212:13-49
 service#com.cloudkibo.webrtc.conference.FileTransferService
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:212:9-216:19
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:214:9-218:19
 	android:enabled
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:214:13-35
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:216:13-35
 	android:exported
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:215:13-36
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:217:13-36
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:213:13-66
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:215:13-66
 service#com.cloudkibo.database.KiboSyncService
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:218:9-222:19
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:220:9-224:19
 	android:enabled
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:220:13-35
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:222:13-35
 	android:exported
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:221:13-36
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:223:13-36
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:219:13-66
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:221:13-66
+receiver#com.cloudkibo.library.NetworkStateReceiver
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:226:9-230:20
+	android:name
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:226:19-76
+intent-filter#android.net.conn.CONNECTIVITY_CHANGE
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:227:13-229:29
+action#android.net.conn.CONNECTIVITY_CHANGE
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:228:17-79
+	android:name
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:228:25-76
+service#com.cloudkibo.push.MyInstanceIDService
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:232:9-236:19
+	android:exported
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:232:72-96
+	android:name
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:232:18-71
+intent-filter#com.google.android.gms.iid.InstanceID
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:233:13-235:29
+action#com.google.android.gms.iid.InstanceID
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:234:17-79
+	android:name
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:234:25-77
+service#com.cloudkibo.push.RegistrationIntentService
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:238:9-241:19
+	android:exported
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:240:13-37
+	android:name
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:239:13-72
+receiver#com.microsoft.windowsazure.notifications.NotificationsBroadcastReceiver
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:243:9-249:20
+	android:permission
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:244:13-73
+	android:name
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:243:19-105
+intent-filter#com.cloudkibo+com.google.android.c2dm.intent.RECEIVE
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:245:13-248:29
+action#com.google.android.c2dm.intent.RECEIVE
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:246:17-81
+	android:name
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:246:25-78
+category#com.cloudkibo
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:247:17-58
+	android:name
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:247:27-55
 meta-data#com.facebook.sdk.ApplicationId
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:226:9-228:46
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:252:9-254:46
 	android:value
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:228:13-43
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:254:13-43
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:227:13-58
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:253:13-58
 meta-data#com.facebook.accountkit.ApplicationName
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:229:9-231:48
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:255:9-257:48
 	android:value
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:231:13-45
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:257:13-45
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:230:13-67
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:256:13-67
 meta-data#com.facebook.accountkit.ClientToken
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:232:9-234:52
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:258:9-260:52
 	android:value
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:234:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:260:13-49
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:233:13-63
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:259:13-63
+meta-data#com.google.android.gms.version
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:262:9-263:69
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:21:9-23:69
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:21:9-23:69
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:21:9-23:69
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:21:9-23:69
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:21:9-23:69
+MERGED from [com.google.android.gms:play-services-basement:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/9.2.0/AndroidManifest.xml:21:9-23:69
+	android:value
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:263:13-66
+	android:name
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:262:20-65
 activity#com.facebook.accountkit.ui.AccountKitActivity
-ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:236:9-239:44
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:265:9-268:44
 MERGED from [com.facebook.android:account-kit-sdk:4.11.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/AndroidManifest.xml:29:9-33:58
 	android:label
 		ADDED from [com.facebook.android:account-kit-sdk:4.11.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/AndroidManifest.xml:31:13-65
 	android:windowSoftInputMode
 		ADDED from [com.facebook.android:account-kit-sdk:4.11.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/AndroidManifest.xml:33:13-55
 	android:theme
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:238:13-49
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:267:13-49
 		REJECTED from [com.facebook.android:account-kit-sdk:4.11.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/AndroidManifest.xml:32:13-52
 	tools:replace
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:239:13-42
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:268:13-42
 	android:name
-		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:237:13-73
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:266:13-73
+uses-permission#com.google.android.c2dm.permission.RECEIVE
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:274:5-82
+MERGED from [com.google.android.gms:play-services-gcm:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-gcm/9.2.0/AndroidManifest.xml:21:5-82
+MERGED from [com.google.android.gms:play-services-iid:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-iid/9.2.0/AndroidManifest.xml:21:5-82
+	android:name
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:274:22-79
+permission#com.cloudkibo.permission.C2D_MESSAGE
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:276:5-107
+	android:protectionLevel
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:276:69-104
+	android:name
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:276:17-68
+uses-permission#com.cloudkibo.permission.C2D_MESSAGE
+ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:277:5-75
+	android:name
+		ADDED from /Users/sojharo/Projects/Android/CloudKibo/app/src/main/AndroidManifest.xml:277:22-73
+activity#com.google.android.gms.common.api.GoogleApiActivity
+ADDED from [com.google.android.gms:play-services-base:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/9.2.0/AndroidManifest.xml:20:9-22:45
+MERGED from [com.google.android.gms:play-services-base:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/9.2.0/AndroidManifest.xml:20:9-22:45
+	android:exported
+		ADDED from [com.google.android.gms:play-services-base:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/9.2.0/AndroidManifest.xml:22:19-43
+	android:theme
+		ADDED from [com.google.android.gms:play-services-base:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/9.2.0/AndroidManifest.xml:21:19-78
+	android:name
+		ADDED from [com.google.android.gms:play-services-base:9.2.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/9.2.0/AndroidManifest.xml:20:19-85
 activity#com.facebook.accountkit.ui.AccountKitEmailRedirectActivity
 ADDED from [com.facebook.android:account-kit-sdk:4.11.0] /Users/sojharo/Projects/Android/CloudKibo/app/build/intermediates/exploded-aar/com.facebook.android/account-kit-sdk/4.11.0/AndroidManifest.xml:34:9-36:39
 	android:exported

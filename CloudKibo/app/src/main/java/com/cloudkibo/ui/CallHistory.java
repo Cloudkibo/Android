@@ -246,7 +246,7 @@ public class CallHistory extends CustomFragment implements IFragmentName
 
     public String getFragmentName()
     {
-        return "ProjectList";
+        return "CallHistory";
     }
 
     public String getFragmentContactPhone()

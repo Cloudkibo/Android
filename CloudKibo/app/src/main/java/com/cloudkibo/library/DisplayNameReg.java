@@ -322,6 +322,7 @@ public class DisplayNameReg extends Activity
                                 DatabaseHandler db = new DatabaseHandler(
                                         getApplicationContext());
                                 String phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                                if(phone.length() < 6) continue;
                                 if(phone.charAt(0) != '+') {
                                     if(phone.charAt(0) == '0') phone = phone.substring(1, phone.length());
                                     if(phone.charAt(0) == '1') phone = "+" + phone;
@@ -332,6 +333,9 @@ public class DisplayNameReg extends Activity
                                 //    name = name.substring(0, 1).toUpperCase() + name.substring(1);
                                 phone = phone.replaceAll("\\s+","");
                                 phone = phone.replaceAll("\\p{P}","");
+                                db = new DatabaseHandler(getApplicationContext());
+                                String userPhone = db.getUserDetails().get("phone");
+                                if(userPhone.equals(phone)) continue;
                                 phones.add(new BasicNameValuePair("phonenumbers", phone));
                                 Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
                                 contactList1.add(name);

@@ -78,6 +78,9 @@ import com.cloudkibo.model.ContactItem;
 import com.cloudkibo.model.Data;
 //import io.cordova.hellocordova.CordovaApp;
 
+import com.cloudkibo.push.MyHandler;
+import com.cloudkibo.push.NotificationSettings;
+import com.cloudkibo.push.RegistrationIntentService;
 import com.cloudkibo.socket.BoundServiceListener;
 import com.cloudkibo.socket.SocketService;
 import com.cloudkibo.socket.SocketService.SocketBinder;
@@ -95,6 +98,14 @@ import com.cloudkibo.webrtc.call.IncomingCall;
 import com.cloudkibo.webrtc.call.OutgoingCall;
 import com.cloudkibo.webrtc.filesharing.FileConnection;
 import com.cloudkibo.file.filechooser.utils.Base64;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.gcm.*;
+import com.microsoft.windowsazure.notifications.NotificationsManager;
+import android.util.Log;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 
@@ -146,6 +157,13 @@ public class MainActivity extends CustomActivity
 
     private static final int REQUEST_CHOOSER = 1105;
 
+    // Push Notification
+    public static MainActivity mainActivity;
+    public static Boolean isVisible = false;
+    private GoogleCloudMessaging gcm;
+    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    // Push Notification
+
     /* (non-Javadoc)
      * @see com.newsfeeder.custom.CustomActivity#onCreate(android.os.Bundle)
      */
@@ -154,6 +172,10 @@ public class MainActivity extends CustomActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mainActivity = this;
+        NotificationsManager.handleNotifications(this, NotificationSettings.SenderId, MyHandler.class);
+        registerWithNotificationHubs();
 
         authtoken = getIntent().getExtras().getString("authtoken");
         Boolean shouldSync = getIntent().getExtras().getBoolean("sync");
@@ -186,8 +208,42 @@ public class MainActivity extends CustomActivity
         startSocketService();
         //}
         if(shouldSync) {
-            Intent intentSync = new Intent(getApplicationContext(), KiboSyncService.class);
-            bindService(intentSync, kiboSyncConnection, Context.BIND_AUTO_CREATE);
+            startSyncService();
+        }
+
+
+
+    }
+
+    int countRetryConnectingSocket = 0;
+    public void startSyncService(){
+
+        if(socketService != null) {
+            if (socketService.isSocketConnected()) {
+                Intent intentSync = new Intent(getApplicationContext(), KiboSyncService.class);
+                bindService(intentSync, kiboSyncConnection, Context.BIND_AUTO_CREATE);
+                if (kiboServiceIsBound) {
+                    kiboSyncService.startSyncWithoutAddressBookAccess(authtoken);
+                }
+            } else {
+                if(countRetryConnectingSocket > 2) return ;
+                new android.os.Handler().postDelayed(
+                        new Runnable() {
+                            public void run() {
+                                startSyncService();
+                            }
+                        },
+                        1000);
+                countRetryConnectingSocket++;
+            }
+        } else {
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            startSyncService();
+                        }
+                    },
+                    1000);
         }
     }
 
@@ -225,6 +281,26 @@ public class MainActivity extends CustomActivity
         bindService(i, socketConnection, Context.BIND_AUTO_CREATE);
 
         super.onResume();
+
+        isVisible = true;
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        isVisible = true;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        isVisible = false;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        isVisible = false;
     }
 
     /**
@@ -960,5 +1036,49 @@ public class MainActivity extends CustomActivity
         }
     };
 
+    /**
+     * Check the device to make sure it has the Google Play Services APK. If
+     * it doesn't, display a dialog that allows users to download the APK from
+     * the Google Play Store or enable it in the device's system settings.
+     */
+    private boolean checkPlayServices() {
+        GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+        int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        if (resultCode != ConnectionResult.SUCCESS) {
+            if (apiAvailability.isUserResolvableError(resultCode)) {
+                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)
+                        .show();
+            } else {
+                Log.i("MainActivity", "This device is not supported by Google Play Services.");
+                ToastNotify("This device is not supported by Google Play Services.");
+                finish();
+            }
+            return false;
+        }
+        return true;
+    }
+
+    public void registerWithNotificationHubs()
+    {
+        Log.i("MainActivity", " Registering with Notification Hubs");
+
+        if (checkPlayServices()) {
+            // Start IntentService to register this application with GCM.
+            Intent intent = new Intent(this, RegistrationIntentService.class);
+            startService(intent);
+        }
+    }
+
+    public void ToastNotify(final String notificationMessage) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, notificationMessage, Toast.LENGTH_LONG).show();
+                startSocketService();
+                //TextView helloText = (TextView) findViewById(R.id.text_hello);
+                //helloText.setText(notificationMessage);
+            }
+        });
+    }
 
 }
