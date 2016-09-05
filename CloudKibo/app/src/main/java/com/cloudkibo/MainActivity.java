@@ -260,11 +260,17 @@ public class MainActivity extends CustomActivity
         bindService(i, socketConnection, Context.BIND_AUTO_CREATE);
     }
 
+    public void stopSocketService(){
+        Intent i = new Intent(this, SocketService.class);
+        stopService(i);
+    }
+
     @Override
     protected void onDestroy() {
 
         if(isBound){
             unbindService(socketConnection);
+            stopSocketService();
         }
 
         if(kiboServiceIsBound) unbindService(kiboSyncConnection);
@@ -274,11 +280,7 @@ public class MainActivity extends CustomActivity
 
     @Override
     protected void onResume() {
-        Intent i = new Intent(this, SocketService.class);
-        i.putExtra("user", user);
-        i.putExtra("room", room);
-        startService(i);
-        bindService(i, socketConnection, Context.BIND_AUTO_CREATE);
+        startSocketService();
 
         super.onResume();
 
@@ -874,8 +876,12 @@ public class MainActivity extends CustomActivity
                                     String message = body.getString("msg");
                                     String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
 
+                                    DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+                                    String senderName = db.getSpecificContact(body.getString("from")).getJSONObject(0).getString("display_name");
+
                                     Notification n = new Notification.Builder(getApplicationContext())
-                                            .setContentTitle(body.getString("fromFullName"))
+                                            .setContentTitle(senderName)
                                             .setContentText(subMsg)
                                             .setSmallIcon(R.drawable.icon)
                                             .setContentIntent(pIntent)
@@ -904,8 +910,12 @@ public class MainActivity extends CustomActivity
                                 String message = body.getString("msg");
                                 String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
 
+                                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+                                String senderName = db.getSpecificContact(body.getString("from")).getJSONObject(0).getString("display_name");
+
                                 Notification n = new Notification.Builder(getApplicationContext())
-                                        .setContentTitle(body.getString("fromFullName"))
+                                        .setContentTitle(senderName)
                                         .setContentText(subMsg)
                                         .setSmallIcon(R.drawable.icon)
                                         .setContentIntent(pIntent)
@@ -923,6 +933,18 @@ public class MainActivity extends CustomActivity
                                     r.play();
                                 } catch (Exception e) {
                                     e.printStackTrace();
+                                }
+
+                                if(myFragment.getFragmentName().equals("ChatList")){
+                                    final ChatList myChatListFragment = (ChatList) myFragment;
+                                    runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+
+                                            myChatListFragment.loadChatList();
+
+                                        }
+                                    });
                                 }
                             }
 
@@ -1008,7 +1030,20 @@ public class MainActivity extends CustomActivity
 
                 @Override
                 public void chatLoaded() {
+                    IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 
+                    if(myFragment == null) return;
+                    if(myFragment.getFragmentName().equals("ChatList")){
+                        final ChatList myChatListFragment = (ChatList) myFragment;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                myChatListFragment.loadChatList();
+
+                            }
+                        });
+                    }
 
                 }
 
@@ -1073,7 +1108,7 @@ public class MainActivity extends CustomActivity
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Toast.makeText(MainActivity.this, notificationMessage, Toast.LENGTH_LONG).show();
+                //Toast.makeText(MainActivity.this, notificationMessage, Toast.LENGTH_LONG).show();
                 startSocketService();
                 //TextView helloText = (TextView) findViewById(R.id.text_hello);
                 //helloText.setText(notificationMessage);

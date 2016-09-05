@@ -72,8 +72,6 @@ public class SocketService extends Service {
     private HashMap<String, String> user;
     private String room;
 
-    //private SocketIOClient client;
-    //private MessageHandler messageHandler = new MessageHandler();
 
     private Boolean areYouCallingSomeone = false;
     private Boolean ringing = false;
@@ -183,12 +181,12 @@ public class SocketService extends Service {
                             NotificationManager notificationManager =
                                     (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-                            notificationManager.notify(0, n);
+                            //notificationManager.notify(0, n);
 
                             try {
                                 Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
                                 Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                                r.play();
+                                //r.play();
                             } catch (Exception e) {
                                 e.printStackTrace();
                             }

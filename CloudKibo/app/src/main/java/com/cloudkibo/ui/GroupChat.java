@@ -222,6 +222,12 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							db.addChatSyncHistory("seen", row.getString("uniqueid"), row.getString("fromperson"));
 						}
 					}
+				} else {
+					if(row.getString("status").equals("pending")){
+						if(act1.isSocketConnected()){
+							act1.sendPendingMessage(contactPhone, row.getString("msg"), row.getString("uniqueid"));
+						}
+					}
 				}
 
 			}

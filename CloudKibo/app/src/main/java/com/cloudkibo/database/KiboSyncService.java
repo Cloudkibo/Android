@@ -394,8 +394,12 @@ public class KiboSyncService extends Service {
                                         String message = row.getString("msg");
                                         String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
 
+                                        DatabaseHandler db2 = new DatabaseHandler(getApplicationContext());
+
+                                        String senderName = db2.getSpecificContact(row.getString("from")).getJSONObject(0).getString("display_name");
+
                                         Notification n = new Notification.Builder(getApplicationContext())
-                                                .setContentTitle(row.getString("fromFullName"))
+                                                .setContentTitle(senderName)
                                                 .setContentText(subMsg)
                                                 .setSmallIcon(R.drawable.icon)
                                                 .setContentIntent(pIntent)

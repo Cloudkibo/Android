@@ -46,6 +46,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 	/** The Chat list. */
 	private ArrayList<ChatItem> chatList;
 
+	private ChatAdapter adp;
+
 	private String authtoken;
 
 	/* (non-Javadoc)
@@ -61,7 +63,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 		loadChatList();
 		ListView list = (ListView) v.findViewById(R.id.list);
-		list.setAdapter(new ChatAdapter());
+		adp = new ChatAdapter();
+		list.setAdapter(adp);
 		list.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -83,6 +86,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 			}
 		});
+		adp.notifyDataSetChanged();
 
 		setTouchNClick(v.findViewById(R.id.btnNewChat));
 		return v;
@@ -99,11 +103,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 			startActivity(new Intent(getActivity(), NewChat.class));
 	}
 
-	/**
-	 * This method currently loads a dummy list of chats. You can write the
-	 * actual implementation of loading chats.
-	 */
-	private void loadChatList()
+	public void loadChatList()
 	{
 		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
 		try{
@@ -129,6 +129,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 			this.chatList = new ArrayList<ChatItem>(chatList1);
 			//this.chatList.addAll(chatList);
 			//this.chatList.addAll(chatList);
+			if(adp != null)
+				adp.notifyDataSetChanged();
 
 		} catch(JSONException e){
 			e.printStackTrace();
@@ -140,9 +142,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 	}
 
 	/**
-	 * The Class CutsomAdapter is the adapter class for Chat ListView. The
-	 * currently implementation of this adapter simply display static dummy
-	 * contents. You need to write the code for displaying actual contents.
+	 * The Class CutsomAdapter is the adapter class for Chat ListView.
 	 */
 	private class ChatAdapter extends BaseAdapter
 	{
