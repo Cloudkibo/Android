@@ -162,6 +162,7 @@ public class MainActivity extends CustomActivity
     public static Boolean isVisible = false;
     private GoogleCloudMessaging gcm;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    Boolean shouldSync;
     // Push Notification
 
     /* (non-Javadoc)
@@ -178,7 +179,7 @@ public class MainActivity extends CustomActivity
         registerWithNotificationHubs();
 
         authtoken = getIntent().getExtras().getString("authtoken");
-        Boolean shouldSync = getIntent().getExtras().getBoolean("sync");
+        shouldSync = getIntent().getExtras().getBoolean("sync");
 
 
         setupContainer();
@@ -285,6 +286,34 @@ public class MainActivity extends CustomActivity
         super.onResume();
 
         isVisible = true;
+
+        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+        if(myFragment == null) return;
+        if(myFragment.getFragmentName().equals("GroupChat"))
+        {
+            final GroupChat myGroupChatFragment = (GroupChat) myFragment;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    new android.os.Handler().postDelayed(
+                            new Runnable() {
+                                public void run() {
+                                    myGroupChatFragment.loadConversationList();
+                                }
+                            },
+                            1000);
+                }
+            });
+        } else if(myFragment.getFragmentName().equals("ChatList")) {
+            final ChatList myChatListFragment = (ChatList) myFragment;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    myChatListFragment.loadChatList();
+                }
+            });
+        }
     }
 
     @Override
@@ -878,7 +907,14 @@ public class MainActivity extends CustomActivity
 
                                     DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 
-                                    String senderName = db.getSpecificContact(body.getString("from")).getJSONObject(0).getString("display_name");
+                                    String senderName = "";
+
+                                    JSONArray contactInAddressBook = db.getSpecificContact(body.getString("from"));
+                                    if(contactInAddressBook.length() > 0) {
+                                        senderName = contactInAddressBook.getJSONObject(0).getString("display_name");
+                                    } else {
+                                        senderName = body.getString("from");
+                                    }
 
                                     Notification n = new Notification.Builder(getApplicationContext())
                                             .setContentTitle(senderName)
@@ -912,7 +948,14 @@ public class MainActivity extends CustomActivity
 
                                 DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 
-                                String senderName = db.getSpecificContact(body.getString("from")).getJSONObject(0).getString("display_name");
+                                String senderName = "";
+
+                                JSONArray contactInAddressBook = db.getSpecificContact(body.getString("from"));
+                                if(contactInAddressBook.length() > 0) {
+                                    senderName = contactInAddressBook.getJSONObject(0).getString("display_name");
+                                } else {
+                                    senderName = body.getString("from");
+                                }
 
                                 Notification n = new Notification.Builder(getApplicationContext())
                                         .setContentTitle(senderName)
@@ -999,6 +1042,10 @@ public class MainActivity extends CustomActivity
                                         myContactListFragment.setOnlineStatusIndividual(body); //here you call the method of your current Fragment.
                                     }
                                 });
+                            }
+                        } else if(type.equals("joinedroom")){
+                            if(shouldSync){
+                                startSyncService();
                             }
                         }
                     } catch (JSONException e) {

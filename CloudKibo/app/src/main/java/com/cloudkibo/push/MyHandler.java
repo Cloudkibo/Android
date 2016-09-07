@@ -54,9 +54,16 @@ public class MyHandler extends NotificationsHandler {
             if (MainActivity.isVisible) {
                 MainActivity.mainActivity.ToastNotify(nhMessage);
             } else {
+                String displayName = "";
                 DatabaseHandler db = new DatabaseHandler(context);
+                JSONArray contactInAddressBook = db.getSpecificContact(payload.getString("senderId"));
+                if(contactInAddressBook.length() > 0) {
+                    displayName = contactInAddressBook.getJSONObject(0).getString("display_name");
+                } else {
+                    displayName = payload.getString("senderId");
+                }
                 sendNotification(
-                        db.getSpecificContact(payload.getString("senderId")).getJSONObject(0).getString("display_name"),
+                        displayName,
                         payload.getString("msg")
                 );
                 loadSpecificChatFromServer(payload.getString("uniqueId"));

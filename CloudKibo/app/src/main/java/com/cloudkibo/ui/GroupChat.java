@@ -173,7 +173,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	 * This method currently loads a dummy list of conversations. You can write the
 	 * actual implementation of loading conversations.
 	 */
-	private void loadConversationList()
+	public void loadConversationList()
 	{
 		convList = new ArrayList<Conversation>();
 		
@@ -235,6 +235,9 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			convList.clear();
 
 			convList.addAll(chatList1);
+
+			if(adp != null)
+				adp.notifyDataSetChanged();
 			
 		} catch (JSONException e) {
 			e.printStackTrace();

@@ -153,12 +153,13 @@ public class SocketService extends Service {
                         String message = payload.getString("msg");
 
                         // todo correct current date
-                        db.addChat(payload.getString("to"),
+                        // commented as push notification handler is doing this work - this was written before push notification
+                        /*db.addChat(payload.getString("to"),
                                 payload.getString("from"),
                                 payload.getString("fromFullName"),
                                 message,
                                 (new Date().toString()), "delivered",
-                                payload.getString("uniqueid"));
+                                payload.getString("uniqueid"));*/
 
                         updateReceivedMessageStatusToServer("delivered",
                                 payload.getString("uniqueid"), payload.getString("from"));
@@ -200,6 +201,11 @@ public class SocketService extends Service {
 
                 }
 
+            }).on("youareonline", new Emitter.Listener() {
+                @Override
+                public void call(Object... args) {
+                    mListener.receiveSocketJson("youareonline", new JSONObject());
+                }
             }).on("messagefordatachannel", new Emitter.Listener() {
 
                 @Override
@@ -983,6 +989,7 @@ public class SocketService extends Service {
             JSONObject message = new JSONObject();
 
             message.put("_id", user.get("_id"));
+            message.put("phone", user.get("phone"));
 
             JSONObject completeMessage = new JSONObject();
 
