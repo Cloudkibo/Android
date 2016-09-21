@@ -52,6 +52,8 @@
 
 [CloudKibo Sync Discussion Document](https://docs.google.com/document/d/1exN7m4DE2_ykylQiw36pjHwDJ8NxDZRq7i4C6bKnpKY/edit)
 
+[CloudKibo Sync with Azure Design Document](https://github.com/Cloudkibo/Android/blob/master/Documentation/MobileSync.md)
+
 [CloudKibo Conference Functional Metrics](https://docs.google.com/spreadsheets/d/1TviFNItpTpXB-AYJx3ZcDI0wneonckiJGtae1ZpCW6g/edit#gid=1490236293)
 
 [REST API CloudKibo](https://docs.google.com/document/d/1PY8QzCgjl3qROpsTPUqV4VQFh4F2hqJqM8Yyam-FIDo/edit)
