@@ -51,7 +51,25 @@ public class MyHandler extends NotificationsHandler {
             if(!payload.has("uniqueId")) {
                 return;
             }
+            if (payload.has("type")) {
+                if(payload.getString("type").equals("status")){
+                    try {
+                        DatabaseHandler db = new DatabaseHandler(ctx.getApplicationContext());
+                        db.updateChat(payload.getString("status"), payload.getString("uniqueId"));
+                        if(MainActivity.isVisible){
+                            JSONObject statusData = new JSONObject();
+                            statusData.put("status", payload.getString("status"));
+                            statusData.put("uniqueid", payload.getString("uniqueId"));
+                            MainActivity.mainActivity.handleIncomingStatusForSentMessage("status", statusData);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    return ;
+                }
+            }
             if (MainActivity.isVisible) {
+                loadSpecificChatFromServer(payload.getString("uniqueId"));
                 MainActivity.mainActivity.ToastNotify(nhMessage);
             } else {
                 String displayName = "";
@@ -90,9 +108,10 @@ public class MyHandler extends NotificationsHandler {
                         .setSmallIcon(R.drawable.icon)
                         .setContentTitle(header)
                         .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(header))
+                                .bigText(msg))
                         .setSound(defaultSoundUri)
                         .setAutoCancel(true)
+                        .setPriority(Notification.PRIORITY_HIGH)
                         .setContentText(msg);
 
         mBuilder.setContentIntent(contentIntent);
@@ -131,6 +150,10 @@ public class MyHandler extends NotificationsHandler {
                                 row.getString("msg"), row.getString("date"),
                                 row.has("status") ? row.getString("status") : "",
                                 row.has("uniqueid") ? row.getString("uniqueid") : "");
+
+                        if (MainActivity.isVisible) {
+                            MainActivity.mainActivity.handleIncomingChatMessage("im", row);
+                        }
 
                     }
                 } catch (JSONException e) {

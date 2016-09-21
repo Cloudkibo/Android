@@ -1,5 +1,6 @@
 package com.cloudkibo.ui;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.Conversation;
 import com.cloudkibo.utils.IFragmentName;
 
@@ -118,48 +120,57 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	 */
 	private void sendMessage()
 	{
-		if (txt.length() == 0)
-			return;
+		try {
+			if (txt.length() == 0)
+				return;
 
-		String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
-		uniqueid += (new Date().getYear()) +""+ (new Date().getMonth()) +""+ (new Date().getDay());
-		uniqueid += (new Date().getHours()) +""+ (new Date().getMinutes()) +""+ (new Date().getSeconds());
+			String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+			uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+			uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
 
-		InputMethodManager imm = (InputMethodManager) getActivity()
-				.getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
+			InputMethodManager imm = (InputMethodManager) getActivity()
+					.getSystemService(Context.INPUT_METHOD_SERVICE);
+			imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
 
-		String messageString = txt.getText().toString();
-		
-		MainActivity act1 = (MainActivity)getActivity();
-		
-		act1.sendMessage(contactPhone, messageString, uniqueid);
+			String messageString = txt.getText().toString();
 
-		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-		db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
-				messageString, (new Date().toString()), "pending", uniqueid);
-		
-		convList.add(new Conversation(messageString, new Date().toString(), true, true, "pending", uniqueid));
-		adp.notifyDataSetChanged();
-		
-		txt.setText(null);
+			MainActivity act1 = (MainActivity) getActivity();
+
+			act1.sendMessage(contactPhone, messageString, uniqueid);
+
+			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
+					messageString, Utility.getCurrentTimeInISO(), "pending", uniqueid);
+
+			convList.add(new Conversation(messageString, Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()), true, true, "pending", uniqueid));
+			adp.notifyDataSetChanged();
+
+			txt.setText(null);
+		} catch (ParseException e){
+			e.printStackTrace();
+		}
 	}
 	
-	public void receiveMessage(String msg, String uniqueid, String from){
+	public void receiveMessage(String msg, String uniqueid, String from, String date) {
 
-		final MediaPlayer mp = MediaPlayer.create(getActivity().getApplicationContext(), R.raw.bell);
-		mp.start();
+		try {
 
-		// todo see if this really needs the uniqueid and status
-		convList.add(new Conversation(msg, new Date().toString(), false, true, "seen", uniqueid));
-		
-		adp.notifyDataSetChanged();
+			final MediaPlayer mp = MediaPlayer.create(getActivity().getApplicationContext(), R.raw.bell);
+			mp.start();
 
-		MainActivity act1 = (MainActivity)getActivity();
+			// todo see if this really needs the uniqueid and status
+			convList.add(new Conversation(msg, Utility.convertDateToLocalTimeZoneAndReadable(date), false, true, "seen", uniqueid));
 
-		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-		db.updateChat("seen", uniqueid);
-		act1.sendMessageStatusUsingSocket("seen", uniqueid, from);
+			adp.notifyDataSetChanged();
+
+			MainActivity act1 = (MainActivity) getActivity();
+
+			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			db.updateChat("seen", uniqueid);
+			act1.sendMessageStatusUsingSocket("seen", uniqueid, from);
+		} catch (ParseException e){
+			e.printStackTrace();
+		}
 		
 	}
 
@@ -201,12 +212,12 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				if(row.getString("toperson").equals(contactPhone))
 					chatList1.add(new Conversation(
 						row.getString("msg"),
-						row.getString("date"),
+						Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
 						true, true, row.getString("status"), row.getString("uniqueid")));
 				else
 					chatList1.add(new Conversation(
 							row.getString("msg"),
-							row.getString("date"),
+							Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
 							false, true, row.getString("status"), row.getString("uniqueid")));
 
 				if(row.getString("fromperson").equals(contactPhone)){
@@ -240,6 +251,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				adp.notifyDataSetChanged();
 			
 		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 	}

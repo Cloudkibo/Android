@@ -1,11 +1,11 @@
 package com.cloudkibo.database;
 
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteDatabaseLockedException;
+import android.content.ContentValues;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
@@ -21,24 +21,24 @@ import com.cloudkibo.database.CloudKiboDatabaseContract.User;
 import com.cloudkibo.database.CloudKiboDatabaseContract.UserChat;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
-		
+
     // Database Version
     private static final int DATABASE_VERSION = 1;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
-    
-    
-    
-	/////////////////////////////////////////////////////////////////////
-	// Constructor                                                     //
-	/////////////////////////////////////////////////////////////////////
-    
+
+
+
+    /////////////////////////////////////////////////////////////////////
+    // Constructor                                                     //
+    /////////////////////////////////////////////////////////////////////
+
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
-    
-    
+
+
     
 
    /////////////////////////////////////////////////////////////////////

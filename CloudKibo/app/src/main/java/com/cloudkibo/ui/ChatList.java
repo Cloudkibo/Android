@@ -4,11 +4,16 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.CalendarContract;
+import android.text.format.DateUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +29,7 @@ import com.cloudkibo.NewChat;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.ChatItem;
 import com.cloudkibo.model.Conversation;
 import com.cloudkibo.utils.IFragmentName;
@@ -115,13 +121,12 @@ public class ChatList extends CustomFragment implements IFragmentName
 			for (int i=0; i < chats.length(); i++) {
 				JSONObject row = chats.getJSONObject(i);
 
-				DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ", Locale.ENGLISH);
-				Date date = format.parse("2001-07-04T12:08:56.235-0700");
-
 				chatList1.add(new ChatItem(
 						row.getString("display_name"),
 						row.getString("contact_phone"),
-						row.getString("msg"), row.getString("date"), R.drawable.user1, false,
+						row.getString("msg"),
+						Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
+						R.drawable.user1, false,
 						false, Integer.parseInt(row.getString("pendingMsgs"))));
 
 			}

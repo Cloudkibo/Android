@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cloudkibo"
     android:hardwareAccelerated="true"
-    android:versionCode="49"
+    android:versionCode="53"
     android:versionName="1.1" >
 
     <uses-sdk

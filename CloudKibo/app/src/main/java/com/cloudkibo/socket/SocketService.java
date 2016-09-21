@@ -165,7 +165,7 @@ public class SocketService extends Service {
                                 payload.getString("uniqueid"), payload.getString("from"));
 
                         if (isForeground("com.cloudkibo")) {
-                            mListener.receiveSocketJson("im", payload);
+                            //mListener.receiveSocketJson("im", payload);
                         } else {
                             Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
                             PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
@@ -204,7 +204,8 @@ public class SocketService extends Service {
             }).on("youareonline", new Emitter.Listener() {
                 @Override
                 public void call(Object... args) {
-                    mListener.receiveSocketJson("youareonline", new JSONObject());
+                    if(mListener != null)
+                        mListener.receiveSocketJson("youareonline", new JSONObject());
                 }
             }).on("messagefordatachannel", new Emitter.Listener() {
 
@@ -483,14 +484,14 @@ public class SocketService extends Service {
                 @Override
                 public void call(Object... args) {
 
-                    try {
-                        JSONObject resp = new JSONObject(args[0].toString());
-                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-                        db.updateChat(resp.getString("status"), resp.getString("uniqueid"));
-                        mListener.receiveSocketJson("updateSentMessageStatus", resp);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    //try {
+                    //    JSONObject resp = new JSONObject(args[0].toString());
+                    //    DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                    //    db.updateChat(resp.getString("status"), resp.getString("uniqueid"));
+                    //    mListener.receiveSocketJson("updateSentMessageStatus", resp);
+                    //} catch (JSONException e) {
+                    //    e.printStackTrace();
+                    //} // todo remove it from here
 
                 }
 

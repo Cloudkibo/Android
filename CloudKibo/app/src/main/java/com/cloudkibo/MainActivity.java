@@ -875,181 +875,49 @@ public class MainActivity extends CustomActivity
                 @Override
                 public void receiveSocketJson(String type, final JSONObject body) {
 
-                    try {
-                        if(type.equals("im")){
+                    if(type.equals("im")){
 
-                            IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                        handleIncomingChatMessage(type, body);
 
-                            if(myFragment == null) return;
-                            if(myFragment.getFragmentName().equals("GroupChat"))
-                            {
-                                if(myFragment.getFragmentContactPhone().equals(body.getString("from"))){
-                                    final GroupChat myGroupChatFragment = (GroupChat) myFragment;
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
+                    }
+                    else if(type.equals("updateSentMessageStatus")){
 
-                                            try {
+                        handleIncomingStatusForSentMessage(type, body);
 
-                                                myGroupChatFragment.receiveMessage(body.getString("msg"), body.getString("uniqueid"), body.getString("from"));
-                                            } catch(JSONException e){
-                                                e.printStackTrace();
-                                            }
+                    }
+                    else if(type.equals("offline")){
+                        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 
-                                        }
-                                    });
-                                } else {
-                                    Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
-                                    PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-
-                                    String message = body.getString("msg");
-                                    String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
-
-                                    DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-
-                                    String senderName = "";
-
-                                    JSONArray contactInAddressBook = db.getSpecificContact(body.getString("from"));
-                                    if(contactInAddressBook.length() > 0) {
-                                        senderName = contactInAddressBook.getJSONObject(0).getString("display_name");
-                                    } else {
-                                        senderName = body.getString("from");
-                                    }
-
-                                    Notification n = new Notification.Builder(getApplicationContext())
-                                            .setContentTitle(senderName)
-                                            .setContentText(subMsg)
-                                            .setSmallIcon(R.drawable.icon)
-                                            .setContentIntent(pIntent)
-                                            .setAutoCancel(true)
-                                            .build();
-
-                                    NotificationManager notificationManager =
-                                            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-                                    notificationManager.notify(0, n);
-
-                                    try {
-                                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                                        r.play();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
+                        if(myFragment == null) return;
+                        if(myFragment.getFragmentName().equals("ContactList"))
+                        {
+                            final ContactList myContactListFragment = (ContactList) myFragment;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    myContactListFragment.setOfflineStatusIndividual(body); //here you call the method of your current Fragment.
                                 }
+                            });
+                        }
+                    }
+                    else if(type.equals("online")){
+                        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 
-
-                            } else {
-                                Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
-                                PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-
-                                String message = body.getString("msg");
-                                String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
-
-                                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-
-                                String senderName = "";
-
-                                JSONArray contactInAddressBook = db.getSpecificContact(body.getString("from"));
-                                if(contactInAddressBook.length() > 0) {
-                                    senderName = contactInAddressBook.getJSONObject(0).getString("display_name");
-                                } else {
-                                    senderName = body.getString("from");
+                        if(myFragment == null) return;
+                        if(myFragment.getFragmentName().equals("ContactList"))
+                        {
+                            final ContactList myContactListFragment = (ContactList) myFragment;
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    myContactListFragment.setOnlineStatusIndividual(body); //here you call the method of your current Fragment.
                                 }
-
-                                Notification n = new Notification.Builder(getApplicationContext())
-                                        .setContentTitle(senderName)
-                                        .setContentText(subMsg)
-                                        .setSmallIcon(R.drawable.icon)
-                                        .setContentIntent(pIntent)
-                                        .setAutoCancel(true)
-                                        .build();
-
-                                NotificationManager notificationManager =
-                                        (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-                                notificationManager.notify(0, n);
-
-                                try {
-                                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                                    r.play();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-
-                                if(myFragment.getFragmentName().equals("ChatList")){
-                                    final ChatList myChatListFragment = (ChatList) myFragment;
-                                    runOnUiThread(new Runnable() {
-                                        @Override
-                                        public void run() {
-
-                                            myChatListFragment.loadChatList();
-
-                                        }
-                                    });
-                                }
-                            }
-
+                            });
                         }
-                        else if(type.equals("updateSentMessageStatus")){
-
-                            IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-
-                            if(myFragment == null) return;
-                            if(myFragment.getFragmentName().equals("GroupChat"))
-                            {
-                                final GroupChat myGroupChatFragment = (GroupChat) myFragment;
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            myGroupChatFragment.updateStatusSentMessage(body.getString("status"), body.getString("uniqueid"));
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-
-                            }
-
+                    } else if(type.equals("joinedroom")){
+                        if(shouldSync){
+                            startSyncService();
                         }
-                        else if(type.equals("offline")){
-                            IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-
-                            if(myFragment == null) return;
-                            if(myFragment.getFragmentName().equals("ContactList"))
-                            {
-                                final ContactList myContactListFragment = (ContactList) myFragment;
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        myContactListFragment.setOfflineStatusIndividual(body); //here you call the method of your current Fragment.
-                                    }
-                                });
-                            }
-                        }
-                        else if(type.equals("online")){
-                            IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-
-                            if(myFragment == null) return;
-                            if(myFragment.getFragmentName().equals("ContactList"))
-                            {
-                                final ContactList myContactListFragment = (ContactList) myFragment;
-                                runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        myContactListFragment.setOnlineStatusIndividual(body); //here you call the method of your current Fragment.
-                                    }
-                                });
-                            }
-                        } else if(type.equals("joinedroom")){
-                            if(shouldSync){
-                                startSyncService();
-                            }
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
                     }
 
                 }
@@ -1118,6 +986,148 @@ public class MainActivity extends CustomActivity
         }
     };
 
+    public void handleIncomingStatusForSentMessage(String type, final JSONObject body) {
+        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+        if(myFragment == null) return;
+        if(myFragment.getFragmentName().equals("GroupChat"))
+        {
+            final GroupChat myGroupChatFragment = (GroupChat) myFragment;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        myGroupChatFragment.updateStatusSentMessage(body.getString("status"), body.getString("uniqueid"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+        }
+    }
+
+    public void handleIncomingChatMessage(String type, final JSONObject body){
+        try{
+            IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+            if(myFragment == null) return;
+            if(myFragment.getFragmentName().equals("GroupChat"))
+            {
+                if(myFragment.getFragmentContactPhone().equals(body.getString("from"))){
+                    final GroupChat myGroupChatFragment = (GroupChat) myFragment;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            try {
+
+                                myGroupChatFragment.receiveMessage(body.getString("msg"), body.getString("uniqueid"), body.getString("from"), body.getString("date"));
+                            } catch(JSONException e){
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
+                } else {
+                    Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+                    PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+                    String message = body.getString("msg");
+                    String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
+
+                    DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+                    String senderName = "";
+
+                    JSONArray contactInAddressBook = db.getSpecificContact(body.getString("from"));
+                    if(contactInAddressBook.length() > 0) {
+                        senderName = contactInAddressBook.getJSONObject(0).getString("display_name");
+                    } else {
+                        senderName = body.getString("from");
+                    }
+
+                    Notification n = new Notification.Builder(getApplicationContext())
+                            .setContentTitle(senderName)
+                            .setContentText(subMsg)
+                            .setSmallIcon(R.drawable.icon)
+                            .setContentIntent(pIntent)
+                            .setAutoCancel(true)
+                            .build();
+
+                    NotificationManager notificationManager =
+                            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                    notificationManager.notify(0, n);
+
+                    try {
+                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                        r.play();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+            } else {
+                Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
+                PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+                String message = body.getString("msg");
+                String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
+
+                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+                String senderName = "";
+
+                JSONArray contactInAddressBook = db.getSpecificContact(body.getString("from"));
+                if(contactInAddressBook.length() > 0) {
+                    senderName = contactInAddressBook.getJSONObject(0).getString("display_name");
+                } else {
+                    senderName = body.getString("from");
+                }
+
+                Notification n = new Notification.Builder(getApplicationContext())
+                        .setContentTitle(senderName)
+                        .setContentText(subMsg)
+                        .setSmallIcon(R.drawable.icon)
+                        .setContentIntent(pIntent)
+                        .setAutoCancel(true)
+                        .build();
+
+                NotificationManager notificationManager =
+                        (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                notificationManager.notify(0, n);
+
+                try {
+                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                    r.play();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                if(myFragment.getFragmentName().equals("ChatList")){
+                    final ChatList myChatListFragment = (ChatList) myFragment;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            myChatListFragment.loadChatList();
+
+                        }
+                    });
+                }
+
+            }
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        //socketService.updateReceivedMessageStatusToServer();
+    }
     /**
      * Check the device to make sure it has the Google Play Services APK. If
      * it doesn't, display a dialog that allows users to download the APK from
