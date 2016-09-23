@@ -29,6 +29,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -41,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URISyntaxException;
+import java.util.TimeZone;
 
 /**
  * The Class SplashScreen will launched at the start of the application. It will
@@ -60,6 +62,9 @@ public class SplashScreen extends Activity
 
 	public static int APP_REQUEST_CODE = 99;
 
+	Socket socket;
+	boolean isSocketConnected;
+
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
 	 */
@@ -70,6 +75,36 @@ public class SplashScreen extends Activity
 		super.onCreate(savedInstanceState);
 		mAccountManager = AccountManager.get(this);
 		AccountKit.initialize(getApplicationContext());
+
+		isSocketConnected = false;
+
+		try {
+
+			socket = IO.socket("https://api.cloudkibo.com"); // https://api.cloudkibo.com
+			socket.connect();
+
+			socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+
+				@Override
+				public void call(Object... args) {
+
+					Log.w("SOCKET", "CONNECTED FROM SPLASH");
+
+					isSocketConnected = true;
+
+					logMessage("Application started. Showing splash screen.");
+
+					TimeZone tz = TimeZone.getDefault();
+					String gmt1= TimeZone.getTimeZone(tz.getID()).getDisplayName(false, TimeZone.SHORT);
+					String gmt2= TimeZone.getTimeZone(tz.getID()).getDisplayName(false, TimeZone.LONG);
+					logMessage("TimeZone : "+gmt1+"\t"+gmt2);
+
+				}
+
+			});
+		} catch (URISyntaxException e){
+			e.printStackTrace();
+		}
 
 		setContentView(R.layout.splash);
 
@@ -105,12 +140,139 @@ public class SplashScreen extends Activity
 						@Override
 						public void run()
 						{
-							doFinish();
+							checkFirstRun();
 						}
 					});
 				}
 			}
 		}).start();
+	}
+
+	private void checkFirstRun() {
+
+		final String PREFS_NAME = "MyPrefsFile";
+		final String PREF_VERSION_CODE_KEY = "version_code";
+		final int DOESNT_EXIST = -1;
+
+
+		// Get current version code
+		int currentVersionCode = 0;
+		try {
+			currentVersionCode = getPackageManager().getPackageInfo(getPackageName(), 0).versionCode;
+		} catch (android.content.pm.PackageManager.NameNotFoundException e) {
+			// handle exception
+			e.printStackTrace();
+			return;
+		}
+
+		// Get saved version code
+		SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+		int savedVersionCode = prefs.getInt(PREF_VERSION_CODE_KEY, DOESNT_EXIST);
+
+		// Check for first run or upgrade
+		if (currentVersionCode == savedVersionCode) {
+
+			// This is just a normal run
+			Toast.makeText(
+					this,
+					"This is normal run : version "+ currentVersionCode,
+					Toast.LENGTH_LONG)
+					.show();
+
+			logMessage("This is normal run : version "+ currentVersionCode);
+
+			doFinish();
+
+			return;
+
+		} else if (savedVersionCode == DOESNT_EXIST) {
+
+			setupForNewInstall();
+
+		} else if (currentVersionCode > savedVersionCode) {
+
+			// TODO This is an upgrade
+			Toast.makeText(
+					this,
+					"This is an upgrade to next version : old version "+ savedVersionCode,
+					Toast.LENGTH_LONG)
+					.show();
+
+			logMessage("This is an upgrade to next version : old version "+ savedVersionCode);
+
+			doFinish();
+
+		}
+
+		// Update the shared preferences with the current version code
+		prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).commit();
+
+	}
+
+	private void setupForNewInstall(){
+		// TODO This is a new install (or the user cleared the shared preferences)
+		Toast.makeText(
+				this,
+				"This is a new install",
+				Toast.LENGTH_LONG)
+				.show();
+
+		logMessage("This is a new install");
+
+		UserFunctions fn = new UserFunctions();
+		if(fn.isUserLoggedIn(getApplicationContext())){
+			Toast.makeText(
+					this,
+					"Old data is found from previous install. Removing it.",
+					Toast.LENGTH_LONG)
+					.show();
+
+			logMessage("Old data is found from previous install. Removing it.");
+
+			DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+			db.resetChatsTable();
+			db = new DatabaseHandler(getApplicationContext());
+			db.resetTables();
+			db = new DatabaseHandler(getApplicationContext());
+			db.resetContactsTable();
+			db = new DatabaseHandler(getApplicationContext());
+			db.resetChatHistorySync();
+			db = new DatabaseHandler(getApplicationContext());
+			db.resetCallHistoryTable();
+
+			logMessage("Old data removed from tables. Checking old facebook auth token.");
+
+			AccessToken accessToken = null;
+			try {
+				accessToken = AccountKit.getCurrentAccessToken();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+			if(accessToken != null) {
+				logMessage("Facebook old auth token was there. Removing it now.");
+				AccountKit.logOut();
+			} else {
+				logMessage("Facebook old auth token was not there.");
+			}
+
+			Toast.makeText(
+					this,
+					"Going to facebook authentication now.",
+					Toast.LENGTH_LONG)
+					.show();
+
+			doFinish();
+
+		} else {
+			Toast.makeText(
+					this,
+					"Old data is not found from previous install.",
+					Toast.LENGTH_LONG)
+					.show();
+			logMessage("Old data is not found from previous install.");
+			doFinish();
+		}
 	}
 
 	/**
@@ -157,8 +319,6 @@ public class SplashScreen extends Activity
 					}
 
 				}
-
-
 			} else {
 				onLoginPhone();
 			}
@@ -236,6 +396,11 @@ public class SplashScreen extends Activity
 					Toast.LENGTH_LONG)
 					.show();
 		}
+	}
+
+	private void logMessage(String msg){
+		if(isSocketConnected)
+			socket.emit("logClient", "ANDROID : "+ msg);
 	}
 	
 	/**

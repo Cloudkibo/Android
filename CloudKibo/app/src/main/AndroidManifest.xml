@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cloudkibo"
     android:hardwareAccelerated="true"
-    android:versionCode="54"
+    android:versionCode="57"
     android:versionName="1.1">
 
     <uses-sdk

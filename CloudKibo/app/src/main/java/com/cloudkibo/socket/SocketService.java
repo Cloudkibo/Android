@@ -860,6 +860,8 @@ public class SocketService extends Service {
             message.put("msg", msg);
             message.put("date", (new Date().toString()));
             message.put("uniqueid", uniqueid);
+            message.put("type", "chat");
+            message.put("file_type", "");
 
             JSONObject completeMessage = new JSONObject();
 
@@ -1012,6 +1014,10 @@ public class SocketService extends Service {
 
         socket.disconnect();
         socket.connect();
+    }
+
+    public void logToServer(String message) {
+        socket.emit("logClient", "ANDROID : "+ message);
     }
 
 }

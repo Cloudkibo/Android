@@ -714,6 +714,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             e.printStackTrace();
         }
     }
+
+    public void resetCallHistoryTable(){
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            // Delete All Rows
+            db.delete("call_history", null, null);
+            db.close();
+        }catch(SQLiteDatabaseLockedException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void resetChatHistorySync(){
+        try {
+            SQLiteDatabase db = this.getWritableDatabase();
+            // Delete All Rows
+            db.delete("chat_history_sync", null, null);
+            db.close();
+        }catch(SQLiteDatabaseLockedException e){
+            e.printStackTrace();
+        }
+    }
     
     public void resetSpecificChat(String user1, String user2){
     	SQLiteDatabase db = this.getWritableDatabase();

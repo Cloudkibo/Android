@@ -84,6 +84,44 @@ public class KiboSyncService extends Service {
 
     }
 
+    public void startIncrementalSyncWithoutAddressBookAccess (String token) {
+
+        authtoken = token;
+
+        startWithAddressBook = false;
+
+        doUpwardSync();
+
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        Log.i("tag", "This'll run 3000 milliseconds later");
+                        loadPartialChatFromServer();
+                    }
+                },
+                3000);
+
+    }
+
+    public void startIncrementalSyncWithAddressBookAccess (String token) {
+
+        authtoken = token;
+
+        startWithAddressBook = true;
+
+        //doUpwardSync();
+
+        new android.os.Handler().postDelayed(
+                new Runnable() {
+                    public void run() {
+                        Log.i("tag", "This'll run 3000 milliseconds later");
+                        loadPartialChatFromServer();
+                    }
+                },
+                3000);
+
+    }
+
     private void doUpwardSync(){
         DatabaseHandler db = new DatabaseHandler(
                 getApplicationContext());
@@ -365,6 +403,115 @@ public class KiboSyncService extends Service {
                             db.resetChatsTable();
 
                             db = new DatabaseHandler(
+                                    getApplicationContext());
+
+                            HashMap<String, String> user = db.getUserDetails();
+
+                            db = new DatabaseHandler(
+                                    getApplicationContext());
+
+                            for (int i=0; i < jsonA.length(); i++) {
+                                JSONObject row = jsonA.getJSONObject(i);
+
+                                db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
+                                        row.getString("msg"), row.getString("date"),
+                                        row.has("status") ? row.getString("status") : "",
+                                        row.has("uniqueid") ? row.getString("uniqueid") : "");
+
+                                if(row.has("status")){
+                                    if(row.getString("to").equals(db.getUserDetails().get("phone")) && row.getString("status").equals("sent")){
+                                        db = new DatabaseHandler(
+                                                getApplicationContext());
+                                        db.updateChat("delivered", row.getString("uniqueid"));
+                                        mListener.sendMessageStatusUsingSocket(row.getString("from"),
+                                                "delivered", row.getString("uniqueid"));
+
+                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                        PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+                                        String message = row.getString("msg");
+                                        String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
+
+                                        DatabaseHandler db2 = new DatabaseHandler(getApplicationContext());
+
+                                        String senderName = db2.getSpecificContact(row.getString("from")).getJSONObject(0).getString("display_name");
+
+                                        Notification n = new Notification.Builder(getApplicationContext())
+                                                .setContentTitle(senderName)
+                                                .setContentText(subMsg)
+                                                .setSmallIcon(R.drawable.icon)
+                                                .setContentIntent(pIntent)
+                                                .setAutoCancel(true)
+                                                .build();
+
+                                        NotificationManager notificationManager =
+                                                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                                        notificationManager.notify(0, n);
+
+                                        try {
+                                            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                                            r.play();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
+
+                                    }
+                                }
+
+                            }
+
+                        /*try {
+                            JSONArray chat = db.getChat();
+                            chat.toString();
+                        }catch(JSONException e){
+                            e.printStackTrace();
+                        }*/
+
+                            mListener.chatLoaded();
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if(startWithAddressBook)
+                    loadContactsFromAddressBook();
+                else
+                    loadCurrentContactsFromServer();
+
+            }
+
+        }.execute();
+
+    }
+
+    private void loadPartialChatFromServer() {
+
+        new AsyncTask<String, String, JSONArray>() {
+
+            @Override
+            protected JSONArray doInBackground(String... args) {
+                DatabaseHandler db = new DatabaseHandler(
+                        getApplicationContext());
+                UserFunctions userFunction = new UserFunctions();
+                JSONArray json = new JSONArray();
+                try {
+                    json = userFunction.getPartialChatList(db.getUserDetails().get("phone"), authtoken).getJSONArray("msg");
+                } catch(JSONException e){
+                    e.printStackTrace();
+                }
+                return json;
+            }
+
+            @Override
+            protected void onPostExecute(JSONArray jsonA) {
+                try {
+
+                    if (jsonA != null) {
+
+                        if(jsonA.length() > 0) {
+                            DatabaseHandler db = new DatabaseHandler(
                                     getApplicationContext());
 
                             HashMap<String, String> user = db.getUserDetails();

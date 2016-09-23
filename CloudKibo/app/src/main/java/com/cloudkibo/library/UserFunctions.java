@@ -49,6 +49,7 @@ public class UserFunctions {
     private static String inviteContactsURL =       baseURL + "/api/users/invitebymultipleemail/";
     private static String saveDisplayNameURL =      baseURL + "/api/users/newuser";
     private static String getAllChatURL =           baseURL + "/api/userchat/alluserchat";
+    private static String getPartialChatURL =       baseURL + "/api/userchat/partialchatsync";
     private static String getSingleChatURL =        baseURL + "/api/userchat/getsinglechat";
     
     
@@ -209,6 +210,13 @@ public class UserFunctions {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("user1", user1));
         JSONObject response = connection.sendObjectToServer(getAllChatURL, authtoken, params);
+        return response;
+    }
+
+    public JSONObject getPartialChatList(String user1, String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("user1", user1));
+        JSONObject response = connection.sendObjectToServer(getPartialChatURL, authtoken, params);
         return response;
     }
 

@@ -224,7 +224,7 @@ public class MainActivity extends CustomActivity
                 Intent intentSync = new Intent(getApplicationContext(), KiboSyncService.class);
                 bindService(intentSync, kiboSyncConnection, Context.BIND_AUTO_CREATE);
                 if (kiboServiceIsBound) {
-                    kiboSyncService.startSyncWithoutAddressBookAccess(authtoken);
+                    kiboSyncService.startIncrementalSyncWithoutAddressBookAccess(authtoken);
                 }
             } else {
                 if(countRetryConnectingSocket > 2) return ;
@@ -977,7 +977,7 @@ public class MainActivity extends CustomActivity
                 }
 
             });
-            kiboSyncService.startSyncWithoutAddressBookAccess(authtoken);
+            kiboSyncService.startIncrementalSyncWithoutAddressBookAccess(authtoken);
         }
 
         @Override
