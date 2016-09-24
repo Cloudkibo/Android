@@ -51,6 +51,7 @@ public class UserFunctions {
     private static String getAllChatURL =           baseURL + "/api/userchat/alluserchat";
     private static String getPartialChatURL =       baseURL + "/api/userchat/partialchatsync";
     private static String getSingleChatURL =        baseURL + "/api/userchat/getsinglechat";
+    private static String sendLogURL =              baseURL + "/api/users/log";
     
     
     
@@ -124,6 +125,13 @@ public class UserFunctions {
 
         params.add(new BasicNameValuePair("email", email));
         JSONObject response = connection.sendObjectToServerNoAuth(forpassURL, params);
+        return response;
+    }
+
+    public JSONObject sendLog(String data) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("data", data));
+        JSONObject response = connection.sendObjectToServerNoAuth(sendLogURL, params);
         return response;
     }
     

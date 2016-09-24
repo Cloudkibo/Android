@@ -1,5 +1,6 @@
 package com.cloudkibo.database;
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -7,12 +8,14 @@ import android.app.ProgressDialog;
 import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Binder;
+import android.os.Build;
 import android.os.IBinder;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -109,7 +112,7 @@ public class KiboSyncService extends Service {
 
         startWithAddressBook = true;
 
-        //doUpwardSync();
+        doUpwardSync();
 
         new android.os.Handler().postDelayed(
                 new Runnable() {
@@ -155,7 +158,6 @@ public class KiboSyncService extends Service {
             e.printStackTrace();
         }
     }
-
 
     private void loadContactsFromAddressBook(){
 
@@ -522,50 +524,56 @@ public class KiboSyncService extends Service {
                             for (int i=0; i < jsonA.length(); i++) {
                                 JSONObject row = jsonA.getJSONObject(i);
 
-                                db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
-                                        row.getString("msg"), row.getString("date"),
-                                        row.has("status") ? row.getString("status") : "",
-                                        row.has("uniqueid") ? row.getString("uniqueid") : "");
+                                JSONArray messageAlreadyThere = db.getSpecificChat(row.has("uniqueid") ? row.getString("uniqueid") : "");
+                                if(messageAlreadyThere.length() < 1){
+                                    db = new DatabaseHandler(
+                                            getApplicationContext());
 
-                                if(row.has("status")){
-                                    if(row.getString("to").equals(db.getUserDetails().get("phone")) && row.getString("status").equals("sent")){
-                                        db = new DatabaseHandler(
-                                                getApplicationContext());
-                                        db.updateChat("delivered", row.getString("uniqueid"));
-                                        mListener.sendMessageStatusUsingSocket(row.getString("from"),
-                                                "delivered", row.getString("uniqueid"));
+                                    db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
+                                            row.getString("msg"), row.getString("date"),
+                                            row.has("status") ? row.getString("status") : "",
+                                            row.has("uniqueid") ? row.getString("uniqueid") : "");
 
-                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                        PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+                                    if(row.has("status")){
+                                        if(row.getString("to").equals(db.getUserDetails().get("phone")) && row.getString("status").equals("sent")){
+                                            db = new DatabaseHandler(
+                                                    getApplicationContext());
+                                            db.updateChat("delivered", row.getString("uniqueid"));
+                                            mListener.sendMessageStatusUsingSocket(row.getString("from"),
+                                                    "delivered", row.getString("uniqueid"));
 
-                                        String message = row.getString("msg");
-                                        String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
+                                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                            PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
 
-                                        DatabaseHandler db2 = new DatabaseHandler(getApplicationContext());
+                                            String message = row.getString("msg");
+                                            String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
 
-                                        String senderName = db2.getSpecificContact(row.getString("from")).getJSONObject(0).getString("display_name");
+                                            DatabaseHandler db2 = new DatabaseHandler(getApplicationContext());
 
-                                        Notification n = new Notification.Builder(getApplicationContext())
-                                                .setContentTitle(senderName)
-                                                .setContentText(subMsg)
-                                                .setSmallIcon(R.drawable.icon)
-                                                .setContentIntent(pIntent)
-                                                .setAutoCancel(true)
-                                                .build();
+                                            String senderName = db2.getSpecificContact(row.getString("from")).getJSONObject(0).getString("display_name");
 
-                                        NotificationManager notificationManager =
-                                                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+                                            Notification n = new Notification.Builder(getApplicationContext())
+                                                    .setContentTitle(senderName)
+                                                    .setContentText(subMsg)
+                                                    .setSmallIcon(R.drawable.icon)
+                                                    .setContentIntent(pIntent)
+                                                    .setAutoCancel(true)
+                                                    .build();
 
-                                        notificationManager.notify(0, n);
+                                            NotificationManager notificationManager =
+                                                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
-                                        try {
-                                            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                                            r.play();
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
+                                            notificationManager.notify(0, n);
+
+                                            try {
+                                                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                                Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                                                r.play();
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
                                         }
-
                                     }
                                 }
 

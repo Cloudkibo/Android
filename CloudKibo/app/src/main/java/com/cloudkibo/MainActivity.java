@@ -10,13 +10,21 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import android.*;
+import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
+import android.os.Build;
 import android.provider.ContactsContract;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -163,6 +171,7 @@ public class MainActivity extends CustomActivity
     private GoogleCloudMessaging gcm;
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     Boolean shouldSync;
+    private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     // Push Notification
 
     /* (non-Javadoc)
@@ -218,7 +227,6 @@ public class MainActivity extends CustomActivity
 
     int countRetryConnectingSocket = 0;
     public void startSyncService(){
-
         if(socketService != null) {
             if (socketService.isSocketConnected()) {
                 Intent intentSync = new Intent(getApplicationContext(), KiboSyncService.class);
@@ -227,7 +235,10 @@ public class MainActivity extends CustomActivity
                     kiboSyncService.startIncrementalSyncWithoutAddressBookAccess(authtoken);
                 }
             } else {
-                if(countRetryConnectingSocket > 2) return ;
+                if(countRetryConnectingSocket > 2){
+                    countRetryConnectingSocket = 0;
+                    return ;
+                }
                 new android.os.Handler().postDelayed(
                         new Runnable() {
                             public void run() {
@@ -245,6 +256,53 @@ public class MainActivity extends CustomActivity
                         }
                     },
                     1000);
+        }
+    }
+
+    public void syncContacts(){
+        startSocketService();
+        if (socketService.isSocketConnected()) {
+            Intent intentSync = new Intent(getApplicationContext(), KiboSyncService.class);
+            bindService(intentSync, kiboSyncConnection, Context.BIND_AUTO_CREATE);
+            if (kiboServiceIsBound) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+                    //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+                } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED){
+                    ToastNotify2("Can't refresh contacts without permission.");
+                } else {
+                    loadContactsFromAddressBook();
+                }
+            }
+        } else {
+            if(countRetryConnectingSocket > 2){
+                countRetryConnectingSocket = 0;
+                ToastNotify2("Can't sync at the moment.");
+                return ;
+            }
+            new android.os.Handler().postDelayed(
+                    new Runnable() {
+                        public void run() {
+                            syncContacts();
+                        }
+                    },
+                    1000);
+            countRetryConnectingSocket++;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                           int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_READ_CONTACTS) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission is granted
+                if(kiboServiceIsBound){
+                    loadContactsFromAddressBook();
+                }
+            } else {
+                ToastNotify2("Can't refresh contacts without permission.");
+            }
         }
     }
 
@@ -1128,6 +1186,180 @@ public class MainActivity extends CustomActivity
 
         //socketService.updateReceivedMessageStatusToServer();
     }
+
+    private void loadContactsFromAddressBook(){
+        final ArrayList<String> contactList1 = new ArrayList<String>();
+        final ArrayList<String> contactList1Phone = new ArrayList<String>();
+
+        new AsyncTask<String, String, JSONObject>() {
+            private ProgressDialog nDialog;
+
+            @Override
+            protected void onPreExecute() {
+                ToastNotify2("Syncing contacts now.");
+            }
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+
+                List<NameValuePair> phones = new ArrayList<NameValuePair>();
+                List<NameValuePair> emails = new ArrayList<NameValuePair>();
+
+                ContentResolver cr = getApplicationContext().getContentResolver();
+                Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
+                        null, null, null, null);
+                if (cur.getCount() > 0) {
+                    while (cur.moveToNext()) {
+                        String id = cur.getString(
+                                cur.getColumnIndex(ContactsContract.Contacts._ID));
+                        String name = cur.getString(
+                                cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                        //Log.w("Contact Name : ", "Name " + name + "");
+                        if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
+                            Cursor pCur = cr.query(
+                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+                                    null,
+                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
+                                    new String[]{id}, null);
+                            while (pCur.moveToNext()) {
+                                DatabaseHandler db = new DatabaseHandler(
+                                        getApplicationContext());
+                                String phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                                if(phone.length() < 6) continue;
+                                if(phone.charAt(0) != '+') {
+                                    if(phone.charAt(0) == '0') phone = phone.substring(1, phone.length());
+                                    if(phone.charAt(0) == '1') phone = "+" + phone;
+                                    else phone = "+" + db.getUserDetails().get("country_prefix") + phone;
+                                }
+                                if(contactList1Phone.contains(phone)) continue;
+                                //if(Character.isLetter(name.charAt(0)))
+                                //    name = name.substring(0, 1).toUpperCase() + name.substring(1);
+                                phone = phone.replaceAll("\\s+","");
+                                phone = phone.replaceAll("\\p{P}","");
+                                db = new DatabaseHandler(getApplicationContext());
+                                String userPhone = db.getUserDetails().get("phone");
+                                if(userPhone.equals(phone)) continue;
+                                phones.add(new BasicNameValuePair("phonenumbers", phone));
+                                Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
+                                contactList1.add(name);
+                                contactList1Phone.add(phone);
+                            }
+                            pCur.close();
+                        }
+                    }
+                }
+                cur.close();
+
+                UserFunctions userFunction = new UserFunctions();
+                JSONObject json = userFunction.sendAddressBookPhoneContactsToServer(phones, authtoken);
+                Log.w("SERVER SENT RESPONSE", json.toString());
+                ToastNotify2("Synced contacts with KiboChat");
+                return json;
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject json) {
+
+                try {
+
+                    ArrayList<String> contactList1Available = new ArrayList<String>();
+                    ArrayList<String> contactList1PhoneAvailable = new ArrayList<String>();
+
+                    if(json != null){
+
+                        JSONArray jArray = json.getJSONArray("available");
+
+                        for(int i = 0; i<jArray.length(); i++){
+                            contactList1Available.add(contactList1.get(contactList1Phone.indexOf(jArray.get(i).toString())));
+                            contactList1PhoneAvailable.add(contactList1Phone.get(contactList1Phone.indexOf(jArray.get(i).toString())));
+                            contactList1.remove(contactList1Phone.indexOf(jArray.get(i).toString()));
+                            contactList1Phone.remove(contactList1Phone.indexOf(jArray.get(i).toString()));
+                            Log.w("REMOVING", jArray.get(i).toString());
+                        }
+
+                    }
+                    loadNotFoundContacts(contactList1, contactList1Phone);
+                    loadFoundContacts(contactList1Available, contactList1PhoneAvailable);
+
+                    ToastNotify2("Contacts synced successfully.");
+
+                    IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+                    if(myFragment == null) return;
+                    if(myFragment.getFragmentName().equals("ContactList"))
+                    {
+                        final ContactList myContactListFragment = (ContactList) myFragment;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                myContactListFragment.loadContactList(); //here you call the method of your current Fragment.
+                            }
+                        });
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+        }.execute();
+
+    }
+
+    private void loadNotFoundContacts(ArrayList<String> contactList1, ArrayList<String> contactList1Phone) {
+
+        DatabaseHandler db = new DatabaseHandler(
+                getApplicationContext());
+
+        db.resetContactsTable();
+
+        db = new DatabaseHandler(
+                getApplicationContext());
+
+        for (int i = 0; i < contactList1.size(); i++) {
+            db.addContact("false", "null",
+                    contactList1Phone.get(i),
+                    contactList1.get(i),
+                    "null",
+                    "No",
+                    "N/A");
+        }
+
+        try {
+            JSONArray contacts = db.getContacts();
+            contacts.toString();
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void loadFoundContacts(ArrayList<String> contactList1, ArrayList<String> contactList1Phone) {
+
+        DatabaseHandler db = new DatabaseHandler(
+                getApplicationContext());
+
+        for (int i = 0; i < contactList1.size(); i++) {
+            db.addContact("true", "null",
+                    contactList1Phone.get(i),
+                    contactList1.get(i),
+                    "null",
+                    "Yes",
+                    "I am on CloudKibo");
+            // todo work for status here
+        }
+
+        //kiboSyncService.startSyncWithoutAddressBookAccess(authtoken);
+
+        try {
+            JSONArray contacts = db.getContacts();
+            contacts.toString();
+        }catch(JSONException e){
+            e.printStackTrace();
+        }
+    }
+
     /**
      * Check the device to make sure it has the Google Play Services APK. If
      * it doesn't, display a dialog that allows users to download the APK from
@@ -1162,15 +1394,25 @@ public class MainActivity extends CustomActivity
     }
 
     public void ToastNotify(final String notificationMessage) {
-        runOnUiThread(new Runnable() {
+        /*runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 //Toast.makeText(MainActivity.this, notificationMessage, Toast.LENGTH_LONG).show();
-                startSocketService();
-                //TextView helloText = (TextView) findViewById(R.id.text_hello);
-                //helloText.setText(notificationMessage);
+                //startSocketService();
+            }
+        });*/
+        startSocketService();
+    }
+
+    public void ToastNotify2(final String notificationMessage){
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(MainActivity.this, notificationMessage, Toast.LENGTH_LONG).show();
             }
         });
+
     }
 
 }

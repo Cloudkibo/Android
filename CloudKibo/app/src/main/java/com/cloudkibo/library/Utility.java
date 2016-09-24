@@ -1,6 +1,13 @@
 package com.cloudkibo.library;
 
+import android.os.AsyncTask;
 import android.util.Log;
+
+import com.cloudkibo.MainActivity;
+import com.cloudkibo.database.DatabaseHandler;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -20,6 +27,16 @@ public class Utility {
         DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);
         Date date = format.parse(dStr);
 
+        TimeZone tZ = TimeZone.getDefault();
+        tZ = TimeZone.getTimeZone(tZ.getID());
+        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm"); // Quoted "Z" to indicate UTC, no timezone offset
+        df.setTimeZone(tZ);
+        int currentOffsetFromUTC = tZ.getRawOffset() + (tZ.inDaylightTime(date) ? tZ.getDSTSavings() : 0);
+        String result = df.format(date.getTime() + currentOffsetFromUTC);
+
+        return result;
+
+        /*
         TimeZone tz = TimeZone.getDefault();
         String gmt1= TimeZone.getTimeZone(tz.getID()).getDisplayName(false, TimeZone.SHORT);
         String gmt2= TimeZone.getTimeZone(tz.getID()).getDisplayName(false, TimeZone.LONG);
@@ -47,6 +64,7 @@ public class Utility {
                 String.format("%02d", cal.get(Calendar.YEAR)) +" "+
                 String.format("%02d", cal.get(Calendar.HOUR_OF_DAY)) +":"+
                 String.format("%02d", cal.get(Calendar.MINUTE));
+        */
     }
 
     public static String getCurrentTimeInISO(){
@@ -54,6 +72,35 @@ public class Utility {
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
         df.setTimeZone(tZ);
         return df.format(new Date());
+    }
+
+    public static void sendLogToServer(final String message){
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunction = new UserFunctions();
+                return userFunction.sendLog("ANDROID : "+message);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                try {
+
+                    if (row != null) {
+                        if(row.has("status")){
+                            if(!row.getString("status").equals("success")){
+
+                            }
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.execute();
     }
 
 }

@@ -436,7 +436,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         		UserChat.USERCHAT_TO +" = '"+ user1 +"' AND "+
         		UserChat.USERCHAT_FROM +" = '"+ user2 +"') OR ("+
         		UserChat.USERCHAT_TO +" = '"+ user2 +"' AND "+
-        		UserChat.USERCHAT_FROM +" = '"+ user1 +"')";
+        		UserChat.USERCHAT_FROM +" = '"+ user1 +"') order by date";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -470,6 +470,38 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public JSONArray getChat() throws JSONException {
         JSONArray chats = new JSONArray();
         String selectQuery = "SELECT  * FROM " + UserChat.TABLE_USERCHAT;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put(UserChat.USERCHAT_TO, cursor.getString(1));
+                contact.put(UserChat.USERCHAT_FROM, cursor.getString(2));
+                contact.put(UserChat.USERCHAT_FROM_FULLNAME, cursor.getString(3));
+                contact.put(UserChat.USERCHAT_MSG, cursor.getString(4));
+                contact.put(UserChat.USERCHAT_UID, cursor.getString(5));
+                contact.put(UserChat.USERCHAT_DATE, cursor.getString(6));
+                contact.put("contact_phone", cursor.getString(7));
+
+                chats.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return chats;
+    }
+
+    public JSONArray getSpecificChat(String uniqueid) throws JSONException {
+        JSONArray chats = new JSONArray();
+        String selectQuery = "SELECT  * FROM " + UserChat.TABLE_USERCHAT +" where uniqueid='"+ uniqueid +"'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -561,6 +593,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public JSONArray getChatList() throws JSONException {
+        HashMap<String, String> userDetail = getUserDetails();
         JSONArray chats = new JSONArray();
         String selectQuery =
                 " SELECT "+ UserChat.USERCHAT_DATE +", contact_phone, " + UserChat.USERCHAT_MSG
@@ -574,13 +607,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         if(cursor.getCount() > 0){
 
             while (cursor.isAfterLast() != true) {
+                JSONArray contactInAddressBook = getSpecificContact(cursor.getString(1));
+                JSONArray lastMessage = getLastMessageInChat(userDetail.get("phone"), cursor.getString(1));
 
                 JSONObject contact = new JSONObject();
                 contact.put("date", cursor.getString(0));
                 contact.put("contact_phone", cursor.getString(1));
-                contact.put("msg", cursor.getString(2));
+                contact.put("msg", lastMessage.getJSONObject(0).getString("msg"));
+                contact.put("msg", lastMessage.getJSONObject(0).getString("msg"));
+                //contact.put("msg", cursor.getString(2));
                 contact.put("pendingMsgs", getUnReadMessagesCount(cursor.getString(1)));
-                JSONArray contactInAddressBook = getSpecificContact(cursor.getString(1));
                 if(contactInAddressBook.length() > 0) {
                     contact.put("display_name", contactInAddressBook.getJSONObject(0).getString("display_name"));
                 } else {
@@ -657,6 +693,43 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // return row count
         return rowCount;
+    }
+
+    public JSONArray getLastMessageInChat(String user1, String user2) throws JSONException {
+        JSONArray chats = new JSONArray();
+        String selectQuery = "SELECT  * FROM " + UserChat.TABLE_USERCHAT + " WHERE ("+
+                UserChat.USERCHAT_TO +" = '"+ user1 +"' AND "+
+                UserChat.USERCHAT_FROM +" = '"+ user2 +"') OR ("+
+                UserChat.USERCHAT_TO +" = '"+ user2 +"' AND "+
+                UserChat.USERCHAT_FROM +" = '"+ user1 +"') order by date DESC LIMIT 1";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put(UserChat.USERCHAT_TO, cursor.getString(1));
+                contact.put(UserChat.USERCHAT_FROM, cursor.getString(2));
+                contact.put(UserChat.USERCHAT_FROM_FULLNAME, cursor.getString(3));
+                contact.put(UserChat.USERCHAT_MSG, cursor.getString(4));
+                contact.put(UserChat.USERCHAT_DATE, cursor.getString(5));
+                contact.put("status", cursor.getString(6));
+                contact.put("uniqueid", cursor.getString(7));
+                contact.put("contact_phone", cursor.getString(8));
+
+                chats.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return chats;
     }
 
     public int getUnReadMessagesCount(String contact_phone) {

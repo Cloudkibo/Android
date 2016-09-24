@@ -23,6 +23,7 @@ import com.cloudkibo.R;
 import com.cloudkibo.SplashScreen;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.UserFunctions;
+import com.cloudkibo.library.Utility;
 import com.facebook.accountkit.AccessToken;
 import com.facebook.accountkit.AccountKit;
 import com.microsoft.windowsazure.notifications.NotificationsHandler;
@@ -39,12 +40,16 @@ public class MyHandler extends NotificationsHandler {
     NotificationCompat.Builder builder;
     Context ctx;
 
+    HashMap<String, String> userDetail;
+
     @Override
     public void onReceive(Context context, Bundle bundle) {
         ctx = context;
         AccountKit.initialize(ctx.getApplicationContext());
         String nhMessage = bundle.getString("message");
         //sendNotification("Test Push Notification", nhMessage); // todo remove this
+        userDetail = new DatabaseHandler(ctx.getApplicationContext()).getUserDetails();
+        Utility.sendLogToServer(""+ userDetail.get("phone") +" gets push notification payload : "+ nhMessage);
         JSONObject payload;
         try {
             payload = new JSONObject(nhMessage);
@@ -56,6 +61,7 @@ public class MyHandler extends NotificationsHandler {
                     try {
                         DatabaseHandler db = new DatabaseHandler(ctx.getApplicationContext());
                         db.updateChat(payload.getString("status"), payload.getString("uniqueId"));
+                        Utility.sendLogToServer(""+ userDetail.get("phone") +" gets push notification payload to update status of sent message");
                         if(MainActivity.isVisible){
                             JSONObject statusData = new JSONObject();
                             statusData.put("status", payload.getString("status"));
@@ -71,6 +77,7 @@ public class MyHandler extends NotificationsHandler {
             if (MainActivity.isVisible) {
                 loadSpecificChatFromServer(payload.getString("uniqueId"));
                 MainActivity.mainActivity.ToastNotify(nhMessage);
+                MainActivity.mainActivity.ToastNotify2("got push notification for chat message.");
             } else {
                 String displayName = "";
                 DatabaseHandler db = new DatabaseHandler(context);
@@ -92,6 +99,8 @@ public class MyHandler extends NotificationsHandler {
     }
 
     private void sendNotification(String header, String msg) {
+
+        Utility.sendLogToServer(""+ userDetail.get("phone") +" is showing alert and chime now.");
 
         Intent intent = new Intent(ctx, SplashScreen.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
@@ -122,7 +131,9 @@ public class MyHandler extends NotificationsHandler {
 
         final AccessToken accessToken = AccountKit.getCurrentAccessToken();
 
+        Utility.sendLogToServer(""+ userDetail.get("phone") +" is going to fetch the message using API.");
         if (accessToken == null) {
+            Utility.sendLogToServer(""+ userDetail.get("phone") +" could not get the message using API as Facebook accountkit did not give auth token.");
             return ;
         }
 
@@ -151,10 +162,14 @@ public class MyHandler extends NotificationsHandler {
                                 row.has("status") ? row.getString("status") : "",
                                 row.has("uniqueid") ? row.getString("uniqueid") : "");
 
+                        Utility.sendLogToServer(""+ userDetail.get("phone") +" got the message using API and saved to Database: "+ row.toString());
+
                         if (MainActivity.isVisible) {
                             MainActivity.mainActivity.handleIncomingChatMessage("im", row);
                         }
 
+                    } else {
+                        Utility.sendLogToServer(""+ userDetail.get("phone") +" did not get message from API. SERVER gave NULL");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

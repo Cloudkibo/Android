@@ -586,6 +586,10 @@ public class SocketService extends Service {
         return isConnected;
     }
 
+    public Boolean isSocketConnected2(){
+        return socket.connected();
+    }
+
     public static boolean isAppSentToBackground(final Context context) {
 
         try {

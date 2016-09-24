@@ -296,6 +296,8 @@ public class SplashScreen extends Activity
 			if (accessToken != null) {
 				//Handle Returning User
 				if(isDevelopment) {
+					socket.disconnect();
+					socket.close();
 					Intent i = new Intent(this, DisplayNameReg.class);
 					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					i.putExtra("authtoken", accessToken.getToken());
@@ -304,6 +306,8 @@ public class SplashScreen extends Activity
 				} else {
 					UserFunctions fn = new UserFunctions();
 					if(fn.isUserLoggedIn(getApplicationContext())){
+						socket.disconnect();
+						socket.close();
 						Intent i = new Intent(this, MainActivity.class);
 						i.putExtra("authtoken", accessToken.getToken());
 						i.putExtra("sync", true);
@@ -311,6 +315,8 @@ public class SplashScreen extends Activity
 						startActivity(i);
 						finish();
 					} else {
+						socket.disconnect();
+						socket.close();
 						Intent i = new Intent(this, DisplayNameReg.class);
 						i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						i.putExtra("authtoken", accessToken.getToken());
@@ -368,6 +374,8 @@ public class SplashScreen extends Activity
 				toastMessage = "Login Cancelled";
 			} else {
 				if (loginResult.getAccessToken() != null) {
+					socket.disconnect();
+					socket.close();
 					toastMessage = "Login Successful"; //+ loginResult.getAccessToken().getAccountId();
 
 					Intent i = new Intent(this, DisplayNameReg.class);

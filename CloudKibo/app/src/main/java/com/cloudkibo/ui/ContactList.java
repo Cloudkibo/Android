@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -118,6 +119,17 @@ public class ContactList extends CustomFragment implements IFragmentName
 						.replace(R.id.content_frame, groupChatFragment, "groupChatFragmentTag")
 						.addToBackStack(contactList.get(pos).getUserName()).commit();
 
+			}
+		});
+
+		Button btnRefresh = (Button) v.findViewById(R.id.btnRefresh);
+
+		btnRefresh.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				MainActivity act1 = (MainActivity) getActivity();
+
+				act1.syncContacts();
 			}
 		});
 
@@ -540,7 +552,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 	}
 	
 
-	private void loadContactList()
+	public void loadContactList()
 	{
 		
 		ArrayList<ContactItem> noteList = new ArrayList<ContactItem>();

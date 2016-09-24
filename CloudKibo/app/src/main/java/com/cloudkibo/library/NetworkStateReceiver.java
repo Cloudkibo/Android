@@ -28,6 +28,7 @@ public class NetworkStateReceiver extends BroadcastReceiver {
                     if (MainActivity.isVisible) {
                         MainActivity.mainActivity.startSocketService();
                         MainActivity.mainActivity.startSyncService();
+                        //MainActivity.mainActivity.syncContacts();
                     }
                // }
             }
