@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.cloudkibo"
     android:hardwareAccelerated="true"
-    android:versionCode="60"
+    android:versionCode="64"
     android:versionName="1.1" >
 
     <uses-sdk
@@ -214,6 +214,10 @@
         <service
             android:name="com.cloudkibo.socket.SocketService"
             android:exported="false" />
+        <service
+            android:name="com.cloudkibo.database.ContactService"
+            android:exported="false" >
+        </service>
         <service
             android:name="com.cloudkibo.webrtc.conference.FileTransferService"
             android:enabled="true"

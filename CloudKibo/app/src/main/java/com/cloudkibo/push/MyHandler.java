@@ -47,8 +47,8 @@ public class MyHandler extends NotificationsHandler {
         ctx = context;
         AccountKit.initialize(ctx.getApplicationContext());
         String nhMessage = bundle.getString("message");
-        //sendNotification("Test Push Notification", nhMessage); // todo remove this
         userDetail = new DatabaseHandler(ctx.getApplicationContext()).getUserDetails();
+        sendNotification("Test Push Notification", nhMessage); // todo remove this
         Utility.sendLogToServer(""+ userDetail.get("phone") +" gets push notification payload : "+ nhMessage);
         JSONObject payload;
         try {

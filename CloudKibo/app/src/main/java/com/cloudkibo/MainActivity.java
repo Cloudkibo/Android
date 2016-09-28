@@ -76,6 +76,7 @@ import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomActivity;
 import com.cloudkibo.database.BoundKiboSyncListener;
 import com.cloudkibo.database.CloudKiboDatabaseContract;
+import com.cloudkibo.database.ContactService;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.database.KiboSyncService;
 import com.cloudkibo.file.filechooser.utils.FileUtils;
@@ -221,7 +222,7 @@ public class MainActivity extends CustomActivity
             startSyncService();
         }
 
-
+        startContactsObserverService();
 
     }
 
@@ -260,7 +261,8 @@ public class MainActivity extends CustomActivity
     }
 
     public void syncContacts(){
-        startSocketService();
+        //startSocketService();
+        reconnectSocket();
         if (socketService.isSocketConnected()) {
             Intent intentSync = new Intent(getApplicationContext(), KiboSyncService.class);
             bindService(intentSync, kiboSyncConnection, Context.BIND_AUTO_CREATE);
@@ -324,6 +326,29 @@ public class MainActivity extends CustomActivity
         stopService(i);
     }
 
+    public void reconnectSocket(){
+        if(socketService != null){
+            if(isBound){
+                socketService.setSocketIOConfig();
+            } else {
+                startSocketService();
+            }
+        } else {
+            startSocketService();
+        }
+    }
+
+    public void startContactsObserverService(){
+        Intent i = new Intent(this, ContactService.class);
+        i.putExtra("authtoken", authtoken);
+        startService(i);
+    }
+
+    public void stopContactsObserverService(){
+        Intent i = new Intent(this, ContactService.class);
+        stopService(i);
+    }
+
     @Override
     protected void onDestroy() {
 
@@ -340,6 +365,8 @@ public class MainActivity extends CustomActivity
     @Override
     protected void onResume() {
         startSocketService();
+
+        //reconnectSocket();
 
         super.onResume();
 
@@ -981,6 +1008,7 @@ public class MainActivity extends CustomActivity
                 }
 
             });
+            //socketService.setSocketIOConfig();
         }
     };
 
@@ -1401,7 +1429,8 @@ public class MainActivity extends CustomActivity
                 //startSocketService();
             }
         });*/
-        startSocketService();
+        //startSocketService();
+        reconnectSocket();
     }
 
     public void ToastNotify2(final String notificationMessage){

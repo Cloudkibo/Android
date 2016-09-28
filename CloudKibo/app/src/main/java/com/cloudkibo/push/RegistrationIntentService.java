@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.Utility;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
 import com.microsoft.windowsazure.messaging.NotificationHub;
@@ -36,6 +37,9 @@ public class RegistrationIntentService extends IntentService {
         String regID = null;
 
         try {
+            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+            user = db.getUserDetails();
+
             InstanceID instanceID = InstanceID.getInstance(this);
             String token = instanceID.getToken(NotificationSettings.SenderId,
                     GoogleCloudMessaging.INSTANCE_ID_SCOPE);
@@ -48,10 +52,6 @@ public class RegistrationIntentService extends IntentService {
                 NotificationHub hub = new NotificationHub(NotificationSettings.HubName,
                         NotificationSettings.HubListenConnectionString, this);
                 Log.i(TAG, "Attempting to register with NH using token : " + token);
-
-                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-
-                user = db.getUserDetails();
 
                 String phone = user.get("phone").substring(1);
 
@@ -75,7 +75,8 @@ public class RegistrationIntentService extends IntentService {
 
         // Notify UI that registration has completed.
         if (MainActivity.isVisible) {
-            //MainActivity.mainActivity.ToastNotify(resultString);
+            MainActivity.mainActivity.ToastNotify2(resultString);
+            Utility.sendLogToServer(resultString+ " FOR NUMBER: "+ user.get("phone").substring(1));
         }
     }
 }

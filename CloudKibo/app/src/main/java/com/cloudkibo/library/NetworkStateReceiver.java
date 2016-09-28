@@ -26,7 +26,8 @@ public class NetworkStateReceiver extends BroadcastReceiver {
                 Log.i("NetworkStateReceiver","Network "+ni.getTypeName()+" connected");
                 //if(hasActiveInternetConnection(context)){
                     if (MainActivity.isVisible) {
-                        MainActivity.mainActivity.startSocketService();
+                        //MainActivity.mainActivity.startSocketService();
+                        MainActivity.mainActivity.reconnectSocket();
                         MainActivity.mainActivity.startSyncService();
                         //MainActivity.mainActivity.syncContacts();
                     }

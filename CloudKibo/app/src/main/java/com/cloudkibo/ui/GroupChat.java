@@ -240,7 +240,6 @@ public class GroupChat extends CustomFragment implements IFragmentName
 						}
 					}
 				}
-
 			}
 			
 			convList.clear();

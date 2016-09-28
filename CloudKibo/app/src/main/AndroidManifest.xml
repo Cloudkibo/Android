@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cloudkibo"
     android:hardwareAccelerated="true"
-    android:versionCode="61"
+    android:versionCode="64"
     android:versionName="1.1">
 
     <uses-sdk
@@ -211,6 +211,10 @@
         <service
             android:name=".socket.SocketService"
             android:exported="false" />
+        <service
+            android:name=".database.ContactService"
+            android:exported="false">
+        </service>
         <service
             android:name=".webrtc.conference.FileTransferService"
             android:enabled="true"

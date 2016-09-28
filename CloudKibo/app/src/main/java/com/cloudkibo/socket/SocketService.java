@@ -16,6 +16,7 @@ import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.SplashScreen;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.Utility;
 import com.cloudkibo.ui.ContactList;
 import com.cloudkibo.ui.GroupChat;
 import com.cloudkibo.utils.IFragmentName;
