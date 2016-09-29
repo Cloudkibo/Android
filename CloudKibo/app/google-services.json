@@ -1,1 +1,42 @@
-{"project_info":{"project_id":"eighth-beacon-433","project_number":"23885365928","name":"CloudKibo"},"client":[{"client_info":{"client_id":"android:com.cloudkibo","client_type":1,"android_client_info":{"package_name":"com.cloudkibo"}},"oauth_client":[{"client_id":"23885365928-jf693l9d8cv78drc6rudkrtvs9fmudk7.apps.googleusercontent.com","client_type":1,"android_info":{"package_name":"com.cloudkibo","certificate_hash":"78270322c398b9cfd7fa9b3e1fab57f4230d318d"}}],"services":{"analytics_service":{"status":1},"cloud_messaging_service":{"status":1,"apns_config":[]},"appinvite_service":{"status":1,"other_platform_oauth_client":[]},"google_signin_service":{"status":2},"ads_service":{"status":1}}}],"ARTIFACT_VERSION":"1"}
+{
+  "project_info": {
+    "project_number": "52209889410",
+    "firebase_url": "https://kibochat-26f89.firebaseio.com",
+    "project_id": "kibochat-26f89",
+    "storage_bucket": "kibochat-26f89.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:52209889410:android:5fba5963fb18945e",
+        "android_client_info": {
+          "package_name": "com.cloudkibo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "52209889410-0ufs9j577a6jtj7gns6ieh1a8fsl5p0g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBdLsR7_3nZlvQTQSI9p4RDcLH8iGhnZsk"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

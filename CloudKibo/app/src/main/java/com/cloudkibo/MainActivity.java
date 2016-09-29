@@ -110,11 +110,8 @@ import com.cloudkibo.file.filechooser.utils.Base64;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.gcm.*;
 import com.microsoft.windowsazure.notifications.NotificationsManager;
-import android.util.Log;
-import android.widget.TextView;
-import android.widget.Toast;
+
 
 
 
@@ -169,11 +166,13 @@ public class MainActivity extends CustomActivity
     // Push Notification
     public static MainActivity mainActivity;
     public static Boolean isVisible = false;
-    private GoogleCloudMessaging gcm;
+    private static final String TAG = "MainActivity";
     private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
+    // Push Notification
+
     Boolean shouldSync;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
-    // Push Notification
+
 
     /* (non-Javadoc)
      * @see com.newsfeeder.custom.CustomActivity#onCreate(android.os.Bundle)
@@ -353,8 +352,8 @@ public class MainActivity extends CustomActivity
     protected void onDestroy() {
 
         if(isBound){
-            unbindService(socketConnection);
-            stopSocketService();
+            //unbindService(socketConnection);
+            //stopSocketService();
         }
 
         if(kiboServiceIsBound) unbindService(kiboSyncConnection);
@@ -1402,7 +1401,7 @@ public class MainActivity extends CustomActivity
                         .show();
             } else {
                 Log.i("MainActivity", "This device is not supported by Google Play Services.");
-                ToastNotify("This device is not supported by Google Play Services.");
+                ToastNotify2("This device is not supported by Google Play Services.");
                 finish();
             }
             return false;

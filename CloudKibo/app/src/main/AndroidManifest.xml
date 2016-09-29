@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cloudkibo"
     android:hardwareAccelerated="true"
-    android:versionCode="64"
+    android:versionCode="66"
     android:versionName="1.1">
 
     <uses-sdk
@@ -233,14 +233,14 @@
             </intent-filter>
         </receiver>
 
-        <service android:name="com.cloudkibo.push.MyInstanceIDService" android:exported="false">
+        <service android:name=".push.MyInstanceIDService">
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID"/>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT"/>
             </intent-filter>
         </service>
 
         <service
-            android:name="com.cloudkibo.push.RegistrationIntentService"
+            android:name=".push.RegistrationIntentService"
             android:exported="false">
         </service>
 
