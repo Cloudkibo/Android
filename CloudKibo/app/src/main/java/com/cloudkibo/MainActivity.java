@@ -83,6 +83,7 @@ import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.AccountGeneral;
 import com.cloudkibo.library.Login;
 import com.cloudkibo.library.UserFunctions;
+import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.ContactItem;
 import com.cloudkibo.model.Data;
 //import io.cordova.hellocordova.CordovaApp;
@@ -1106,8 +1107,8 @@ public class MainActivity extends CustomActivity
                         public void run() {
 
                             try {
-
                                 myGroupChatFragment.receiveMessage(body.getString("msg"), body.getString("uniqueid"), body.getString("from"), body.getString("date"));
+                                Utility.sendLogToServer(""+ body.getString("to") +" is now going to show the message on the UI in chat window");
                             } catch(JSONException e){
                                 e.printStackTrace();
                             }
@@ -1144,6 +1145,8 @@ public class MainActivity extends CustomActivity
                             (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
                     notificationManager.notify(0, n);
+
+                    Utility.sendLogToServer(""+ body.getString("to") +" is going to show notification and chime for message because user is on other chat screen in app");
 
                     try {
                         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -1185,6 +1188,8 @@ public class MainActivity extends CustomActivity
                         (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
                 notificationManager.notify(0, n);
+
+                Utility.sendLogToServer(""+ body.getString("to") +" is going to show notification and chime for message because user is on conversations list screen in app");
 
                 try {
                     Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
