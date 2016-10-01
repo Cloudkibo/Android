@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.Conversation;
 import com.cloudkibo.utils.IFragmentName;
@@ -136,7 +138,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			MainActivity act1 = (MainActivity) getActivity();
 
-			act1.sendMessage(contactPhone, messageString, uniqueid);
+			// todo deprecated remove this way
+			//act1.sendMessage(contactPhone, messageString, uniqueid);
 
 			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
 			db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
@@ -144,6 +147,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			convList.add(new Conversation(messageString, Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()), true, true, "pending", uniqueid));
 			adp.notifyDataSetChanged();
+
+			sendMessageUsingAPI(messageString, uniqueid);
 
 			txt.setText(null);
 		} catch (ParseException e){
@@ -167,11 +172,98 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
 			db.updateChat("seen", uniqueid);
-			act1.sendMessageStatusUsingSocket("seen", uniqueid, from);
+			//act1.sendMessageStatusUsingSocket("seen", uniqueid, from);
+			sendMessageStatusUsingAPI("seen", uniqueid, from);
 		} catch (ParseException e){
 			e.printStackTrace();
 		}
 		
+	}
+
+	public void sendMessageUsingAPI(final String msg, final String uniqueid){
+		new AsyncTask<String, String, JSONObject>() {
+
+			@Override
+			protected JSONObject doInBackground(String... args) {
+				UserFunctions userFunction = new UserFunctions();
+				JSONObject message = new JSONObject();
+
+				try {
+					message.put("from", user.get("phone"));
+					message.put("to", contactPhone);
+					message.put("fromFullName", user.get("display_name"));
+					message.put("msg", msg);
+					message.put("date", Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()));
+					message.put("uniqueid", uniqueid);
+					message.put("type", "chat");
+					message.put("file_type", "");
+				} catch (JSONException e){
+					e.printStackTrace();
+				} catch (ParseException e){
+					e.printStackTrace();
+				}
+
+				return userFunction.sendChatMessageToServer(message, authtoken);
+			}
+
+			@Override
+			protected void onPostExecute(JSONObject row) {
+				try {
+
+					if (row != null) {
+						if(row.has("status")){
+							DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+							db.updateChat(row.getString("status"), row.getString("uniqueid"));
+							updateStatusSentMessage(row.getString("status"), row.getString("uniqueid"));
+						}
+					}
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}.execute();
+	}
+
+	public void sendMessageStatusUsingAPI(final String status, final String uniqueid, final String sender){
+		new AsyncTask<String, String, JSONObject>() {
+
+			@Override
+			protected JSONObject doInBackground(String... args) {
+				UserFunctions userFunction = new UserFunctions();
+				JSONObject message = new JSONObject();
+
+				try {
+					message.put("sender", sender);
+					message.put("status", status);
+					message.put("uniqueid", uniqueid);
+				} catch (JSONException e){
+					e.printStackTrace();
+				}
+
+				return userFunction.sendChatMessageStatusToServer(message, authtoken);
+			}
+
+			@Override
+			protected void onPostExecute(JSONObject row) {
+				try {
+
+					if (row != null) {
+						if(row.has("status")){
+							DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+							db.resetSpecificChatHistorySync(row.getString("uniqueid"));
+							db = new DatabaseHandler(getActivity().getApplicationContext());
+							db.updateChat(status, row.getString("uniqueid"));
+						}
+					}
+
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}.execute();
 	}
 
 	public void updateStatusSentMessage(String status, String uniqueid){
@@ -225,7 +317,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 						if(act1.isSocketConnected()){
 							db = new DatabaseHandler(getActivity().getApplicationContext());
 							db.updateChat("seen", row.getString("uniqueid"));
-							act1.sendMessageStatusUsingSocket("seen", row.getString("uniqueid"), row.getString("fromperson"));
+							//act1.sendMessageStatusUsingSocket("seen", row.getString("uniqueid"), row.getString("fromperson"));
+							sendMessageStatusUsingAPI("seen", row.getString("uniqueid"), row.getString("fromperson"));
 						} else {
 							db = new DatabaseHandler(getActivity().getApplicationContext());
 							db.updateChat("seen", row.getString("uniqueid"));

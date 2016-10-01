@@ -49,6 +49,8 @@ public class UserFunctions {
     private static String inviteContactsURL =       baseURL + "/api/users/invitebymultipleemail/";
     private static String saveDisplayNameURL =      baseURL + "/api/users/newuser";
     private static String getAllChatURL =           baseURL + "/api/userchat/alluserchat";
+    private static String sendChatURL =             baseURL + "/api/userchat/save2";
+    private static String sendChatStatusURL =             baseURL + "/api/userchat/updateStatus";
     private static String getPartialChatURL =       baseURL + "/api/userchat/partialchatsync";
     private static String getSingleChatURL =        baseURL + "/api/userchat/getsinglechat";
     private static String sendLogURL =              baseURL + "/api/users/log";
@@ -213,6 +215,37 @@ public class UserFunctions {
 		JSONArray contactslist = connection.getArrayFromServer(getContactsURL, authtoken);
         return contactslist;
 	}
+
+    public JSONObject sendChatMessageToServer(JSONObject data, String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        try{
+        params.add(new BasicNameValuePair("from", data.getString("from")));
+        params.add(new BasicNameValuePair("to", data.getString("to")));
+        params.add(new BasicNameValuePair("fromFullName", data.getString("fromFullName")));
+        params.add(new BasicNameValuePair("msg", data.getString("msg")));
+        params.add(new BasicNameValuePair("date", data.getString("date")));
+        params.add(new BasicNameValuePair("uniqueid", data.getString("uniqueid")));
+        params.add(new BasicNameValuePair("type", data.getString("type")));
+        params.add(new BasicNameValuePair("file_type", data.getString("file_type")));
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+        JSONObject response = connection.sendObjectToServer(sendChatURL, authtoken, params);
+        return response;
+    }
+
+    public JSONObject sendChatMessageStatusToServer(JSONObject data, String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        try{
+            params.add(new BasicNameValuePair("sender", data.getString("sender")));
+            params.add(new BasicNameValuePair("status", data.getString("status")));
+            params.add(new BasicNameValuePair("uniqueid", data.getString("uniqueid")));
+        } catch (JSONException e){
+            e.printStackTrace();
+        }
+        JSONObject response = connection.sendObjectToServer(sendChatStatusURL, authtoken, params);
+        return response;
+    }
 
     public JSONObject getAllChatList(String user1, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();

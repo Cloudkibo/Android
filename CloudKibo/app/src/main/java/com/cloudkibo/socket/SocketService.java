@@ -853,6 +853,7 @@ public class SocketService extends Service {
         }
     }
 
+    // todo deprecated - remove this
     public void sendMessage(String contactPhone, String msg, String uniqueid) {
 
         try {

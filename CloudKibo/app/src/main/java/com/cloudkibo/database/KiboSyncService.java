@@ -146,9 +146,13 @@ public class KiboSyncService extends Service {
             for (int i=0; i < seenChats.length(); i++) {
                 JSONObject row = seenChats.getJSONObject(i);
 
-                mListener.sendMessageStatusUsingSocket(
+                /*mListener.sendMessageStatusUsingSocket(
                         row.getString("fromperson"),
                         row.getString("status"), row.getString("uniqueid")
+                );*/
+                sendMessageStatusUsingAPI(
+                        row.getString("status"),
+                        row.getString("uniqueid"), row.getString("fromperson")
                 );
 
             }
@@ -157,6 +161,46 @@ public class KiboSyncService extends Service {
         }catch(JSONException e ){
             e.printStackTrace();
         }
+    }
+
+    public void sendMessageStatusUsingAPI(final String status, final String uniqueid, final String sender){
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunction = new UserFunctions();
+                JSONObject message = new JSONObject();
+
+                try {
+                    message.put("sender", sender);
+                    message.put("status", status);
+                    message.put("uniqueid", uniqueid);
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+
+                return userFunction.sendChatMessageStatusToServer(message, authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                try {
+
+                    if (row != null) {
+                        if(row.has("status")){
+                            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                            db.resetSpecificChatHistorySync(row.getString("uniqueid"));
+                            db = new DatabaseHandler(getApplicationContext());
+                            db.updateChat(status, row.getString("uniqueid"));
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.execute();
     }
 
     private void loadContactsFromAddressBook(){
