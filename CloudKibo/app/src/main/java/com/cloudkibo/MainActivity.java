@@ -228,7 +228,12 @@ public class MainActivity extends CustomActivity
 
     int countRetryConnectingSocket = 0;
     public void startSyncService(){
-        if(socketService != null) {
+        Intent intentSync = new Intent(getApplicationContext(), KiboSyncService.class);
+        bindService(intentSync, kiboSyncConnection, Context.BIND_AUTO_CREATE);
+        if (kiboServiceIsBound) {
+            kiboSyncService.startIncrementalSyncWithoutAddressBookAccess(authtoken);
+        }
+        /*if(socketService != null) {
             if (socketService.isSocketConnected()) {
                 Intent intentSync = new Intent(getApplicationContext(), KiboSyncService.class);
                 bindService(intentSync, kiboSyncConnection, Context.BIND_AUTO_CREATE);
@@ -257,7 +262,7 @@ public class MainActivity extends CustomActivity
                         }
                     },
                     1000);
-        }
+        }*/
     }
 
     public void syncContacts(){
@@ -701,12 +706,27 @@ public class MainActivity extends CustomActivity
 
     }
 
+    public void updateChatStatus(String status, String uniqueid){
+        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+        db.updateChat(status, uniqueid);
+    }
+
+    public void resetSpecificChatHistorySync(String uniqueid){
+        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+        db.resetSpecificChatHistorySync(uniqueid);
+    }
+
+    public void addChatHistorySync(String uniqueid, String from){
+        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+        db.addChatSyncHistory("seen", uniqueid, from);
+    }
+
     public void sendMessage(String contactPhone, String msg, String uniqueid){
         socketService.sendMessage(contactPhone, msg, uniqueid);
     }
 
     public void sendPendingMessage(String contactPhone, String msg, String uniqueid){
-        socketService.sendPendingMessage(contactPhone, msg, uniqueid);
+        //socketService.sendPendingMessage(contactPhone, msg, uniqueid);
     }
 
     public void sendMessageStatusUsingSocket(String status, String uniqueid, String sender){
@@ -1041,6 +1061,16 @@ public class MainActivity extends CustomActivity
                             public void run() {
 
                                 myChatListFragment.loadChatList();
+
+                            }
+                        });
+                    } else if(myFragment.getFragmentName().equals("GroupChat")){
+                        final GroupChat myGroupChatListFragment = (GroupChat) myFragment;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                myGroupChatListFragment.loadConversationList();
 
                             }
                         });

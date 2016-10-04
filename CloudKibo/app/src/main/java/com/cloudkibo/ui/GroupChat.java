@@ -170,8 +170,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			MainActivity act1 = (MainActivity) getActivity();
 
-			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-			db.updateChat("seen", uniqueid);
+			act1.updateChatStatus("seen", uniqueid);
 			//act1.sendMessageStatusUsingSocket("seen", uniqueid, from);
 			sendMessageStatusUsingAPI("seen", uniqueid, from);
 		} catch (ParseException e){
@@ -212,8 +211,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 					if (row != null) {
 						if(row.has("status")){
-							DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-							db.updateChat(row.getString("status"), row.getString("uniqueid"));
+							MainActivity act1 = (MainActivity) getActivity();
+							act1.updateChatStatus(row.getString("status"), row.getString("uniqueid"));
 							updateStatusSentMessage(row.getString("status"), row.getString("uniqueid"));
 						}
 					}
@@ -249,13 +248,19 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			protected void onPostExecute(JSONObject row) {
 				try {
 
+					Boolean gotGoodServerResponse = false;
 					if (row != null) {
 						if(row.has("status")){
-							DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-							db.resetSpecificChatHistorySync(row.getString("uniqueid"));
-							db = new DatabaseHandler(getActivity().getApplicationContext());
-							db.updateChat(status, row.getString("uniqueid"));
+							MainActivity act1 = (MainActivity) getActivity();
+							act1.resetSpecificChatHistorySync(row.getString("uniqueid"));
+							act1.updateChatStatus(row.getString("status"), row.getString("uniqueid"));
+							gotGoodServerResponse = true;
 						}
+					}
+					if(!gotGoodServerResponse){
+						MainActivity act1 = (MainActivity) getActivity();
+						act1.updateChatStatus("seen", row.getString("uniqueid"));
+						act1.addChatHistorySync(row.getString("uniqueid"), row.getString("fromperson"));
 					}
 
 				} catch (JSONException e) {
@@ -314,25 +319,15 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 				if(row.getString("fromperson").equals(contactPhone)){
 					if(row.getString("status").equals("delivered")){
-						if(act1.isSocketConnected()){
-							db = new DatabaseHandler(getActivity().getApplicationContext());
-							db.updateChat("seen", row.getString("uniqueid"));
-							//act1.sendMessageStatusUsingSocket("seen", row.getString("uniqueid"), row.getString("fromperson"));
-							sendMessageStatusUsingAPI("seen", row.getString("uniqueid"), row.getString("fromperson"));
-						} else {
-							db = new DatabaseHandler(getActivity().getApplicationContext());
-							db.updateChat("seen", row.getString("uniqueid"));
-							db = new DatabaseHandler(getActivity().getApplicationContext());
-							db.addChatSyncHistory("seen", row.getString("uniqueid"), row.getString("fromperson"));
-						}
+						sendMessageStatusUsingAPI("seen", row.getString("uniqueid"), row.getString("fromperson"));
 					}
-				} else {
+				}/* else {
 					if(row.getString("status").equals("pending")){
 						if(act1.isSocketConnected()){
 							act1.sendPendingMessage(contactPhone, row.getString("msg"), row.getString("uniqueid"));
 						}
 					}
-				}
+				}*/
 			}
 			
 			convList.clear();

@@ -26,6 +26,7 @@ import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.SplashScreen;
 import com.cloudkibo.library.UserFunctions;
+import com.cloudkibo.library.Utility;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -33,7 +34,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -134,10 +137,12 @@ public class KiboSyncService extends Service {
             for (int i=0; i < chats.length(); i++) {
                 JSONObject row = chats.getJSONObject(i);
 
-                mListener.sendPendingMessageUsingSocket(
+                /*mListener.sendPendingMessageUsingSocket(
                         row.getString("toperson"),
                         row.getString("msg"), row.getString("uniqueid")
-                );
+                );*/
+                sendMessageUsingAPI(row.getString("toperson"),
+                        row.getString("msg"), row.getString("uniqueid"));
 
             }
 
@@ -161,6 +166,55 @@ public class KiboSyncService extends Service {
         }catch(JSONException e ){
             e.printStackTrace();
         }
+    }
+
+    public void sendMessageUsingAPI(final String contactPhone, final String msg, final String uniqueid){
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunction = new UserFunctions();
+                JSONObject message = new JSONObject();
+                HashMap<String, String> user;
+                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+                user = db.getUserDetails();
+
+                try {
+                    message.put("from", user.get("phone"));
+                    message.put("to", contactPhone);
+                    message.put("fromFullName", user.get("display_name"));
+                    message.put("msg", msg);
+                    message.put("date", Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()));
+                    message.put("uniqueid", uniqueid);
+                } catch (JSONException e){
+                    e.printStackTrace();
+                } catch (ParseException e){
+                    e.printStackTrace();
+                }
+
+                return userFunction.sendChatMessageToServer(message, authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                try {
+
+                    if (row != null) {
+                        if(row.has("status")){
+                            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                            db.updateChat(row.getString("status"), row.getString("uniqueid"));
+                            mListener.chatLoaded();
+                            //updateStatusSentMessage(row.getJSONObject("msg").getString("status"), row.getJSONObject("msg").getString("uniqueid"));
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.execute();
     }
 
     public void sendMessageStatusUsingAPI(final String status, final String uniqueid, final String sender){
