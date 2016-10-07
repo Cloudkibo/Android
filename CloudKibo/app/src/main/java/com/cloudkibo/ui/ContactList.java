@@ -17,12 +17,16 @@ import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.Telephony;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -563,13 +567,33 @@ public class ContactList extends CustomFragment implements IFragmentName
 		try {
 
 			JSONArray jsonA = db.getContacts();
+			JSONArray jsonB = db.getContactsOnAddressBook();
 
 			jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
+			jsonB = UserFunctions.sortJSONArray(jsonB, "display_name");
 
 			ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 
+			//This loop adds contacts to the display list which are on cloudkibo
 			for (int i=0; i < jsonA.length(); i++) {
 				JSONObject row = jsonA.getJSONObject(i);
+
+				contactList1.add(new ContactItem(row.getString("_id"),
+						row.getString("display_name"),
+						"", // first name
+						row.getString("on_cloudkibo"),
+						row.getString("phone"),
+						01,
+						false, "",
+						row.getString("status"),
+						row.getString("detailsshared"),
+						false
+				));
+			}
+
+			//This Loop Adds Contacts to the display list which are not on cloudkibo
+			for (int i=0; i < jsonB.length(); i++) {
+				JSONObject row = jsonB.getJSONObject(i);
 
 				contactList1.add(new ContactItem(row.getString("_id"),
 						row.getString("display_name"),
@@ -741,7 +765,89 @@ public class ContactList extends CustomFragment implements IFragmentName
 			ImageView img3 = (ImageView) v.findViewById(R.id.messageicon);
 			img3.setVisibility(c.hasUnreadMessage() ? View.VISIBLE : View.INVISIBLE);
 
+			TextView invite = (TextView) v.findViewById(R.id.invite_button);
+			invite.setVisibility(c.lastName().equals("true") ? View.INVISIBLE : View.VISIBLE );
+
+
+			final String tempContactId = c.getUserId();
+			final String tempPhone = c.getPhone();
+			final ContactItem c_reference = c;
+
+			v.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+						sendChat(view,c_reference);
+
+				}
+			});
+			invite.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					sendInvite(view, c_reference);
+
+				}
+			});
+
+
 			return v;
+		}
+
+		public void sendChat(View v, ContactItem c){
+
+			if(c.lastName().equals("false")){
+				sendInvite(v, c);
+				return;
+			}
+
+			final String tempContactId = c.getUserId();
+
+			//Intent chatIntent = new Intent(getActivity().getApplicationContext(), ChatList.class);
+			//chatIntent.putExtra("contactUserNameToChat", contactList.get(pos).getUserName());
+			//startActivity(chatIntent);
+			c.setUnReadMessage(false);
+			contactAdapter.notifyDataSetChanged();
+
+			Bundle bundle = new Bundle();
+			bundle.putString("contactusername", c.getUserName());
+			bundle.putString("contactphone", c.getPhone());
+			bundle.putString("contactid", c.getUserId());
+			bundle.putString("authtoken", authtoken);
+
+			GroupChat groupChatFragment = new GroupChat();
+			groupChatFragment.setArguments(bundle);
+
+			getFragmentManager().beginTransaction()
+					.replace(R.id.content_frame, groupChatFragment, "groupChatFragmentTag")
+					.addToBackStack(c.getUserName()).commit();
+		}
+
+		public void sendInvite(View v, ContactItem c){
+			if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) // At least KitKat
+			{
+				String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(getActivity().getApplicationContext()); // Need to change the build to API 19
+
+				Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+				sendIntent.setType("text/plain");
+				sendIntent.setData(Uri.parse("smsto:" +  c.getPhone()));
+				//sendIntent.putExtra(Intent.EXTRA_TEXT, "Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
+				sendIntent.putExtra("sms_body", "Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
+
+				if (defaultSmsPackageName != null)// Can be null in case that there is no default, then the user would be able to choose
+				// any app that support this intent.
+				{
+					sendIntent.setPackage(defaultSmsPackageName);
+				}
+				startActivity(sendIntent);
+
+			}
+			else // For early versions.
+			{
+				Intent smsIntent = new Intent(android.content.Intent.ACTION_VIEW);
+				smsIntent.setType("vnd.android-dir/mms-sms");
+				smsIntent.putExtra("address", c.getPhone());
+				smsIntent.putExtra("sms_body","Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
+				startActivity(smsIntent);
+			}
 		}
 
 	}

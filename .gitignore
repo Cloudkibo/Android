@@ -36,6 +36,7 @@ captures/
 # Intellij
 *.iml
 CloudKibo/.idea/workspace.xml
+CloudKibo/app/app.iml
 
 # Keystore files
 *.jks
