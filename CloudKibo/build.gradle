@@ -8,9 +8,12 @@ buildscript {
         classpath 'com.google.gms:google-services:3.0.0'
     }
 }
-
 allprojects {
     repositories {
         jcenter()
     }
+}
+
+
+dependencies {
 }
