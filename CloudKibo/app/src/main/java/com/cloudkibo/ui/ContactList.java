@@ -570,6 +570,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 			JSONArray jsonB = db.getContactsOnAddressBook();
 
 			jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
+			jsonB = UserFunctions.sortJSONArray(jsonB, "display_name");
 
 			ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 
