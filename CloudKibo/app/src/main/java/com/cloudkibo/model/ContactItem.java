@@ -59,12 +59,12 @@ public class ContactItem {
 	{
 		this.userid = userid;
 		this.username = username;
+		this.firstname = firstname;
+		this.on_cloudkibo = on_cloudkibo;
 		this.phone = phone;
 		this.icon = icon;
 		this.city = city;
-		this.firstname = firstname;
 		this.online = online;
-		this.on_cloudkibo = on_cloudkibo;
 		this.status = status;
 		this.details_shared = details_shared;
 		this.unreadmessage = unreadmessage;
