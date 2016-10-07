@@ -192,13 +192,11 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					message.put("to", contactPhone);
 					message.put("fromFullName", user.get("display_name"));
 					message.put("msg", msg);
-					message.put("date", Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()));
+					message.put("date", Utility.getCurrentTimeInISO());
 					message.put("uniqueid", uniqueid);
 					message.put("type", "chat");
 					message.put("file_type", "");
 				} catch (JSONException e){
-					e.printStackTrace();
-				} catch (ParseException e){
 					e.printStackTrace();
 				}
 
