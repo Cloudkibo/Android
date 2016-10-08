@@ -185,11 +185,9 @@ public class KiboSyncService extends Service {
                     message.put("to", contactPhone);
                     message.put("fromFullName", user.get("display_name"));
                     message.put("msg", msg);
-                    message.put("date", Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()));
+                    message.put("date", Utility.getCurrentTimeInISO());
                     message.put("uniqueid", uniqueid);
                 } catch (JSONException e){
-                    e.printStackTrace();
-                } catch (ParseException e){
                     e.printStackTrace();
                 }
 

@@ -598,7 +598,7 @@
     <string name="all_notes">All Notes</string>
     <string name="all_projects">All Projects</string>
     <string name="app_id">456637644436523</string>
-    <string name="app_name">CloudKibo</string>
+    <string name="app_name">KiboChat</string>
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="bottom_sheet_behavior" translatable="false">android.support.design.widget.BottomSheetBehavior</string>
     <string name="character_counter_pattern" translatable="false">%1$d / %2$d</string>
