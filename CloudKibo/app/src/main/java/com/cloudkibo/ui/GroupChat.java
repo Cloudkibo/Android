@@ -394,7 +394,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 						R.layout.chat_item_rcv, null);
 
 			TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
-			lbl.setText(c.getDate());
+			lbl.setText(c.getDate().replaceAll("-", "/").split("/",2)[1]);
 
 			lbl = (TextView) v.findViewById(R.id.lbl2);
 			lbl.setText(c.getMsg());

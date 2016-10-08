@@ -23,6 +23,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cloudkibo.NewChat;
 //import com.cloudkibo.R;
@@ -144,6 +145,30 @@ public class ChatList extends CustomFragment implements IFragmentName
 		}
 
 
+	}
+
+	public void setOnlineStatus(JSONArray contacts){
+
+		for(int i=0; i<chatList.size(); i++)
+			chatList.get(i).setOnline(false);
+
+		try{
+			for(int j=0; j<contacts.length(); j++)
+				for(int i=0; i<chatList.size(); i++){
+					if(chatList.get(i).getName().equals(contacts.getJSONObject(j).getString("phone"))){
+						//contactList.get(i).setOnline(true);
+						break;
+					}
+				}
+
+			//contactAdapter.notifyDataSetChanged();
+
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+
+		}
 	}
 
 	/**

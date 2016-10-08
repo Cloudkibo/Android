@@ -9,29 +9,23 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/pad_5dp"
-        android:layout_marginRight="@dimen/pad_40dp" >
+        android:layout_gravity="left"
+        >
 
         <LinearLayout
             android:id="@+id/v1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/pad_chat_item"
             android:background="@drawable/chat_bubble_gray"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            android:paddingLeft="@dimen/pad_chat_item"
+            android:layout_marginTop="@dimen/pad_15dp"
+            android:paddingLeft="40dp"
             android:paddingRight="@dimen/pad_15dp"
             android:paddingTop="@dimen/pad_5dp"
             android:paddingBottom="@dimen/pad_5dp">
 
-            <TextView
-                android:id="@+id/lblContactDisplayName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView"
-                android:textColor="@color/main_color_gray_dk"
-                android:textSize="@dimen/txt_13sp" />
+
             <TextView
                 android:id="@+id/lbl2"
                 android:layout_width="wrap_content"
@@ -40,6 +34,15 @@
                 android:textColor="@color/main_color_gray_dk"
                 android:textSize="@dimen/txt_14sp" 
                 />
+
+            <TextView
+                android:id="@+id/lblContactDisplayName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TextView"
+                android:layout_gravity="end"
+                android:textColor="@color/main_color_gray_dk"
+                android:textSize="@dimen/txt_13sp" />
 
         </LinearLayout>
 
