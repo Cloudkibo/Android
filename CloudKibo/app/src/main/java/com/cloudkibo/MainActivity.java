@@ -958,7 +958,6 @@ public class MainActivity extends CustomActivity
                 public void receiveSocketArray(String type, final JSONArray body) {
 
                     if(type.equals("theseareonline")){
-
                         IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 
                         if(myFragment == null) return;

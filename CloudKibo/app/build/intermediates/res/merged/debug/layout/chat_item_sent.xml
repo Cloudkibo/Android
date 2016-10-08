@@ -9,8 +9,8 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/pad_15dp"
-        android:layout_marginRight="@dimen/pad_5dp" >
+        android:gravity="right"
+        >
 
         <LinearLayout
             android:id="@+id/v1"
@@ -19,29 +19,32 @@
             android:background="@drawable/chat_bubble_green"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            android:paddingRight="@dimen/pad_chat_item"
+            android:paddingRight="50dp"
             android:paddingLeft="@dimen/pad_15dp" 
             android:paddingTop="@dimen/pad_5dp"
             android:paddingBottom="@dimen/pad_5dp"
-            android:layout_marginRight="@dimen/pad_chat_item"
             android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true">
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/pad_5dp">
+
+
+            <TextView
+                android:id="@+id/lbl2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="sd"
+                android:textColor="@color/main_color_gray_dk"
+                android:textSize="@dimen/txt_14sp" 
+                />
 
             <TextView
                 android:id="@+id/lblContactDisplayName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="TextView"
-                android:textColor="@color/white"
+                android:textColor="@color/main_color_gray_dk"
+                android:layout_gravity="right"
                 android:textSize="@dimen/txt_13sp" />
-            <TextView
-                android:id="@+id/lbl2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="sd"
-                android:textColor="@color/white"
-                android:textSize="@dimen/txt_14sp" 
-                />
 
         </LinearLayout>
 
@@ -55,6 +58,7 @@
             android:layout_alignRight="@+id/v1"
             android:layout_below="@+id/v1"
             android:layout_marginTop="@dimen/pad_5dp"
+            android:paddingRight="20dp"
             />
         
     </RelativeLayout>
