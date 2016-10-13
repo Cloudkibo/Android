@@ -809,7 +809,11 @@ int drawable user_chat1 0x7f0200b8
 int drawable user_chat2 0x7f0200b9
 int drawable white_rect 0x7f0200ba
 int id acceptButton 0x7f0f0079
+<<<<<<< HEAD
 int id action0 0x7f0f00ef
+=======
+int id action0 0x7f0f00ee
+>>>>>>> low_bugs
 int id action_bar 0x7f0f0062
 int id action_bar_activity_content 0x7f0f0000
 int id action_bar_container 0x7f0f0061
@@ -818,7 +822,11 @@ int id action_bar_spinner 0x7f0f0001
 int id action_bar_subtitle 0x7f0f0043
 int id action_bar_title 0x7f0f0042
 int id action_context_bar 0x7f0f0063
+<<<<<<< HEAD
 int id action_divider 0x7f0f00f3
+=======
+int id action_divider 0x7f0f00f2
+>>>>>>> low_bugs
 int id action_menu_divider 0x7f0f0002
 int id action_menu_presenter 0x7f0f0003
 int id action_mode_bar 0x7f0f005f
@@ -832,6 +840,7 @@ int id always 0x7f0f0035
 int id auto 0x7f0f003d
 int id beginning 0x7f0f0031
 int id bottom 0x7f0f001d
+<<<<<<< HEAD
 int id btnAdd 0x7f0f00e5
 int id btnCamera 0x7f0f00b2
 int id btnFb 0x7f0f010a
@@ -848,11 +857,33 @@ int id btnTw 0x7f0f010b
 int id buttonPanel 0x7f0f004c
 int id callStatusIcon 0x7f0f007a
 int id cancel_action 0x7f0f00f0
+=======
+int id btnAdd 0x7f0f00e4
+int id btnCamera 0x7f0f00b2
+int id btnFb 0x7f0f0109
+int id btnForgot 0x7f0f00dc
+int id btnLogin 0x7f0f00db
+int id btnNewChat 0x7f0f0081
+int id btnProject 0x7f0f00e7
+int id btnRefresh 0x7f0f00ec
+int id btnReg 0x7f0f00c1
+int id btnRegister 0x7f0f010f
+int id btnSend 0x7f0f00b4
+int id btnSubmit 0x7f0f00c9
+int id btnTw 0x7f0f010a
+int id buttonPanel 0x7f0f004c
+int id callStatusIcon 0x7f0f007a
+int id cancel_action 0x7f0f00ef
+>>>>>>> low_bugs
 int id center 0x7f0f001e
 int id center_horizontal 0x7f0f001f
 int id center_vertical 0x7f0f0020
 int id checkbox 0x7f0f005a
+<<<<<<< HEAD
 int id chronometer 0x7f0f00f6
+=======
+int id chronometer 0x7f0f00f5
+>>>>>>> low_bugs
 int id clip_horizontal 0x7f0f002c
 int id clip_vertical 0x7f0f002d
 int id collapseActionView 0x7f0f0036
@@ -901,6 +932,7 @@ int id dark 0x7f0f003e
 int id declineButton 0x7f0f0078
 int id decor_content_parent 0x7f0f0060
 int id default_activity_button 0x7f0f0048
+<<<<<<< HEAD
 int id design_bottom_sheet 0x7f0f00b9
 int id design_menu_item_action_area 0x7f0f00c0
 int id design_menu_item_action_area_stub 0x7f0f00bf
@@ -922,6 +954,29 @@ int id end 0x7f0f0021
 int id endCall 0x7f0f00ff
 int id endCallImageButton 0x7f0f00e4
 int id end_padder 0x7f0f00fb
+=======
+int id design_bottom_sheet 0x7f0f00b8
+int id design_menu_item_action_area 0x7f0f00bf
+int id design_menu_item_action_area_stub 0x7f0f00be
+int id design_menu_item_text 0x7f0f00bd
+int id design_navigation_view 0x7f0f00bc
+int id disableHome 0x7f0f000e
+int id downloadFile 0x7f0f00c5
+int id drawer_layout 0x7f0f0073
+int id editEmail 0x7f0f010d
+int id editEmailAddress 0x7f0f00c8
+int id editFirstName 0x7f0f010b
+int id editLastName 0x7f0f010c
+int id editPhone 0x7f0f010e
+int id editTextDisplayName 0x7f0f00c0
+int id editTextPassword 0x7f0f00da
+int id editTextUserName 0x7f0f00d9
+int id edit_query 0x7f0f0064
+int id end 0x7f0f0021
+int id endCall 0x7f0f00fe
+int id endCallImageButton 0x7f0f00e3
+int id end_padder 0x7f0f00fa
+>>>>>>> low_bugs
 int id enterAlways 0x7f0f0015
 int id enterAlwaysCollapsed 0x7f0f0016
 int id exitUntilCollapsed 0x7f0f0017
@@ -931,9 +986,15 @@ int id fill 0x7f0f002e
 int id fill_horizontal 0x7f0f002f
 int id fill_vertical 0x7f0f0022
 int id fixed 0x7f0f0040
+<<<<<<< HEAD
 int id gl_container 0x7f0f0112
 int id glview_call 0x7f0f00de
 int id hintText 0x7f0f00c3
+=======
+int id gl_container 0x7f0f0111
+int id glview_call 0x7f0f00dd
+int id hintText 0x7f0f00c2
+>>>>>>> low_bugs
 int id home 0x7f0f0004
 int id homeAsUp 0x7f0f000f
 int id icon 0x7f0f004a
@@ -941,12 +1002,17 @@ int id icon_only 0x7f0f003a
 int id ifRoom 0x7f0f0037
 int id image 0x7f0f0047
 int id imageDialog 0x7f0f0076
+<<<<<<< HEAD
 int id imageView 0x7f0f00cf
+=======
+int id imageView 0x7f0f00ce
+>>>>>>> low_bugs
 int id imageView1 0x7f0f0086
 int id img 0x7f0f008b
 int id img1 0x7f0f0083
 int id img2 0x7f0f0087
 int id imgContactListItem 0x7f0f00b5
+<<<<<<< HEAD
 int id in 0x7f0f00d8
 int id incomingCallStatusTextView 0x7f0f00ce
 int id incomingCallTextView 0x7f0f00cc
@@ -962,37 +1028,78 @@ int id layout_root 0x7f0f0107
 int id lbl 0x7f0f00d9
 int id lbl2 0x7f0f007c
 int id lbl4 0x7f0f00ee
+=======
+int id in 0x7f0f00d7
+int id incomingCallStatusTextView 0x7f0f00cd
+int id incomingCallTextView 0x7f0f00cb
+int id info 0x7f0f00f9
+int id invite_contact_list 0x7f0f00d2
+int id item_touch_helper_previous_elevation 0x7f0f0005
+int id l1 0x7f0f0101
+int id l2 0x7f0f0102
+int id l3 0x7f0f0103
+int id label 0x7f0f00b0
+int id layout_root 0x7f0f0106
+int id lbl 0x7f0f00d8
+int id lbl2 0x7f0f007c
+int id lbl4 0x7f0f00ed
+>>>>>>> low_bugs
 int id lblContactDisplayName 0x7f0f007b
 int id lblContactPhone 0x7f0f0084
 int id lblContactStatus 0x7f0f0085
 int id lblPendingMsgs 0x7f0f0088
+<<<<<<< HEAD
 int id lblTitle 0x7f0f00e6
 int id left 0x7f0f0023
 int id left_drawer 0x7f0f0075
 int id light 0x7f0f003f
 int id line1 0x7f0f00f4
 int id line3 0x7f0f00f8
+=======
+int id lblTitle 0x7f0f00e5
+int id left 0x7f0f0023
+int id left_drawer 0x7f0f0075
+int id light 0x7f0f003f
+int id line1 0x7f0f00f3
+int id line3 0x7f0f00f7
+>>>>>>> low_bugs
 int id list 0x7f0f007f
 int id listMode 0x7f0f000b
 int id list_item 0x7f0f0049
 int id llQ 0x7f0f0080
+<<<<<<< HEAD
 int id lla 0x7f0f00d7
 int id llaa 0x7f0f0089
 int id makeConnection 0x7f0f00c4
 int id media_actions 0x7f0f00f2
 int id menu_delete 0x7f0f0115
 int id menu_search 0x7f0f0114
+=======
+int id lla 0x7f0f00d6
+int id llaa 0x7f0f0089
+int id makeConnection 0x7f0f00c3
+int id media_actions 0x7f0f00f1
+int id menu_delete 0x7f0f0114
+int id menu_search 0x7f0f0113
+>>>>>>> low_bugs
 int id messageicon 0x7f0f00b6
 int id middle 0x7f0f0032
 int id mini 0x7f0f0030
 int id multiply 0x7f0f0027
+<<<<<<< HEAD
 int id nameOfCalleeTextView 0x7f0f00fd
 int id nameOfCallerTextView 0x7f0f00cd
 int id navigation_header_container 0x7f0f00bc
+=======
+int id nameOfCalleeTextView 0x7f0f00fc
+int id nameOfCallerTextView 0x7f0f00cc
+int id navigation_header_container 0x7f0f00bb
+>>>>>>> low_bugs
 int id never 0x7f0f0038
 int id none 0x7f0f0010
 int id normal 0x7f0f000c
 int id online 0x7f0f0082
+<<<<<<< HEAD
 int id outGoingCallStatusTextView 0x7f0f00fe
 int id outgoingCallTextView 0x7f0f00fc
 int id outputList 0x7f0f0111
@@ -1008,6 +1115,23 @@ int id rejectCall 0x7f0f00d1
 int id rel 0x7f0f007e
 int id right 0x7f0f0024
 int id saveFile 0x7f0f00c7
+=======
+int id outGoingCallStatusTextView 0x7f0f00fd
+int id outgoingCallTextView 0x7f0f00fb
+int id outputList 0x7f0f0110
+int id parallax 0x7f0f001b
+int id parentPanel 0x7f0f004e
+int id pickCall 0x7f0f00cf
+int id pin 0x7f0f001c
+int id preview 0x7f0f00de
+int id progress_circular 0x7f0f0006
+int id progress_horizontal 0x7f0f0007
+int id radio 0x7f0f005c
+int id rejectCall 0x7f0f00d0
+int id rel 0x7f0f007e
+int id right 0x7f0f0024
+int id saveFile 0x7f0f00c6
+>>>>>>> low_bugs
 int id scr 0x7f0f0071
 int id screen 0x7f0f0028
 int id scroll 0x7f0f0018
@@ -1026,13 +1150,22 @@ int id search_plate 0x7f0f006a
 int id search_src_text 0x7f0f006b
 int id search_voice_btn 0x7f0f006f
 int id select_dialog_listview 0x7f0f0070
+<<<<<<< HEAD
 int id sendFile 0x7f0f00c5
+=======
+int id sendFile 0x7f0f00c4
+>>>>>>> low_bugs
 int id shortcut 0x7f0f005b
 int id showCustom 0x7f0f0011
 int id showHome 0x7f0f0012
 int id showTitle 0x7f0f0013
+<<<<<<< HEAD
 int id snackbar_action 0x7f0f00bb
 int id snackbar_text 0x7f0f00ba
+=======
+int id snackbar_action 0x7f0f00ba
+int id snackbar_text 0x7f0f00b9
+>>>>>>> low_bugs
 int id snap 0x7f0f0019
 int id spacer 0x7f0f004d
 int id split_action_bar 0x7f0f0008
@@ -1041,6 +1174,7 @@ int id src_in 0x7f0f002a
 int id src_over 0x7f0f002b
 int id standard 0x7f0f003b
 int id start 0x7f0f0025
+<<<<<<< HEAD
 int id startChat 0x7f0f00e2
 int id startScreenSharing 0x7f0f00e3
 int id status_bar_latest_event_content 0x7f0f00f1
@@ -1082,6 +1216,49 @@ int id view1 0x7f0f00cb
 int id view1546 0x7f0f00ec
 int id view1Extra 0x7f0f00e9
 int id viewExtra1 0x7f0f00e7
+=======
+int id startChat 0x7f0f00e1
+int id startScreenSharing 0x7f0f00e2
+int id status_bar_latest_event_content 0x7f0f00f0
+int id submit_area 0x7f0f006d
+int id switch1 0x7f0f00ea
+int id tab1 0x7f0f00ff
+int id tab2 0x7f0f0100
+int id tabMode 0x7f0f000d
+int id testbutton 0x7f0f00d1
+int id text 0x7f0f00f8
+int id text2 0x7f0f00f6
+int id textDialog 0x7f0f0077
+int id textSpacerNoButtons 0x7f0f0055
+int id textView 0x7f0f0107
+int id textView1 0x7f0f0072
+int id textView12 0x7f0f0105
+int id textView123 0x7f0f00e9
+int id textView13 0x7f0f0104
+int id textView2 0x7f0f00c7
+int id textView3 0x7f0f0112
+int id textViewEditProfileButton 0x7f0f00d5
+int id textViewUserEmailOnNavigationBar 0x7f0f00d4
+int id textViewUserNameOnNavigationBar 0x7f0f00d3
+int id time 0x7f0f00f4
+int id title 0x7f0f004b
+int id title_template 0x7f0f0050
+int id toggleAudio 0x7f0f00e0
+int id toggleVideo 0x7f0f00df
+int id top 0x7f0f0026
+int id topPanel 0x7f0f004f
+int id touch_outside 0x7f0f00b7
+int id txt 0x7f0f00b3
+int id up 0x7f0f0009
+int id useLogo 0x7f0f0014
+int id userInput 0x7f0f0108
+int id v1 0x7f0f008a
+int id vCount 0x7f0f007d
+int id view1 0x7f0f00ca
+int id view1546 0x7f0f00eb
+int id view1Extra 0x7f0f00e8
+int id viewExtra1 0x7f0f00e6
+>>>>>>> low_bugs
 int id view_offset_helper 0x7f0f000a
 int id wide 0x7f0f003c
 int id withText 0x7f0f0039
