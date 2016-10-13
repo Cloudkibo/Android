@@ -407,8 +407,8 @@ public class SplashScreen extends Activity
 	}
 
 	private void logMessage(String msg){
-		if(isSocketConnected)
-			socket.emit("logClient", "ANDROID : "+ msg);
+		//if(isSocketConnected)
+		//	socket.emit("logClient", "ANDROID : "+ msg);
 	}
 	
 	/**
