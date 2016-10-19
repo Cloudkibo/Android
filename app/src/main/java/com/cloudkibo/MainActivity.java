@@ -100,6 +100,7 @@ import com.cloudkibo.ui.CallHistory;
 import com.cloudkibo.ui.ChatList;
 import com.cloudkibo.ui.ContactList;
 import com.cloudkibo.ui.ContactListPending;
+import com.cloudkibo.ui.CreateGroup;
 import com.cloudkibo.ui.GroupChat;
 import com.cloudkibo.ui.LeftNavAdapter;
 import com.cloudkibo.ui.ProjectList;
@@ -495,6 +496,7 @@ public class MainActivity extends CustomActivity
         al.add(new Data("Contacts", null, R.drawable.ic_notes));
         al.add(new Data("Calls", null, android.R.drawable.sym_action_call));
         al.add(new Data("Invite", null, R.drawable.ic_notes));
+        al.add(new Data("Create Group", null, R.drawable.ic_about));
         //al.add(new Data("Add Requests", null, R.drawable.ic_projects));
         //al.add(new Data("Conference", null, R.drawable.group1));
         //al.add(new Data("Settings", null, R.drawable.ic_setting));
@@ -531,6 +533,11 @@ public class MainActivity extends CustomActivity
             title = "Address Book";
             f = new ContactListPending();
         }
+        else if(pos == 5){
+            title = "Create Group";
+            f = new CreateGroup();
+        }
+
         else if(pos == -5){ // this is removing of conference tab
 
             // get prompts.xml view

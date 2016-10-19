@@ -259,3 +259,4 @@ public class ChatList extends CustomFragment implements IFragmentName
 		return "About Chat";
 	}
 }
+
