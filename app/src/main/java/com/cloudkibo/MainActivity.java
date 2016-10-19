@@ -191,7 +191,6 @@ public class MainActivity extends CustomActivity
         authtoken = getIntent().getExtras().getString("authtoken");
         shouldSync = getIntent().getExtras().getBoolean("sync");
 
-
         setupContainer();
         setupDrawer();
 
