@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -42,36 +43,57 @@ import java.util.ArrayList;
  */
 
 
-public class AddMembers extends CustomFragment implements IFragmentName
+public class GroupChatUI extends CustomFragment implements IFragmentName
 {
 
 
     private String authtoken;
-    GridView gv;
-    Context context;
-    ArrayList prgmName;
-
+    private ListView lv;
+    private ArrayList<String> messages = new ArrayList<String>();
+    private ArrayList<String> names = new ArrayList<String>();
 
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
      */
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View v = inflater.inflate(R.layout.add_members, null);
+        View v = inflater.inflate(R.layout.group_chat_dayem, null);
 
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
 
-        gv=(GridView) v.findViewById(R.id.gridView1);
-        gv.setAdapter(new CustomContactAdapter(inflater, getContacts()));
+        final GroupChatUI temp = this;
+        Button settings = (Button) v.findViewById(R.id.setting);
+        final EditText my_message = (EditText) v.findViewById(R.id.my_message);
 
-        final AddMembers temp = this;
-        Button add_contacts = (Button) v.findViewById(R.id.add_contacts);
-        add_contacts.setOnClickListener(new View.OnClickListener() {
+
+        lv=(ListView) v.findViewById(R.id.listView);
+
+        lv.setAdapter(new GroupChatAdapter(inflater, messages,names));
+
+        ImageView send_button = (ImageView) v.findViewById(R.id.send_button);
+        send_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                GroupChatUI nextFrag= new GroupChatUI();
+                String message = my_message.getText().toString();
+                if(message.trim().equals("")){
+                    return;
+                }else{
+                    messages.add(message);
+                    names.add("");
+                    lv.setAdapter(new GroupChatAdapter(inflater, messages,names));
+                    my_message.setText("");
+                }
+
+            }
+        });
+
+        settings.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GroupSetting nextFrag= new GroupSetting();
                 temp.getFragmentManager().beginTransaction()
                         .replace(R.id.content_frame, nextFrag,null)
                         .addToBackStack(null)
@@ -94,46 +116,15 @@ public class AddMembers extends CustomFragment implements IFragmentName
     }
 
 
-    public String [] getContacts()
-    {
 
-        String [] contactList;
-
-        DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-
-        try {
-
-            JSONArray jsonA = db.getContacts();
-
-            jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
-
-            contactList = new String[jsonA.length()];
-
-            //This loop adds contacts to the display list which are on cloudkibo
-            for (int i=0; i < jsonA.length(); i++) {
-                JSONObject row = jsonA.getJSONObject(i);
-                contactList[i] = row.getString("display_name");
-
-            }
-
-            return contactList;
-
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
 
     public String getFragmentName()
     {
-        return "Add Group Members";
+        return "Group Chat";
     }
 
     public String getFragmentContactPhone()
     {
-        return "About Chat";
+        return "Group Chat";
     }
 }

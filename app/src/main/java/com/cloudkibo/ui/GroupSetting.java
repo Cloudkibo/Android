@@ -42,7 +42,7 @@ import java.util.ArrayList;
  */
 
 
-public class AddMembers extends CustomFragment implements IFragmentName
+public class GroupSetting extends CustomFragment implements IFragmentName
 {
 
 
@@ -59,25 +59,11 @@ public class AddMembers extends CustomFragment implements IFragmentName
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View v = inflater.inflate(R.layout.add_members, null);
+        View v = inflater.inflate(R.layout.group_info, null);
 
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
 
-        gv=(GridView) v.findViewById(R.id.gridView1);
-        gv.setAdapter(new CustomContactAdapter(inflater, getContacts()));
 
-        final AddMembers temp = this;
-        Button add_contacts = (Button) v.findViewById(R.id.add_contacts);
-        add_contacts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                GroupChatUI nextFrag= new GroupChatUI();
-                temp.getFragmentManager().beginTransaction()
-                        .replace(R.id.content_frame, nextFrag,null)
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
 
         return v;
     }
