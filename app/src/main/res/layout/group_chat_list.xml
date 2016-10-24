@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llaa"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        >
+
+        <LinearLayout
+            android:id="@+id/message_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="10dp"
+            android:layout_gravity="left"
+            android:background="@drawable/shape"
+            android:orientation="vertical"
+            android:backgroundTint="#2ecc71"
+            android:gravity="center_vertical"
+            android:layout_marginTop="@dimen/pad_10dp"
+            android:layout_marginLeft="@dimen/pad_5dp"
+            android:layout_marginRight="100dp"
+            android:paddingLeft="40dp"
+            android:paddingRight="@dimen/pad_15dp"
+            android:paddingTop="@dimen/pad_5dp"
+            android:paddingBottom="@dimen/pad_5dp">
+
+
+
+            <TextView
+                android:id="@+id/contact_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Imran Shaukat"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="This is is some message that would be sent in a group chat and what wiill happen if this message is long it will be displayed in multiple lines"
+                android:textColor="@android:color/black"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>
+
