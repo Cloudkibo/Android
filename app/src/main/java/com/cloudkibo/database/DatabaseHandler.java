@@ -23,7 +23,7 @@ import com.cloudkibo.database.CloudKiboDatabaseContract.UserChat;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -102,6 +102,57 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_CHAT_HISTORY_SYNC_TABLE);
 
 
+        //Below are the tables for group chat.
+        String CREATE_GROUP = "CREATE TABLE _group ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "group_name TEXT, "
+                + "group_icon BLOB, "
+                + "date_creation DATETIME DEFAULT CURRENT_TIMESTAMP, "
+                + "unique_id TEXT, "
+                + "is_mute INTEGER DEFAULT 0 "+ ")";
+        db.execSQL(CREATE_GROUP);
+
+        String CREATE_GROUP_MEMBER = "CREATE TABLE group_member ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "group_unique_id TEXT, "
+                + "member_phone TEXT, "
+                + "isAdmin TEXT, "
+                + "date_joined DATETIME DEFAULT CURRENT_TIMESTAMP, "
+                + "date_left DATETIME, "
+                + "membership_status TEXT "+ ")";
+        db.execSQL(CREATE_GROUP_MEMBER);
+
+        String CREATE_GROUP_CHAT = "CREATE TABLE group_chat ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "group_unique_id TEXT, "
+                + "_from TEXT, "
+                + "type TEXT, "
+                + "msg TEXT, "
+                + "from_fullname TEXT, "
+                + "date DATETIME, "
+                + "unique_id TEXT "
+                + ")";
+        db.execSQL(CREATE_GROUP_CHAT);
+
+        String CREATE_GROUP_CHAT_STATUS = "CREATE TABLE group_chat_status ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "msg_unique_id TEXT, "
+                + "status TEXT, "
+                + "user_phone TEXT, "
+                + "read_date DATETIME, "
+                + "delivered_date DATETIME "
+                + ")";
+        db.execSQL(CREATE_GROUP_CHAT_STATUS);
+
+        String CREATE_GROUP_MUTE_SETTINGS = "CREATE TABLE group_mute_settings ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "groupid TEXT, "
+                + "isMute INTEGER, "
+                + "muteTime DATETIME, "
+                + "unMuteTime DATETIME "
+                + ")";
+        db.execSQL(CREATE_GROUP_MUTE_SETTINGS);
+
     }
     
     
@@ -121,13 +172,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + UserChat.TABLE_USERCHAT);
         db.execSQL("DROP TABLE IF EXISTS call_history");
         db.execSQL("DROP TABLE IF EXISTS chat_history_sync");
+        //Tables for group chat
+        db.execSQL("DROP TABLE IF EXISTS _group");
+        db.execSQL("DROP TABLE IF EXISTS group_member");
+        db.execSQL("DROP TABLE IF EXISTS group_chat");
+        db.execSQL("DROP TABLE IF EXISTS group_chat_status");
+        db.execSQL("DROP TABLE IF EXISTS group_mute_settings");
 
         // Create tables again
         onCreate(db);
     }
-    
-    
-    
+
+
+
+    /*
+     * This method is called when we need to create a new group and store it in the database
+     * */
+    public void createGroup(String unique_id, String group_name, int isMute) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("group_name", group_name); // values : Group Name
+        values.put("unique_id", unique_id); // values : random string
+        values.put("is_mute", isMute);// values : 0 or 1
+
+        // Inserting Row
+        db.insert("_group", null, values);
+        db.close(); // Closing database connection
+    }
     
     
     /////////////////////////////////////////////////////////////////////
@@ -150,6 +223,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert(User.TABLE_USER_NAME, null, values);
         db.close(); // Closing database connection
     }
+
+
     
     
     
