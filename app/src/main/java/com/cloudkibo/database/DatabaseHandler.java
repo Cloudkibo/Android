@@ -116,7 +116,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "group_unique_id TEXT, "
                 + "member_phone TEXT, "
-                + "isAdmin TEXT, "
+                + "isAdmin INTEGER, "
                 + "date_joined DATETIME DEFAULT CURRENT_TIMESTAMP, "
                 + "date_left DATETIME, "
                 + "membership_status TEXT "+ ")";
@@ -201,7 +201,81 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert("_group", null, values);
         db.close(); // Closing database connection
     }
-    
+    /*
+    * This Method is used to add group member to a group
+    * */
+    public void addGroupMember(String group_unique_id, String member_phone, int isAdmin, String membership_status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("group_unique_id", group_unique_id); // values : Group Name
+        values.put("member_phone", member_phone); //
+        values.put("isAdmin", isAdmin);// values : 0 or 1
+        values.put("membership_status", membership_status);// values : left or joined
+        // Inserting Row
+        db.insert("group_member", null, values);
+        db.close(); // Closing database connection
+    }
+
+    public JSONArray getAllGroups() throws JSONException {
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT unique_id, group_name, is_mute FROM _group";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("unique_id", cursor.getString(0));
+                contact.put("group_name", cursor.getString(1));
+                contact.put("is_mute", cursor.getString(2));
+
+                groups.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return groups;
+    }
+
+    public JSONArray getGroupMembers(String group_id) throws JSONException {
+        JSONArray contacts = new JSONArray();
+        String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM group_member, "+ Contacts.TABLE_CONTACTS +"  where group_unique_id='"+ group_id +"'"
+                +" AND phone = member_phone" ;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+                JSONObject contact = new JSONObject();
+                contact.put(Contacts.CONTACT_PHONE, cursor.getString(0));
+                contact.put("isAdmin", cursor.getString(1));
+                contact.put("date_joined", cursor.getString(2));
+                contact.put("display_name", cursor.getString(3));
+                contacts.put(contact);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return contacts;
+    }
+
+    /*
+    * ===============================================
+    * END OF GROUP DB LOGIC
+    * ===============================================
+    * */
     
     /////////////////////////////////////////////////////////////////////
     // Storing user details in database                                //

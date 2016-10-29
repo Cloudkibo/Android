@@ -15,6 +15,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cloudkibo.NewChat;
 import com.cloudkibo.R;
@@ -47,9 +48,10 @@ public class GroupSetting extends CustomFragment implements IFragmentName
 
 
     private String authtoken;
-    GridView gv;
     Context context;
-    ArrayList prgmName;
+    String group_id;
+    ListView lv;
+
 
 
     /* (non-Javadoc)
@@ -60,12 +62,16 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                              Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.group_info, null);
-
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
+        String names[] = getMembers();
+//        Toast.makeText(getContext(), getMembers().length, Toast.LENGTH_LONG).show();
 
+        lv=(ListView) v.findViewById(R.id.listView);
+        lv.setAdapter(new CustomParticipantAdapter(inflater, getMembers()));
 
 
         return v;
+
     }
 
     /* (non-Javadoc)
@@ -80,38 +86,30 @@ public class GroupSetting extends CustomFragment implements IFragmentName
     }
 
 
-    public String [] getContacts()
-    {
+   public String[] getMembers(){
 
-        String [] contactList;
+       Bundle args = getArguments();
+       if (args  != null){
+           group_id = args.getString("group_id");
+       }
 
-        DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+       String names[];
+       DatabaseHandler db = new DatabaseHandler(getContext());
 
-        try {
-
-            JSONArray jsonA = db.getContacts();
-
-            jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
-
-            contactList = new String[jsonA.length()];
-
-            //This loop adds contacts to the display list which are on cloudkibo
-            for (int i=0; i < jsonA.length(); i++) {
-                JSONObject row = jsonA.getJSONObject(i);
-                contactList[i] = row.getString("display_name");
-
-            }
-
-            return contactList;
-
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
+       try {
+           JSONArray members = db.getGroupMembers(group_id);
+//           Toast.makeText(getContext(), members.toString(), Toast.LENGTH_LONG).show();
+           names = new String[members.length()];
+           for(int i = 0; i < members.length(); i++)
+           {
+               names[i] = members.getJSONObject(i).getString("display_name");
+           }
+           return  names;
+       } catch (JSONException e) {
+           e.printStackTrace();
+       }
+        return new String[]{};
+   }
 
     public String getFragmentName()
     {

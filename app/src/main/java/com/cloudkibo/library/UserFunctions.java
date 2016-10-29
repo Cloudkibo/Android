@@ -235,6 +235,10 @@ public class UserFunctions {
         return response;
     }
 
+    public JSONObject sendCreateGroupToServer(JSONObject data, String authtoken){
+         return connection.sendJSONObjectToServer(createGroupURL, authtoken, data);
+    }
+
     public JSONObject sendChatMessageStatusToServer(JSONObject data, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         try{
