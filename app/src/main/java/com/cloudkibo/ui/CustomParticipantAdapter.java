@@ -12,19 +12,22 @@ import android.widget.Toast;
 
 import com.cloudkibo.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 public class CustomParticipantAdapter extends BaseAdapter{
-    String [] names;
+    JSONArray members;
     Context context;
     private static LayoutInflater inflater=null;
-    public CustomParticipantAdapter(LayoutInflater inflater, String[] names) {
+    public CustomParticipantAdapter(LayoutInflater inflater, JSONArray members) {
         // TODO Auto-generated constructor stub
-        this.names = names;
+        this.members = members;
         this.inflater = inflater;
     }
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
-        return names.length;
+        return members.length();
     }
 
     @Override
@@ -42,6 +45,7 @@ public class CustomParticipantAdapter extends BaseAdapter{
     public class Holder
     {
         TextView name;
+        TextView isAdmin;
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -50,8 +54,16 @@ public class CustomParticipantAdapter extends BaseAdapter{
         View rowView;
         rowView = inflater.inflate(R.layout.participant, null);
         holder.name=(TextView) rowView.findViewById(R.id.name);
+        holder.isAdmin=(TextView) rowView.findViewById(R.id.isAdmin);
 //        holder.tv.setText(result[position]);
-        holder.name.setText(names[position]);
+        try {
+            holder.name.setText(members.getJSONObject(position).getString("display_name"));
+            if(members.getJSONObject(position).getString("isAdmin").equals("1")){
+                holder.isAdmin.setVisibility(View.VISIBLE);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         rowView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {

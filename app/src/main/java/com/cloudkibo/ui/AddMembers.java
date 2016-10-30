@@ -98,9 +98,6 @@ public class AddMembers extends CustomFragment implements IFragmentName
                         .commit();
             }
         });
-
-
-
         return v;
     }
 
@@ -207,6 +204,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
         for (int i = 0; i< phones.size(); i++){
             db.addGroupMember(group_id,phones.get(i),0,"joined");
         }
+        db.addGroupMember(group_id,db.getUserDetails().get("phone"),1,"joined");
     }
 
     public String getFragmentName()

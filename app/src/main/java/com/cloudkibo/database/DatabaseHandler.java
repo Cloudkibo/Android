@@ -23,7 +23,7 @@ import com.cloudkibo.database.CloudKiboDatabaseContract.UserChat;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 4;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -107,7 +107,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "group_name TEXT, "
                 + "group_icon BLOB, "
-                + "date_creation DATETIME DEFAULT CURRENT_TIMESTAMP, "
+                + "date_creation DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
                 + "unique_id TEXT, "
                 + "is_mute INTEGER DEFAULT 0 "+ ")";
         db.execSQL(CREATE_GROUP);
@@ -117,7 +117,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "group_unique_id TEXT, "
                 + "member_phone TEXT, "
                 + "isAdmin INTEGER, "
-                + "date_joined DATETIME DEFAULT CURRENT_TIMESTAMP, "
+                + "date_joined DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
                 + "date_left DATETIME, "
                 + "membership_status TEXT "+ ")";
         db.execSQL(CREATE_GROUP_MEMBER);
@@ -243,6 +243,63 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
         // return user
         return groups;
+    }
+
+    public JSONObject getGroupInfo(String group_id) throws JSONException {
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT unique_id, group_name, is_mute, date_creation FROM _group WHERE unique_id ='"+ group_id +"'" ;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        JSONObject contact = new JSONObject();
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                contact.put("unique_id", cursor.getString(0));
+                contact.put("group_name", cursor.getString(1));
+                contact.put("is_mute", cursor.getString(2));
+                contact.put("date_creation", cursor.getString(3));
+
+                groups.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return contact;
+    }
+
+    public JSONObject getMyDetailsInGroup(String group_id) throws JSONException {
+        JSONArray contacts = new JSONArray();
+
+        String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM group_member, "+ User.TABLE_USER_NAME +"  where group_unique_id='"+ group_id +"'"
+                +" AND phone = member_phone" ;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        JSONObject contact = new JSONObject();
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+                contact.put(Contacts.CONTACT_PHONE, cursor.getString(0));
+                contact.put("isAdmin", cursor.getString(1));
+                contact.put("date_joined", cursor.getString(2));
+                contact.put("display_name", cursor.getString(3));
+                contacts.put(contact);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return contact;
     }
 
     public JSONArray getGroupMembers(String group_id) throws JSONException {

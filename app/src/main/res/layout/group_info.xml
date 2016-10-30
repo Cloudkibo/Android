@@ -25,6 +25,7 @@
             android:paddingBottom="16dp">
 
             <TextView
+                android:id="@+id/group_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Group Name"
@@ -33,9 +34,10 @@
                 android:textStyle="bold"/>
 
             <TextView
+                android:id="@+id/creation_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Created by Admin, 10/3/16, 18:50"
+                android:text="10/3/16, 18:50"
                 android:textColor="#ffffff"
                 android:textSize="12dp"/>
 

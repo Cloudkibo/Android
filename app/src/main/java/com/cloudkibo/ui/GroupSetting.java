@@ -62,10 +62,11 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                              Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.group_info, null);
-        authtoken = getActivity().getIntent().getExtras().getString("authtoken");
-        String names[] = getMembers();
-//        Toast.makeText(getContext(), getMembers().length, Toast.LENGTH_LONG).show();
 
+        authtoken = getActivity().getIntent().getExtras().getString("authtoken");
+//        String names[] = getMembers();
+//        Toast.makeText(getContext(), getMembers().length, Toast.LENGTH_LONG).show();
+        setGroupInfo(v);
         lv=(ListView) v.findViewById(R.id.listView);
         lv.setAdapter(new CustomParticipantAdapter(inflater, getMembers()));
 
@@ -86,7 +87,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
     }
 
 
-   public String[] getMembers(){
+   public JSONArray getMembers(){
 
        Bundle args = getArguments();
        if (args  != null){
@@ -98,18 +99,37 @@ public class GroupSetting extends CustomFragment implements IFragmentName
 
        try {
            JSONArray members = db.getGroupMembers(group_id);
+           members.put(db.getMyDetailsInGroup(group_id));
 //           Toast.makeText(getContext(), members.toString(), Toast.LENGTH_LONG).show();
            names = new String[members.length()];
            for(int i = 0; i < members.length(); i++)
            {
                names[i] = members.getJSONObject(i).getString("display_name");
            }
-           return  names;
+           return  members;
        } catch (JSONException e) {
            e.printStackTrace();
        }
-        return new String[]{};
+        return new JSONArray();
    }
+
+    public void setGroupInfo(View v){
+        Bundle args = getArguments();
+        if (args  != null){
+            group_id = args.getString("group_id");
+        }
+        Toast.makeText(getContext(), "Group In function", Toast.LENGTH_LONG).show();
+
+        DatabaseHandler db = new DatabaseHandler(getContext());
+        try {
+            JSONObject group_info = db.getGroupInfo(group_id);
+//            Toast.makeText(getContext(), "Group Name is: " + group_info.toString() + " and group id is: " + group_id, Toast.LENGTH_LONG).show();
+            ((TextView)v.findViewById(R.id.group_name)).setText(group_info.getString("group_name"));
+            ((TextView)v.findViewById(R.id.creation_date)).setText(group_info.getString("date_creation"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     public String getFragmentName()
     {
