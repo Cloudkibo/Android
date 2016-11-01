@@ -69,6 +69,7 @@ public class CreateGroup extends CustomFragment implements IFragmentName
             @Override
             public void onClick(View view) {
                 String group_id = randomString(10)+ DateFormat.getDateTimeInstance().format(new Date());
+                Toast.makeText(getContext(), "Group Name: " + group_name.getText().toString(), Toast.LENGTH_LONG).show();
                 db.createGroup(group_id, group_name.getText().toString(), 0);
                 AddMembers nextFrag= new AddMembers();
                 Bundle args = new Bundle();

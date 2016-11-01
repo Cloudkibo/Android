@@ -66,9 +66,14 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
 //        String names[] = getMembers();
 //        Toast.makeText(getContext(), getMembers().length, Toast.LENGTH_LONG).show();
+  //      Toast.makeText(getContext(), getMembers().toString(), Toast.LENGTH_LONG).show();
         setGroupInfo(v);
+        Bundle args = getArguments();
+        if (args  != null){
+            group_id = args.getString("group_id");
+        }
         lv=(ListView) v.findViewById(R.id.listView);
-        lv.setAdapter(new CustomParticipantAdapter(inflater, getMembers()));
+        lv.setAdapter(new CustomParticipantAdapter(inflater, getMembers(), getContext(),group_id));
 
 
         return v;
@@ -100,7 +105,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
        try {
            JSONArray members = db.getGroupMembers(group_id);
            members.put(db.getMyDetailsInGroup(group_id));
-//           Toast.makeText(getContext(), members.toString(), Toast.LENGTH_LONG).show();
+          // Toast.makeText(getContext(), "Custom Members "+members.toString(), Toast.LENGTH_LONG).show();
            names = new String[members.length()];
            for(int i = 0; i < members.length(); i++)
            {
@@ -118,7 +123,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         if (args  != null){
             group_id = args.getString("group_id");
         }
-        Toast.makeText(getContext(), "Group In function", Toast.LENGTH_LONG).show();
+       // Toast.makeText(getContext(), "Group In function", Toast.LENGTH_LONG).show();
 
         DatabaseHandler db = new DatabaseHandler(getContext());
         try {
