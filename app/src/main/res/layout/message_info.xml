@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EFF0F1">
+
+
+
+    <RelativeLayout
+        android:id="@+id/mBody"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:layout_marginTop="@dimen/pad_30dp"
+        android:layout_marginBottom="@dimen/pad_30dp"
+        >
+
+        <LinearLayout
+            android:id="@+id/v1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/chat_bubble_green"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingRight="50dp"
+            android:paddingLeft="@dimen/pad_15dp"
+            android:paddingTop="@dimen/pad_5dp"
+            android:paddingBottom="@dimen/pad_5dp"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/pad_5dp">
+
+
+            <TextView
+                android:id="@+id/lbl2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="sd"
+                android:textColor="@color/main_color_gray_dk"
+                android:textSize="@dimen/txt_14sp"
+                />
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+
+        android:layout_margin="15dp"
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="15dp"
+        android:layout_below="@+id/mBody"
+        >
+
+        <TextView
+            android:id="@+id/lblMessageStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="status"
+            android:padding="20dp"
+            android:textColor="@color/main_color_gray"
+            android:textSize="24sp"
+
+
+
+            />
+
+        <View
+            android:id="@+id/hr"
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="#EFF0F1"
+            android:layout_below="@+id/lblMessageStatus"
+            />
+
+        <TextView
+            android:id="@+id/lblTimeStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="status"
+            android:padding="20dp"
+            android:textColor="@color/main_color_gray"
+            android:textSize="24sp"
+            android:layout_below="@+id/hr"
+
+
+
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>
