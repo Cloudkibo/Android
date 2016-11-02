@@ -20,6 +20,7 @@ import java.util.TimeZone;
 /**
  * Created by sojharo on 20/09/2016.
  */
+
 public class Utility {
 
     public static String convertDateToLocalTimeZoneAndReadable(String dStr) throws ParseException {
