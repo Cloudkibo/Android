@@ -419,14 +419,81 @@ public class ConnectionManager {
         // return JSON String
         return jObj;
     }
-    
-    
-    
-    
-    
-    
-    
-	/////////////////////////////////////////////////////////////////////
+
+
+    public JSONObject sendJSONObjectToServer(String userDataURL, String authtoken, JSONObject jsonD) {
+
+        // Making HTTP request
+        try {
+            // defaultHttpClient
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpPost httpPost = new HttpPost(userDataURL);
+//            httpPost.addHeader("kibo-app-id", appId);
+//            httpPost.addHeader("kibo-client-id", clientId);
+//            httpPost.addHeader("kibo-app-secret", appSecret);
+            httpPost.addHeader("kibo-token", authtoken);
+            httpPost.setHeader("Content-type", "application/json");
+
+            StringEntity params = new StringEntity(jsonD.toString());
+            httpPost.setEntity(params);
+
+            HttpResponse httpResponse = httpClient.execute(httpPost);
+
+            if(httpResponse.getStatusLine().getStatusCode() == 401){
+                return null;
+            }
+
+            HttpEntity httpEntity = httpResponse.getEntity();
+            is = httpEntity.getContent();
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            try {
+                return new JSONObject().put("Error", "No Internet");
+            } catch (JSONException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
+        }
+
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(
+                    is, "iso-8859-1"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            is.close();
+            json = sb.toString();
+            //Log.d("JSON", json);
+        } catch (Exception e) {
+            Log.d("Buffer Error", "Error converting result " + e.toString());
+        }
+
+        // try parse the string to a JSON object
+        try {
+            jObj = new JSONObject(json);
+        } catch (JSONException e) {
+            Log.d("JSON Parser", "Error parsing data " + e.toString());
+        }
+
+        // return JSON String
+        return jObj;
+    }
+
+
+
+
+
+
+
+
+    /////////////////////////////////////////////////////////////////////
 	// Serializable User Class                                         //
 	/////////////////////////////////////////////////////////////////////
 

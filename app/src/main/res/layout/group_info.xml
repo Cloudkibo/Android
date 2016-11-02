@@ -7,10 +7,11 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
             >
         <LinearLayout
@@ -24,6 +25,7 @@
             android:paddingBottom="16dp">
 
             <TextView
+                android:id="@+id/group_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Group Name"
@@ -32,9 +34,10 @@
                 android:textStyle="bold"/>
 
             <TextView
+                android:id="@+id/creation_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Created by Admin, 10/3/16, 18:50"
+                android:text="10/3/16, 18:50"
                 android:textColor="#ffffff"
                 android:textSize="12dp"/>
 
@@ -115,11 +118,12 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:orientation="vertical"
             android:paddingRight="16dp"
             android:paddingBottom="16dp"
-            android:paddingLeft="16dp">
+            android:paddingLeft="16dp"
+            android:layout_weight="1">
 
 
 
@@ -130,188 +134,20 @@
                 android:textColor="#000000"
                 android:textSize="20dp"/>
 
-
-            <!--Participant Card Starts-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/shape"
-                android:backgroundTint="#ffffff"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="1">
+            <ListView
+                android:id="@+id/listView"
+                android:layout_width="fill_parent"
+                android:layout_height="0dp"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="10dp"
+                android:layout_weight="1">
+            </ListView>
 
 
-                    <ImageView
-                        android:layout_width="59dp"
-                        android:layout_height="66dp"
-                        android:src="@drawable/avatar"
-                         />
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:paddingTop="20dp"
-                        android:paddingLeft="10dp">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Imran Shaukat"
-                            android:textColor="#000000"
-                            android:textSize="20dp"
 
 
-                            />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Group Admin"
-                            android:textColor="@android:color/black"
-                            android:gravity="end"/>
 
 
-                    </LinearLayout>
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <!--Participant Card Ends-->
-
-
-            <!--Participant Card Starts-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/shape"
-                android:backgroundTint="#ffffff"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="1">
-
-
-                    <ImageView
-                        android:layout_width="59dp"
-                        android:layout_height="66dp"
-                        android:src="@drawable/avatar"
-                        />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Jawaid Ekram"
-                        android:textColor="#000000"
-                        android:textSize="20dp"
-                        android:paddingTop="20dp"
-                        android:paddingLeft="10dp"
-
-                        />
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <!--Participant Card Ends-->
-
-
-            <!--Participant Card Starts-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/shape"
-                android:backgroundTint="#ffffff"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="1">
-
-
-                    <ImageView
-                        android:layout_width="59dp"
-                        android:layout_height="66dp"
-                        android:src="@drawable/avatar"
-                        />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Dayem"
-                        android:textColor="#000000"
-                        android:textSize="20dp"
-                        android:paddingTop="20dp"
-                        android:paddingLeft="10dp"
-
-                        />
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <!--Participant Card Ends-->
-
-
-            <!--Participant Card Starts-->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:background="@drawable/shape"
-                android:backgroundTint="#ffffff"
-                android:layout_marginTop="5dp"
-                android:layout_marginBottom="5dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:weightSum="1">
-
-
-                    <ImageView
-                        android:layout_width="59dp"
-                        android:layout_height="66dp"
-                        android:src="@drawable/avatar"
-                        />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Sojharo"
-                        android:textColor="#000000"
-                        android:textSize="20dp"
-                        android:paddingTop="20dp"
-                        android:paddingLeft="10dp"
-
-                        />
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <!--Participant Card Ends-->
 
             <Button
                 android:layout_width="match_parent"
