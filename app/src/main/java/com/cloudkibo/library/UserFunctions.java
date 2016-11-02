@@ -50,10 +50,11 @@ public class UserFunctions {
     private static String saveDisplayNameURL =      baseURL + "/api/users/newuser";
     private static String getAllChatURL =           baseURL + "/api/userchat/alluserchat";
     private static String sendChatURL =             baseURL + "/api/userchat/save2";
-    private static String sendChatStatusURL =             baseURL + "/api/userchat/updateStatus";
+    private static String sendChatStatusURL =       baseURL + "/api/userchat/updateStatus";
     private static String getPartialChatURL =       baseURL + "/api/userchat/partialchatsync";
     private static String getSingleChatURL =        baseURL + "/api/userchat/getsinglechat";
     private static String sendLogURL =              baseURL + "/api/users/log";
+    private static String createGroupURL =          baseURL + "/api/groupmessaging/";
     
     
     
@@ -232,6 +233,10 @@ public class UserFunctions {
         }
         JSONObject response = connection.sendObjectToServer(sendChatURL, authtoken, params);
         return response;
+    }
+
+    public JSONObject sendCreateGroupToServer(JSONObject data, String authtoken){
+         return connection.sendJSONObjectToServer(createGroupURL, authtoken, data);
     }
 
     public JSONObject sendChatMessageStatusToServer(JSONObject data, String authtoken) {

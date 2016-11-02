@@ -445,7 +445,7 @@ public class MainActivity extends CustomActivity
             @Override
             public void onDrawerOpened(View drawerView)
             {
-                getActionBar().setTitle("Chat");
+                getActionBar().setTitle("KiboChat");
             }
         };
         drawerLayout.setDrawerListener(drawerToggle);
@@ -763,6 +763,15 @@ public class MainActivity extends CustomActivity
 
         TextView userEmail = (TextView)findViewById(R.id.textViewUserEmailOnNavigationBar);
         userEmail.setText(user.get("phone"));
+
+    }
+
+    public void startMessageInfo(String message, String status, String date){
+        Intent i = new Intent(this, MessageInfo.class);
+        i.putExtra("message", message);
+        i.putExtra("status", status);
+        i.putExtra("date", date);
+        startActivity(i);
 
     }
 

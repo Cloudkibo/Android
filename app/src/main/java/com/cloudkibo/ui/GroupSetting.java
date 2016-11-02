@@ -15,6 +15,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cloudkibo.NewChat;
 import com.cloudkibo.R;
@@ -47,9 +48,10 @@ public class GroupSetting extends CustomFragment implements IFragmentName
 
 
     private String authtoken;
-    GridView gv;
     Context context;
-    ArrayList prgmName;
+    String group_id;
+    ListView lv;
+
 
 
     /* (non-Javadoc)
@@ -62,10 +64,20 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         View v = inflater.inflate(R.layout.group_info, null);
 
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
-
+//        String names[] = getMembers();
+//        Toast.makeText(getContext(), getMembers().length, Toast.LENGTH_LONG).show();
+  //      Toast.makeText(getContext(), getMembers().toString(), Toast.LENGTH_LONG).show();
+        setGroupInfo(v);
+        Bundle args = getArguments();
+        if (args  != null){
+            group_id = args.getString("group_id");
+        }
+        lv=(ListView) v.findViewById(R.id.listView);
+        lv.setAdapter(new CustomParticipantAdapter(inflater, getMembers(), getContext(),group_id));
 
 
         return v;
+
     }
 
     /* (non-Javadoc)
@@ -80,37 +92,48 @@ public class GroupSetting extends CustomFragment implements IFragmentName
     }
 
 
-    public String [] getContacts()
-    {
+   public JSONArray getMembers(){
 
-        String [] contactList;
+       Bundle args = getArguments();
+       if (args  != null){
+           group_id = args.getString("group_id");
+       }
 
-        DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+       String names[];
+       DatabaseHandler db = new DatabaseHandler(getContext());
 
+       try {
+           JSONArray members = db.getGroupMembers(group_id);
+           members.put(db.getMyDetailsInGroup(group_id));
+          // Toast.makeText(getContext(), "Custom Members "+members.toString(), Toast.LENGTH_LONG).show();
+           names = new String[members.length()];
+           for(int i = 0; i < members.length(); i++)
+           {
+               names[i] = members.getJSONObject(i).getString("display_name");
+           }
+           return  members;
+       } catch (JSONException e) {
+           e.printStackTrace();
+       }
+        return new JSONArray();
+   }
+
+    public void setGroupInfo(View v){
+        Bundle args = getArguments();
+        if (args  != null){
+            group_id = args.getString("group_id");
+        }
+       // Toast.makeText(getContext(), "Group In function", Toast.LENGTH_LONG).show();
+
+        DatabaseHandler db = new DatabaseHandler(getContext());
         try {
-
-            JSONArray jsonA = db.getContacts();
-
-            jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
-
-            contactList = new String[jsonA.length()];
-
-            //This loop adds contacts to the display list which are on cloudkibo
-            for (int i=0; i < jsonA.length(); i++) {
-                JSONObject row = jsonA.getJSONObject(i);
-                contactList[i] = row.getString("display_name");
-
-            }
-
-            return contactList;
-
-
-
+            JSONObject group_info = db.getGroupInfo(group_id);
+//            Toast.makeText(getContext(), "Group Name is: " + group_info.toString() + " and group id is: " + group_id, Toast.LENGTH_LONG).show();
+            ((TextView)v.findViewById(R.id.group_name)).setText(group_info.getString("group_name"));
+            ((TextView)v.findViewById(R.id.creation_date)).setText(group_info.getString("date_creation"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        return null;
     }
 
     public String getFragmentName()

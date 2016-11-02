@@ -15,18 +15,30 @@ import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.ui.AddMembers;
 
+import org.json.JSONArray;
+
+import java.util.ArrayList;
+
 /**
  * Created by root on 10/19/16.
  */
 public class CustomContactAdapter extends BaseAdapter {
 
     String [] result;
+    String [] phones;
+
+    ArrayList<String> selected_contacts = new ArrayList<String>();
+
     private static LayoutInflater inflater=null;
-    public CustomContactAdapter(LayoutInflater context, String[] prgmNameList) {
+    public CustomContactAdapter(LayoutInflater context, String[] prgmNameList, String[] phones) {
         // TODO Auto-generated constructor stub
         result=prgmNameList;
+        this.phones = phones;
         inflater = context;
 
+    }
+    public ArrayList<String> getSelected_contacts(){
+        return selected_contacts;
     }
 
     @Override
@@ -41,6 +53,7 @@ public class CustomContactAdapter extends BaseAdapter {
         return position;
     }
 
+
     @Override
     public long getItemId(int position) {
         // TODO Auto-generated method stub
@@ -52,6 +65,8 @@ public class CustomContactAdapter extends BaseAdapter {
         TextView tv;
         boolean clicked = false;
         LinearLayout single_contact;
+        String phone;
+
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -63,7 +78,7 @@ public class CustomContactAdapter extends BaseAdapter {
         holder.tv=(TextView) rowView.findViewById(R.id.textView1);
         holder.single_contact = (LinearLayout) rowView.findViewById(R.id.single_contact);
         holder.tv.setText(result[position]);
-
+        holder.phone = phones[position];
         rowView.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -74,10 +89,12 @@ public class CustomContactAdapter extends BaseAdapter {
                     holder.single_contact.setBackgroundColor(Color.parseColor("#2ecc71"));
                     holder.tv.setTextColor(Color.WHITE);
                     holder.clicked = true;
+                    selected_contacts.add(holder.phone);
                 }else {
                     holder.single_contact.setBackgroundColor(Color.parseColor("#F1F3EE"));
                     holder.tv.setTextColor(Color.BLACK);
                     holder.clicked = false;
+                    selected_contacts.remove(holder.phone);
                 }
             }
         });

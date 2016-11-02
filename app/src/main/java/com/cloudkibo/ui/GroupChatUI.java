@@ -16,6 +16,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cloudkibo.NewChat;
 import com.cloudkibo.R;
@@ -51,6 +52,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     private ListView lv;
     private ArrayList<String> messages = new ArrayList<String>();
     private ArrayList<String> names = new ArrayList<String>();
+    private String group_id="";
 
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -61,19 +63,20 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                              Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.group_chat_dayem, null);
-
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
-
         final GroupChatUI temp = this;
         Button settings = (Button) v.findViewById(R.id.setting);
         final EditText my_message = (EditText) v.findViewById(R.id.my_message);
-
-
         lv=(ListView) v.findViewById(R.id.listView);
-
         lv.setAdapter(new GroupChatAdapter(inflater, messages,names));
-
         ImageView send_button = (ImageView) v.findViewById(R.id.send_button);
+        Bundle args = getArguments();
+
+        if (args  != null){
+            group_id = args.getString("group_id");
+            Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
+        }
+
         send_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,6 +97,9 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             @Override
             public void onClick(View view) {
                 GroupSetting nextFrag= new GroupSetting();
+                Bundle args = new Bundle();
+                args.putString("group_id", group_id);
+                nextFrag.setArguments(args);
                 temp.getFragmentManager().beginTransaction()
                         .replace(R.id.content_frame, nextFrag,null)
                         .addToBackStack(null)

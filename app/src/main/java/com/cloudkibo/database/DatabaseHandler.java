@@ -23,7 +23,7 @@ import com.cloudkibo.database.CloudKiboDatabaseContract.UserChat;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 6;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -102,6 +102,57 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_CHAT_HISTORY_SYNC_TABLE);
 
 
+        //Below are the tables for group chat.
+        String CREATE_GROUP = "CREATE TABLE GROUPINFO ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "group_name TEXT, "
+                + "group_icon BLOB, "
+                + "date_creation DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
+                + "unique_id TEXT, "
+                + "is_mute INTEGER DEFAULT 0 "+ ")";
+        db.execSQL(CREATE_GROUP);
+
+        String CREATE_GROUP_MEMBER = "CREATE TABLE GROUPMEMBER ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "group_unique_id TEXT, "
+                + "member_phone TEXT, "
+                + "isAdmin INTEGER, "
+                + "date_joined DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
+                + "date_left DATETIME, "
+                + "membership_status TEXT "+ ")";
+        db.execSQL(CREATE_GROUP_MEMBER);
+
+        String CREATE_GROUP_CHAT = "CREATE TABLE GROUPCHAT ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "group_unique_id TEXT, "
+                + "_from TEXT, "
+                + "type TEXT, "
+                + "msg TEXT, "
+                + "from_fullname TEXT, "
+                + "date DATETIME, "
+                + "unique_id TEXT "
+                + ")";
+        db.execSQL(CREATE_GROUP_CHAT);
+
+        String CREATE_GROUP_CHAT_STATUS = "CREATE TABLE GROUPCHATSTATUS ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "msg_unique_id TEXT, "
+                + "status TEXT, "
+                + "user_phone TEXT, "
+                + "read_date DATETIME, "
+                + "delivered_date DATETIME "
+                + ")";
+        db.execSQL(CREATE_GROUP_CHAT_STATUS);
+
+        String CREATE_GROUP_MUTE_SETTINGS = "CREATE TABLE MUTESETTING ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "groupid TEXT, "
+                + "isMute INTEGER, "
+                + "muteTime DATETIME, "
+                + "unMuteTime DATETIME "
+                + ")";
+        db.execSQL(CREATE_GROUP_MUTE_SETTINGS);
+
     }
     
     
@@ -121,14 +172,201 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + UserChat.TABLE_USERCHAT);
         db.execSQL("DROP TABLE IF EXISTS call_history");
         db.execSQL("DROP TABLE IF EXISTS chat_history_sync");
+        //Tables for group chat
+        db.execSQL("DROP TABLE IF EXISTS GROUPINFO");
+        db.execSQL("DROP TABLE IF EXISTS GROUPMEMBER");
+        db.execSQL("DROP TABLE IF EXISTS GROUPCHAT");
+        db.execSQL("DROP TABLE IF EXISTS GROUPCHATSTATUS");
+        db.execSQL("DROP TABLE IF EXISTS MUTESETTING");
 
         // Create tables again
         onCreate(db);
     }
-    
-    
-    
-    
+
+
+
+    /*
+     * This method is called when we need to create a new group and store it in the database
+     * */
+    public void createGroup(String unique_id, String group_name, int isMute) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("group_name", group_name); // values : Group Name
+        values.put("unique_id", unique_id); // values : random string
+        values.put("is_mute", isMute);// values : 0 or 1
+
+        // Inserting Row
+        db.insert("GROUPINFO", null, values);
+        db.close(); // Closing database connection
+    }
+    /*
+    * This Method is used to add group member to a group
+    * */
+    public void addGroupMember(String group_unique_id, String member_phone, int isAdmin, String membership_status) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("group_unique_id", group_unique_id); // values : Group Name
+        values.put("member_phone", member_phone); //
+        values.put("isAdmin", isAdmin);// values : 0 or 1
+        values.put("membership_status", membership_status);// values : left or joined
+        // Inserting Row
+        db.insert("GROUPMEMBER", null, values);
+        db.close(); // Closing database connection
+    }
+
+    public void makeGroupAdmin(String group_unique_id, String member_phone) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put("isAdmin", 1);
+        db.update("GROUPMEMBER",args,"group_unique_id='"+group_unique_id+"' and member_phone='"+member_phone+"'",null);
+        db.close(); // Closing database connection
+    }
+
+    public JSONArray getAllGroups() throws JSONException {
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT unique_id, group_name, is_mute FROM GROUPINFO";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("unique_id", cursor.getString(0));
+                contact.put("group_name", cursor.getString(1));
+                contact.put("is_mute", cursor.getString(2));
+
+                groups.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return groups;
+    }
+
+    public JSONObject getGroupInfo(String group_id) throws JSONException {
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT unique_id, group_name, is_mute, date_creation FROM GROUPINFO WHERE unique_id ='"+ group_id +"'" ;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        JSONObject contact = new JSONObject();
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                contact.put("unique_id", cursor.getString(0));
+                contact.put("group_name", cursor.getString(1));
+                contact.put("is_mute", cursor.getString(2));
+                contact.put("date_creation", cursor.getString(3));
+
+                groups.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return contact;
+    }
+
+    public JSONObject getMyDetailsInGroup(String group_id) throws JSONException {
+        JSONArray contacts = new JSONArray();
+
+        String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM GROUPMEMBER, "+ User.TABLE_USER_NAME +"  where group_unique_id='"+ group_id +"'"
+                +" AND phone = member_phone" ;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        JSONObject contact = new JSONObject();
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+                contact.put(Contacts.CONTACT_PHONE, cursor.getString(0));
+                contact.put("isAdmin", cursor.getString(1));
+                contact.put("date_joined", cursor.getString(2));
+                contact.put("display_name", cursor.getString(3));
+                contacts.put(contact);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return contact;
+    }
+
+    public JSONArray getGroupMembers(String group_id) throws JSONException {
+        JSONArray contacts = new JSONArray();
+        String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM GROUPMEMBER, "+ Contacts.TABLE_CONTACTS +"  where group_unique_id='"+ group_id +"'"
+                +" AND phone = member_phone" ;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+                JSONObject contact = new JSONObject();
+                contact.put(Contacts.CONTACT_PHONE, cursor.getString(0));
+                contact.put("isAdmin", cursor.getString(1));
+                contact.put("date_joined", cursor.getString(2));
+                contact.put("display_name", cursor.getString(3));
+                contacts.put(contact);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return contacts;
+    }
+
+    public JSONArray getGroupAdmins(String group_id) throws JSONException {
+        JSONArray contacts = new JSONArray();
+        String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM GROUPMEMBER, "+ Contacts.TABLE_CONTACTS +"  where group_unique_id='"+ group_id +"'"
+                +" AND isAdmin = 1" ;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+                JSONObject contact = new JSONObject();
+                contact.put(Contacts.CONTACT_PHONE, cursor.getString(0));
+                contact.put("isAdmin", cursor.getString(1));
+                contact.put("date_joined", cursor.getString(2));
+                contact.put("display_name", cursor.getString(3));
+                contacts.put(contact);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return contacts;
+    }
+
+    /*
+    * ===============================================
+    * END OF GROUP DB LOGIC
+    * ===============================================
+    * */
     
     /////////////////////////////////////////////////////////////////////
     // Storing user details in database                                //
@@ -150,6 +388,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.insert(User.TABLE_USER_NAME, null, values);
         db.close(); // Closing database connection
     }
+
+
     
     
     

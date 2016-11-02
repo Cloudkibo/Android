@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
@@ -73,6 +74,14 @@ public class MyHandler extends NotificationsHandler {
                     }
                     return ;
                 }
+
+                if(payload.getString("type").equals("group:you_are_added")){
+                    if (MainActivity.isVisible) {
+                        MainActivity.mainActivity.ToastNotify2("You are added to a group.");
+                    }
+                }
+
+
             }
             if (MainActivity.isVisible) {
                 loadSpecificChatFromServer(payload.getString("uniqueId"));

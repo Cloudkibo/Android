@@ -14,11 +14,16 @@ import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -27,6 +32,7 @@ import android.widget.TextView;
 import com.cloudkibo.MainActivity;
 //import com.cloudkibo.R;
 import com.cloudkibo.R;
+import com.cloudkibo.custom.CustomActivity;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.UserFunctions;
@@ -85,6 +91,17 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		list.setAdapter(adp);
 		list.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
 		list.setStackFromBottom(true);
+
+
+		list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+				return false;
+			}
+		});
+		registerForContextMenu(list);
+
+
 		adp.notifyDataSetChanged();
 
 		txt = (EditText) v.findViewById(R.id.txt);
@@ -93,6 +110,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 		setTouchNClick(v.findViewById(R.id.btnCamera));
 		setTouchNClick(v.findViewById(R.id.btnSend));
+
 		return v;
 	}
 
@@ -106,6 +124,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		if (v.getId() == R.id.btnSend)
 		{
 			sendMessage();
+
 		} else if (v.getId() == R.id.btnCamera) {
 			MainActivity act1 = (MainActivity)getActivity();
 
@@ -114,6 +133,29 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		}
 
 	}
+
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
+		super.onCreateContextMenu(menu, v, menuinfo);
+
+		menu.setHeaderTitle("Select the Action");
+		menu.add(0, v.getId(), 0, "MessageInfo");
+	}
+
+	public boolean onContextItemSelected(MenuItem item){
+
+		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+
+		if(item.getTitle() == "MessageInfo"){
+			MainActivity act1 = (MainActivity) getActivity();
+			act1.startMessageInfo(convList.get(info.position).getMsg(), convList.get(info.position).getStatus(),
+									convList.get(info.position).getDate());
+		}
+
+
+
+		return true;
+	}
+
 
 	/**
 	 * Call this method to Send message to opponent. The current implementation

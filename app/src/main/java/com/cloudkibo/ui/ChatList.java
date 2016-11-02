@@ -106,8 +106,9 @@ public class ChatList extends CustomFragment implements IFragmentName
 	public void onClick(View v)
 	{
 		super.onClick(v);
-		if (v.getId() == R.id.btnNewChat)
+		if (v.getId() == R.id.btnNewChat) {
 			startActivity(new Intent(getActivity(), NewChat.class));
+		}
 	}
 
 	public void loadChatList()
