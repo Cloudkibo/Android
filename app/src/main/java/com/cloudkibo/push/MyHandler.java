@@ -80,6 +80,27 @@ public class MyHandler extends NotificationsHandler {
                         MainActivity.mainActivity.ToastNotify2("You are added to a group.");
                     }
                 }
+                else if(payload.getString("type").equals("group:chat_received")){
+                    if (MainActivity.isVisible) {
+                        loadSpecificGroupChatFromServer(payload.getString("unique_id"));
+                        MainActivity.mainActivity.ToastNotify(nhMessage);
+                        MainActivity.mainActivity.ToastNotify2("got push notification for chat message.");
+                    } else {
+                        String displayName = "";
+                        DatabaseHandler db = new DatabaseHandler(context);
+                        JSONArray contactInAddressBook = db.getSpecificContact(payload.getString("senderId"));
+                        if(contactInAddressBook.length() > 0) {
+                            displayName = contactInAddressBook.getJSONObject(0).getString("display_name");
+                        } else {
+                            displayName = payload.getString("senderId");
+                        }
+                        sendNotification(
+                                displayName,
+                                payload.getString("msg")
+                        );
+                        loadSpecificGroupChatFromServer(payload.getString("unique_id"));
+                    }
+                }
 
 
             }
@@ -179,6 +200,60 @@ public class MyHandler extends NotificationsHandler {
 
                     } else {
                         Utility.sendLogToServer(""+ userDetail.get("phone") +" did not get message from API. SERVER gave NULL");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.execute();
+
+    }
+
+    private void loadSpecificGroupChatFromServer(final String uniqueid) {
+
+        final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+
+        Utility.sendLogToServer(""+ userDetail.get("phone") +" is going to fetch the group message using API.");
+        if (accessToken == null) {
+            Utility.sendLogToServer(""+ userDetail.get("phone") +" could not get the group message using API as Facebook accountkit did not give auth token.");
+            return ;
+        }
+
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunction = new UserFunctions();
+                return userFunction.getSingleGroupChat(uniqueid, accessToken.getToken());
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                try {
+
+                    if (row != null) {
+                        DatabaseHandler db = new DatabaseHandler(
+                                ctx.getApplicationContext());
+
+                        Log.i("MyHandler", row.toString());
+
+                        // todo @dayem please test following when you are ready to send messsage, this is saving the received chat message
+
+                        db.addGroupChat(row.getString("from"), row.getString("from_fullname"), row.getString("msg"),
+                                row.getString("date"), row.getString("type"),
+                                row.getString("unique_id"),
+                                row.getString("group_unique_id"));
+
+                        Utility.sendLogToServer(""+ userDetail.get("phone") +" got the group message using API and saved to Database: "+ row.toString());
+
+                        if (MainActivity.isVisible) {
+                            // todo @dayem please update the UI for incoming group chat when UI logic is done
+                            ///MainActivity.mainActivity.handleIncomingChatMessage("im", row);
+                        }
+
+                    } else {
+                        Utility.sendLogToServer(""+ userDetail.get("phone") +" did not get group message from API. SERVER gave NULL");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

@@ -53,6 +53,7 @@ public class UserFunctions {
     private static String sendChatStatusURL =       baseURL + "/api/userchat/updateStatus";
     private static String getPartialChatURL =       baseURL + "/api/userchat/partialchatsync";
     private static String getSingleChatURL =        baseURL + "/api/userchat/getsinglechat";
+    private static String getSingleGroupChatURL =   baseURL + "/api/groupchat/fetchSingleChat";
     private static String sendLogURL =              baseURL + "/api/users/log";
     private static String createGroupURL =          baseURL + "/api/groupmessaging/";
     
@@ -270,6 +271,13 @@ public class UserFunctions {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("uniqueid", id));
         JSONObject response = connection.sendObjectToServer(getSingleChatURL, authtoken, params);
+        return response;
+    }
+
+    public JSONObject getSingleGroupChat(String id, String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("unique_id", id));
+        JSONObject response = connection.sendObjectToServer(getSingleGroupChatURL, authtoken, params);
         return response;
     }
 	

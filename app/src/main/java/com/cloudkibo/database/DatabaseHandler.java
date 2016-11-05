@@ -432,7 +432,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     
     
     public void addChat(String to, String from, String from_fullname, String msg, String date, String status,
-                        String uniqueid) {
+                         String uniqueid) {
 
         String myPhone = getUserDetails().get("phone");
         String contactPhone = "";
@@ -453,6 +453,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Inserting Row
         db.insert(UserChat.TABLE_USERCHAT, null, values);
+        db.close(); // Closing database connection
+    }
+
+    public void addGroupChat(String from, String from_fullname, String msg, String date, String type,
+                        String uniqueid, String group_unique_id) {
+
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("_from", from); // FROM
+        values.put(UserChat.USERCHAT_FROM_FULLNAME, from_fullname); // FROM FULL NAME
+        values.put(UserChat.USERCHAT_MSG, msg); // CHAT MESSAGE
+        values.put(UserChat.USERCHAT_DATE, date); // DATE
+        values.put("unique_id", uniqueid);
+        values.put("group_unique_id", group_unique_id); // Contact
+        values.put("type", type); // Contact
+
+        // Inserting Row
+        db.insert("GROUPCHAT", null, values);
         db.close(); // Closing database connection
     }
 
