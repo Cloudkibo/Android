@@ -56,6 +56,12 @@ public class UserFunctions {
     private static String getSingleGroupChatURL =   baseURL + "/api/groupchat/fetchSingleChat";
     private static String sendLogURL =              baseURL + "/api/users/log";
     private static String createGroupURL =          baseURL + "/api/groupmessaging/";
+    public static String getGroupInfo =          baseURL + "/api/groupmessaging/specificGroup";
+    public static String getMyGroups =          baseURL + "/api/groupmessaginguser/mygroups";
+    public static String sendGroupChat =          baseURL + "/api/groupchat/";
+    public static String addGroupMembers =          baseURL + "/api/groupmessaginguser/";
+    public static String leaveGroup =          baseURL + "/api/groupmessaginguser/leaveGroup";
+    public static String groupMembers =          baseURL + "/api/groupmessaginguser/myspecificgroupsmembers";
     
     
     
@@ -240,6 +246,10 @@ public class UserFunctions {
          return connection.sendJSONObjectToServer(createGroupURL, authtoken, data);
     }
 
+    public JSONObject addGroupMembers(JSONObject data, String authtoken){
+        return connection.sendJSONObjectToServer(addGroupMembers, authtoken, data);
+    }
+
     public JSONObject sendChatMessageStatusToServer(JSONObject data, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         try{
@@ -253,10 +263,30 @@ public class UserFunctions {
         return response;
     }
 
+    public JSONObject sendGroupChat(String group_unique_id,String from,String type, String msg, String from_fullname, String unique_id,  String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("group_unique_id", group_unique_id));
+        params.add(new BasicNameValuePair("from", from));
+        params.add(new BasicNameValuePair("type", type));
+        params.add(new BasicNameValuePair("msg", msg));
+        params.add(new BasicNameValuePair("from_fullname", from_fullname));
+        params.add(new BasicNameValuePair("unique_id", unique_id));
+        JSONObject response = connection.sendObjectToServer(sendGroupChat, authtoken, params);
+        return response;
+    }
+
     public JSONObject getAllChatList(String user1, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("user1", user1));
         JSONObject response = connection.sendObjectToServer(getAllChatURL, authtoken, params);
+        return response;
+    }
+
+    public JSONObject leaveGroup(String group_id, String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("group_unique_id ", group_id));
+        JSONObject response = connection.sendObjectToServer(leaveGroup, authtoken, params);
         return response;
     }
 
@@ -359,6 +389,21 @@ public class UserFunctions {
 		JSONObject response = connection.sendObjectToServer(saveContactURL, authtoken, params);
         return response;
 	}
+
+    public JSONObject getGroupInfo(String group_id, String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("unique_id", group_id));
+        JSONObject response = connection.sendObjectToServer(getGroupInfo, authtoken, params);
+        return response;
+    }
+
+    public JSONObject getAllGroupInfo(String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        JSONObject groupdata = connection.getDataFromServer(getMyGroups, authtoken);
+        return groupdata;
+    }
+
+
 
     public static JSONArray sortJSONArray(JSONArray jsonArr, String key) {
 

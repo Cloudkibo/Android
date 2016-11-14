@@ -58,6 +58,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
     private DatabaseHandler db;
     private String group_id = "";
     private String group_name = "";
+    CustomContactAdapter contactAdapter;
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
      */
@@ -71,7 +72,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         db = new DatabaseHandler(getContext());
         gv=(GridView) v.findViewById(R.id.gridView1);
-        final CustomContactAdapter contactAdapter = new CustomContactAdapter(inflater, getContacts(), getPhone());
+        contactAdapter = new CustomContactAdapter(inflater, getContacts(), getPhone());
         gv.setAdapter(contactAdapter);
         final AddMembers temp = this;
         Button add_contacts = (Button) v.findViewById(R.id.add_contacts);
@@ -192,7 +193,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
         try {
             body.put("group_name", group_name);
             body.put("unique_id",  group_id);
-            body.put("members",  new JSONArray(Arrays.asList(getPhone())));
+            body.put("members",  new JSONArray(contactAdapter.getSelected_contacts()));
             groupPost.put("body", body);
         } catch (JSONException e) {
             e.printStackTrace();
