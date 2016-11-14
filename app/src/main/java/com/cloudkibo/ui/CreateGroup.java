@@ -68,7 +68,7 @@ public class CreateGroup extends CustomFragment implements IFragmentName
         create_group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String group_id = randomString(10)+ DateFormat.getDateTimeInstance().format(new Date());
+                String group_id = randomString(10);
                 Toast.makeText(getContext(), "Group Name: " + group_name.getText().toString(), Toast.LENGTH_LONG).show();
                 db.createGroup(group_id, group_name.getText().toString(), 0);
                 AddMembers nextFrag= new AddMembers();
@@ -112,12 +112,9 @@ public class CreateGroup extends CustomFragment implements IFragmentName
 
 
     String randomString(final int length) {
-        Random r = new Random(); // perhaps make it a class variable so you don't make a new one every time
-        StringBuilder sb = new StringBuilder();
-        for(int i = 0; i < length; i++) {
-            char c = (char)(r.nextInt((int)(Character.MAX_VALUE)));
-            sb.append(c);
-        }
-        return sb.toString();
+        String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+        uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+        uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+        return uniqueid;
     }
 }

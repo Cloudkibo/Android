@@ -227,7 +227,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public JSONArray getAllGroups() throws JSONException {
         JSONArray groups = new JSONArray();
 
-        String selectQuery = "SELECT unique_id, group_name, is_mute FROM GROUPINFO";
+        String selectQuery = "SELECT unique_id, group_name, is_mute, date_creation FROM GROUPINFO";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -241,7 +241,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 contact.put("unique_id", cursor.getString(0));
                 contact.put("group_name", cursor.getString(1));
                 contact.put("is_mute", cursor.getString(2));
-
+                contact.put("date_creation", cursor.getString(3));
                 groups.put(contact);
 
                 cursor.moveToNext();
