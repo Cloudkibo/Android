@@ -38,21 +38,29 @@ public class GroupUtility {
         db = new DatabaseHandler(ctx);
     }
 
-    public void syncGroupToLocalDatabase(final String group_id, final String auth_token){
+    public void syncGroupToLocalDatabase(final String group_id, final String sender_phone, final String group_name,  final String auth_token){
+
+        db.createGroup(group_id, group_name, 0);
 
         new AsyncTask<String, String, JSONObject>() {
 
             @Override
             protected JSONObject doInBackground(String... args) {
                JSONObject temp = user.getGroupInfo(group_id, auth_token);
-                sendNotification("Local Database Updated", temp.toString());
+//                sendNotification("Local Database Updated", temp.toString());
                 return temp;
             }
 
             @Override
             protected void onPostExecute(JSONObject row) {
                 if(row != null){
-//                    sendNotification("Local Database Updated", row.toString());
+                    try {
+                        row = row.getJSONArray("msg").getJSONObject(0);
+                        sendNotification("Local Database Updated", row.toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+
+                    }
                 }
             }
 
@@ -140,6 +148,54 @@ public class GroupUtility {
 
         }.execute();
 
+    }
+
+
+    public void leaveGroup(final String group_id, String member_phone, final String authtoken){
+        db.leaveGroup(group_id,member_phone);
+
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunctions = new UserFunctions();
+                return  user.leaveGroup(group_id,authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                if(row != null){
+                    Toast.makeText(ctx, row.toString(), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
+                }
+            }
+
+        }.execute();
+
+
+    }
+
+    public int adminCount(String group_id){
+        try {
+            JSONArray admins = db.getGroupAdmins(group_id);
+            return admins.length();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public boolean isAdmin(String group_id){
+        DatabaseHandler db = new DatabaseHandler(ctx);
+        try {
+            JSONObject details = db.getMyDetailsInGroup(group_id);
+            if(details.getString("isAdmin").equals("1")){
+                return true;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private void sendNotification(String header, String msg) {

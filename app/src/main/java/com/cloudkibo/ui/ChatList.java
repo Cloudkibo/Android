@@ -29,6 +29,7 @@ import com.cloudkibo.NewChat;
 //import com.cloudkibo.R;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
+import com.cloudkibo.database.CloudKiboDatabaseContract;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.ChatItem;
@@ -133,7 +134,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 			ArrayList<ChatItem> chatList1 = new ArrayList<ChatItem>();
 
 			JSONArray chats = db.getChatList();
-			JSONArray groups = db.getAllGroups();
+//			JSONArray groups = db.getAllGroups();
+			JSONArray groups = db.getMyGroups(db.getUserDetails().get("phone"));
 			for (int i=0; i < chats.length(); i++) {
 				JSONObject row = chats.getJSONObject(i);
 

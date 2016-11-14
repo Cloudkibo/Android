@@ -78,9 +78,9 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         if (args  != null){
             group_id = args.getString("group_id");
         }
+        Button leave_group = (Button) v.findViewById(R.id.leave_group);
         lv=(ListView) v.findViewById(R.id.listView);
         lv.setAdapter(new CustomParticipantAdapter(inflater, getMembers(), getContext(),group_id));
-
         LinearLayout add_members = (LinearLayout) v.findViewById(R.id.add_members);
         if(isAdmin(group_id)){
             add_members.setVisibility(View.VISIBLE);
@@ -115,6 +115,18 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                 });
                 AlertDialog alert = builder.create();
                 alert.show();
+            }
+        });
+
+        leave_group.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                GroupUtility groupUtility = new GroupUtility(getContext());
+                if(isAdmin(group_id) && groupUtility.adminCount(group_id) <= 1 ){
+                    return;
+                }else {
+                    leaveGroup(group_id);
+                }
             }
         });
 
@@ -218,6 +230,12 @@ public class GroupSetting extends CustomFragment implements IFragmentName
             e.printStackTrace();
         }
         return false;
+    }
+
+    public void leaveGroup(String group_id){
+        GroupUtility groupUtility = new GroupUtility(getContext());
+        DatabaseHandler db = new DatabaseHandler(getContext());
+        groupUtility.leaveGroup(group_id, db.getUserDetails().get("phone"), authtoken);
     }
 
     public String getFragmentName()

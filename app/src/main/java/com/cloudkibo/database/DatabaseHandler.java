@@ -210,9 +210,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("group_unique_id", group_unique_id); // values : Group Name
         values.put("member_phone", member_phone); //
         values.put("isAdmin", isAdmin);// values : 0 or 1
-        values.put("membership_status", membership_status);// values : left or joined
+        values.put("membership_status", "joined");// values : left or joined
         // Inserting Row
         db.insert("GROUPMEMBER", null, values);
+        db.close(); // Closing database connection
+    }
+
+    public void leaveGroup(String group_unique_id, String member_phone){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put("membership_status", "left");
+        db.update("GROUPMEMBER",args,"group_unique_id='"+group_unique_id+"' and member_phone='"+member_phone+"'",null);
         db.close(); // Closing database connection
     }
 
@@ -228,6 +236,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         JSONArray groups = new JSONArray();
 
         String selectQuery = "SELECT unique_id, group_name, is_mute, date_creation FROM GROUPINFO";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("unique_id", cursor.getString(0));
+                contact.put("group_name", cursor.getString(1));
+                contact.put("is_mute", cursor.getString(2));
+                contact.put("date_creation", cursor.getString(3));
+                groups.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return groups;
+    }
+
+    public JSONArray getMyGroups(String member_phone) throws JSONException {
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT unique_id, group_name, is_mute, date_creation FROM GROUPINFO WHERE unique_id IN (SELECT group_unique_id FROM GROUPMEMBER WHERE membership_status = 'joined' AND member_phone = '"+ member_phone +"')";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

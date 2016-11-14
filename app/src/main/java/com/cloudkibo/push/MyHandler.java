@@ -60,10 +60,10 @@ public class MyHandler extends NotificationsHandler {
                     if (MainActivity.isVisible) {
                         MainActivity.mainActivity.ToastNotify2("You are added to a group.");
                     }
-                    sendNotification("You were added to the group", "Group Name: " + payload.getString("group_name") + " by " + payload.getString("senderId"));
+                    sendNotification("You were added to the group", payload.toString());
                     GroupUtility groupUtility = new GroupUtility(context);
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();
-                    groupUtility.syncGroupToLocalDatabase(payload.getString("groupId"), accessToken.getToken());
+                    groupUtility.syncGroupToLocalDatabase(payload.getString("groupId"), payload.getString("senderId"), payload.getString("group_name"), accessToken.getToken());
                 }
             }
             if(!payload.has("uniqueId")) {
