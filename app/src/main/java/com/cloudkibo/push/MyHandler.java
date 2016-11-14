@@ -23,6 +23,7 @@ import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.SplashScreen;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
 import com.facebook.accountkit.AccessToken;
@@ -54,10 +55,22 @@ public class MyHandler extends NotificationsHandler {
         JSONObject payload;
         try {
             payload = new JSONObject(nhMessage);
+            if (payload.has("type")) {
+                if(payload.getString("type").equals("group:you_are_added")){
+                    if (MainActivity.isVisible) {
+                        MainActivity.mainActivity.ToastNotify2("You are added to a group.");
+                    }
+                    sendNotification("You were added to the group", "Group Name: " + payload.getString("group_name") + " by " + payload.getString("senderId"));
+                    GroupUtility groupUtility = new GroupUtility(context);
+                    final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+                    groupUtility.syncGroupToLocalDatabase(payload.getString("groupId"), accessToken.getToken());
+                }
+            }
             if(!payload.has("uniqueId")) {
                 return;
             }
             if (payload.has("type")) {
+
                 if(payload.getString("type").equals("status")){
                     try {
                         DatabaseHandler db = new DatabaseHandler(ctx.getApplicationContext());
@@ -75,11 +88,7 @@ public class MyHandler extends NotificationsHandler {
                     return ;
                 }
 
-                if(payload.getString("type").equals("group:you_are_added")){
-                    if (MainActivity.isVisible) {
-                        MainActivity.mainActivity.ToastNotify2("You are added to a group.");
-                    }
-                }
+
                 else if(payload.getString("type").equals("group:chat_received")){
                     if (MainActivity.isVisible) {
                         loadSpecificGroupChatFromServer(payload.getString("unique_id"));

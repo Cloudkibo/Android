@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +24,7 @@ import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomContactAdapter;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.ChatItem;
@@ -53,6 +55,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     private ArrayList<String> messages = new ArrayList<String>();
     private ArrayList<String> names = new ArrayList<String>();
     private String group_id="";
+    private GroupChatAdapter groupAdapter;
 
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -66,32 +69,43 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         final GroupChatUI temp = this;
         Button settings = (Button) v.findViewById(R.id.setting);
-        final EditText my_message = (EditText) v.findViewById(R.id.my_message);
-        lv=(ListView) v.findViewById(R.id.listView);
-        lv.setAdapter(new GroupChatAdapter(inflater, messages,names));
-        ImageView send_button = (ImageView) v.findViewById(R.id.send_button);
         Bundle args = getArguments();
-
         if (args  != null){
             group_id = args.getString("group_id");
             Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
         }
+        final EditText my_message = (EditText) v.findViewById(R.id.my_message);
+        lv=(ListView) v.findViewById(R.id.listView);
+        populateMessages();
+        groupAdapter = new GroupChatAdapter(inflater, messages,names);
+        lv.setAdapter(groupAdapter);
+        ImageView send_button = (ImageView) v.findViewById(R.id.send_button);
+
 
         send_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String message = my_message.getText().toString();
-                if(message.trim().equals("")){
-                    return;
-                }else{
-                    messages.add(message);
-                    names.add("");
-                    lv.setAdapter(new GroupChatAdapter(inflater, messages,names));
-                    my_message.setText("");
-                }
-
+                sendMessage(my_message);
             }
         });
+
+
+
+//        send_button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String message = my_message.getText().toString();
+//                if(message.trim().equals("")){
+//                    return;
+//                }else{
+//                    messages.add(message);
+//                    names.add("");
+//                    lv.setAdapter(new GroupChatAdapter(inflater, messages,names));
+//                    my_message.setText("");
+//                }
+//
+//            }
+//        });
 
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +135,32 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         super.onClick(v);
     }
 
+    public void sendMessage(EditText my_message){
+        String message = my_message.getText().toString();
+        if(message.trim().equals("")){
+           return;
+        }
+        messages.add(message);
+        names.add("");
+        groupAdapter.notifyDataSetChanged();
+        GroupUtility groupUtility = new GroupUtility(getContext());
+        groupUtility.sendGroupMessage(group_id, message, authtoken);
+        my_message.setText("");
+    }
+
+    public void populateMessages(){
+        DatabaseHandler db = new DatabaseHandler(getContext());
+        try {
+            JSONArray msgs = db.getGroupMessages(group_id);
+            Toast.makeText(getContext(), "In Messages: " + msgs.length(), Toast.LENGTH_LONG).show();
+            for(int i = 0; i < msgs.length(); i++){
+                messages.add(msgs.getJSONObject(i).get("msg").toString());
+                names.add(msgs.getJSONObject(i).get("from_fullname").toString());
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 

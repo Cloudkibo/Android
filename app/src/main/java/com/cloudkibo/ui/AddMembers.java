@@ -121,7 +121,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
             protected void onPostExecute(JSONObject row) {
                 if(row != null){
                     Toast.makeText(getContext(), row.toString(), Toast.LENGTH_LONG).show();
-                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -197,7 +197,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return groupPost;
+        return body;
     }
 
     public void addMembers(ArrayList<String> phones){

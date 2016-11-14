@@ -196,7 +196,7 @@ public class ChatItem
 	 */
 	public boolean isGroup()
 	{
-		return isGroup;
+		return this.isGroup;
 	}
 
 	/**

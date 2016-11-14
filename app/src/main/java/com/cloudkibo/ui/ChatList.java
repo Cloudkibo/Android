@@ -75,8 +75,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 		list.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int pos,
-					long arg3)
+			public void onItemClick(AdapterView<?> adapter, View v, int pos,long arg3)
 			{
 
 				Bundle bundle = new Bundle();
@@ -84,12 +83,27 @@ public class ChatList extends CustomFragment implements IFragmentName
 				bundle.putString("contactphone", chatList.get(pos).getTitle());
 				bundle.putString("authtoken", authtoken);
 
-				GroupChat groupChatFragment = new GroupChat();
-				groupChatFragment.setArguments(bundle);
-
-				getFragmentManager().beginTransaction()
+				ChatItem item = (ChatItem) chatList.get(pos);
+				if(item.isGroup()){
+					GroupChatUI groupChatFragment = new GroupChatUI();
+					bundle.putString("group_id", chatList.get(pos).getTitle());
+					bundle.putString("authtoken", authtoken);
+					groupChatFragment.setArguments(bundle);
+					getFragmentManager().beginTransaction()
+							.replace(R.id.content_frame, groupChatFragment, "groupChatFragmentTag")
+							.addToBackStack(chatList.get(pos).getName()).commit();
+				}else{
+					GroupChat groupChatFragment = new GroupChat();
+					bundle.putString("contactusername", chatList.get(pos).getName());
+					bundle.putString("contactphone", chatList.get(pos).getTitle());
+					bundle.putString("authtoken", authtoken);
+					groupChatFragment.setArguments(bundle);
+					getFragmentManager().beginTransaction()
 						.replace(R.id.content_frame, groupChatFragment, "groupChatFragmentTag")
 						.addToBackStack(chatList.get(pos).getName()).commit();
+
+
+			}
 
 			}
 		});
@@ -119,7 +133,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 			ArrayList<ChatItem> chatList1 = new ArrayList<ChatItem>();
 
 			JSONArray chats = db.getChatList();
-
+			JSONArray groups = db.getAllGroups();
 			for (int i=0; i < chats.length(); i++) {
 				JSONObject row = chats.getJSONObject(i);
 
@@ -132,6 +146,22 @@ public class ChatList extends CustomFragment implements IFragmentName
 						false, Integer.parseInt(row.getString("pendingMsgs"))));
 
 			}
+
+
+			for (int i=0; i < groups.length(); i++) {
+				JSONObject row = groups.getJSONObject(i);
+				chatList1.add(new ChatItem(
+								row.getString("group_name"),
+								row.getString("unique_id"),
+								"Last Message",
+								row.getString("date_creation"),
+								R.drawable.user1, false,
+								true, 0));
+
+							}
+
+
+
 
 			this.chatList = new ArrayList<ChatItem>(chatList1);
 			//this.chatList.addAll(chatList);
