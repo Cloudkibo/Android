@@ -1,6 +1,8 @@
 package com.cloudkibo.ui;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +24,9 @@ import com.cloudkibo.NewChat;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomContactAdapter;
 import com.cloudkibo.custom.CustomFragment;
+import com.cloudkibo.database.CloudKiboDatabaseContract;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.ChatItem;
@@ -51,14 +56,15 @@ public class GroupSetting extends CustomFragment implements IFragmentName
     Context context;
     String group_id;
     ListView lv;
-
+    CharSequence [] contactList;
+    String [] phoneList;
 
 
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
      */
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.group_info, null);
@@ -74,6 +80,43 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         }
         lv=(ListView) v.findViewById(R.id.listView);
         lv.setAdapter(new CustomParticipantAdapter(inflater, getMembers(), getContext(),group_id));
+
+        LinearLayout add_members = (LinearLayout) v.findViewById(R.id.add_members);
+        if(isAdmin(group_id)){
+            add_members.setVisibility(View.VISIBLE);
+        }
+        add_members.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final CharSequence[] items = getAddtionalMembers();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle("Add Members");
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // TODO Auto-generated method stub
+                        Toast.makeText(getContext(), phoneList[which], Toast.LENGTH_LONG).show();
+                        DatabaseHandler db = new DatabaseHandler(getContext());
+                        db.addGroupMember(group_id,phoneList[which],0,"joined");
+                        lv.setAdapter(new CustomParticipantAdapter(inflater, getMembers(), getContext(),group_id));
+                        GroupUtility groupUtility = new GroupUtility(getContext());
+                        String member_phone[] = new String[]{phoneList[which]};
+                        try {
+                            JSONObject info = db.getGroupInfo(group_id);
+                            String group_name = info.getString("group_name");
+                            groupUtility.addMemberOnServer(group_name,group_id,member_phone,authtoken);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        dialog.cancel();
+
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
 
 
         return v;
@@ -118,6 +161,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         return new JSONArray();
    }
 
+
     public void setGroupInfo(View v){
         Bundle args = getArguments();
         if (args  != null){
@@ -134,6 +178,46 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public CharSequence[] getAddtionalMembers(){
+
+
+        DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+
+        try {
+
+            JSONArray jsonA = db.getMembersNotInGroup(group_id);
+
+            jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
+
+            contactList = new String[jsonA.length()];
+            phoneList  = new String[jsonA.length()];
+
+            //This loop adds contacts to the display list which are on cloudkibo
+            for (int i=0; i < jsonA.length(); i++) {
+                JSONObject row = jsonA.getJSONObject(i);
+                contactList[i] = row.getString("display_name");
+                phoneList[i] = row.getString(CloudKiboDatabaseContract.Contacts.CONTACT_PHONE);
+            }
+            return contactList;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public boolean isAdmin(String group_id){
+        DatabaseHandler db = new DatabaseHandler(getContext());
+        try {
+            JSONObject details = db.getMyDetailsInGroup(group_id);
+            if(details.getString("isAdmin").equals("1")){
+                return true;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 
     public String getFragmentName()
