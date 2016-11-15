@@ -23,7 +23,7 @@ import com.cloudkibo.database.CloudKiboDatabaseContract.UserChat;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 8;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -108,15 +108,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "group_name TEXT, "
                 + "group_icon BLOB, "
                 + "date_creation DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
-                + "unique_id TEXT, "
+                + "unique_id TEXT NOT NULL UNIQUE, "
                 + "is_mute INTEGER DEFAULT 0 "+ ")";
         db.execSQL(CREATE_GROUP);
 
         String CREATE_GROUP_MEMBER = "CREATE TABLE GROUPMEMBER ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "group_unique_id TEXT, "
-                + "member_phone TEXT, "
-                + "isAdmin INTEGER, "
+                + "member_phone TEXT UNIQUE, "
+                + "isAdmin TEXT, "
                 + "date_joined DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
                 + "date_left DATETIME, "
                 + "membership_status TEXT "+ ")";
@@ -189,6 +189,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * This method is called when we need to create a new group and store it in the database
      * */
     public void createGroup(String unique_id, String group_name, int isMute) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("group_name", group_name); // values : Group Name
+        values.put("unique_id", unique_id); // values : random string
+        values.put("is_mute", isMute);// values : 0 or 1
+
+        // Inserting Row
+        db.insert("GROUPINFO", null, values);
+        db.close(); // Closing database connection
+    }
+    public void syncGroup(String unique_id, String group_name, int isMute, String date) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -196,6 +207,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("group_name", group_name); // values : Group Name
         values.put("unique_id", unique_id); // values : random string
         values.put("is_mute", isMute);// values : 0 or 1
+        values.put("date_creation", date);// values : 0 or 1
 
         // Inserting Row
         db.insert("GROUPINFO", null, values);
@@ -210,11 +222,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("group_unique_id", group_unique_id); // values : Group Name
         values.put("member_phone", member_phone); //
         values.put("isAdmin", isAdmin);// values : 0 or 1
-        values.put("membership_status", "joined");// values : left or joined
+        values.put("membership_status", membership_status);// values : left or joined
         // Inserting Row
         db.insert("GROUPMEMBER", null, values);
         db.close(); // Closing database connection
     }
+
+    public void syncGroupMember(String group_unique_id, String member_phone, int isAdmin, String membership_status, String date_joined) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("group_unique_id", group_unique_id); // values : Group Name
+        values.put("member_phone", member_phone); //
+        values.put("isAdmin", isAdmin);// values : 0 or 1
+        values.put("membership_status", membership_status);// values : left or joined
+        values.put("date_joined", date_joined);// values : left or joined
+        // Inserting Row
+        db.insert("GROUPMEMBER", null, values);
+        db.close(); // Closing database connection
+    }
+
+
 
     public void leaveGroup(String group_unique_id, String member_phone){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -231,6 +258,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.update("GROUPMEMBER",args,"group_unique_id='"+group_unique_id+"' and member_phone='"+member_phone+"'",null);
         db.close(); // Closing database connection
     }
+
+
+
 
     public JSONArray getAllGroups() throws JSONException {
         JSONArray groups = new JSONArray();
@@ -342,10 +372,36 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return contact;
     }
 
-    public JSONArray getGroupMembers(String group_id) throws JSONException {
+    public JSONArray getGroupMemberDetail(String group_id, String member_phone) throws JSONException {
         JSONArray contacts = new JSONArray();
         String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM GROUPMEMBER, "+ Contacts.TABLE_CONTACTS +"  where group_unique_id='"+ group_id +"'"
-                +" AND phone = member_phone" ;
+                +" AND phone = '"+ member_phone +"'" ;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+                JSONObject contact = new JSONObject();
+                contact.put(Contacts.CONTACT_PHONE, cursor.getString(0));
+                contact.put("isAdmin", cursor.getString(1));
+                contact.put("date_joined", cursor.getString(2));
+                contact.put("display_name", cursor.getString(3));
+                contacts.put(contact);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return contacts;
+    }
+
+    public JSONArray getGroupMembers(String group_id) throws JSONException {
+        JSONArray contacts = new JSONArray();
+        String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM GROUPMEMBER LEFT JOIN "+ Contacts.TABLE_CONTACTS +" ON phone = member_phone where group_unique_id='"+ group_id +"'";
+//        String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM GROUPMEMBER, "+ Contacts.TABLE_CONTACTS +" where   group_unique_id='"+ group_id +"' AND phone = member_phone";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // Move to first row

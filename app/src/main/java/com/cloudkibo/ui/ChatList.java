@@ -126,6 +126,11 @@ public class ChatList extends CustomFragment implements IFragmentName
 		}
 	}
 
+//	@Override
+//	protected View onResume(){
+//		super.onResume();
+//	}
+
 	public void loadChatList()
 	{
 		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());

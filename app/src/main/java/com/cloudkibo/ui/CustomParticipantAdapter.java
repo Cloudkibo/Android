@@ -63,7 +63,19 @@ public class CustomParticipantAdapter extends BaseAdapter{
         holder.isAdmin=(TextView) rowView.findViewById(R.id.isAdmin);
 //        holder.tv.setText(result[position]);
         try {
-            holder.name.setText(members.getJSONObject(position).getString("display_name"));
+            Toast.makeText(context, members.toString(), Toast.LENGTH_LONG ).show();
+            DatabaseHandler db = new DatabaseHandler(context);
+            if(!members.getJSONObject(position).has("display_name")){
+                if(members.getJSONObject(position).getString("phone").toString().equals(db.getUserDetails().get("phone"))){
+                    holder.name.setText(db.getUserDetails().get("display_name"));
+                }else{
+                    holder.name.setText("Anonymous");
+                }
+            }
+            else{
+                holder.name.setText(members.getJSONObject(position).getString("display_name"));
+            }
+
             if(members.getJSONObject(position).getString("isAdmin").equals("1")){
                 holder.isAdmin.setVisibility(View.VISIBLE);
             }
@@ -113,7 +125,7 @@ public class CustomParticipantAdapter extends BaseAdapter{
     public JSONArray getMembers(DatabaseHandler db){
         try {
             JSONArray members = db.getGroupMembers(group_id);
-            members.put(db.getMyDetailsInGroup(group_id));
+//            members.put(db.getMyDetailsInGroup(group_id));
             return  members;
         } catch (JSONException e) {
             e.printStackTrace();
