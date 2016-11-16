@@ -73,6 +73,8 @@
           android:divider="@android:color/transparent"
           android:dividerHeight="10.0sp"
           android:padding="@dimen/pad_10dp"
+          android:transcriptMode="alwaysScroll"
+          android:stackFromBottom="true"
           >
       </ListView>
   </LinearLayout>

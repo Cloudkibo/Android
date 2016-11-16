@@ -63,7 +63,20 @@ public class MyHandler extends NotificationsHandler {
                     sendNotification("You were added to the group", payload.toString());
                     GroupUtility groupUtility = new GroupUtility(context);
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();
-                    groupUtility.syncGroupToLocalDatabase(payload.getString("groupId"), payload.getString("senderId"), payload.getString("group_name"), accessToken.getToken());
+                    groupUtility.updateGroupToLocalDatabase(payload.getString("groupId"), payload.getString("senderId"), payload.getString("group_name"), accessToken.getToken());
+                }
+
+                if(payload.getString("type").equals("group:chat_received")){
+                    sendNotification("New Message Received", payload.toString());
+                    GroupUtility groupUtility = new GroupUtility(context);
+                    final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+                    groupUtility.updateGroupChat(payload.toString(), accessToken.getToken());
+                }
+                if(payload.getString("type").equals("group:added_to_group")){
+                    sendNotification("New Message Received", payload.toString());
+                    GroupUtility groupUtility = new GroupUtility(context);
+                    final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+                    groupUtility.updateGroupMembers(payload.toString(), accessToken.getToken());
                 }
             }
             if(!payload.has("uniqueId")) {

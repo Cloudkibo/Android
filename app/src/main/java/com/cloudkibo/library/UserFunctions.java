@@ -144,6 +144,8 @@ public class UserFunctions {
         JSONObject response = connection.sendObjectToServerNoAuth(sendLogURL, params);
         return response;
     }
+
+
     
     
     
@@ -280,6 +282,13 @@ public class UserFunctions {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("user1", user1));
         JSONObject response = connection.sendObjectToServer(getAllChatURL, authtoken, params);
+        return response;
+    }
+
+    public JSONArray getGroupMembers(String group_id, String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("unique_id", group_id));
+        JSONArray response = connection.sendObjectReturnArray(groupMembers, authtoken, params);
         return response;
     }
 

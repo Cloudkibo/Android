@@ -58,7 +58,8 @@ public class GroupSetting extends CustomFragment implements IFragmentName
     ListView lv;
     CharSequence [] contactList;
     String [] phoneList;
-
+    JSONArray participants;
+    LayoutInflater inflater;
 
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -68,7 +69,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                              Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.group_info, null);
-
+        this.inflater = inflater;
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
 //        String names[] = getMembers();
 //        Toast.makeText(getContext(), getMembers().length, Toast.LENGTH_LONG).show();
@@ -80,7 +81,8 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         }
         Button leave_group = (Button) v.findViewById(R.id.leave_group);
         lv=(ListView) v.findViewById(R.id.listView);
-        lv.setAdapter(new CustomParticipantAdapter(inflater, getMembers(), getContext(),group_id));
+        participants = getMembers();
+        lv.setAdapter(new CustomParticipantAdapter(inflater, participants, getContext(),group_id));
         LinearLayout add_members = (LinearLayout) v.findViewById(R.id.add_members);
         if(isAdmin(group_id)){
             add_members.setVisibility(View.VISIBLE);
@@ -105,6 +107,8 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                         try {
                             JSONObject info = db.getGroupInfo(group_id);
                             String group_name = info.getString("group_name");
+//                            Toast.makeText(getContext(), "Add member: "+ groupUtility.getMemberData(group_name, group_id, member_phone).toString(), Toast.LENGTH_LONG).show();
+
                             groupUtility.addMemberOnServer(group_name,group_id,member_phone,authtoken);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -123,9 +127,11 @@ public class GroupSetting extends CustomFragment implements IFragmentName
             public void onClick(View view) {
                 GroupUtility groupUtility = new GroupUtility(getContext());
                 if(isAdmin(group_id) && groupUtility.adminCount(group_id) <= 1 ){
-                    return;
+                    Toast.makeText(getContext(), "Please make someone else admin before you leave the group: " + groupUtility.adminCount(group_id), Toast.LENGTH_LONG ).show();
                 }else {
+//                    Toast.makeText(getContext(), "Left the group: " + groupUtility.adminCount(group_id), Toast.LENGTH_LONG ).show();
                     leaveGroup(group_id);
+                    Toast.makeText(getContext(), "You left the group", Toast.LENGTH_LONG ).show();
                 }
             }
         });
@@ -158,15 +164,30 @@ public class GroupSetting extends CustomFragment implements IFragmentName
        DatabaseHandler db = new DatabaseHandler(getContext());
 
        try {
-           JSONArray members = db.getGroupMembers(group_id);
-           members.put(db.getMyDetailsInGroup(group_id));
-          // Toast.makeText(getContext(), "Custom Members "+members.toString(), Toast.LENGTH_LONG).show();
-           names = new String[members.length()];
-           for(int i = 0; i < members.length(); i++)
+           participants = new JSONArray();
+           participants = db.getGroupMembers(group_id);
+//           participants.put(db.getMyDetailsInGroup(group_id));
+
+//           Toast.makeText(getContext(), "Custom Members "+participants.toString(), Toast.LENGTH_LONG).show();
+           names = new String[participants.length()];
+           for(int i = 0; i < participants.length(); i++)
            {
-               names[i] = members.getJSONObject(i).getString("display_name");
+               if(!participants.getJSONObject(i).has("display_name")){
+                   names[i] = "Anonymous";
+               }else {
+                   names[i] = participants.getJSONObject(i).getString("display_name");
+               }
+               if(participants.getJSONObject(i).getString("phone").toString().equals(db.getUserDetails().get("phone"))){
+                   names[i] = db.getUserDetails().get("display_name");
+               }
            }
-           return  members;
+           if(lv != null){
+               CustomParticipantAdapter customParticipantAdapter = new CustomParticipantAdapter(inflater, participants,getContext(), group_id);
+               lv.setAdapter(customParticipantAdapter);
+               customParticipantAdapter.notifyDataSetChanged();
+//               Toast.makeText(getContext(), "List Updated", Toast.LENGTH_LONG).show();
+           }
+           return  participants;
        } catch (JSONException e) {
            e.printStackTrace();
        }
@@ -236,11 +257,19 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         GroupUtility groupUtility = new GroupUtility(getContext());
         DatabaseHandler db = new DatabaseHandler(getContext());
         groupUtility.leaveGroup(group_id, db.getUserDetails().get("phone"), authtoken);
+        ChatList nextFrag= new ChatList();
+//        Bundle args = new Bundle();
+//        args.putString("group_id", group_id);
+//        nextFrag.setArguments(args);
+        this.getFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, nextFrag,null)
+                .addToBackStack(null)
+                .commit();
     }
 
     public String getFragmentName()
     {
-        return "Add Group Members";
+        return "GroupSetting";
     }
 
     public String getFragmentContactPhone()
