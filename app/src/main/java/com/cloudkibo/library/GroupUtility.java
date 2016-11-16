@@ -65,7 +65,7 @@ public class GroupUtility {
                         db.syncGroup(groupinfo.getString("unique_id"),groupinfo.getString("group_name"),0,groupinfo.getString("date_creation"));
 
                         //Sync Members
-                        for (int i = 0; i < t.length(); i++) {
+                        for (int i = 0; i < row.length(); i++) {
                             JSONObject memberInfo = row.getJSONObject(i);
                             String group_unique_id = memberInfo.getJSONObject("group_unique_id").getString("unique_id");
                             String member_phone = memberInfo.getString("member_phone");
@@ -241,6 +241,7 @@ public class GroupUtility {
     public int adminCount(String group_id){
         try {
             JSONArray admins = db.getGroupAdmins(group_id);
+//            Toast.makeText(ctx, admins.toString(), Toast.LENGTH_LONG).show();
             return admins.length();
         } catch (JSONException e) {
             e.printStackTrace();

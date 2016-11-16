@@ -9,7 +9,10 @@ import android.content.ContentValues;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 
 import org.acra.ACRA;
 import org.json.JSONArray;
@@ -23,7 +26,7 @@ import com.cloudkibo.database.CloudKiboDatabaseContract.UserChat;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -115,11 +118,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_GROUP_MEMBER = "CREATE TABLE GROUPMEMBER ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "group_unique_id TEXT, "
-                + "member_phone TEXT UNIQUE, "
+                + "member_phone TEXT, "
                 + "isAdmin TEXT, "
                 + "date_joined DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
                 + "date_left DATETIME, "
-                + "membership_status TEXT "+ ")";
+                + "membership_status TEXT, "
+                + "unique (group_unique_id, member_phone)"
+                + ")";
         db.execSQL(CREATE_GROUP_MEMBER);
 
         String CREATE_GROUP_CHAT = "CREATE TABLE GROUPCHAT ("
@@ -147,9 +152,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_GROUP_MUTE_SETTINGS = "CREATE TABLE MUTESETTING ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "groupid TEXT, "
-                + "isMute INTEGER, "
-                + "muteTime DATETIME, "
-                + "unMuteTime DATETIME "
+                + "isMute TEXT, "
+                + "muteTime TEXT, "
+                + "unMuteTime TEXT "
                 + ")";
         db.execSQL(CREATE_GROUP_MUTE_SETTINGS);
 
@@ -197,6 +202,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Inserting Row
         db.insert("GROUPINFO", null, values);
+
+        ContentValues args = new ContentValues();
+        args.put("groupid", unique_id); // values : random string
+        args.put("isMute", isMute);// values : 0 or 1
+        args.put("muteTime", "");// values : 0 or 1
+        args.put("unMuteTime", "");// values : 0 or 1
+        db.insert("MUTESETTING", null, values);
         db.close(); // Closing database connection
     }
     public void syncGroup(String unique_id, String group_name, int isMute, String date) {
@@ -209,8 +221,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("is_mute", isMute);// values : 0 or 1
         values.put("date_creation", date);// values : 0 or 1
 
-        // Inserting Row
-        db.insert("GROUPINFO", null, values);
+        db.insert("GROUPINFO", null, values); // Inserting Row
+
+
+        ContentValues args = new ContentValues();
+        args.put("groupid", unique_id); // values : random string
+        args.put("isMute", isMute);// values : 0 or 1
+        args.put("muteTime", "");// values : 0 or 1
+        args.put("unMuteTime", "");// values : 0 or 1
+        db.insert("MUTESETTING", null, values);
+
         db.close(); // Closing database connection
     }
     /*
@@ -247,6 +267,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues args = new ContentValues();
         args.put("membership_status", "left");
+        args.put("isAdmin", "0");
         db.update("GROUPMEMBER",args,"group_unique_id='"+group_unique_id+"' and member_phone='"+member_phone+"'",null);
         db.close(); // Closing database connection
     }
@@ -258,6 +279,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.update("GROUPMEMBER",args,"group_unique_id='"+group_unique_id+"' and member_phone='"+member_phone+"'",null);
         db.close(); // Closing database connection
     }
+
+
 
 
 
@@ -318,6 +341,67 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
         // return user
         return groups;
+    }
+
+    public boolean isMute(String group_id) throws JSONException {
+        String selectQuery = "SELECT is_mute FROM GROUPINFO WHERE unique_id ='"+ group_id +"'" ;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        JSONObject contact = new JSONObject();
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                if(cursor.getString(0).equals("0")){
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return false;
+    }
+
+    public void muteGroup(String group_id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put("is_mute", "1");
+        db.update("GROUPINFO",args,"unique_id='"+group_id+"'",null);
+
+        ContentValues values = new ContentValues();
+
+
+        //Get Current Date
+        Date date = new Date();
+        SimpleDateFormat dateFormatWithZone = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+        String currentDate = dateFormatWithZone.format(date);
+        values.put("muteTime", currentDate);// values : 0 or 1
+        values.put("unMuteTime", "");// values : left or joined
+        values.put("isMute", "1"); //Muting
+        // Inserting Row
+        db.update("MUTESETTING", values, "groupid = '"+ group_id +"'", null);
+        db.close(); // Closing database connection
+    }
+
+    public void unmuteGroup(String group_id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put("is_mute", "0");
+        db.update("GROUPINFO",args,"unique_id='"+group_id+"'",null);
+
+        ContentValues values = new ContentValues();
+        Date date = new Date(); //Get Current Date
+        SimpleDateFormat dateFormatWithZone = new SimpleDateFormat("hh:mm aa", Locale.getDefault());
+        String currentTime = dateFormatWithZone.format(date);
+        values.put("unMuteTime", currentTime);// values : left or joined
+        values.put("isMute", "0"); //Unmuting
+        db.update("MUTESETTING", values, "groupid = '" + group_id +"'" , null); // Updating Row
+        db.close(); // Closing database connection
     }
 
     public JSONObject getGroupInfo(String group_id) throws JSONException {
@@ -459,7 +543,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public JSONArray getGroupAdmins(String group_id) throws JSONException {
         JSONArray contacts = new JSONArray();
-        String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM GROUPMEMBER, "+ Contacts.TABLE_CONTACTS +"  where group_unique_id='"+ group_id +"'"
+        String selectQuery = "SELECT  member_phone, isAdmin, date_joined FROM GROUPMEMBER WHERE group_unique_id='"+ group_id +"'"
                 +" AND isAdmin = 1" ;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -472,7 +556,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 contact.put(Contacts.CONTACT_PHONE, cursor.getString(0));
                 contact.put("isAdmin", cursor.getString(1));
                 contact.put("date_joined", cursor.getString(2));
-                contact.put("display_name", cursor.getString(3));
                 contacts.put(contact);
                 cursor.moveToNext();
             }

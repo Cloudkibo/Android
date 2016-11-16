@@ -127,9 +127,11 @@ public class GroupSetting extends CustomFragment implements IFragmentName
             public void onClick(View view) {
                 GroupUtility groupUtility = new GroupUtility(getContext());
                 if(isAdmin(group_id) && groupUtility.adminCount(group_id) <= 1 ){
-                    return;
+                    Toast.makeText(getContext(), "Please make someone else admin before you leave the group: " + groupUtility.adminCount(group_id), Toast.LENGTH_LONG ).show();
                 }else {
+//                    Toast.makeText(getContext(), "Left the group: " + groupUtility.adminCount(group_id), Toast.LENGTH_LONG ).show();
                     leaveGroup(group_id);
+                    Toast.makeText(getContext(), "You left the group", Toast.LENGTH_LONG ).show();
                 }
             }
         });
@@ -166,7 +168,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
            participants = db.getGroupMembers(group_id);
 //           participants.put(db.getMyDetailsInGroup(group_id));
 
-           Toast.makeText(getContext(), "Custom Members "+participants.toString(), Toast.LENGTH_LONG).show();
+//           Toast.makeText(getContext(), "Custom Members "+participants.toString(), Toast.LENGTH_LONG).show();
            names = new String[participants.length()];
            for(int i = 0; i < participants.length(); i++)
            {
@@ -183,7 +185,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                CustomParticipantAdapter customParticipantAdapter = new CustomParticipantAdapter(inflater, participants,getContext(), group_id);
                lv.setAdapter(customParticipantAdapter);
                customParticipantAdapter.notifyDataSetChanged();
-               Toast.makeText(getContext(), "List Updated", Toast.LENGTH_LONG).show();
+//               Toast.makeText(getContext(), "List Updated", Toast.LENGTH_LONG).show();
            }
            return  participants;
        } catch (JSONException e) {
@@ -255,6 +257,14 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         GroupUtility groupUtility = new GroupUtility(getContext());
         DatabaseHandler db = new DatabaseHandler(getContext());
         groupUtility.leaveGroup(group_id, db.getUserDetails().get("phone"), authtoken);
+        ChatList nextFrag= new ChatList();
+//        Bundle args = new Bundle();
+//        args.putString("group_id", group_id);
+//        nextFrag.setArguments(args);
+        this.getFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, nextFrag,null)
+                .addToBackStack(null)
+                .commit();
     }
 
     public String getFragmentName()

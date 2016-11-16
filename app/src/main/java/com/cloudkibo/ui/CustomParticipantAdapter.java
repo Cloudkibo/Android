@@ -63,7 +63,7 @@ public class CustomParticipantAdapter extends BaseAdapter{
         holder.isAdmin=(TextView) rowView.findViewById(R.id.isAdmin);
 //        holder.tv.setText(result[position]);
         try {
-            Toast.makeText(context, members.toString(), Toast.LENGTH_LONG ).show();
+//            Toast.makeText(context, members.toString(), Toast.LENGTH_LONG ).show();
             DatabaseHandler db = new DatabaseHandler(context);
             if(!members.getJSONObject(position).has("display_name")){
                 if(members.getJSONObject(position).getString("phone").toString().equals(db.getUserDetails().get("phone"))){
