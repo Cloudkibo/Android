@@ -27,6 +27,7 @@ public class ChatItem
 
 	/** The is group. */
 	private boolean isGroup;
+	private boolean isArchived;
 
 	private String contact_id;
 
@@ -61,6 +62,7 @@ public class ChatItem
 		this.online = online;
 		this.title = title;
 		this.pendingMsgs = pending;
+		this.isArchived=false;
 	}
 
 	/**
@@ -190,6 +192,18 @@ public class ChatItem
 	}
 
 	/**
+	 * set the archive status of archive chat list
+	 * @param status
+     */
+
+	public void setArchiveStatus(boolean status){
+		if(status)
+			isArchived=true;
+		else
+			isArchived=false;
+	}
+
+	/**
 	 * Checks if is group.
 	 * 
 	 * @return true, if is group
@@ -197,6 +211,16 @@ public class ChatItem
 	public boolean isGroup()
 	{
 		return this.isGroup;
+	}
+
+	/**
+	 * check if is archived
+	 * @return true if is arhived
+     */
+
+	public boolean isArchived()
+	{
+		return this.isArchived;
 	}
 
 	/**

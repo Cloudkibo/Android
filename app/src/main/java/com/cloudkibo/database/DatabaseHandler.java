@@ -232,6 +232,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
+    public void demoteGroupAdmin(String group_unique_id, String member_phone) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put("isAdmin", 0);
+        db.update("GROUPMEMBER",args,"group_unique_id='"+group_unique_id+"' and member_phone='"+member_phone+"'",null);
+        db.close(); // Closing database connection
+    }
+
     public JSONArray getAllGroups() throws JSONException {
         JSONArray groups = new JSONArray();
 
