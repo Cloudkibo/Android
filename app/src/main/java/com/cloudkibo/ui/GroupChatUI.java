@@ -79,6 +79,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         populateMessages();
         groupAdapter = new GroupChatAdapter(inflater, messages,names);
         lv.setAdapter(groupAdapter);
+//        lv.smoothScrollToPosition(lv.getCount()+1);
         ImageView send_button = (ImageView) v.findViewById(R.id.send_button);
 
 
@@ -150,6 +151,8 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
 
     public void populateMessages(){
         DatabaseHandler db = new DatabaseHandler(getContext());
+        messages.clear();
+        names.clear();
         try {
             JSONArray msgs = db.getGroupMessages(group_id);
             Toast.makeText(getContext(), "In Messages: " + msgs.length(), Toast.LENGTH_LONG).show();
@@ -157,6 +160,12 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                 messages.add(msgs.getJSONObject(i).get("msg").toString());
                 names.add(msgs.getJSONObject(i).get("from_fullname").toString());
             }
+
+            if(groupAdapter != null && lv != null){
+                groupAdapter.notifyDataSetChanged();
+//                lv.smoothScrollToPosition(lv.getCount()+1);
+            }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -164,9 +173,11 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
 
 
 
+
+
     public String getFragmentName()
     {
-        return "Group Chat";
+        return "GroupChatUI";
     }
 
     public String getFragmentContactPhone()

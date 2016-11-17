@@ -55,6 +55,7 @@ public class MyHandler extends NotificationsHandler {
         JSONObject payload;
         try {
             payload = new JSONObject(nhMessage);
+            Log.v("MyHandler", "Push received: "+ payload.toString());
             if (payload.has("type")) {
                 if(payload.getString("type").equals("group:you_are_added")){
                     if (MainActivity.isVisible) {
@@ -63,7 +64,26 @@ public class MyHandler extends NotificationsHandler {
                     sendNotification("You were added to the group", payload.toString());
                     GroupUtility groupUtility = new GroupUtility(context);
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();
-                    groupUtility.syncGroupToLocalDatabase(payload.getString("groupId"), payload.getString("senderId"), payload.getString("group_name"), accessToken.getToken());
+                    groupUtility.updateGroupToLocalDatabase(payload.getString("groupId"), payload.getString("senderId"), payload.getString("group_name"), accessToken.getToken());
+                }
+
+                if(payload.getString("type").equals("group:chat_received")){
+                    sendNotification("New Message Received", payload.toString());
+                    GroupUtility groupUtility = new GroupUtility(context);
+                    final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+                    groupUtility.updateGroupChat(payload.toString(), accessToken.getToken());
+                }
+                if(payload.getString("type").equals("group:added_to_group")){
+                    sendNotification("New Message Received", payload.toString());
+                    GroupUtility groupUtility = new GroupUtility(context);
+                    final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+                    groupUtility.updateGroupMembers(payload.toString(), accessToken.getToken());
+                }
+                if(payload.getString("type").equals("group:member_left_group")){
+                    Log.v("MyHandler", "Member Left Group: "+ payload.toString());
+                    sendNotification("New Message Received", payload.toString());
+                    GroupUtility groupUtility = new GroupUtility(context);
+                    groupUtility.memberLeftGroup(payload.toString());
                 }
             }
             if(!payload.has("uniqueId")) {

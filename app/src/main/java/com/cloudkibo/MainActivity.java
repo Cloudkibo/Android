@@ -102,6 +102,8 @@ import com.cloudkibo.ui.ContactList;
 import com.cloudkibo.ui.ContactListPending;
 import com.cloudkibo.ui.CreateGroup;
 import com.cloudkibo.ui.GroupChat;
+import com.cloudkibo.ui.GroupChatUI;
+import com.cloudkibo.ui.GroupSetting;
 import com.cloudkibo.ui.LeftNavAdapter;
 import com.cloudkibo.ui.ProjectList;
 import com.cloudkibo.utils.IFragmentName;
@@ -1131,6 +1133,57 @@ public class MainActivity extends CustomActivity
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }
+            });
+
+        }
+    }
+
+    public void updateChatList() {
+        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+        if(myFragment == null) return;
+        if(myFragment.getFragmentName().equals("ChatList"))
+        {
+            final ChatList myChatListFragment = (ChatList) myFragment;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    myChatListFragment.loadChatList();
+                }
+            });
+
+        }
+    }
+
+    public void updateGroupUIChat() {
+        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+        if(myFragment == null) return;
+        if(myFragment.getFragmentName().equals("GroupChatUI"))
+        {
+            final GroupChatUI groupChatUIFragment = (GroupChatUI) myFragment;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    groupChatUIFragment.populateMessages();
+                }
+            });
+
+        }
+    }
+
+    public void updateGroupMembers() {
+        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+        if(myFragment == null) return;
+        if(myFragment.getFragmentName().equals("GroupSetting"))
+        {
+            final GroupSetting groupSetting = (GroupSetting) myFragment;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    groupSetting.getMembers();
                 }
             });
 

@@ -61,6 +61,7 @@ public class UserFunctions {
     public static String sendGroupChat =          baseURL + "/api/groupchat/";
     public static String addGroupMembers =          baseURL + "/api/groupmessaginguser/";
     public static String leaveGroup =          baseURL + "/api/groupmessaginguser/leaveGroup";
+    public static String removeMember =          baseURL + "/api/groupmessaginguser/removeFromGroup";
     public static String groupMembers =          baseURL + "/api/groupmessaginguser/myspecificgroupsmembers";
     
     
@@ -144,6 +145,8 @@ public class UserFunctions {
         JSONObject response = connection.sendObjectToServerNoAuth(sendLogURL, params);
         return response;
     }
+
+
     
     
     
@@ -283,10 +286,24 @@ public class UserFunctions {
         return response;
     }
 
+    public JSONArray getGroupMembers(String group_id, String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("unique_id", group_id));
+        JSONArray response = connection.sendObjectReturnArray(groupMembers, authtoken, params);
+        return response;
+    }
+
     public JSONObject leaveGroup(String group_id, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("group_unique_id ", group_id));
         JSONObject response = connection.sendObjectToServer(leaveGroup, authtoken, params);
+        return response;
+    }
+    public JSONObject removeMember(String group_id, String number, String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("group_unique_id", group_id));
+        params.add(new BasicNameValuePair("phone", number));
+        JSONObject response = connection.sendObjectToServer(removeMember, authtoken, params);
         return response;
     }
 
