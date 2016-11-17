@@ -206,6 +206,10 @@ public class GroupUtility {
                 if(row != null){
                     Toast.makeText(ctx, row.toString() + "Member added successfully" + getMemberData(group_name, group_id, phone), Toast.LENGTH_LONG).show();
 //                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
+                    for(int i = 0; i<phone.length; i++){
+                        DatabaseHandler db = new DatabaseHandler(ctx);
+                        db.leaveGroupServerPending(group_id, phone[i]);
+                    }
                 }
             }
 
@@ -236,6 +240,47 @@ public class GroupUtility {
         }.execute();
 
 
+    }
+
+    public void removeMember(final String group_id, final String member_phone, final String authtoken){
+        db.leaveGroup(group_id,member_phone);
+
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunctions = new UserFunctions();
+                return  user.removeMember(group_id, member_phone, authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                if(row != null){
+                    Toast.makeText(ctx, row.toString(), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
+                }
+            }
+
+        }.execute();
+
+
+    }
+
+    public void memberLeftGroup(final String payload){
+        try {
+            JSONObject data = new JSONObject(payload);
+            String member_phone = data.getString("senderId");
+            String group_id = data.getString("groupId");
+            sendNotification("Member Left", payload.toString());
+
+            db.leaveGroup(group_id, member_phone);
+            if(MainActivity.isVisible){
+                MainActivity.mainActivity.updateGroupMembers();
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public int adminCount(String group_id){

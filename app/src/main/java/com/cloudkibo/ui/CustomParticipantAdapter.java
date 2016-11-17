@@ -14,6 +14,9 @@ import android.widget.Toast;
 
 import com.cloudkibo.R;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.GroupUtility;
+import com.facebook.accountkit.AccessToken;
+import com.facebook.accountkit.AccountKit;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,6 +32,7 @@ public class CustomParticipantAdapter extends BaseAdapter{
         this.inflater = inflater;
         this.context = context;
         this.group_id = group_id;
+        AccountKit.initialize(context.getApplicationContext());
     }
     @Override
     public int getCount() {
@@ -88,7 +92,7 @@ public class CustomParticipantAdapter extends BaseAdapter{
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 //Toast.makeText(context, "You Clicked "+result[position], Toast.LENGTH_LONG).show();
-                final CharSequence[] items = {"Make Admin"};
+                final CharSequence[] items = {"Make Admin", "Remove from group"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Member Status");
                 builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -98,10 +102,18 @@ public class CustomParticipantAdapter extends BaseAdapter{
                         // TODO Auto-generated method stub
                         DatabaseHandler db = new DatabaseHandler(context);
                         try {
-                           // Toast.makeText(context,"I was clicked",Toast.LENGTH_LONG).show();
-                            db.makeGroupAdmin(group_id,members.getJSONObject(position).getString("phone"));
-                           // Toast.makeText(context,db.getGroupAdmins(group_id).toString(),Toast.LENGTH_LONG).show();
-                            updateData(db);
+                            if(which == 0) {
+                                // Toast.makeText(context,"I was clicked",Toast.LENGTH_LONG).show();
+                                db.makeGroupAdmin(group_id, members.getJSONObject(position).getString("phone"));
+                                // Toast.makeText(context,db.getGroupAdmins(group_id).toString(),Toast.LENGTH_LONG).show();
+                                updateData(db);
+                            } else if (which == 1) {
+                                db.leaveGroup(group_id, members.getJSONObject(position).getString("phone"));
+                                updateData(db);
+                                GroupUtility groupUtility = new GroupUtility(context);
+                                final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+                                groupUtility.removeMember(group_id, members.getJSONObject(position).getString("phone"), accessToken.getToken());
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();

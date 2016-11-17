@@ -101,6 +101,8 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                         Toast.makeText(getContext(), phoneList[which], Toast.LENGTH_LONG).show();
                         DatabaseHandler db = new DatabaseHandler(getContext());
                         db.addGroupMember(group_id,phoneList[which],0,"joined");
+                        db = new DatabaseHandler(getContext());
+                        db.addGroupMemberServerPending(group_id, phoneList[which]);
                         lv.setAdapter(new CustomParticipantAdapter(inflater, getMembers(), getContext(),group_id));
                         GroupUtility groupUtility = new GroupUtility(getContext());
                         String member_phone[] = new String[]{phoneList[which]};
