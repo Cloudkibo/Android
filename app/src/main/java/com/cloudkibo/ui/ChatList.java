@@ -5,26 +5,32 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.CalendarContract;
 import android.text.format.DateUtils;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cloudkibo.MainActivity;
 import com.cloudkibo.NewChat;
 //import com.cloudkibo.R;
 import com.cloudkibo.R;
@@ -53,6 +59,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 	/** The Chat list. */
 	private ArrayList<ChatItem> chatList;
+	private ArrayList<ChatItem> archivedChatList = new ArrayList<ChatItem>();
 
 	private ChatAdapter adp;
 
@@ -71,11 +78,15 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 		loadChatList();
 		ListView list = (ListView) v.findViewById(R.id.list);
+        Button archivedBtn = (Button) v.findViewById(R.id.btnArchiveChat);
 		adp = new ChatAdapter();
 		list.setAdapter(adp);
-		list.setOnItemClickListener(new OnItemClickListener() {
 
-			@Override
+
+
+        list.setOnItemClickListener(new OnItemClickListener() {
+
+            @Override
 			public void onItemClick(AdapterView<?> adapter, View v, int pos,long arg3)
 			{
 
@@ -104,13 +115,25 @@ public class ChatList extends CustomFragment implements IFragmentName
 						.addToBackStack(chatList.get(pos).getName()).commit();
 
 
-			}
+			    }
+
+
 
 			}
 		});
+
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                return false;
+            }
+        });
+        registerForContextMenu(list);
+
 		adp.notifyDataSetChanged();
 
 		setTouchNClick(v.findViewById(R.id.btnNewChat));
+        setTouchNClick(v.findViewById(R.id.btnArchiveChat));
 		return v;
 	}
 
@@ -123,8 +146,45 @@ public class ChatList extends CustomFragment implements IFragmentName
 		super.onClick(v);
 		if (v.getId() == R.id.btnNewChat) {
 			startActivity(new Intent(getActivity(), NewChat.class));
-		}
+		} else if(v.getId() == R.id.btnArchiveChat){
+            ArchivedChat archivedChatFragment = new ArchivedChat();
+			archivedChatFragment.getData(archivedChatList);
+			Bundle bundle = new Bundle();
+			bundle.putString("authToken", authtoken);
+			archivedChatFragment.setArguments(bundle);
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, archivedChatFragment, "archivedChatFragmentTag").commit();
+        }
 	}
+
+
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
+        super.onCreateContextMenu(menu, v, menuinfo);
+
+        menu.setHeaderTitle("Select the Action");
+        menu.add(0, v.getId(), 0, "Archive");
+    }
+
+    public boolean onContextItemSelected(MenuItem item){
+
+        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        Bundle bundle = new Bundle();
+
+        if(item.getTitle() == "Archive"){
+            chatList.get(info.position).setArchiveStatus(true);
+			archivedChatList.add(chatList.get(info.position));
+			chatList.remove(info.position);
+			if(adp != null) {
+				adp.notifyDataSetChanged();
+			}
+
+        }
+
+
+
+        return true;
+    }
+
 
 	public void loadChatList()
 	{
@@ -132,6 +192,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 		try{
 
 			ArrayList<ChatItem> chatList1 = new ArrayList<ChatItem>();
+
+
 
 			JSONArray chats = db.getChatList();
 //			JSONArray groups = db.getAllGroups();

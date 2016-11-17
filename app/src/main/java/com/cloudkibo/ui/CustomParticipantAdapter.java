@@ -76,7 +76,7 @@ public class CustomParticipantAdapter extends BaseAdapter{
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 //Toast.makeText(context, "You Clicked "+result[position], Toast.LENGTH_LONG).show();
-                final CharSequence[] items = {"Make Admin"};
+                final CharSequence[] items = {"Make Admin", "Demote Admin"};
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Member Status");
                 builder.setItems(items, new DialogInterface.OnClickListener() {
@@ -87,8 +87,12 @@ public class CustomParticipantAdapter extends BaseAdapter{
                         DatabaseHandler db = new DatabaseHandler(context);
                         try {
                            // Toast.makeText(context,"I was clicked",Toast.LENGTH_LONG).show();
-                            db.makeGroupAdmin(group_id,members.getJSONObject(position).getString("phone"));
+                            if(which == 0)
+                                db.makeGroupAdmin(group_id,members.getJSONObject(position).getString("phone"));
+                            else if(which==1)
+                                db.demoteGroupAdmin(group_id,members.getJSONObject(position).getString("phone"));
                            // Toast.makeText(context,db.getGroupAdmins(group_id).toString(),Toast.LENGTH_LONG).show();
+
                             updateData(db);
 
                         } catch (JSONException e) {
