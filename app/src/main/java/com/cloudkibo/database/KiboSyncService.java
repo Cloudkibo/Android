@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.SplashScreen;
+import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
 
@@ -159,6 +160,24 @@ public class KiboSyncService extends Service {
                         row.getString("status"),
                         row.getString("uniqueid"), row.getString("fromperson")
                 );
+
+            }
+
+            JSONArray groupMembers = db.getGroupMembersServerPending();
+
+            for (int i=0; i < groupMembers.length(); i++) {
+                JSONObject row = groupMembers.getJSONObject(i);
+
+                String member_phone[] = new String[]{row.getString("member_phone")};
+                try {
+                    JSONObject info = db.getGroupInfo(row.getString("group_unique_id"));
+                    String group_name = info.getString("group_name");
+//                            Toast.makeText(getContext(), "Add member: "+ groupUtility.getMemberData(group_name, group_id, member_phone).toString(), Toast.LENGTH_LONG).show();
+                    GroupUtility groupUtility = new GroupUtility(getApplicationContext());
+                    groupUtility.addMemberOnServer(group_name,row.getString("group_unique_id"),member_phone,authtoken);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
             }
 

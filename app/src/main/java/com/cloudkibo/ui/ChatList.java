@@ -156,7 +156,6 @@ public class ChatList extends CustomFragment implements IFragmentName
         }
 	}
 
-
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
         super.onCreateContextMenu(menu, v, menuinfo);
 
@@ -200,6 +199,11 @@ public class ChatList extends CustomFragment implements IFragmentName
 
         return true;
     }
+
+//	@Override
+//	protected View onResume(){
+//		super.onResume();
+//	}
 
 
 	public void loadChatList()
@@ -365,7 +369,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 		}
 
 	}
-	
+
 	 public String getFragmentName()
      {
        return "ChatList";
@@ -376,4 +380,3 @@ public class ChatList extends CustomFragment implements IFragmentName
 		return "About Chat";
 	}
 }
-
