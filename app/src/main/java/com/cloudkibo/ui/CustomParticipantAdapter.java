@@ -119,7 +119,6 @@ public class CustomParticipantAdapter extends BaseAdapter{
                                 final AccessToken accessToken = AccountKit.getCurrentAccessToken();
                                 groupUtility.removeMember(group_id, members.getJSONObject(position).getString("phone"), accessToken.getToken());
                             }
->>>>>>> 7a664c6d54df618f35ec44652c0e824239e1634a
 
                         } catch (JSONException e) {
                             e.printStackTrace();

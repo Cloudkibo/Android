@@ -216,7 +216,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         args.put("isMute", isMute);// values : 0 or 1
         args.put("muteTime", "");// values : 0 or 1
         args.put("unMuteTime", "");// values : 0 or 1
-        db.insert("MUTESETTING", null, values);
+        db.insert("MUTESETTING", null, args);
         db.close(); // Closing database connection
     }
     public void syncGroup(String unique_id, String group_name, int isMute, String date) {
@@ -237,7 +237,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         args.put("isMute", isMute);// values : 0 or 1
         args.put("muteTime", "");// values : 0 or 1
         args.put("unMuteTime", "");// values : 0 or 1
-        db.insert("MUTESETTING", null, values);
+        db.insert("MUTESETTING", null, args);
 
         db.close(); // Closing database connection
     }
@@ -644,7 +644,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public JSONArray getGroupMessages(String group_id) throws JSONException {
         JSONArray contacts = new JSONArray();
-        String selectQuery = "SELECT  _from, type, msg, from_fullname, date  FROM GROUPCHAT  where group_unique_id='"+ group_id +"'";
+        String selectQuery = "SELECT  _from, type, msg, from_fullname, date, unique_id  FROM GROUPCHAT  where group_unique_id='"+ group_id +"'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // Move to first row
@@ -658,6 +658,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 contact.put("msg", cursor.getString(2));
                 contact.put("from_fullname", cursor.getString(3));
                 contact.put("date", cursor.getString(4));
+                contact.put("unique_id", cursor.getString(5));
                 contacts.put(contact);
                 cursor.moveToNext();
             }
@@ -985,6 +986,24 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
         // return user
         return contacts;
+    }
+
+    public String getDisplayName(String phone) throws JSONException {
+        String selectQuery = "SELECT  display_name FROM " + Contacts.TABLE_CONTACTS +" where phone='"+ phone +"'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+                return  cursor.getString(0);
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return "";
     }
 
 

@@ -121,7 +121,7 @@ public class GroupUtility {
 
             db.addGroupMessage(group_id,message,member_phone,member_phone,unique_id);
             if(MainActivity.isVisible){
-                MainActivity.mainActivity.updateGroupMembers();
+                MainActivity.mainActivity.updateGroupUIChat();
             }
 
         } catch (JSONException e) {

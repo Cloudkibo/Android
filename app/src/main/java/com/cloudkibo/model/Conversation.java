@@ -22,6 +22,10 @@ public class Conversation
 
 	private String uniqueid;
 
+	private String sender_phone;
+
+	private String sender_name;
+
 	/**
 	 * Instantiates a new conversation.
 	 *
@@ -43,6 +47,18 @@ public class Conversation
 
 		this.status = status;
 		this.uniqueid = uniqueid;
+	}
+
+	public Conversation(String msg, String sender_phone, boolean isSent, String date){
+		this.msg = msg;
+		this.sender_phone = sender_phone;
+		this.isSent = isSent;
+		this.date = date;
+	}
+
+
+	public String getSender_phone(){
+		return  sender_phone;
 	}
 
 	/**

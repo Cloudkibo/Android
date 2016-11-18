@@ -13,18 +13,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloudkibo.R;
+import com.cloudkibo.model.Conversation;
 
 import java.util.ArrayList;
 
 public class GroupChatAdapter extends BaseAdapter{
     ArrayList<String> result = new ArrayList<String>();
     ArrayList<String> contactName = new ArrayList<String>();
+    private ArrayList<Conversation> convList;
     private static LayoutInflater inflater=null;
-    public GroupChatAdapter(LayoutInflater context, ArrayList<String> chatList, ArrayList<String> contactName) {
+    public GroupChatAdapter(LayoutInflater context, ArrayList<String> chatList, ArrayList<String> contactName, ArrayList<Conversation> convList) {
         // TODO Auto-generated constructor stub
         result=chatList;
         this.contactName =contactName;
         inflater = ( LayoutInflater )context;
+        this.convList = convList;
     }
     @Override
     public int getCount() {
@@ -47,29 +50,27 @@ public class GroupChatAdapter extends BaseAdapter{
     public class Holder
     {
         TextView message;
-        TextView contact_name;
-        LinearLayout message_box;
+        TextView contact_phone;
+        TextView date;
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
         Holder holder=new Holder();
         View rowView;
-        rowView = inflater.inflate(R.layout.group_chat_list, null);
-
-        holder.message=(TextView) rowView.findViewById(R.id.message);
-        holder.contact_name=(TextView) rowView.findViewById(R.id.contact_name);
-        holder.message.setText(result.get(position));
-        if(contactName.get(position).equals("")){
-            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            layoutParams.setMargins(100,10, 5,0);
-            holder.contact_name.setText("You");
-            holder.message_box = (LinearLayout) rowView.findViewById(R.id.message_box);
-            holder.message_box.setBackgroundColor(Color.parseColor("#EBEBEB"));
-//            message_box.setLayoutParams(layoutParams);
+        if (convList.get(position).isSent())
+            rowView = inflater.inflate(R.layout.chat_item_sent, null);
+        else
+            rowView = inflater.inflate(R.layout.chat_item_rcv, null);
+        holder.message=(TextView) rowView.findViewById(R.id.lbl2);
+        holder.contact_phone=(TextView) rowView.findViewById(R.id.phone);
+        holder.date = (TextView) rowView.findViewById(R.id.lblContactDisplayName);
+        holder.message.setText(convList.get(position).getMsg());
+        holder.date.setText(convList.get(position).getDate().replaceAll("-", "/").split("/",2)[1]);
+        if(convList.get(position).getSender_phone().equals("")){
+            holder.contact_phone.setText("You");
         }else{
-            holder.contact_name.setText(contactName.get(position));
+            holder.contact_phone.setText(convList.get(position).getSender_phone());
         }
         rowView.setOnClickListener(new OnClickListener() {
             @Override

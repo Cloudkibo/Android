@@ -89,7 +89,6 @@ public class ChatList extends CustomFragment implements IFragmentName
             @Override
 			public void onItemClick(AdapterView<?> adapter, View v, int pos,long arg3)
 			{
-
 				Bundle bundle = new Bundle();
 				bundle.putString("contactusername", chatList.get(pos).getName());
 				bundle.putString("contactphone", chatList.get(pos).getTitle());
@@ -113,12 +112,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 					getFragmentManager().beginTransaction()
 						.replace(R.id.content_frame, groupChatFragment, "groupChatFragmentTag")
 						.addToBackStack(chatList.get(pos).getName()).commit();
-
-
 			    }
-
-
-
 			}
 		});
 

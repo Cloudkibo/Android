@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -23,12 +24,14 @@ import com.cloudkibo.NewChat;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomContactAdapter;
 import com.cloudkibo.custom.CustomFragment;
+import com.cloudkibo.database.CloudKiboDatabaseContract;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.ChatItem;
 import com.cloudkibo.model.ContactItem;
+import com.cloudkibo.model.Conversation;
 import com.cloudkibo.utils.IFragmentName;
 
 import org.json.JSONArray;
@@ -56,7 +59,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     private ArrayList<String> names = new ArrayList<String>();
     private String group_id="";
     private GroupChatAdapter groupAdapter;
-
+    private ArrayList<Conversation> convList = new ArrayList<Conversation>();
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
      */
@@ -65,48 +68,29 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View v = inflater.inflate(R.layout.group_chat_dayem, null);
+        View v = inflater.inflate(R.layout.group_chat, null);
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         final GroupChatUI temp = this;
+        LinearLayout group_header = (LinearLayout) v.findViewById(R.id.group_header);
+        group_header.setVisibility(View.VISIBLE);
         Button settings = (Button) v.findViewById(R.id.setting);
         Bundle args = getArguments();
         if (args  != null){
             group_id = args.getString("group_id");
             Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
         }
-        final EditText my_message = (EditText) v.findViewById(R.id.my_message);
-        lv=(ListView) v.findViewById(R.id.listView);
+        final EditText my_message = (EditText) v.findViewById(R.id.txt);
+        lv=(ListView) v.findViewById(R.id.list);
         populateMessages();
-        groupAdapter = new GroupChatAdapter(inflater, messages,names);
+        groupAdapter = new GroupChatAdapter(inflater, messages,names, convList);
         lv.setAdapter(groupAdapter);
-//        lv.smoothScrollToPosition(lv.getCount()+1);
-        ImageView send_button = (ImageView) v.findViewById(R.id.send_button);
-
-
+        Button send_button = (Button) v.findViewById(R.id.btnSend);
         send_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 sendMessage(my_message);
             }
         });
-
-
-
-//        send_button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String message = my_message.getText().toString();
-//                if(message.trim().equals("")){
-//                    return;
-//                }else{
-//                    messages.add(message);
-//                    names.add("");
-//                    lv.setAdapter(new GroupChatAdapter(inflater, messages,names));
-//                    my_message.setText("");
-//                }
-//
-//            }
-//        });
 
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -117,7 +101,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                 nextFrag.setArguments(args);
                 temp.getFragmentManager().beginTransaction()
                         .replace(R.id.content_frame, nextFrag,null)
-                        .addToBackStack(null)
+                        .addToBackStack("ChatList")
                         .commit();
             }
         });
@@ -141,8 +125,10 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         if(message.trim().equals("")){
            return;
         }
+        DatabaseHandler db = new DatabaseHandler(getContext());
         messages.add(message);
         names.add("");
+        convList.add(new Conversation(message, db.getUserDetails().get("phone"), true,""));
         groupAdapter.notifyDataSetChanged();
         GroupUtility groupUtility = new GroupUtility(getContext());
         groupUtility.sendGroupMessage(group_id, message, authtoken);
@@ -153,12 +139,26 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         DatabaseHandler db = new DatabaseHandler(getContext());
         messages.clear();
         names.clear();
+        convList.clear();
         try {
             JSONArray msgs = db.getGroupMessages(group_id);
             Toast.makeText(getContext(), "In Messages: " + msgs.length(), Toast.LENGTH_LONG).show();
             for(int i = 0; i < msgs.length(); i++){
                 messages.add(msgs.getJSONObject(i).get("msg").toString());
                 names.add(msgs.getJSONObject(i).get("from_fullname").toString());
+                String message = msgs.getJSONObject(i).get("msg").toString();
+                String from = msgs.getJSONObject(i).get("from").toString();
+                String date = msgs.getJSONObject(i).get("date").toString();
+                boolean isSent = false;
+                if(db.getUserDetails().get("phone").equals(from)){
+                    isSent = true;
+                    from = "You";
+                }
+                String display_name = db.getDisplayName(from);
+                if(!display_name.equals("")){
+                    from = display_name;
+                }
+                convList.add(new Conversation(message, from, isSent, date));
             }
 
             if(groupAdapter != null && lv != null){
