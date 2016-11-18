@@ -87,6 +87,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + UserChat.USERCHAT_DATE + " TEXT, "
                 + "status" + " TEXT, "
                 + "uniqueid" + " TEXT, "
+                + "isArchived" + " INTEGER DEFAULT 0 , "
                 + "contact_phone" + " TEXT "+ ")";
         db.execSQL(CREATE_USERCHAT_TABLE);
 
@@ -111,7 +112,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "group_name TEXT, "
                 + "group_icon BLOB, "
                 + "date_creation DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
-                + "unique_id TEXT NOT NULL UNIQUE, "
+                + "unique_id TEXT, "
+                + "isArchived" + " INTEGER DEFAULT 0 , "
                 + "is_mute INTEGER DEFAULT 0 "+ ")";
         db.execSQL(CREATE_GROUP);
 
@@ -141,6 +143,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "_from TEXT, "
                 + "type TEXT, "
                 + "msg TEXT, "
+                + "isArchived" + " INTEGER DEFAULT 0 , "
                 + "from_fullname TEXT, "
                 + "date DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
                 + "unique_id TEXT "
@@ -375,7 +378,36 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public JSONArray getMyGroups(String member_phone) throws JSONException {
         JSONArray groups = new JSONArray();
 
-        String selectQuery = "SELECT unique_id, group_name, is_mute, date_creation FROM GROUPINFO WHERE unique_id IN (SELECT group_unique_id FROM GROUPMEMBER WHERE membership_status = 'joined' AND member_phone = '"+ member_phone +"')";
+        String selectQuery = "SELECT unique_id, group_name, is_mute, date_creation FROM GROUPINFO WHERE isArchived=0 AND unique_id IN (SELECT group_unique_id FROM GROUPMEMBER WHERE membership_status = 'joined' AND member_phone = '"+ member_phone +"')";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("unique_id", cursor.getString(0));
+                contact.put("group_name", cursor.getString(1));
+                contact.put("is_mute", cursor.getString(2));
+                contact.put("date_creation", cursor.getString(3));
+                groups.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return groups;
+    }
+
+    public JSONArray getMyArchivedGroups(String member_phone) throws JSONException {
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT unique_id, group_name, is_mute, date_creation FROM GROUPINFO WHERE isArchived=1 AND unique_id IN (SELECT group_unique_id FROM GROUPMEMBER WHERE membership_status = 'joined' AND member_phone = '"+ member_phone +"')";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -798,6 +830,70 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void setArchive(String contactPhone) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String updateQuery = "UPDATE " + UserChat.TABLE_USERCHAT +
+                " SET isArchived="+ 1 +" WHERE contact_phone='"+contactPhone+"'";
+
+        try {
+            db.execSQL(updateQuery);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        db.close();
+    }
+
+    public void setArchiveGroup(String unique_id) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String updateQuery = "UPDATE GROUPINFO" +
+                " SET isArchived="+ 1 +" WHERE unique_id='"+unique_id+"'";
+
+        try {
+            db.execSQL(updateQuery);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        db.close();
+    }
+
+    public void unArchive(String contactPhone) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String updateQuery = "UPDATE " + UserChat.TABLE_USERCHAT +
+                " SET isArchived="+ 0 +" WHERE contact_phone='"+contactPhone+"'";
+
+        try {
+            db.execSQL(updateQuery);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        db.close();
+    }
+
+    public void unArchiveGroup(String unique_id) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String updateQuery = "UPDATE GROUPINFO" +
+                " SET isArchived="+ 0 +" WHERE unique_id='"+unique_id+"'";
+
+        try {
+            db.execSQL(updateQuery);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        db.close();
+    }
+
 
     public void updateContact(String status, String phone, String id) {
 
@@ -1164,7 +1260,51 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String selectQuery =
                 " SELECT "+ UserChat.USERCHAT_DATE +", contact_phone, " + UserChat.USERCHAT_MSG
                 +" FROM " + UserChat.TABLE_USERCHAT
+                        +" WHERE isArchived=0"
                 +" GROUP BY contact_phone ORDER BY "+ UserChat.USERCHAT_DATE + " DESC";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+                JSONArray contactInAddressBook = getSpecificContact(cursor.getString(1));
+                JSONArray lastMessage = getLastMessageInChat(userDetail.get("phone"), cursor.getString(1));
+
+                JSONObject contact = new JSONObject();
+                contact.put("date", cursor.getString(0));
+                contact.put("contact_phone", cursor.getString(1));
+                contact.put("msg", lastMessage.getJSONObject(0).getString("msg"));
+                contact.put("msg", lastMessage.getJSONObject(0).getString("msg"));
+                //contact.put("msg", cursor.getString(2));
+                contact.put("pendingMsgs", getUnReadMessagesCount(cursor.getString(1)));
+                if(contactInAddressBook.length() > 0) {
+                    contact.put("display_name", contactInAddressBook.getJSONObject(0).getString("display_name"));
+                } else {
+                    contact.put("display_name", cursor.getString(1));
+                }
+
+                chats.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return chats;
+    }
+
+    public JSONArray getArchivedChatList() throws JSONException {
+        HashMap<String, String> userDetail = getUserDetails();
+        JSONArray chats = new JSONArray();
+        String selectQuery =
+                " SELECT "+ UserChat.USERCHAT_DATE +", contact_phone, " + UserChat.USERCHAT_MSG
+                        +" FROM " + UserChat.TABLE_USERCHAT
+                        +" WHERE isArchived=1"
+                        +" GROUP BY contact_phone ORDER BY "+ UserChat.USERCHAT_DATE + " DESC";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

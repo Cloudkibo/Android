@@ -2,7 +2,9 @@ package com.cloudkibo.ui;
 
 
 import android.os.Bundle;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -14,11 +16,16 @@ import android.widget.Toast;
 
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
+import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.ChatItem;
 import com.cloudkibo.utils.IFragmentName;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
 import java.util.ArrayList;
 
 
@@ -40,6 +47,7 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
 
         Bundle args = getArguments();
         authToken = args.getString("authToken");
+        loadChatList();
         ListView list = (ListView) v.findViewById(R.id.list);
 
         adp = new ChatAdapter();
@@ -82,6 +90,16 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
 
             }
         });
+
+
+        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                return false;
+            }
+        });
+        registerForContextMenu(list);
+
         adp.notifyDataSetChanged();
 
 
@@ -93,10 +111,108 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
     }
 
 
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
+        super.onCreateContextMenu(menu, v, menuinfo);
+
+        menu.setHeaderTitle("Select the Action");
+        menu.add(0, v.getId(), 0, "Unarchive");
+    }
 
 
-    public void getData(ArrayList<ChatItem> archivedChats){
-        this.archivedChats = archivedChats;
+    public boolean onContextItemSelected(MenuItem item){
+
+        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        Bundle bundle = new Bundle();
+        try {
+            if (item.getTitle() == "Unarchive") {
+
+                DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+                ChatItem cItem = (ChatItem) archivedChats.get(info.position);
+                if(cItem.isGroup()){
+                    db.unArchiveGroup(cItem.getTitle());
+                    Toast.makeText(getContext(),cItem.getTitle(),Toast.LENGTH_SHORT).show();
+                    archivedChats.remove(info.position);
+
+                }else{
+
+
+                    db.unArchive(cItem.getTitle());
+                    Toast.makeText(getContext(), cItem.getTitle() , Toast.LENGTH_SHORT).show();
+                    archivedChats.remove(info.position);
+
+                }
+
+                if (adp != null) {
+                    adp.notifyDataSetChanged();
+                }
+
+            }
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+
+
+
+        return true;
+    }
+
+
+    public void loadChatList()
+    {
+        DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+        try{
+
+            ArrayList<ChatItem> chatList1 = new ArrayList<ChatItem>();
+
+
+
+            JSONArray chats = db.getArchivedChatList();
+//			JSONArray groups = db.getAllGroups();
+            JSONArray groups = db.getMyArchivedGroups(db.getUserDetails().get("phone"));
+            for (int i=0; i < chats.length(); i++) {
+                JSONObject row = chats.getJSONObject(i);
+
+
+                    chatList1.add(new ChatItem(
+                            row.getString("display_name"),
+                            row.getString("contact_phone"),
+                            row.getString("msg"),
+                            Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
+                            R.drawable.user1, false,
+                            false, Integer.parseInt(row.getString("pendingMsgs"))));
+
+
+            }
+
+
+            for (int i=0; i < groups.length(); i++) {
+                JSONObject row = groups.getJSONObject(i);
+                chatList1.add(new ChatItem(
+                        row.getString("group_name"),
+                        row.getString("unique_id"),
+                        "Last Message",
+                        row.getString("date_creation"),
+                        R.drawable.user1, false,
+                        true, 0));
+
+            }
+
+
+
+
+            this.archivedChats = new ArrayList<ChatItem>(chatList1);
+            //this.chatList.addAll(chatList);
+            //this.chatList.addAll(chatList);
+            if(adp != null)
+                adp.notifyDataSetChanged();
+
+        } catch(JSONException e){
+            e.printStackTrace();
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
+
+
     }
 
 
