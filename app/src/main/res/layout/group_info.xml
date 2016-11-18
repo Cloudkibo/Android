@@ -14,34 +14,50 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             >
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:background="#2ecc71"
-            android:paddingLeft="16dp"
-            android:paddingTop="16dp"
-            android:paddingRight="16dp"
-            android:paddingBottom="16dp">
-
-            <TextView
-                android:id="@+id/group_name"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Group Name"
-                android:textColor="#ffffff"
-                android:textSize="25dp"
-                android:textStyle="bold"/>
+                android:orientation="horizontal"
+                android:background="#2ecc71">
 
-            <TextView
-                android:id="@+id/creation_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="10/3/16, 18:50"
-                android:textColor="#ffffff"
-                android:textSize="12dp"/>
+                <ImageButton
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_margin="10dp"
+                    android:src="@android:drawable/ic_input_add"/>
 
-        </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="16dp">
+
+                    <TextView
+                        android:id="@+id/group_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Group Name"
+                        android:textColor="#ffffff"
+                        android:textSize="25dp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/creation_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10/3/16, 18:50"
+                        android:textColor="#ffffff"
+                        android:textSize="12dp"/>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
 
 
         <LinearLayout
