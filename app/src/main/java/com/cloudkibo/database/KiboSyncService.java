@@ -603,6 +603,11 @@ public class KiboSyncService extends Service {
 
     }
 
+    private void syncAllGroups(){
+        GroupUtility groupUtility  = new GroupUtility(getApplicationContext());
+        groupUtility.syncAllGroups(authtoken);
+    }
+
     private void loadPartialChatFromServer() {
 
         new AsyncTask<String, String, JSONArray>() {
