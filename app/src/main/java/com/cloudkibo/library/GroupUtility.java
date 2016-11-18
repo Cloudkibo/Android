@@ -250,7 +250,7 @@ public class GroupUtility {
             @Override
             protected JSONObject doInBackground(String... args) {
                 UserFunctions userFunctions = new UserFunctions();
-                return  user.removeMember(group_id, member_phone, authtoken);
+                return  userFunctions.removeMember(group_id, member_phone, authtoken);
             }
 
             @Override
