@@ -42,7 +42,7 @@ public class GroupUtility {
         db = new DatabaseHandler(ctx);
     }
 
-    public void updateGroupToLocalDatabase(final String group_id, final String sender_phone, final String group_name,  final String auth_token){
+    public void updateGroupToLocalDatabase(final String group_id, final String group_name,  final String auth_token){
 
         db.createGroup(group_id, group_name, 0);
 
@@ -307,7 +307,7 @@ public class GroupUtility {
         return false;
     }
 
-    private void sendNotification(String header, String msg) {
+    public void sendNotification(String header, String msg) {
 
 //        Utility.sendLogToServer(""+ userDetail.get("phone") +" is showing alert and chime now.");
 

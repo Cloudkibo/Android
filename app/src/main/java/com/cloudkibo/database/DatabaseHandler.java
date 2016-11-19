@@ -574,7 +574,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public JSONArray getGroupMembers(String group_id) throws JSONException {
         JSONArray contacts = new JSONArray();
-        String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM GROUPMEMBER LEFT JOIN "+ Contacts.TABLE_CONTACTS +" ON phone = member_phone where group_unique_id='"+ group_id +"'";
+        String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM GROUPMEMBER LEFT JOIN "+ Contacts.TABLE_CONTACTS +" ON phone = member_phone where group_unique_id='"+ group_id +"' AND membership_status='joined'";
 //        String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM GROUPMEMBER, "+ Contacts.TABLE_CONTACTS +" where   group_unique_id='"+ group_id +"' AND phone = member_phone";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

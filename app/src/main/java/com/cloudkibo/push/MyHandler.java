@@ -64,7 +64,7 @@ public class MyHandler extends NotificationsHandler {
                     sendNotification("You were added to the group", payload.toString());
                     GroupUtility groupUtility = new GroupUtility(context);
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();
-                    groupUtility.updateGroupToLocalDatabase(payload.getString("groupId"), payload.getString("senderId"), payload.getString("group_name"), accessToken.getToken());
+                    groupUtility.updateGroupToLocalDatabase(payload.getString("groupId"), payload.getString("group_name"), accessToken.getToken());
                 }
 
                 if(payload.getString("type").equals("group:chat_received")){

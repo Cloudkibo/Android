@@ -81,6 +81,7 @@ import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.database.KiboSyncService;
 import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.AccountGeneral;
+import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.Login;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
@@ -585,7 +586,7 @@ public class MainActivity extends CustomActivity
 
             alertD.show();
         }
-        else if (pos == 5)
+        else if (pos == 6)
         {
             title = "About CloudKibo";
             f = new AboutChat();
@@ -974,6 +975,9 @@ public class MainActivity extends CustomActivity
                 @Override
                 public void receiveSocketArray(String type, final JSONArray body) {
 
+
+
+
                     if(type.equals("theseareonline")){
                         IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 
@@ -995,6 +999,35 @@ public class MainActivity extends CustomActivity
 
                 @Override
                 public void receiveSocketJson(String type, final JSONObject body) {
+
+                    if(type.equals("group:you_are_added")){
+                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
+                        groupUtility.sendNotification("Group Notification", "You are added to a group");
+                        try {
+                            groupUtility.updateGroupToLocalDatabase(body.getString("groupId"), body.getString("group_name"), authtoken);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    if(type.equals("group:added_to_group")){
+                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
+                        groupUtility.sendNotification("New Message Received", body.toString());
+                        groupUtility.updateGroupMembers(body.toString(), authtoken);
+                    }
+
+                    if(type.equals("group:member_left_group")){
+                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
+                        groupUtility.sendNotification("New Message Received", body.toString());
+                        groupUtility.memberLeftGroup(body.toString());
+                    }
+
+                    if(type.equals("group:chat_received")){
+                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
+                        groupUtility.sendNotification("New Message Received", body.toString());
+                        groupUtility.updateGroupChat(body.toString(), authtoken);
+                    }
 
                     if(type.equals("im")){
 
