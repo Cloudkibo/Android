@@ -124,8 +124,10 @@ public class MyHandler extends NotificationsHandler {
                         } else {
                             displayName = payload.getString("senderId");
                         }
+
+
                         sendNotification(
-                                displayName,
+                                displayName + "In group Chat receieced",
                                 payload.getString("msg")
                         );
                         loadSpecificGroupChatFromServer(payload.getString("unique_id"));
@@ -137,7 +139,8 @@ public class MyHandler extends NotificationsHandler {
             if (MainActivity.isVisible) {
                 loadSpecificChatFromServer(payload.getString("uniqueId"));
                 MainActivity.mainActivity.ToastNotify(nhMessage);
-                MainActivity.mainActivity.ToastNotify2("got push notification for chat message.");
+                MainActivity.mainActivity.ToastNotify2("got push notification for chat single message."
+                 + nhMessage);
             } else {
                 String displayName = "";
                 DatabaseHandler db = new DatabaseHandler(context);
@@ -148,8 +151,8 @@ public class MyHandler extends NotificationsHandler {
                     displayName = payload.getString("senderId");
                 }
                 sendNotification(
-                        displayName,
-                        payload.getString("msg")
+                        "Here",
+                        payload.getString("msg").split("\"")[1]
                 );
                 loadSpecificChatFromServer(payload.getString("uniqueId"));
             }
@@ -214,7 +217,7 @@ public class MyHandler extends NotificationsHandler {
                                 ctx.getApplicationContext());
 
                         Log.i("MyHandler", row.toString());
-
+                        sendNotification("Single Chat Received", row.toString());
                         row = row.getJSONArray("msg").getJSONObject(0);
 
                         db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),

@@ -138,6 +138,7 @@ public class GroupUtility {
             String member_phone = data.getString("senderId");
             String unique_id = data.getString("unique_id");
             String group_id = data.getString("groupId");
+            sendNotification(message, message);
 
             db.addGroupMessage(group_id,message,member_phone,member_phone,unique_id);
             if(MainActivity.isVisible){
