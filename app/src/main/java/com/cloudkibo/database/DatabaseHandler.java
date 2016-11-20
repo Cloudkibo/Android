@@ -112,7 +112,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "group_name TEXT, "
                 + "group_icon BLOB, "
                 + "date_creation DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
-                + "unique_id TEXT, "
+                + "unique_id TEXT UNIQUE, "
                 + "isArchived" + " INTEGER DEFAULT 0 , "
                 + "is_mute INTEGER DEFAULT 0 "+ ")";
         db.execSQL(CREATE_GROUP);
@@ -146,7 +146,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "isArchived" + " INTEGER DEFAULT 0 , "
                 + "from_fullname TEXT, "
                 + "date DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
-                + "unique_id TEXT "
+                + "unique_id TEXT UNIQUE"
                 + ")";
         db.execSQL(CREATE_GROUP_CHAT);
 
@@ -574,7 +574,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public JSONArray getGroupMembers(String group_id) throws JSONException {
         JSONArray contacts = new JSONArray();
-        String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM GROUPMEMBER LEFT JOIN "+ Contacts.TABLE_CONTACTS +" ON phone = member_phone where group_unique_id='"+ group_id +"'";
+        String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM GROUPMEMBER LEFT JOIN "+ Contacts.TABLE_CONTACTS +" ON phone = member_phone where group_unique_id='"+ group_id +"' AND membership_status='joined'";
 //        String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM GROUPMEMBER, "+ Contacts.TABLE_CONTACTS +" where   group_unique_id='"+ group_id +"' AND phone = member_phone";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

@@ -347,6 +347,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 			lbl = (TextView) v.findViewById(R.id.lblContactStatus);
 			lbl.setText(c.getMsg());
+
 			if(c.getPendingMsgs() > 0) lbl.setTextColor(getResources().getColor(R.color.black));
 			else lbl.setTextColor(getResources().getColor(R.color.main_color_gray_lt));
 

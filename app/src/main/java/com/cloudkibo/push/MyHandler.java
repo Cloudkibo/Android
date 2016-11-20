@@ -61,29 +61,30 @@ public class MyHandler extends NotificationsHandler {
                     if (MainActivity.isVisible) {
                         MainActivity.mainActivity.ToastNotify2("You are added to a group.");
                     }
-                    sendNotification("You were added to the group", payload.toString());
                     GroupUtility groupUtility = new GroupUtility(context);
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();
-                    groupUtility.updateGroupToLocalDatabase(payload.getString("groupId"), payload.getString("senderId"), payload.getString("group_name"), accessToken.getToken());
+                    groupUtility.updateGroupToLocalDatabase(payload.getString("groupId"), payload.getString("group_name"), accessToken.getToken());
                 }
 
                 if(payload.getString("type").equals("group:chat_received")){
-                    sendNotification("New Message Received", payload.toString());
                     GroupUtility groupUtility = new GroupUtility(context);
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();
                     groupUtility.updateGroupChat(payload.toString(), accessToken.getToken());
                 }
                 if(payload.getString("type").equals("group:added_to_group")){
-                    sendNotification("New Message Received", payload.toString());
                     GroupUtility groupUtility = new GroupUtility(context);
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();
                     groupUtility.updateGroupMembers(payload.toString(), accessToken.getToken());
                 }
                 if(payload.getString("type").equals("group:member_left_group")){
-                    Log.v("MyHandler", "Member Left Group: "+ payload.toString());
-                    sendNotification("New Message Received", payload.toString());
                     GroupUtility groupUtility = new GroupUtility(context);
                     groupUtility.memberLeftGroup(payload.toString());
+                }
+
+                if(payload.getString("type").equals("group:removed_from_group")){
+                    GroupUtility groupUtility = new GroupUtility(context);
+                    final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+                    groupUtility.removedFromGroup(payload.toString(), accessToken.getToken());
                 }
             }
             if(!payload.has("uniqueId")) {
@@ -123,8 +124,10 @@ public class MyHandler extends NotificationsHandler {
                         } else {
                             displayName = payload.getString("senderId");
                         }
+
+
                         sendNotification(
-                                displayName,
+                                displayName + "In group Chat receieced",
                                 payload.getString("msg")
                         );
                         loadSpecificGroupChatFromServer(payload.getString("unique_id"));
@@ -136,7 +139,8 @@ public class MyHandler extends NotificationsHandler {
             if (MainActivity.isVisible) {
                 loadSpecificChatFromServer(payload.getString("uniqueId"));
                 MainActivity.mainActivity.ToastNotify(nhMessage);
-                MainActivity.mainActivity.ToastNotify2("got push notification for chat message.");
+                MainActivity.mainActivity.ToastNotify2("got push notification for chat single message."
+                 + nhMessage);
             } else {
                 String displayName = "";
                 DatabaseHandler db = new DatabaseHandler(context);
@@ -147,8 +151,8 @@ public class MyHandler extends NotificationsHandler {
                     displayName = payload.getString("senderId");
                 }
                 sendNotification(
-                        displayName,
-                        payload.getString("msg")
+                        "Here",
+                        payload.getString("msg").split("\"")[1]
                 );
                 loadSpecificChatFromServer(payload.getString("uniqueId"));
             }
@@ -213,7 +217,7 @@ public class MyHandler extends NotificationsHandler {
                                 ctx.getApplicationContext());
 
                         Log.i("MyHandler", row.toString());
-
+                        sendNotification("Single Chat Received", row.toString());
                         row = row.getJSONArray("msg").getJSONObject(0);
 
                         db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),

@@ -35,6 +35,7 @@ import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomActivity;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.Conversation;
@@ -204,7 +205,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			final MediaPlayer mp = MediaPlayer.create(getActivity().getApplicationContext(), R.raw.bell);
 			mp.start();
-
+			GroupUtility groupUtility = new GroupUtility(getContext());
+			groupUtility.sendNotification("Single message", msg);
 			// todo see if this really needs the uniqueid and status
 			convList.add(new Conversation(msg, Utility.convertDateToLocalTimeZoneAndReadable(date), false, true, "seen", uniqueid));
 
