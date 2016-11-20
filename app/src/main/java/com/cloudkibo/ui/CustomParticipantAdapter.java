@@ -114,10 +114,10 @@ public class CustomParticipantAdapter extends BaseAdapter{
                                   updateData(db);
                             } else if (which == 2) {
                                 db.leaveGroup(group_id, members.getJSONObject(position).getString("phone"));
-                                updateData(db);
                                 GroupUtility groupUtility = new GroupUtility(context);
                                 final AccessToken accessToken = AccountKit.getCurrentAccessToken();
                                 groupUtility.removeMember(group_id, members.getJSONObject(position).getString("phone"), accessToken.getToken());
+                                updateData(db);
                             }
 
                         } catch (JSONException e) {

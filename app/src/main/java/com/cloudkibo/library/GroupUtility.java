@@ -42,7 +42,7 @@ public class GroupUtility {
         db = new DatabaseHandler(ctx);
     }
 
-    public void updateGroupToLocalDatabase(final String group_id, final String sender_phone, final String group_name,  final String auth_token){
+    public void updateGroupToLocalDatabase(final String group_id, final String group_name,  final String auth_token){
 
         db.createGroup(group_id, group_name, 0);
 
@@ -111,6 +111,26 @@ public class GroupUtility {
 
     }
 
+    public void removedFromGroup(final String payload, final String auth_token){
+        try {
+            JSONObject data = new JSONObject(payload);
+            String person_phone = data.getString("personRemoved");
+            String admin_phone = data.getString("senderId");
+            String group_id = data.getString("groupId");
+            String membership_type = data.getString("membership_status");
+            sendNotification("A Member was removed from a group.", payload.toString());
+
+            db.leaveGroup(group_id, person_phone);
+            if(MainActivity.isVisible){
+                MainActivity.mainActivity.updateGroupMembers();
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void updateGroupChat(final String payload, final String auth_token){
         try {
             JSONObject data = new JSONObject(payload);
@@ -118,6 +138,7 @@ public class GroupUtility {
             String member_phone = data.getString("senderId");
             String unique_id = data.getString("unique_id");
             String group_id = data.getString("groupId");
+            sendNotification(message, message);
 
             db.addGroupMessage(group_id,message,member_phone,member_phone,unique_id);
             if(MainActivity.isVisible){
@@ -307,7 +328,7 @@ public class GroupUtility {
         return false;
     }
 
-    private void sendNotification(String header, String msg) {
+    public void sendNotification(String header, String msg) {
 
 //        Utility.sendLogToServer(""+ userDetail.get("phone") +" is showing alert and chime now.");
 

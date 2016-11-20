@@ -19,6 +19,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -249,7 +250,7 @@ public class ConnectionManager {
             DefaultHttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(userDataURL);
             httpPost.addHeader("kibo-token", authtoken);
-            httpPost.setEntity(new UrlEncodedFormEntity(params));
+            httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
 
             HttpResponse httpResponse = httpClient.execute(httpPost);
 
@@ -307,7 +308,7 @@ public class ConnectionManager {
             DefaultHttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(userDataURL);
             httpPost.addHeader("kibo-token", authtoken);
-            httpPost.setEntity(new UrlEncodedFormEntity(params));
+            httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
 
             HttpResponse httpResponse = httpClient.execute(httpPost);
 
@@ -334,7 +335,7 @@ public class ConnectionManager {
 
         try {
             BufferedReader reader = new BufferedReader(new InputStreamReader(
-                    is, "iso-8859-1"), 8);
+                    is, HTTP.UTF_8), 8);
             StringBuilder sb = new StringBuilder();
             String line = null;
             while ((line = reader.readLine()) != null) {
@@ -428,7 +429,7 @@ public class ConnectionManager {
             DefaultHttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(userDataURL);
             httpPost.addHeader("kibo-token", authtoken);
-            httpPost.setEntity(new UrlEncodedFormEntity(params));
+            httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
 
             HttpResponse httpResponse = httpClient.execute(httpPost);
 
@@ -491,7 +492,7 @@ public class ConnectionManager {
             // defaultHttpClient
             DefaultHttpClient httpClient = new DefaultHttpClient();
             HttpPost httpPost = new HttpPost(userDataURL);
-            httpPost.setEntity(new UrlEncodedFormEntity(params));
+            httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
 
             HttpResponse httpResponse = httpClient.execute(httpPost);
 
@@ -556,7 +557,7 @@ public class ConnectionManager {
             httpPost.addHeader("kibo-token", authtoken);
             httpPost.setHeader("Content-type", "application/json");
 
-            StringEntity params = new StringEntity(jsonD.toString());
+            StringEntity params = new StringEntity(jsonD.toString(), HTTP.UTF_8);
             httpPost.setEntity(params);
             Log.d("Getme", jsonD.toString());
 

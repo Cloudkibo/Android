@@ -81,6 +81,7 @@ import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.database.KiboSyncService;
 import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.AccountGeneral;
+import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.Login;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
@@ -112,6 +113,8 @@ import com.cloudkibo.webrtc.call.OutgoingCall;
 import com.cloudkibo.webrtc.filesharing.FileConnection;
 import com.cloudkibo.file.filechooser.utils.Base64;
 
+import com.facebook.accountkit.AccessToken;
+import com.facebook.accountkit.AccountKit;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.microsoft.windowsazure.notifications.NotificationsManager;
@@ -585,7 +588,7 @@ public class MainActivity extends CustomActivity
 
             alertD.show();
         }
-        else if (pos == 5)
+        else if (pos == 6)
         {
             title = "About CloudKibo";
             f = new AboutChat();
@@ -974,6 +977,9 @@ public class MainActivity extends CustomActivity
                 @Override
                 public void receiveSocketArray(String type, final JSONArray body) {
 
+
+
+
                     if(type.equals("theseareonline")){
                         IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 
@@ -995,6 +1001,36 @@ public class MainActivity extends CustomActivity
 
                 @Override
                 public void receiveSocketJson(String type, final JSONObject body) {
+
+                    if(type.equals("group:you_are_added")){
+                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
+                        try {
+                            groupUtility.updateGroupToLocalDatabase(body.getString("groupId"), body.getString("group_name"), authtoken);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+
+                    if(type.equals("group:added_to_group")){
+                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
+                        groupUtility.updateGroupMembers(body.toString(), authtoken);
+                    }
+
+                    if(type.equals("group:member_left_group")){
+                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
+                        groupUtility.memberLeftGroup(body.toString());
+                    }
+
+                    if(type.equals("group:chat_received")){
+                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
+                        groupUtility.updateGroupChat(body.toString(), authtoken);
+                    }
+
+                    if(type.equals("group:removed_from_group")){
+                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
+                        groupUtility.removedFromGroup(body.toString(), authtoken);
+                    }
 
                     if(type.equals("im")){
 
@@ -1204,6 +1240,8 @@ public class MainActivity extends CustomActivity
                         public void run() {
 
                             try {
+                                GroupUtility groupUtility = new GroupUtility(getApplicationContext());
+                                groupUtility.sendNotification("Single message", body.getString("msg"));
                                 myGroupChatFragment.receiveMessage(body.getString("msg"), body.getString("uniqueid"), body.getString("from"), body.getString("date"));
                                 Utility.sendLogToServer(""+ body.getString("to") +" is now going to show the message on the UI in chat window");
                             } catch(JSONException e){
