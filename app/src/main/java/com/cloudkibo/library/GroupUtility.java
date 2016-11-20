@@ -19,11 +19,14 @@ import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.ui.ChatList;
 import com.cloudkibo.ui.GroupChat;
 import com.cloudkibo.utils.IFragmentName;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -125,6 +128,27 @@ public class GroupUtility {
                 MainActivity.mainActivity.updateGroupMembers();
             }
 
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void downloadGroupIcon(final String payload, Context context, final String auth_token){
+        try {
+            JSONObject data = new JSONObject(payload);
+            Ion.with(context)
+                    .load("https://api.cloudkibo.com/api/groupmessaging/uploadIcon")
+                    .setHeader("kibo-token", auth_token)
+                    .setBodyParameter("unique_id", data.getString("groupId"))
+                    .write(new File("/sdcard/really-big-file.zip"))
+                    .setCallback(new FutureCallback<File>() {
+                        @Override
+                        public void onCompleted(Exception e, File file) {
+                            // download done...
+                            // do stuff with the File or error
+                        }
+                    });
         } catch (JSONException e) {
             e.printStackTrace();
         }

@@ -6,18 +6,15 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import android.*;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.media.MediaPlayer;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.os.Build;
@@ -29,10 +26,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
-import android.accounts.AccountManagerCallback;
-import android.accounts.AccountManagerFuture;
 import android.app.Dialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -48,7 +41,6 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
@@ -61,31 +53,22 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.cloudkibo.R;
-
 import com.cloudkibo.custom.CustomActivity;
 import com.cloudkibo.database.BoundKiboSyncListener;
-import com.cloudkibo.database.CloudKiboDatabaseContract;
 import com.cloudkibo.database.ContactService;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.database.KiboSyncService;
 import com.cloudkibo.file.filechooser.utils.FileUtils;
-import com.cloudkibo.library.AccountGeneral;
 import com.cloudkibo.library.GroupUtility;
-import com.cloudkibo.library.Login;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
-import com.cloudkibo.model.ContactItem;
 import com.cloudkibo.model.Data;
 //import io.cordova.hellocordova.CordovaApp;
 
@@ -96,7 +79,6 @@ import com.cloudkibo.socket.BoundServiceListener;
 import com.cloudkibo.socket.SocketService;
 import com.cloudkibo.socket.SocketService.SocketBinder;
 import com.cloudkibo.ui.AboutChat;
-import com.cloudkibo.ui.AddRequest;
 import com.cloudkibo.ui.CallHistory;
 import com.cloudkibo.ui.ChatList;
 import com.cloudkibo.ui.ContactList;
@@ -106,17 +88,16 @@ import com.cloudkibo.ui.GroupChat;
 import com.cloudkibo.ui.GroupChatUI;
 import com.cloudkibo.ui.GroupSetting;
 import com.cloudkibo.ui.LeftNavAdapter;
-import com.cloudkibo.ui.ProjectList;
 import com.cloudkibo.utils.IFragmentName;
-import com.cloudkibo.webrtc.call.IncomingCall;
 import com.cloudkibo.webrtc.call.OutgoingCall;
 import com.cloudkibo.webrtc.filesharing.FileConnection;
 import com.cloudkibo.file.filechooser.utils.Base64;
 
-import com.facebook.accountkit.AccessToken;
-import com.facebook.accountkit.AccountKit;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.microsoft.windowsazure.notifications.NotificationsManager;
 
 
@@ -606,9 +587,61 @@ public class MainActivity extends CustomActivity
         }
     }
 
+    String icon_upload_group_id = "";
+    public void uploadIcon(String group_id){
+        icon_upload_group_id = group_id;
+        Intent getContentIntent = FileUtils.createGetContentIntent();
+
+        Intent intent = Intent.createChooser(getContentIntent, "Select an image");
+        startActivityForResult(intent, 111);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
+            case 111:
+                if (resultCode == -1) {
+                    final Uri uri = data.getData();
+                    String selectedFilePath = FileUtils.getPath(getApplicationContext(), uri);
+
+                    Ion.with(getApplicationContext())
+                            .load("https://api.cloudkibo.com/api/groupmessaging/uploadIcon")
+                            //.uploadProgressBar(uploadProgressBar)
+                            .setHeader("kibo-token", authtoken)
+                            .setMultipartParameter("unique_id", icon_upload_group_id)
+                            .setMultipartFile("file", FileUtils.getExtension(selectedFilePath), new File(selectedFilePath))
+                            .asJsonObject()
+                            .setCallback(new FutureCallback<JsonObject>() {
+                                @Override
+                                public void onCompleted(Exception e, JsonObject result) {
+                                    // do stuff with the result or error
+                                    if(e!= null)
+                                        Toast.makeText(getApplicationContext(), result.toString(), Toast.LENGTH_LONG).show();
+                                    else e.printStackTrace();
+                                }
+                            });
+                    /*new AsyncTask<String, String, JSONObject>() {
+
+                        @Override
+                        protected JSONObject doInBackground(String... args) {
+                            UserFunctions userFunctions = new UserFunctions();
+                            // todo sojharo file upload function
+                            String member_phone = "";
+                            return  userFunctions.removeMember(group_id, member_phone, authtoken);
+                        }
+
+                        @Override
+                        protected void onPostExecute(JSONObject row) {
+                            if(row != null){
+                                Toast.makeText(getActivity().getApplicationContext(), row.toString(), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                    }.execute();*/
+
+                }
+                break;
             case REQUEST_CHOOSER:
                 if (resultCode == RESULT_OK) {
 

@@ -86,6 +86,11 @@ public class MyHandler extends NotificationsHandler {
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();
                     groupUtility.removedFromGroup(payload.toString(), accessToken.getToken());
                 }
+                if(payload.getString("type").equals("group:icon_update")){
+                    GroupUtility groupUtility = new GroupUtility(context);
+                    final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+                    groupUtility.downloadGroupIcon(payload.toString(), context, accessToken.getToken());
+                }
             }
             if(!payload.has("uniqueId")) {
                 return;
