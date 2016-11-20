@@ -111,6 +111,26 @@ public class GroupUtility {
 
     }
 
+    public void removedFromGroup(final String payload, final String auth_token){
+        try {
+            JSONObject data = new JSONObject(payload);
+            String person_phone = data.getString("personRemoved");
+            String admin_phone = data.getString("senderId");
+            String group_id = data.getString("groupId");
+            String membership_type = data.getString("membership_status");
+            sendNotification("A Member was removed from a group.", payload.toString());
+
+            db.leaveGroup(group_id, person_phone);
+            if(MainActivity.isVisible){
+                MainActivity.mainActivity.updateGroupMembers();
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void updateGroupChat(final String payload, final String auth_token){
         try {
             JSONObject data = new JSONObject(payload);

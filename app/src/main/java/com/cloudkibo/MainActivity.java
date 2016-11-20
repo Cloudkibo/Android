@@ -113,6 +113,8 @@ import com.cloudkibo.webrtc.call.OutgoingCall;
 import com.cloudkibo.webrtc.filesharing.FileConnection;
 import com.cloudkibo.file.filechooser.utils.Base64;
 
+import com.facebook.accountkit.AccessToken;
+import com.facebook.accountkit.AccountKit;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.microsoft.windowsazure.notifications.NotificationsManager;
@@ -1002,7 +1004,6 @@ public class MainActivity extends CustomActivity
 
                     if(type.equals("group:you_are_added")){
                         GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                        groupUtility.sendNotification("Group Notification", "You are added to a group");
                         try {
                             groupUtility.updateGroupToLocalDatabase(body.getString("groupId"), body.getString("group_name"), authtoken);
                         } catch (JSONException e) {
@@ -1013,20 +1014,22 @@ public class MainActivity extends CustomActivity
 
                     if(type.equals("group:added_to_group")){
                         GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                        groupUtility.sendNotification("New Message Received", body.toString());
                         groupUtility.updateGroupMembers(body.toString(), authtoken);
                     }
 
                     if(type.equals("group:member_left_group")){
                         GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                        groupUtility.sendNotification("New Message Received", body.toString());
                         groupUtility.memberLeftGroup(body.toString());
                     }
 
                     if(type.equals("group:chat_received")){
                         GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                        groupUtility.sendNotification("New Message Received", body.toString());
                         groupUtility.updateGroupChat(body.toString(), authtoken);
+                    }
+
+                    if(type.equals("group:removed_from_group")){
+                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
+                        groupUtility.removedFromGroup(body.toString(), authtoken);
                     }
 
                     if(type.equals("im")){

@@ -61,29 +61,30 @@ public class MyHandler extends NotificationsHandler {
                     if (MainActivity.isVisible) {
                         MainActivity.mainActivity.ToastNotify2("You are added to a group.");
                     }
-                    sendNotification("You were added to the group", payload.toString());
                     GroupUtility groupUtility = new GroupUtility(context);
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();
                     groupUtility.updateGroupToLocalDatabase(payload.getString("groupId"), payload.getString("group_name"), accessToken.getToken());
                 }
 
                 if(payload.getString("type").equals("group:chat_received")){
-                    sendNotification("New Message Received", payload.toString());
                     GroupUtility groupUtility = new GroupUtility(context);
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();
                     groupUtility.updateGroupChat(payload.toString(), accessToken.getToken());
                 }
                 if(payload.getString("type").equals("group:added_to_group")){
-                    sendNotification("New Message Received", payload.toString());
                     GroupUtility groupUtility = new GroupUtility(context);
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();
                     groupUtility.updateGroupMembers(payload.toString(), accessToken.getToken());
                 }
                 if(payload.getString("type").equals("group:member_left_group")){
-                    Log.v("MyHandler", "Member Left Group: "+ payload.toString());
-                    sendNotification("New Message Received", payload.toString());
                     GroupUtility groupUtility = new GroupUtility(context);
                     groupUtility.memberLeftGroup(payload.toString());
+                }
+
+                if(payload.getString("type").equals("group:removed_from_group")){
+                    GroupUtility groupUtility = new GroupUtility(context);
+                    final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+                    groupUtility.removedFromGroup(payload.toString(), accessToken.getToken());
                 }
             }
             if(!payload.has("uniqueId")) {

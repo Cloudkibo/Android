@@ -112,7 +112,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "group_name TEXT, "
                 + "group_icon BLOB, "
                 + "date_creation DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
-                + "unique_id TEXT, "
+                + "unique_id TEXT UNIQUE, "
                 + "isArchived" + " INTEGER DEFAULT 0 , "
                 + "is_mute INTEGER DEFAULT 0 "+ ")";
         db.execSQL(CREATE_GROUP);
@@ -146,7 +146,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "isArchived" + " INTEGER DEFAULT 0 , "
                 + "from_fullname TEXT, "
                 + "date DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
-                + "unique_id TEXT "
+                + "unique_id TEXT UNIQUE"
                 + ")";
         db.execSQL(CREATE_GROUP_CHAT);
 
