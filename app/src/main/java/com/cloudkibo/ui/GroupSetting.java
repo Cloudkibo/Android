@@ -4,9 +4,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.PixelFormat;
+import android.graphics.Point;
+import android.hardware.display.DisplayManager;
+import android.media.ImageReader;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +21,7 @@ import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -26,17 +34,22 @@ import com.cloudkibo.custom.CustomContactAdapter;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.CloudKiboDatabaseContract;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.ChatItem;
 import com.cloudkibo.model.ContactItem;
 import com.cloudkibo.utils.IFragmentName;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 
@@ -60,6 +73,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
     String [] phoneList;
     JSONArray participants;
     LayoutInflater inflater;
+    ImageButton btnSelectIcon;
 
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -80,6 +94,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
             group_id = args.getString("group_id");
         }
         Button leave_group = (Button) v.findViewById(R.id.leave_group);
+        btnSelectIcon = (ImageButton) v.findViewById(R.id.selectIconBtn);
         lv=(ListView) v.findViewById(R.id.listView);
         participants = getMembers();
         lv.setAdapter(new CustomParticipantAdapter(inflater, participants, getContext(),group_id));
@@ -124,6 +139,16 @@ public class GroupSetting extends CustomFragment implements IFragmentName
             }
         });
 
+        btnSelectIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent getContentIntent = FileUtils.createGetContentIntent();
+
+                Intent intent = Intent.createChooser(getContentIntent, "Select a file");
+                startActivityForResult(intent, 111);
+            }
+        });
+
         leave_group.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -142,6 +167,52 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         return v;
 
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 111:
+                if (resultCode == -1) {
+                    final Uri uri = data.getData();
+                    String selectedFilePath = FileUtils.getPath(getActivity().getApplicationContext(), uri);
+
+                    Ion.with(getContext())
+                            .load("https://api.cloudkibo.com/api/groupmessaging/uploadIcon")
+                            //.uploadProgressBar(uploadProgressBar)
+                            .setMultipartParameter("unique_id", group_id)
+                            .setMultipartFile("archive", "application/zip", new File(selectedFilePath))
+                            .asJsonObject()
+                            .setCallback(new FutureCallback<JsonObject>() {
+                                @Override
+                                public void onCompleted(Exception e, JsonObject result) {
+                                    // do stuff with the result or error
+                                }
+                            });
+                    /*new AsyncTask<String, String, JSONObject>() {
+
+                        @Override
+                        protected JSONObject doInBackground(String... args) {
+                            UserFunctions userFunctions = new UserFunctions();
+                            // todo sojharo file upload function
+                            String member_phone = "";
+                            return  userFunctions.removeMember(group_id, member_phone, authtoken);
+                        }
+
+                        @Override
+                        protected void onPostExecute(JSONObject row) {
+                            if(row != null){
+                                Toast.makeText(getActivity().getApplicationContext(), row.toString(), Toast.LENGTH_LONG).show();
+//                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
+                            }
+                        }
+
+                    }.execute();*/
+
+                }
+                break;
+        }
+    }
+
 
     /* (non-Javadoc)
      * @see com.socialshare.custom.CustomFragment#onClick(android.view.View)

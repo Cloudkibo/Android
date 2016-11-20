@@ -299,10 +299,18 @@ public class UserFunctions {
         JSONObject response = connection.sendObjectToServer(leaveGroup, authtoken, params);
         return response;
     }
+
     public JSONObject removeMember(String group_id, String number, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("group_unique_id", group_id));
         params.add(new BasicNameValuePair("phone", number));
+        JSONObject response = connection.sendObjectToServer(removeMember, authtoken, params);
+        return response;
+    }
+
+    public JSONObject uploadIcon(String group_id, String filepath, String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("unique_id", group_id));
         JSONObject response = connection.sendObjectToServer(removeMember, authtoken, params);
         return response;
     }
