@@ -9,6 +9,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.cloudkibo.MainActivity;
@@ -147,6 +148,7 @@ public class GroupUtility {
                         public void onCompleted(Exception e, File file) {
                             // download done...
                             // do stuff with the File or error
+                            Log.d("GROUPFILE", "Downloaded icon");
                         }
                     });
         } catch (JSONException e) {

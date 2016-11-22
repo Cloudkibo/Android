@@ -28,6 +28,9 @@ import com.cloudkibo.SplashScreen;
 import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -181,6 +184,30 @@ public class KiboSyncService extends Service {
 
             }
 
+            JSONArray sentMesssagesForStatus = db.getSentGroupMessagesForSync(db.getUserDetails().get("phone"));
+
+            JSONArray array = new JSONArray();
+            for (int i=0; i < sentMesssagesForStatus.length(); i++) {
+                JSONObject row = sentMesssagesForStatus.getJSONObject(i);
+                array.put(row.getString("unique_id"));
+            }
+            JSONObject data = new JSONObject();
+            data.put("unique_ids", array);
+
+            JsonObject payload = new JsonObject();
+            payload.getAsJsonObject(data.toString());
+            Ion.with(getApplicationContext())
+                    .load("https://api.cloudkibo.com/api/groupchatstatus/checkStatus")
+                    .setHeader("kibo-token", authtoken)
+                    .setJsonObjectBody(payload)
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+                            // do stuff with the result or error
+                            Log.d("KIBOSyncSERVICE", result.toString());
+                        }
+                    });
 
         }catch(JSONException e ){
             e.printStackTrace();
@@ -620,6 +647,122 @@ public class KiboSyncService extends Service {
                 JSONArray json = new JSONArray();
                 try {
                     json = userFunction.getPartialChatList(db.getUserDetails().get("phone"), authtoken).getJSONArray("msg");
+                } catch(JSONException e){
+                    e.printStackTrace();
+                }
+                return json;
+            }
+
+            @Override
+            protected void onPostExecute(JSONArray jsonA) {
+                try {
+
+                    if (jsonA != null) {
+
+                        if(jsonA.length() > 0) {
+                            DatabaseHandler db = new DatabaseHandler(
+                                    getApplicationContext());
+
+                            HashMap<String, String> user = db.getUserDetails();
+
+                            db = new DatabaseHandler(
+                                    getApplicationContext());
+
+                            for (int i=0; i < jsonA.length(); i++) {
+                                JSONObject row = jsonA.getJSONObject(i);
+
+                                JSONArray messageAlreadyThere = db.getSpecificChat(row.has("uniqueid") ? row.getString("uniqueid") : "");
+                                if(messageAlreadyThere.length() < 1){
+                                    db = new DatabaseHandler(
+                                            getApplicationContext());
+
+                                    db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
+                                            row.getString("msg"), row.getString("date"),
+                                            row.has("status") ? row.getString("status") : "",
+                                            row.has("uniqueid") ? row.getString("uniqueid") : "");
+
+                                    if(row.has("status")){
+                                        if(row.getString("to").equals(db.getUserDetails().get("phone")) && row.getString("status").equals("sent")){
+                                            db = new DatabaseHandler(
+                                                    getApplicationContext());
+                                            db.updateChat("delivered", row.getString("uniqueid"));
+                                            mListener.sendMessageStatusUsingSocket(row.getString("from"),
+                                                    "delivered", row.getString("uniqueid"));
+
+                                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                            PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+                                            String message = row.getString("msg");
+                                            String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
+
+                                            DatabaseHandler db2 = new DatabaseHandler(getApplicationContext());
+
+                                            String senderName = db2.getSpecificContact(row.getString("from")).getJSONObject(0).getString("display_name");
+
+                                            Notification n = new Notification.Builder(getApplicationContext())
+                                                    .setContentTitle(senderName)
+                                                    .setContentText(subMsg)
+                                                    .setSmallIcon(R.drawable.icon)
+                                                    .setContentIntent(pIntent)
+                                                    .setAutoCancel(true)
+                                                    .build();
+
+                                            NotificationManager notificationManager =
+                                                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                                            notificationManager.notify(0, n);
+
+                                            try {
+                                                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                                Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                                                r.play();
+                                            } catch (Exception e) {
+                                                e.printStackTrace();
+                                            }
+
+                                        }
+                                    }
+                                }
+
+                            }
+
+                        /*try {
+                            JSONArray chat = db.getChat();
+                            chat.toString();
+                        }catch(JSONException e){
+                            e.printStackTrace();
+                        }*/
+
+                            mListener.chatLoaded();
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if(startWithAddressBook)
+                    loadContactsFromAddressBook();
+                else
+                    loadCurrentContactsFromServer();
+
+            }
+
+        }.execute();
+
+    }
+
+    private void loadPartialGroupChatFromServer() {
+        // TODO Needs discussion with Dayem
+
+        new AsyncTask<String, String, JSONArray>() {
+
+            @Override
+            protected JSONArray doInBackground(String... args) {
+                DatabaseHandler db = new DatabaseHandler(
+                        getApplicationContext());
+                UserFunctions userFunction = new UserFunctions();
+                JSONArray json = new JSONArray();
+                try {
+                    json = userFunction.getPartialGroupChatList(db.getUserDetails().get("phone"), authtoken).getJSONArray("msg");
                 } catch(JSONException e){
                     e.printStackTrace();
                 }

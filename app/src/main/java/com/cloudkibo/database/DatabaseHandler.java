@@ -701,6 +701,54 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return contacts;
     }
 
+    public JSONArray getSentGroupMessagesForSync(String phone) throws JSONException {
+        JSONArray contacts = new JSONArray();
+        String selectQuery = "SELECT GROUPCHAT._from, GROUPCHAT.unique_id, GROUPCHATSTATUS.status  " +
+                "FROM GROUPCHAT, GROUPCHATSTATUS  where GROUPCHAT.unique_id=GROUPCHATSTATUS.msg_unique_id " +
+                "AND GROUPCHATSTATUS.status = 'sent' AND GROUPCHAT._from ='"+ phone +"'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+                JSONObject contact = new JSONObject();
+                contact.put("_from", cursor.getString(0));
+                contact.put("unique_id", cursor.getString(1));
+                contact.put("status", cursor.getString(2));
+                contacts.put(contact);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+
+        selectQuery = "SELECT GROUPCHAT._from, GROUPCHAT.unique_id, GROUPCHATSTATUS.status  " +
+                "FROM GROUPCHAT, GROUPCHATSTATUS  where GROUPCHAT.unique_id=GROUPCHATSTATUS.msg_unique_id " +
+                "AND GROUPCHATSTATUS.status = 'delivered' AND GROUPCHAT._from ='"+ phone +"'";
+        db = this.getReadableDatabase();
+        cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+                JSONObject contact = new JSONObject();
+                contact.put("_from", cursor.getString(0));
+                contact.put("unique_id", cursor.getString(1));
+                contact.put("status", cursor.getString(2));
+                contacts.put(contact);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+
+        // return user
+        return contacts;
+    }
+
     /*
     * ===============================================
     * END OF GROUP DB LOGIC

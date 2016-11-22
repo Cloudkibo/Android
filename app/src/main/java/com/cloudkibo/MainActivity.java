@@ -620,26 +620,6 @@ public class MainActivity extends CustomActivity
                                     else e.printStackTrace();
                                 }
                             });
-                    /*new AsyncTask<String, String, JSONObject>() {
-
-                        @Override
-                        protected JSONObject doInBackground(String... args) {
-                            UserFunctions userFunctions = new UserFunctions();
-                            // todo sojharo file upload function
-                            String member_phone = "";
-                            return  userFunctions.removeMember(group_id, member_phone, authtoken);
-                        }
-
-                        @Override
-                        protected void onPostExecute(JSONObject row) {
-                            if(row != null){
-                                Toast.makeText(getActivity().getApplicationContext(), row.toString(), Toast.LENGTH_LONG).show();
-//                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
-                            }
-                        }
-
-                    }.execute();*/
-
                 }
                 break;
             case REQUEST_CHOOSER:
