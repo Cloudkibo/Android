@@ -325,7 +325,7 @@ public class UserFunctions {
         return response;
     }
 
-    public JSONObject getPartialGroupChatList(String user1, String authtoken) {
+    public JSONObject getPartialChatList(String user1, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("user1", user1));
         JSONObject response = connection.sendObjectToServer(getPartialChatURL, authtoken, params);
