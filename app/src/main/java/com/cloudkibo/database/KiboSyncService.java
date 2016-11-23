@@ -28,6 +28,7 @@ import com.cloudkibo.SplashScreen;
 import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -205,6 +206,7 @@ public class KiboSyncService extends Service {
                         @Override
                         public void onCompleted(Exception e, JsonObject result) {
                             // do stuff with the result or error
+                            if(e==null)
                             Log.d("KIBOSyncSERVICE", result.toString());
                         }
                     });
@@ -733,6 +735,7 @@ public class KiboSyncService extends Service {
                             e.printStackTrace();
                         }*/
 
+
                             mListener.chatLoaded();
                         }
                     }
@@ -743,6 +746,8 @@ public class KiboSyncService extends Service {
                     loadContactsFromAddressBook();
                 else
                     loadCurrentContactsFromServer();
+
+                loadPartialGroupChatFromServer();
 
             }
 
@@ -750,120 +755,18 @@ public class KiboSyncService extends Service {
 
     }
 
-    private void loadPartialGroupChatFromServer() {
-        // TODO Needs discussion with Dayem
-
-        new AsyncTask<String, String, JSONArray>() {
-
-            @Override
-            protected JSONArray doInBackground(String... args) {
-                DatabaseHandler db = new DatabaseHandler(
-                        getApplicationContext());
-                UserFunctions userFunction = new UserFunctions();
-                JSONArray json = new JSONArray();
-                try {
-                    json = userFunction.getPartialGroupChatList(db.getUserDetails().get("phone"), authtoken).getJSONArray("msg");
-                } catch(JSONException e){
-                    e.printStackTrace();
-                }
-                return json;
-            }
-
-            @Override
-            protected void onPostExecute(JSONArray jsonA) {
-                try {
-
-                    if (jsonA != null) {
-
-                        if(jsonA.length() > 0) {
-                            DatabaseHandler db = new DatabaseHandler(
-                                    getApplicationContext());
-
-                            HashMap<String, String> user = db.getUserDetails();
-
-                            db = new DatabaseHandler(
-                                    getApplicationContext());
-
-                            for (int i=0; i < jsonA.length(); i++) {
-                                JSONObject row = jsonA.getJSONObject(i);
-
-                                JSONArray messageAlreadyThere = db.getSpecificChat(row.has("uniqueid") ? row.getString("uniqueid") : "");
-                                if(messageAlreadyThere.length() < 1){
-                                    db = new DatabaseHandler(
-                                            getApplicationContext());
-
-                                    db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
-                                            row.getString("msg"), row.getString("date"),
-                                            row.has("status") ? row.getString("status") : "",
-                                            row.has("uniqueid") ? row.getString("uniqueid") : "");
-
-                                    if(row.has("status")){
-                                        if(row.getString("to").equals(db.getUserDetails().get("phone")) && row.getString("status").equals("sent")){
-                                            db = new DatabaseHandler(
-                                                    getApplicationContext());
-                                            db.updateChat("delivered", row.getString("uniqueid"));
-                                            mListener.sendMessageStatusUsingSocket(row.getString("from"),
-                                                    "delivered", row.getString("uniqueid"));
-
-                                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                            PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-
-                                            String message = row.getString("msg");
-                                            String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
-
-                                            DatabaseHandler db2 = new DatabaseHandler(getApplicationContext());
-
-                                            String senderName = db2.getSpecificContact(row.getString("from")).getJSONObject(0).getString("display_name");
-
-                                            Notification n = new Notification.Builder(getApplicationContext())
-                                                    .setContentTitle(senderName)
-                                                    .setContentText(subMsg)
-                                                    .setSmallIcon(R.drawable.icon)
-                                                    .setContentIntent(pIntent)
-                                                    .setAutoCancel(true)
-                                                    .build();
-
-                                            NotificationManager notificationManager =
-                                                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-                                            notificationManager.notify(0, n);
-
-                                            try {
-                                                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                                Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                                                r.play();
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-
-                                        }
-                                    }
-                                }
-
-                            }
-
-                        /*try {
-                            JSONArray chat = db.getChat();
-                            chat.toString();
-                        }catch(JSONException e){
-                            e.printStackTrace();
-                        }*/
-
-                            mListener.chatLoaded();
-                        }
+    private void loadPartialGroupChatFromServer(){
+        Ion.with(getApplicationContext())
+                .load("https://api.cloudkibo.com/api/groupchatstatus/")
+                .setHeader("kibo-token", authtoken)
+                .asJsonArray()
+                .setCallback(new FutureCallback<JsonArray>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonArray result) {
+                        // do stuff with the result or error
+                        Log.d("KiboSyncService", result.toString());
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if(startWithAddressBook)
-                    loadContactsFromAddressBook();
-                else
-                    loadCurrentContactsFromServer();
-
-            }
-
-        }.execute();
-
+                });
     }
 
     @Override
