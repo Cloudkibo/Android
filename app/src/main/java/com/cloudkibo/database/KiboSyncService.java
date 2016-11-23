@@ -29,7 +29,9 @@ import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
@@ -142,10 +144,6 @@ public class KiboSyncService extends Service {
             for (int i=0; i < chats.length(); i++) {
                 JSONObject row = chats.getJSONObject(i);
 
-                /*mListener.sendPendingMessageUsingSocket(
-                        row.getString("toperson"),
-                        row.getString("msg"), row.getString("uniqueid")
-                );*/
                 sendMessageUsingAPI(row.getString("toperson"),
                         row.getString("msg"), row.getString("uniqueid"));
 
@@ -156,10 +154,6 @@ public class KiboSyncService extends Service {
             for (int i=0; i < seenChats.length(); i++) {
                 JSONObject row = seenChats.getJSONObject(i);
 
-                /*mListener.sendMessageStatusUsingSocket(
-                        row.getString("fromperson"),
-                        row.getString("status"), row.getString("uniqueid")
-                );*/
                 sendMessageStatusUsingAPI(
                         row.getString("status"),
                         row.getString("uniqueid"), row.getString("fromperson")
@@ -511,11 +505,82 @@ public class KiboSyncService extends Service {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                mListener.contactsLoaded();
+                loadMyGroupsFromServer();
             }
 
         }.execute();
 
+    }
+
+    private void loadMyGroupsFromServer() {
+        Ion.with(getApplicationContext())
+                .load("https://api.cloudkibo.com/api/groupmessaginguser/mygroups")
+                .setHeader("kibo-token", authtoken)
+                .asJsonArray()
+                .setCallback(new FutureCallback<JsonArray>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonArray result) {
+                        // do stuff with the result or error
+                        if(e==null) {
+                            Log.d("KIBOSyncSERVICE", result.toString());
+
+                            for(int i=0; i<result.size(); i++){
+                                JsonObject group = result.get(i).getAsJsonObject().getAsJsonObject("group_unique_id");
+
+                                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+                                try {
+                                    db.syncGroup(group.get("unique_id").getAsString(),
+                                            group.get("group_name").getAsString(), 0, group.get("date_creation").getAsString());
+                                }catch (NullPointerException exc){
+                                    exc.printStackTrace();
+                                }
+
+                            }
+
+                        }
+
+                        loadMyGroupsMembersFromServer();
+                    }
+                });
+    }
+
+    private void loadMyGroupsMembersFromServer(){
+        Ion.with(getApplicationContext())
+                .load("https://api.cloudkibo.com/api/groupmessaginguser/mygroupsmembers")
+                .setHeader("kibo-token", authtoken)
+                .asJsonArray()
+                .setCallback(new FutureCallback<JsonArray>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonArray result) {
+                        // do stuff with the result or error
+                        if(e==null) {
+                            Log.d("KIBOSyncSERVICE", result.toString());
+
+                            for(int i=0; i<result.size(); i++){
+                                JsonObject group = result.get(i).getAsJsonObject().getAsJsonObject("group_unique_id");
+
+                                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+                                try {
+                                    String group_unique_id = group.get("unique_id").getAsString();
+                                    String member_phone = result.get(i).getAsJsonObject().get("member_phone").getAsString();
+                                    String display_name = result.get(i).getAsJsonObject().get("display_name").getAsString();
+                                    int isAdmin = result.get(i).getAsJsonObject().get("isAdmin").getAsString().equals("Yes") ? 1 : 0;
+                                    String membership_status = result.get(i).getAsJsonObject().get("membership_status").getAsString();
+                                    String date_join = result.get(i).getAsJsonObject().get("date_join").getAsString();
+                                    db.syncGroupMember(group_unique_id,member_phone,isAdmin,membership_status,date_join);
+                                }catch (NullPointerException exc){
+                                    exc.printStackTrace();
+                                }
+
+                            }
+
+                        }
+
+                        mListener.contactsLoaded();
+                    }
+                });
     }
 
     private void loadChatFromServer() {
@@ -632,6 +697,7 @@ public class KiboSyncService extends Service {
 
     }
 
+    // todo need to remove this... i am already doing the sync of my groups and members inside the group above.
     private void syncAllGroups(){
         GroupUtility groupUtility  = new GroupUtility(getApplicationContext());
         groupUtility.syncAllGroups(authtoken);
@@ -763,7 +829,7 @@ public class KiboSyncService extends Service {
                 .setCallback(new FutureCallback<JsonArray>() {
                     @Override
                     public void onCompleted(Exception e, JsonArray result) {
-                        // do stuff with the result or error
+                        // todo messages are already given to us by push.. the sync don't get any undelivered message.. needs to test more
                         Log.d("KiboSyncService", result.toString());
 
                     }
