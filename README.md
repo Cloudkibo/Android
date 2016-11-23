@@ -8,7 +8,7 @@
 
 [Google Firebase Notification](https://docs.google.com/document/d/1NOtR5o59BJbJ7RoKv_YuxEGjz8sjRfXXsC7pAosKvzQ/edit#heading=h.t3x2h3weci90)
 
-[KiboChat File Sharing Design Document](https://docs.google.com/document/d/1NOtR5o59BJbJ7RoKv_YuxEGjz8sjRfXXsC7pAosKvzQ/edit#heading=h.t3x2h3weci90)
+[KiboChat File Sharing Design Document](https://docs.google.com/document/d/13YJVFZfaRX1dek-3DaCwDqcOkPmQhCJgyoifyKSiGHE/edit#heading=h.fwlpq4gf5w3r)
 
 # Others
 
