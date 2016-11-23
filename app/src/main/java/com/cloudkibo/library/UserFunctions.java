@@ -63,6 +63,7 @@ public class UserFunctions {
     public static String leaveGroup =          baseURL + "/api/groupmessaginguser/leaveGroup";
     public static String removeMember =          baseURL + "/api/groupmessaginguser/removeFromGroup";
     public static String groupMembers =          baseURL + "/api/groupmessaginguser/myspecificgroupsmembers";
+    public static String updateGroupChatStatus =          baseURL + "/api/groupchatstatus/updateStatus";
     
     
     
@@ -279,6 +280,15 @@ public class UserFunctions {
         return response;
     }
 
+
+    public JSONObject updateGroupChatStatus(String chat_unique_id,  String authtoken) {
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+                params.add(new BasicNameValuePair("chat_unique_id", chat_unique_id));
+                params.add(new BasicNameValuePair("status", "seen"));
+                JSONObject response = connection.sendObjectToServer(updateGroupChatStatus, authtoken, params);
+                return response;
+            }
     public JSONObject getAllChatList(String user1, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("user1", user1));

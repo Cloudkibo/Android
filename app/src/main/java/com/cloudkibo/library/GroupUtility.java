@@ -30,6 +30,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * Created by root on 11/14/16.
@@ -93,6 +94,26 @@ public class GroupUtility {
         }.execute();
 
     }
+
+    public void updateMessageStatusToSeen(final String unique_id, final String auth_token){
+
+            new AsyncTask<String, String, JSONObject>() {
+
+                @Override
+                protected JSONObject doInBackground(String... args) {
+                    return user.updateGroupChatStatus(unique_id,auth_token);
+                }
+
+                @Override
+                protected void onPostExecute(JSONObject row) {
+                    if(row != null){
+                        sendNotification("Message Status Update To Seen", row.toString());
+                    }
+                }
+
+            }.execute();
+
+        }
 
     public void updateGroupMembers(final String payload, final String auth_token){
         try {
@@ -168,10 +189,12 @@ public class GroupUtility {
 
             db.addGroupMessage(group_id,message,member_phone,member_phone,unique_id);
             if(MainActivity.isVisible){
+                updateMessageStatusToSeen(unique_id, auth_token);
                 MainActivity.mainActivity.updateGroupUIChat();
             }
-
+            loadSpecificGroupChat(unique_id, auth_token);
         } catch (JSONException e) {
+            MainActivity.mainActivity.updateGroupUIChat();
             e.printStackTrace();
         }
 
@@ -197,9 +220,10 @@ public class GroupUtility {
 
     }
 
-    public void sendGroupMessage(final String group_id, final  String message, final  String auth_token){
+    public String sendGroupMessage(final String group_id, final  String message, final  String auth_token){
         final String unique_id = randomString();
         db.addGroupMessage(group_id,message, db.getUserDetails().get("phone"),"", unique_id);
+        db.addGroupChatStatus(unique_id, "pending", db.getUserDetails().get("phone"));
         Toast.makeText(ctx, "Local Database Updated Successfully", Toast.LENGTH_LONG).show();
         new AsyncTask<String, String, JSONObject>() {
 
@@ -212,11 +236,14 @@ public class GroupUtility {
             protected void onPostExecute(JSONObject row) {
                 if(row != null){
                     sendNotification("Message Sent To Server", row.toString());
+                    db.updateGroupChatStatus(unique_id,"sent");
+                    MainActivity.mainActivity.updateGroupUIChat();
                 }
             }
 
         }.execute();
 
+        return unique_id;
     }
 
 
@@ -329,6 +356,59 @@ public class GroupUtility {
             e.printStackTrace();
         }
     }
+
+    public void updateGroupMessageStatus(String payload, String auth_token){
+           try {
+               JSONObject body = new JSONObject(payload);
+                String msg_unique_id = body.getString("uniqueId");
+                String status = body.getString("status");
+                db.updateGroupChatStatus(msg_unique_id, status);
+                Toast.makeText(ctx, "Updated Chat Status to Seen", Toast.LENGTH_LONG).show();
+                MainActivity.mainActivity.updateGroupUIChat();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void loadSpecificGroupChat(final String uniqueid, final String authtoken){
+
+                final HashMap<String, String> userDetail = new DatabaseHandler(ctx.getApplicationContext()).getUserDetails();
+
+                new AsyncTask<String, String, JSONObject>() {
+
+                    @Override
+                    protected JSONObject doInBackground(String... args) {
+                        UserFunctions userFunction = new UserFunctions();
+                        return userFunction.getSingleGroupChat(uniqueid, authtoken);
+                    }
+
+                    @Override
+                    protected void onPostExecute(JSONObject row) {
+
+
+                            if (row != null) {
+
+                                Log.i("MyHandler", row.toString());
+
+                                // todo @dayem please test following when you are ready to send messsage, this is saving the received chat message
+
+                                Utility.sendLogToServer(""+ userDetail.get("phone") +" got the group message using API and saved to Database: "+ row.toString());
+
+                                if (MainActivity.isVisible) {
+                                    // todo @dayem please update the UI for incoming group chat when UI logic is done
+                                    ///MainActivity.mainActivity.handleIncomingChatMessage("im", row);
+                                }
+
+                            } else {
+                                Utility.sendLogToServer(""+ userDetail.get("phone") +" did not get group message from API. SERVER gave NULL");
+                            }
+
+                    }
+
+                }.execute();
+
+            }
 
     public int adminCount(String group_id){
         try {

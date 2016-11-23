@@ -91,6 +91,11 @@ public class MyHandler extends NotificationsHandler {
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();
                     groupUtility.downloadGroupIcon(payload.toString(), context, accessToken.getToken());
                 }
+                if(payload.getString("type").equals("group:msg_status_changed")){
+                    GroupUtility groupUtility = new GroupUtility(context);
+                    final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+                    groupUtility.updateGroupMessageStatus(payload.toString(), accessToken.getToken());
+                }
             }
             if(!payload.has("uniqueId")) {
                 return;
@@ -115,29 +120,29 @@ public class MyHandler extends NotificationsHandler {
                 }
 
 
-                else if(payload.getString("type").equals("group:chat_received")){
-                    if (MainActivity.isVisible) {
-                        loadSpecificGroupChatFromServer(payload.getString("unique_id"));
-                        MainActivity.mainActivity.ToastNotify(nhMessage);
-                        MainActivity.mainActivity.ToastNotify2("got push notification for chat message.");
-                    } else {
-                        String displayName = "";
-                        DatabaseHandler db = new DatabaseHandler(context);
-                        JSONArray contactInAddressBook = db.getSpecificContact(payload.getString("senderId"));
-                        if(contactInAddressBook.length() > 0) {
-                            displayName = contactInAddressBook.getJSONObject(0).getString("display_name");
-                        } else {
-                            displayName = payload.getString("senderId");
-                        }
-
-
-                        sendNotification(
-                                displayName + "In group Chat receieced",
-                                payload.getString("msg")
-                        );
-                        loadSpecificGroupChatFromServer(payload.getString("unique_id"));
-                    }
-                }
+//                else if(payload.getString("type").equals("group:chat_received")){
+//                    if (MainActivity.isVisible) {
+//                        loadSpecificGroupChatFromServer(payload.getString("unique_id"));
+//                        MainActivity.mainActivity.ToastNotify(nhMessage);
+//                        MainActivity.mainActivity.ToastNotify2("got push notification for chat message.");
+//                    } else {
+//                        String displayName = "";
+//                        DatabaseHandler db = new DatabaseHandler(context);
+//                        JSONArray contactInAddressBook = db.getSpecificContact(payload.getString("senderId"));
+//                        if(contactInAddressBook.length() > 0) {
+//                            displayName = contactInAddressBook.getJSONObject(0).getString("display_name");
+//                        } else {
+//                            displayName = payload.getString("senderId");
+//                        }
+//
+//
+//                        sendNotification(
+//                                displayName + "In group Chat receieced",
+//                                payload.getString("msg")
+//                        );
+//                        loadSpecificGroupChatFromServer(payload.getString("unique_id"));
+//                    }
+//                }
 
 
             }
@@ -288,6 +293,7 @@ public class MyHandler extends NotificationsHandler {
                         if (MainActivity.isVisible) {
                             // todo @dayem please update the UI for incoming group chat when UI logic is done
                             ///MainActivity.mainActivity.handleIncomingChatMessage("im", row);
+                            MainActivity.mainActivity.updateGroupUIChat();
                         }
 
                     } else {
