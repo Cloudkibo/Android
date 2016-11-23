@@ -52,6 +52,7 @@ public class GroupChatAdapter extends BaseAdapter{
         TextView message;
         TextView contact_phone;
         TextView date;
+        TextView status;
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
@@ -65,7 +66,9 @@ public class GroupChatAdapter extends BaseAdapter{
         holder.message=(TextView) rowView.findViewById(R.id.lbl2);
         holder.contact_phone=(TextView) rowView.findViewById(R.id.phone);
         holder.date = (TextView) rowView.findViewById(R.id.lblContactDisplayName);
+        holder.status = (TextView) rowView.findViewById(R.id.lblContactPhone);
         holder.message.setText(convList.get(position).getMsg());
+        holder.status.setText(convList.get(position).getStatus());
         if(!convList.get(position).getDate().equals("")){
             holder.date.setText(convList.get(position).getDate().replaceAll("-", "/").split("/",2)[1]);
         }

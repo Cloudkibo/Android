@@ -49,11 +49,13 @@ public class Conversation
 		this.uniqueid = uniqueid;
 	}
 
-	public Conversation(String msg, String sender_phone, boolean isSent, String date){
+	public Conversation(String msg, String sender_phone, boolean isSent, String date, String uniqueid, String status){
 		this.msg = msg;
 		this.sender_phone = sender_phone;
 		this.isSent = isSent;
 		this.date = date;
+		this.uniqueid = uniqueid;
+		this.status = status;
 	}
 
 

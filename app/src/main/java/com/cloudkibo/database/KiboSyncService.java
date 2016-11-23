@@ -765,6 +765,7 @@ public class KiboSyncService extends Service {
                     public void onCompleted(Exception e, JsonArray result) {
                         // do stuff with the result or error
                         Log.d("KiboSyncService", result.toString());
+
                     }
                 });
     }
