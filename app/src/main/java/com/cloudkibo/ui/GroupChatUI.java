@@ -126,12 +126,16 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
            return;
         }
         DatabaseHandler db = new DatabaseHandler(getContext());
+        GroupUtility groupUtility = new GroupUtility(getContext());
+        String msg_unique_id = groupUtility.sendGroupMessage(group_id, message, authtoken);
         messages.add(message);
         names.add("");
-        convList.add(new Conversation(message, db.getUserDetails().get("phone"), true,""));
+        try {
+            convList.add(new Conversation(message, db.getUserDetails().get("phone"), true,"", msg_unique_id, db.getGroupMessageStatus(msg_unique_id)));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         groupAdapter.notifyDataSetChanged();
-        GroupUtility groupUtility = new GroupUtility(getContext());
-        groupUtility.sendGroupMessage(group_id, message, authtoken);
         my_message.setText("");
     }
 
@@ -149,6 +153,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                 String message = msgs.getJSONObject(i).get("msg").toString();
                 String from = msgs.getJSONObject(i).get("from").toString();
                 String date = msgs.getJSONObject(i).get("date").toString();
+                String unique_id = msgs.getJSONObject(i).get("unique_id").toString();
                 boolean isSent = false;
                 if(db.getUserDetails().get("phone").equals(from)){
                     isSent = true;
@@ -158,7 +163,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                 if(!display_name.equals("")){
                     from = display_name;
                 }
-                convList.add(new Conversation(message, from, isSent, date));
+                convList.add(new Conversation(message, from, isSent, date, unique_id, db.getGroupMessageStatus(unique_id)));
             }
 
             if(groupAdapter != null && lv != null){

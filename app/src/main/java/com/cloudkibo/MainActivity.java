@@ -1044,6 +1044,10 @@ public class MainActivity extends CustomActivity
                         GroupUtility groupUtility = new GroupUtility(getApplicationContext());
                         groupUtility.removedFromGroup(body.toString(), authtoken);
                     }
+                    if(type.equals("group:msg_status_changed")){
+                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
+                        groupUtility.updateGroupMessageStatus(body.toString(), authtoken);
+                    }
 
                     if(type.equals("im")){
 

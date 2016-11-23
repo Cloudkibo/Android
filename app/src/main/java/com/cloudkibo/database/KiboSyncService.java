@@ -762,7 +762,7 @@ public class KiboSyncService extends Service {
                 UserFunctions userFunction = new UserFunctions();
                 JSONArray json = new JSONArray();
                 try {
-                    json = userFunction.getPartialGroupChatList(db.getUserDetails().get("phone"), authtoken).getJSONArray("msg");
+                    json = userFunction.getPartialChatList(db.getUserDetails().get("phone"), authtoken).getJSONArray("msg");
                 } catch(JSONException e){
                     e.printStackTrace();
                 }

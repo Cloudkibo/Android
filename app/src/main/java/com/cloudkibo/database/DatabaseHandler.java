@@ -26,7 +26,7 @@ import com.cloudkibo.database.CloudKiboDatabaseContract.UserChat;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -152,7 +152,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String CREATE_GROUP_CHAT_STATUS = "CREATE TABLE GROUPCHATSTATUS ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "msg_unique_id TEXT, "
+                + "msg_unique_id TEXT UNIQUE, "
                 + "status TEXT, "
                 + "user_phone TEXT, "
                 + "read_date DATETIME, "
@@ -259,6 +259,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
+    public void addGroupChatStatus(String msg_unique_id, String status, String user_phone){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("msg_unique_id", msg_unique_id); // values : Group Name
+        values.put("status", status); //
+        values.put("user_phone", user_phone);// values : 0 or 1
+        // Inserting Row
+        db.insert("GROUPCHATSTATUS", null, values);
+        db.close(); // Closing database connection
+    }
+
+    public void updateGroupChatStatus(String msg_unique_id, String status){
+            SQLiteDatabase db = this.getWritableDatabase();
+            ContentValues args = new ContentValues();
+            args.put("status", status);
+            db.update("GROUPCHATSTATUS",args,"msg_unique_id='"+msg_unique_id+"'",null);
+            db.close(); // Closing database connection
+    }
+
     public void addGroupMemberServerPending(String group_unique_id, String member_phone) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -344,6 +363,36 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         args.put("isAdmin", 0);
         db.update("GROUPMEMBER",args,"group_unique_id='"+group_unique_id+"' and member_phone='"+member_phone+"'",null);
         db.close(); // Closing database connection
+    }
+
+
+    public String getGroupMessageStatus(String msg_unique_id) throws JSONException {
+                JSONArray groups = new JSONArray();
+
+            String selectQuery = "SELECT status FROM GROUPCHATSTATUS WHERE msg_unique_id='" + msg_unique_id +"'";
+
+            SQLiteDatabase db = this.getReadableDatabase();
+                Cursor cursor = db.rawQuery(selectQuery, null);
+                // Move to first row
+                cursor.moveToFirst();
+                if(cursor.getCount() > 0){
+
+                while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+    //                contact.put("status", cursor.getString(0));
+    //                contact.put("group_name", cursor.getString(1));
+    //                contact.put("is_mute", cursor.getString(2));
+    //                contact.put("date_creation", cursor.getString(3));
+    //                groups.put(contact);
+                    return cursor.getString(0);
+    //                cursor.moveToNext();
+                }
+            }
+                cursor.close();
+                db.close();
+                // return user
+            return "";
     }
 
     public JSONArray getAllGroups() throws JSONException {
