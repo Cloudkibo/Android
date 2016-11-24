@@ -19,11 +19,11 @@
             android:background="@drawable/chat_bubble_gray"
             android:gravity="center_vertical"
             android:orientation="vertical"
-            android:layout_marginTop="@dimen/pad_15dp"
+            android:layout_marginTop="10dp"
             android:paddingLeft="40dp"
             android:paddingRight="@dimen/pad_15dp"
             android:paddingTop="@dimen/pad_5dp"
-            android:paddingBottom="@dimen/pad_5dp">
+            android:paddingBottom="3dp">
 
             <TextView
                 android:id="@+id/phone"
@@ -64,6 +64,7 @@
             android:layout_alignRight="@+id/v1"
             android:layout_below="@+id/v1"
             android:layout_marginTop="@dimen/pad_5dp"
+            android:visibility="gone"
             />
         
     </RelativeLayout>
