@@ -1,6 +1,7 @@
 package com.cloudkibo;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -97,6 +98,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.async.util.FileUtility;
 import com.koushikdutta.ion.Ion;
 import com.microsoft.windowsazure.notifications.NotificationsManager;
 
@@ -590,7 +592,7 @@ public class MainActivity extends CustomActivity
     String icon_upload_group_id = "";
     public void uploadIcon(String group_id){
         icon_upload_group_id = group_id;
-        Intent getContentIntent = FileUtils.createGetContentIntent();
+        Intent getContentIntent = FileUtils.createGetImageContentIntent();
 
         Intent intent = Intent.createChooser(getContentIntent, "Select an image");
         startActivityForResult(intent, 111);
@@ -602,8 +604,8 @@ public class MainActivity extends CustomActivity
             case 111:
                 if (resultCode == -1) {
                     final Uri uri = data.getData();
-                    String selectedFilePath = FileUtils.getPath(getApplicationContext(), uri);
-
+                    final String selectedFilePath = FileUtils.getPath(getApplicationContext(), uri);
+                    String groupId = icon_upload_group_id;
                     Ion.with(getApplicationContext())
                             .load("https://api.cloudkibo.com/api/groupmessaging/uploadIcon")
                             //.uploadProgressBar(uploadProgressBar)
@@ -615,9 +617,24 @@ public class MainActivity extends CustomActivity
                                 @Override
                                 public void onCompleted(Exception e, JsonObject result) {
                                     // do stuff with the result or error
-                                    if(e!= null)
+                                    if(e == null) {
+                                        try {
+
+                                            String filename = icon_upload_group_id + FileUtils.getExtension(selectedFilePath);
+                                            FileOutputStream outputStream;
+                                            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+                                            outputStream.write(com.cloudkibo.webrtc.filesharing.Utility.convertFileToByteArray(new File(selectedFilePath)));
+                                            outputStream.close();
+                                        } catch (Exception e2) {
+                                            e2.printStackTrace();
+                                        }
+
                                         Toast.makeText(getApplicationContext(), result.toString(), Toast.LENGTH_LONG).show();
-                                    else e.printStackTrace();
+                                    }
+                                    else {
+                                        Toast.makeText(getApplicationContext(), "Some error has occurred or Internet not available. Please try later.", Toast.LENGTH_LONG).show();
+                                        e.printStackTrace();
+                                    }
                                 }
                             });
                 }

@@ -9,6 +9,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.os.EnvironmentCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -163,12 +164,13 @@ public class GroupUtility {
                     .load("https://api.cloudkibo.com/api/groupmessaging/uploadIcon")
                     .setHeader("kibo-token", auth_token)
                     .setBodyParameter("unique_id", data.getString("groupId"))
-                    .write(new File("/sdcard/really-big-file.zip"))
+                    .write(new File(context.getFilesDir().getPath() + "" + data.getString("groupId")))
                     .setCallback(new FutureCallback<File>() {
                         @Override
                         public void onCompleted(Exception e, File file) {
                             // download done...
                             // do stuff with the File or error
+
                             Log.d("GROUPFILE", "Downloaded icon");
                         }
                     });

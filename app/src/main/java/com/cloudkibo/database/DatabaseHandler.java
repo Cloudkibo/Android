@@ -193,6 +193,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS GROUPMEMBER");
         db.execSQL("DROP TABLE IF EXISTS GROUPCHAT");
         db.execSQL("DROP TABLE IF EXISTS GROUPCHATSTATUS");
+        db.execSQL("DROP TABLE IF EXISTS GROUPMEMBERSERVERPENDING");
         db.execSQL("DROP TABLE IF EXISTS MUTESETTING");
 
         // Create tables again
