@@ -13,9 +13,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloudkibo.R;
+import com.cloudkibo.custom.CustomActivity;
 import com.cloudkibo.model.Conversation;
 
 import java.util.ArrayList;
+
 
 public class GroupChatAdapter extends BaseAdapter{
     ArrayList<String> result = new ArrayList<String>();
@@ -77,14 +79,21 @@ public class GroupChatAdapter extends BaseAdapter{
         }else{
             holder.contact_phone.setText(convList.get(position).getSender_phone());
         }
+
         rowView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                //Toast.makeText(context, "You Clicked "+result[position], Toast.LENGTH_LONG).show();
+                //Toast.makeText(inflater.getContext(), "item clicked", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        rowView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return false;
             }
         });
         return rowView;
     }
-
 } 

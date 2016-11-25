@@ -259,9 +259,6 @@
             tools:replace="android:theme" />
         <!-- Ends Facebook Account Kit -->
 
-        <activity
-            android:name=".MessageInfo"
-            android:label="@string/title_activity_message_info"></activity>
     </application>
 
 </manifest>
