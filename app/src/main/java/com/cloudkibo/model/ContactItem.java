@@ -1,5 +1,7 @@
 package com.cloudkibo.model;
 
+import android.graphics.Bitmap;
+
 public class ContactItem {
 
 
@@ -36,6 +38,7 @@ public class ContactItem {
 	/** The is Details_shared_check*/
 	private boolean unreadmessage;
 
+	private String profileimg;
 	/**
 	 * Instantiates a new chat item.
 	 * 
@@ -69,7 +72,14 @@ public class ContactItem {
 		this.details_shared = details_shared;
 		this.unreadmessage = unreadmessage;
 	}
-	
+
+	public ContactItem setProfile(String profileimg){
+		this.profileimg = profileimg;
+		return this;
+	}
+
+	public String getProfileimg(){ return this.profileimg; }
+
 	/**
 	 * Gets the user id.
 	 * 

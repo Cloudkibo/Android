@@ -488,7 +488,7 @@ public class MainActivity extends CustomActivity
         //al.add(new Data("Add Requests", null, R.drawable.ic_projects));
         //al.add(new Data("Conference", null, R.drawable.group1));
         //al.add(new Data("Settings", null, R.drawable.ic_setting));
-        al.add(new Data("About CloudKibo", null, R.drawable.ic_about));
+        al.add(new Data("About KiboChat", null, R.drawable.ic_about));
         //al.add(new Data("Logout", null, R.drawable.ic_logout));
         return al;
     }
@@ -573,7 +573,7 @@ public class MainActivity extends CustomActivity
         }
         else if (pos == 6)
         {
-            title = "About CloudKibo";
+            title = "About KiboChat";
             f = new AboutChat();
         }
         if (f != null)

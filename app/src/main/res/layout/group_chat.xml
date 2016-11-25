@@ -88,8 +88,8 @@
         android:divider="@color/transparent"
         android:dividerHeight="0dp"
         android:fastScrollEnabled="true"
-        android:paddingBottom="@dimen/pad_10dp"
-        android:paddingTop="@dimen/pad_10dp"
+        android:paddingBottom="2dp"
+        android:paddingTop="2dp"
         tools:listitem="@layout/chat_item_rcv" >
     </ListView>
 

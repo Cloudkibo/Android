@@ -1,11 +1,15 @@
 package com.cloudkibo.ui;
 
+import java.io.BufferedInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -15,10 +19,16 @@ import org.json.JSONObject;
 
 import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.BitmapShader;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -26,6 +36,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.provider.Telephony;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -44,11 +55,14 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool;
 import com.cloudkibo.MainActivity;
 //import com.cloudkibo.R;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.CircleTransform;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.model.ContactItem;
 import com.cloudkibo.utils.IFragmentName;
@@ -69,6 +83,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 	private ContactAdapter contactAdapter;
 	
 	UserFunctions userFunction;
+	ContactList  reference = this;
 
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -573,10 +588,12 @@ public class ContactList extends CustomFragment implements IFragmentName
 			jsonB = UserFunctions.sortJSONArray(jsonB, "display_name");
 
 			ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
-
+			String my_btmp;
+			ContentResolver cursor = getContext().getContentResolver();
 			//This loop adds contacts to the display list which are on cloudkibo
 			for (int i=0; i < jsonA.length(); i++) {
 				JSONObject row = jsonA.getJSONObject(i);
+				my_btmp = getContactsDetails(row.getString("phone"), getContext());
 
 				contactList1.add(new ContactItem(row.getString("_id"),
 						row.getString("display_name"),
@@ -588,12 +605,16 @@ public class ContactList extends CustomFragment implements IFragmentName
 						row.getString("status"),
 						row.getString("detailsshared"),
 						false
-				));
+				).setProfile(my_btmp));
 			}
+
+
+
 
 			//This Loop Adds Contacts to the display list which are not on cloudkibo
 			for (int i=0; i < jsonB.length(); i++) {
 				JSONObject row = jsonB.getJSONObject(i);
+				my_btmp = getContactsDetails(row.getString("phone"), getContext());
 
 				contactList1.add(new ContactItem(row.getString("_id"),
 						row.getString("display_name"),
@@ -605,13 +626,17 @@ public class ContactList extends CustomFragment implements IFragmentName
 						row.getString("status"),
 						row.getString("detailsshared"),
 						false
-				));
+				).setProfile(my_btmp));
 			}
+
+
 
 			loadNewContacts(contactList1);
 
 		} catch (JSONException e) {
+
 			e.printStackTrace();
+
 		}
     }
 	
@@ -700,12 +725,35 @@ public class ContactList extends CustomFragment implements IFragmentName
 		}
 	}
 
+	public String getContactsDetails(String address, Context context) {
+
+//		Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.parseLong(contactId));
+//		return Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY).toString();
+		Uri contactUri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(address));
+
+		// querying contact data store
+		Cursor phones = context.getContentResolver().query(contactUri, new String[]{ContactsContract.CommonDataKinds.Phone.PHOTO_URI}, null, null, null);
+
+		String image_uri = "";
+		int phoneColumnIndex = phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI);
+		while (phones.moveToNext()) {
+			image_uri = phones.getString(phoneColumnIndex);
+
+		}
+		phones.close();
+		return image_uri;
+
+	}
+
 
 	/**
 	 * The Class ContactAdapter is the adapter class for Note ListView. The
 	 * currently implementation of this adapter simply display static dummy
 	 * contents. You need to write the code for displaying actual contents.
 	 */
+
+
+
 	private class ContactAdapter extends BaseAdapter
 	{
 
@@ -736,16 +784,23 @@ public class ContactList extends CustomFragment implements IFragmentName
 			return arg0;
 		}
 
+
+		public class Holder
+		{
+			ImageView profile;
+
+		}
+
 		/* (non-Javadoc)
 		 * @see android.widget.Adapter#getView(int, android.view.View, android.view.ViewGroup)
 		 */
 		@Override
 		public View getView(int pos, View v, ViewGroup arg2)
 		{
-			if (v == null)
 				v = LayoutInflater.from(getActivity()).inflate(
 						R.layout.contact_item, null);
 
+			Holder holder=new Holder();
 			ContactItem c = getItem(pos);
 			TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
 			lbl.setText(c.getUserName());
@@ -756,7 +811,27 @@ public class ContactList extends CustomFragment implements IFragmentName
 			lbl = (TextView) v.findViewById(R.id.lblContactStatus);
 			lbl.setText(c.status());
 
-			ImageView img = (ImageView) v.findViewById(R.id.imgContactListItem);
+			holder.profile = (ImageView) v.findViewById(R.id.imgContactListItem);
+
+			if (c.getProfileimg() != null) {
+				Glide
+						.with(reference)
+						.load(c.getProfileimg())
+						.thumbnail(0.1f)
+						.centerCrop()
+						.transform(new CircleTransform(getContext()))
+						.placeholder(R.drawable.avatar)
+						.into(holder.profile);
+
+			}else{
+				holder.profile.setImageResource(R.drawable.avatar);
+			}
+//				try {
+////					photo_stream.close();
+//				} catch (IOException e) {
+//					e.printStackTrace();
+//				}
+
 			//img.setImageResource(c.getIcon());
 
 			ImageView img2 = (ImageView) v.findViewById(R.id.online);

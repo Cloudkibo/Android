@@ -32,6 +32,7 @@ public class ChatItem
 	private String contact_id;
 
 	private int pendingMsgs;
+	private String profileimg;
 
 	/**
 	 * Instantiates a new chat item.
@@ -65,6 +66,11 @@ public class ChatItem
 		this.isArchived=false;
 	}
 
+	public ChatItem setProfileImage(String profileimg){
+		this.profileimg = profileimg;
+		return this;
+	}
+	public String getProfileimg(){ return this.profileimg; }
 	/**
 	 * Gets the name.
 	 * 

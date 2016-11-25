@@ -1,5 +1,8 @@
 package com.cloudkibo.ui;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,12 +11,19 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 import java.util.TimeZone;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.CalendarContract;
+import android.provider.ContactsContract;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -30,6 +40,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.NewChat;
 //import com.cloudkibo.R;
@@ -37,6 +48,7 @@ import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.CloudKiboDatabaseContract;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.CircleTransform;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.ChatItem;
 import com.cloudkibo.model.Conversation;
@@ -63,6 +75,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 	private ChatAdapter adp;
 
 	private String authtoken;
+	private ChatList reference = this;
 
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -74,7 +87,6 @@ public class ChatList extends CustomFragment implements IFragmentName
 		View v = inflater.inflate(R.layout.chat_list, null);
 
 		authtoken = getActivity().getIntent().getExtras().getString("authtoken");
-
 		loadChatList();
 		ListView list = (ListView) v.findViewById(R.id.list);
         Button archivedBtn = (Button) v.findViewById(R.id.btnArchiveChat);
@@ -214,7 +226,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 			JSONArray groups = db.getMyGroups(db.getUserDetails().get("phone"));
 			for (int i=0; i < chats.length(); i++) {
 				JSONObject row = chats.getJSONObject(i);
-
+				String image = getContactsDetails(row.getString("contact_phone"), getContext());
 				//if(row.getInt("isArchived") ==  0) {
 					chatList1.add(new ChatItem(
 							row.getString("display_name"),
@@ -222,7 +234,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 							row.getString("msg"),
 							Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
 							R.drawable.user1, false,
-							false, Integer.parseInt(row.getString("pendingMsgs"))));
+							false, Integer.parseInt(row.getString("pendingMsgs"))).setProfileImage(image));
 
 				//}
 			}
@@ -238,7 +250,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 							"Last Message",
 							row.getString("date_creation"),
 							R.drawable.user1, false,
-							true, 0));
+							true, 0).setProfileImage(null));
 
 
 			}
@@ -284,6 +296,26 @@ public class ChatList extends CustomFragment implements IFragmentName
 		} finally {
 
 		}
+	}
+
+	public String getContactsDetails(String address, Context context) {
+
+//		Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.parseLong(contactId));
+//		return Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY).toString();
+		Uri contactUri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(address));
+
+		// querying contact data store
+		Cursor phones = context.getContentResolver().query(contactUri, new String[]{ContactsContract.CommonDataKinds.Phone.PHOTO_URI}, null, null, null);
+
+		String image_uri = "";
+		int phoneColumnIndex = phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI);
+		while (phones.moveToNext()) {
+			image_uri = phones.getString(phoneColumnIndex);
+
+		}
+		phones.close();
+		return image_uri;
+
 	}
 
 	/**
@@ -351,10 +383,31 @@ public class ChatList extends CustomFragment implements IFragmentName
 			if(c.getPendingMsgs() > 0) lbl.setTextColor(getResources().getColor(R.color.black));
 			else lbl.setTextColor(getResources().getColor(R.color.main_color_gray_lt));
 
-			ImageView img = (ImageView) v.findViewById(R.id.img1);
-			img.setImageResource(c.getIcon());
+			ImageView profile  = (ImageView)v.findViewById(R.id.img1);
 
-			img = (ImageView) v.findViewById(R.id.img2);
+
+			if(!c.isGroup()){
+				if (c.getProfileimg() != null) {
+					Glide
+							.with(reference)
+							.load(c.getProfileimg())
+							.thumbnail(0.1f)
+							.centerCrop()
+							.transform(new CircleTransform(getContext()))
+							.placeholder(R.drawable.avatar)
+							.into(profile);
+
+				}else{
+					profile.setImageResource(R.drawable.avatar);
+				}
+
+            }else{
+                ImageView img = (ImageView) v.findViewById(R.id.img1);
+                img.setImageResource(R.drawable.avatar);
+            }
+
+
+			ImageView img = (ImageView) v.findViewById(R.id.img2);
 			img.setImageResource(c.isGroup() ? R.drawable.ic_group
 					: R.drawable.ic_lock);
 

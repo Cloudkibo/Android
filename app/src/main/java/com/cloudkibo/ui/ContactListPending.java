@@ -683,6 +683,35 @@ public class ContactListPending extends CustomFragment implements IFragmentName
         }
     }
 
+    public void sendInvite(View v, ContactItem c){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) // At least KitKat
+        {
+            String defaultSmsPackageName = Telephony.Sms.getDefaultSmsPackage(getActivity().getApplicationContext()); // Need to change the build to API 19
+
+            Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+            sendIntent.setType("text/plain");
+            sendIntent.setData(Uri.parse("smsto:" +  c.getPhone()));
+            //sendIntent.putExtra(Intent.EXTRA_TEXT, "Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
+            sendIntent.putExtra("sms_body", "Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
+
+            if (defaultSmsPackageName != null)// Can be null in case that there is no default, then the user would be able to choose
+            // any app that support this intent.
+            {
+                sendIntent.setPackage(defaultSmsPackageName);
+            }
+            startActivity(sendIntent);
+
+        }
+        else // For early versions.
+        {
+            Intent smsIntent = new Intent(android.content.Intent.ACTION_VIEW);
+            smsIntent.setType("vnd.android-dir/mms-sms");
+            smsIntent.putExtra("address", c.getPhone());
+            smsIntent.putExtra("sms_body","Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
+            startActivity(smsIntent);
+        }
+    }
+
 
     /**
      * The Class ContactAdapter is the adapter class for Note ListView. The
@@ -725,11 +754,10 @@ public class ContactListPending extends CustomFragment implements IFragmentName
         @Override
         public View getView(int pos, View v, ViewGroup arg2)
         {
-            if (v == null)
                 v = LayoutInflater.from(getActivity()).inflate(
                         R.layout.contact_item, null);
 
-            ContactItem c = getItem(pos);
+            final ContactItem c = getItem(pos);
             TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
             lbl.setText(c.getUserName());
 
@@ -747,6 +775,13 @@ public class ContactListPending extends CustomFragment implements IFragmentName
 
             ImageView img3 = (ImageView) v.findViewById(R.id.messageicon);
             img3.setVisibility(c.hasUnreadMessage() ? View.VISIBLE : View.INVISIBLE);
+
+            v.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    sendInvite(view, c);
+                }
+            });
 
             return v;
         }
