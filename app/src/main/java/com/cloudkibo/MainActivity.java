@@ -801,15 +801,6 @@ public class MainActivity extends CustomActivity
 
     }
 
-    public void startMessageInfo(String message, String status, String date){
-        Intent i = new Intent(this, MessageInfo.class);
-        i.putExtra("message", message);
-        i.putExtra("status", status);
-        i.putExtra("date", date);
-        startActivity(i);
-
-    }
-
     public String getUserName(){
         return user.get("display_name");
     }
