@@ -139,17 +139,28 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		super.onCreateContextMenu(menu, v, menuinfo);
 
 		menu.setHeaderTitle("Select the Action");
-		menu.add(0, v.getId(), 0, "MessageInfo");
+		menu.add(0, v.getId(), 0, "Message Info");
 	}
 
 	public boolean onContextItemSelected(MenuItem item){
 
 		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 
-		if(item.getTitle() == "MessageInfo"){
-			MainActivity act1 = (MainActivity) getActivity();
-			act1.startMessageInfo(convList.get(info.position).getMsg(), convList.get(info.position).getStatus(),
-									convList.get(info.position).getDate());
+		if(item.getTitle() == "Message Info"){
+
+			MessageInfo mInfoFrag = new MessageInfo();
+			Bundle bundle = new Bundle();
+
+			bundle.putString("authtoken",authtoken);
+			bundle.putString("message",convList.get(info.position).getMsg());
+			bundle.putString("status",convList.get(info.position).getStatus());
+			bundle.putString("date",convList.get(info.position).getDate());
+
+			mInfoFrag.setArguments(bundle);
+			getFragmentManager().beginTransaction()
+					.replace(R.id.content_frame, mInfoFrag, "messageInfoFragmentTag")
+					.addToBackStack("Message Info")
+					.commit();
 		}
 
 

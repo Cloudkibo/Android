@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -84,6 +87,9 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         populateMessages();
         groupAdapter = new GroupChatAdapter(inflater, messages,names, convList);
         lv.setAdapter(groupAdapter);
+        lv.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
+        lv.setStackFromBottom(true);
+
         Button send_button = (Button) v.findViewById(R.id.btnSend);
         send_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -106,6 +112,14 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             }
         });
 
+        lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                return false;
+            }
+        });
+        registerForContextMenu(lv);
+
         return v;
     }
 
@@ -119,6 +133,41 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     {
         super.onClick(v);
     }
+
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
+        super.onCreateContextMenu(menu, v, menuinfo);
+
+        menu.setHeaderTitle("Select the Action");
+        menu.add(0, v.getId(), 0, "Message Info");
+    }
+
+
+    public boolean onContextItemSelected(MenuItem item){
+
+        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+
+        if(item.getTitle() == "Message Info"){
+
+            MessageInfo mInfoFrag = new MessageInfo();
+            Bundle bundle = new Bundle();
+
+            bundle.putString("authtoken",authtoken);
+            bundle.putString("message",convList.get(info.position).getMsg());
+            bundle.putString("status",convList.get(info.position).getStatus());
+            bundle.putString("date",convList.get(info.position).getDate());
+
+            mInfoFrag.setArguments(bundle);
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, mInfoFrag, "messageInfoFragmentTag")
+                    .addToBackStack("Message Info")
+                    .commit();
+        }
+
+
+
+        return true;
+    }
+
 
     public void sendMessage(EditText my_message){
         String message = my_message.getText().toString();
