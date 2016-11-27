@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cloudkibo.MainActivity;
 import com.cloudkibo.NewChat;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomContactAdapter;
@@ -72,6 +75,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                              Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.group_chat, null);
+        setHasOptionsMenu(true);
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         final GroupChatUI temp = this;
         LinearLayout group_header = (LinearLayout) v.findViewById(R.id.group_header);
@@ -121,6 +125,30 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         registerForContextMenu(lv);
 
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.groupchat, menu);  // Use filter.xml from step 1
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.settingMenu){
+            final GroupChatUI temp = this;
+            GroupSetting nextFrag= new GroupSetting();
+            Bundle args = new Bundle();
+            args.putString("group_id", group_id);
+            nextFrag.setArguments(args);
+            temp.getFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, nextFrag,null)
+                    .addToBackStack("ChatList")
+                    .commit();
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /* (non-Javadoc)
@@ -180,7 +208,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         messages.add(message);
         names.add("");
         try {
-            convList.add(new Conversation(message, db.getUserDetails().get("phone"), true,"", msg_unique_id, db.getGroupMessageStatus(msg_unique_id)));
+            convList.add(new Conversation(message, db.getUserDetails().get("phone"), true,"", msg_unique_id, db.getGroupMessageStatus(msg_unique_id), "chat"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -212,7 +240,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                 if(!display_name.equals("")){
                     from = display_name;
                 }
-                convList.add(new Conversation(message, from, isSent, date, unique_id, db.getGroupMessageStatus(unique_id)));
+                convList.add(new Conversation(message, from, isSent, date, unique_id, db.getGroupMessageStatus(unique_id), "chat"));
             }
 
             if(groupAdapter != null && lv != null){

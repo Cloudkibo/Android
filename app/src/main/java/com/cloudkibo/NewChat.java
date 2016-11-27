@@ -28,7 +28,6 @@ public class NewChat extends CustomActivity
 
 		setTouchNClick(R.id.btnAdd);
 		setTouchNClick(R.id.btnProject);
-		setTouchNClick(R.id.btnCamera);
 		setTouchNClick(R.id.btnSend);
 
 		getActionBar().setLogo(R.drawable.icon_trans);

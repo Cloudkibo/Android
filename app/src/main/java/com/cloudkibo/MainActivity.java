@@ -598,6 +598,16 @@ public class MainActivity extends CustomActivity
         startActivityForResult(intent, 111);
     }
 
+    String attachmentType = "";
+    public void uploadChatAttachment(String type){
+        attachmentType = type;
+        Intent getContentIntent = FileUtils.createGetImageContentIntent();
+        if(type.equals("document")) getContentIntent = FileUtils.createGetDocumentContentIntent();
+
+        Intent intent = Intent.createChooser(getContentIntent, "Select file");
+        startActivityForResult(intent, 112);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -637,6 +647,61 @@ public class MainActivity extends CustomActivity
                                     }
                                 }
                             });
+                }
+                break;
+            case 112:
+                if (resultCode == -1) {
+                    final Uri uri = data.getData();
+                    final String selectedFilePath = FileUtils.getPath(getApplicationContext(), uri);
+                    String fileType = attachmentType;
+                    if(com.cloudkibo.webrtc.filesharing.Utility.isExternalStorageWritable()){
+                        try {
+                            if (com.cloudkibo.webrtc.filesharing.Utility.isFreeSpaceAvailableForFileSize(
+                                    Integer.parseInt(com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath).getString("size"))
+                            )) {
+                                // todo save the file in external storage
+                                Toast.makeText(getApplicationContext(), "Under construction. File storing in external storage crashes.", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Not enough storage available.", Toast.LENGTH_LONG).show();
+                            }
+                        } catch(JSONException e){
+                            Toast.makeText(getApplicationContext(), "Unexpected Error occurred.", Toast.LENGTH_LONG).show();
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Storage is not available.", Toast.LENGTH_LONG).show();
+                    }
+                    /*Ion.with(getApplicationContext())
+                            .load("https://api.cloudkibo.com/api/groupmessaging/uploadIcon")
+                            //.uploadProgressBar(uploadProgressBar)
+                            .setHeader("kibo-token", authtoken)
+                            .setMultipartParameter("unique_id", icon_upload_group_id)
+                            .setMultipartFile("file", FileUtils.getExtension(selectedFilePath), new File(selectedFilePath))
+                            .asJsonObject()
+                            .setCallback(new FutureCallback<JsonObject>() {
+                                @Override
+                                public void onCompleted(Exception e, JsonObject result) {
+                                    // do stuff with the result or error
+                                    if(e == null) {
+                                        try {
+
+                                            String filename = icon_upload_group_id + FileUtils.getExtension(selectedFilePath);
+                                            FileOutputStream outputStream;
+                                            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+                                            outputStream.write(com.cloudkibo.webrtc.filesharing.Utility.convertFileToByteArray(new File(selectedFilePath)));
+                                            outputStream.close();
+                                        } catch (Exception e2) {
+                                            e2.printStackTrace();
+                                        }
+
+                                        Toast.makeText(getApplicationContext(), result.toString(), Toast.LENGTH_LONG).show();
+                                    }
+                                    else {
+                                        Toast.makeText(getApplicationContext(), "Some error has occurred or Internet not available. Please try later.", Toast.LENGTH_LONG).show();
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });*/
                 }
                 break;
             case REQUEST_CHOOSER:
@@ -836,30 +901,6 @@ public class MainActivity extends CustomActivity
     }
 
     /* (non-Javadoc)
-     * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
-     */
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    /* (non-Javadoc)
-     * @see com.newsfeeder.custom.CustomActivity#onOptionsItemSelected(android.view.MenuItem)
-     */
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        if (drawerToggle.onOptionsItemSelected(item))
-        {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    /* (non-Javadoc)
      * @see android.support.v4.app.FragmentActivity#onKeyDown(int, android.view.KeyEvent)
      */
     @Override
@@ -876,102 +917,6 @@ public class MainActivity extends CustomActivity
             return true;
         }
         return super.onKeyDown(keyCode, event);
-    }
-
-    private void fetchUserFromServerForFirstTime() {
-        new AsyncTask<String, String, Boolean>() {
-
-            @Override
-            protected Boolean doInBackground(String... args) {
-
-                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo netInfo = cm.getActiveNetworkInfo();
-                if (netInfo != null && netInfo.isConnected()) {
-                    try {
-                        URL url = new URL("http://www.google.com");
-                        HttpURLConnection urlc = (HttpURLConnection) url
-                                .openConnection();
-                        urlc.setConnectTimeout(3000);
-                        urlc.connect();
-                        if (urlc.getResponseCode() == 200) {
-                            return true;
-                        }
-                    } catch (MalformedURLException e1) {
-                        e1.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                return false;
-
-            }
-
-            @Override
-            protected void onPostExecute(Boolean th) {
-
-                if (th == true) {
-
-                    new AsyncTask<String, String, JSONObject>() {
-
-                        @Override
-                        protected JSONObject doInBackground(String... args) {
-                            UserFunctions userFunction = new UserFunctions();
-                            JSONObject json = userFunction.getUserData(authtoken);
-                            return json;
-                        }
-
-                        @Override
-                        protected void onPostExecute(JSONObject json) {
-                            try {
-
-                                if(json != null){
-
-                                    DatabaseHandler db = new DatabaseHandler(
-                                            getApplicationContext());
-
-                                    // Clear all previous data in SQlite database.
-
-                                    UserFunctions logout = new UserFunctions();
-                                    logout.logoutUser(getApplicationContext());
-
-                                    db.addUser(json.getString("firstname"),
-                                            json.getString("lastname"),
-                                            json.getString("email"),
-                                            json.getString("username"),
-                                            json.getString("_id"),
-                                            json.getString("date"));
-
-                                    final TextView userFirstName = (TextView)findViewById(R.id.textViewUserNameOnNavigationBar);
-                                    userFirstName.setText(db.getUserDetails().get("firstname")+" "+db.getUserDetails().get("lastname"));
-
-                                    final TextView userEmail = (TextView)findViewById(R.id.textViewUserEmailOnNavigationBar);
-                                    userEmail.setText(db.getUserDetails().get("email"));
-
-
-
-                                    // Hashmap to load data from the Sqlite database
-                                    user = new HashMap<String, String>();
-                                    user = db.getUserDetails();
-
-                                    startSocketService();
-
-                                }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                    }.execute();
-
-                } else {
-                    Toast.makeText(getApplicationContext(),
-                            "Could not connect to Internet", Toast.LENGTH_SHORT)
-                            .show();
-                }
-            }
-
-        }.execute();
     }
 
     private ServiceConnection socketConnection = new ServiceConnection() {
@@ -1267,7 +1212,7 @@ public class MainActivity extends CustomActivity
                             try {
                                 GroupUtility groupUtility = new GroupUtility(getApplicationContext());
                                 groupUtility.sendNotification("Single message", body.getString("msg"));
-                                myGroupChatFragment.receiveMessage(body.getString("msg"), body.getString("uniqueid"), body.getString("from"), body.getString("date"));
+                                myGroupChatFragment.receiveMessage(body.getString("msg"), body.getString("uniqueid"), body.getString("from"), body.getString("date"), body.getString("type"));
                                 Utility.sendLogToServer(""+ body.getString("to") +" is now going to show the message on the UI in chat window");
                             } catch(JSONException e){
                                 e.printStackTrace();

@@ -28,6 +28,8 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,11 +87,11 @@ public class ChatList extends CustomFragment implements IFragmentName
 			Bundle savedInstanceState)
 	{
 		View v = inflater.inflate(R.layout.chat_list, null);
+		setHasOptionsMenu(true);
 
 		authtoken = getActivity().getIntent().getExtras().getString("authtoken");
 		loadChatList();
 		ListView list = (ListView) v.findViewById(R.id.list);
-        Button archivedBtn = (Button) v.findViewById(R.id.btnArchiveChat);
 		adp = new ChatAdapter();
 		list.setAdapter(adp);
 
@@ -138,7 +140,6 @@ public class ChatList extends CustomFragment implements IFragmentName
 		adp.notifyDataSetChanged();
 
 		setTouchNClick(v.findViewById(R.id.btnNewChat));
-        setTouchNClick(v.findViewById(R.id.btnArchiveChat));
 		return v;
 	}
 
@@ -151,16 +152,30 @@ public class ChatList extends CustomFragment implements IFragmentName
 		super.onClick(v);
 		if (v.getId() == R.id.btnNewChat) {
 			startActivity(new Intent(getActivity(), NewChat.class));
-		} else if(v.getId() == R.id.btnArchiveChat){
+		}
+	}
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.main, menu);  // Use filter.xml from step 1
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.archived){
             ArchivedChat archivedChatFragment = new ArchivedChat();
-			Bundle bundle = new Bundle();
-			bundle.putString("authToken", authtoken);
-			archivedChatFragment.setArguments(bundle);
+            Bundle bundle = new Bundle();
+            bundle.putString("authToken", authtoken);
+            archivedChatFragment.setArguments(bundle);
             getFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, archivedChatFragment, "archivedChatFragmentTag").addToBackStack("Archived")
-					.commit();
+                    .commit();
+            return true;
         }
-	}
+
+        return super.onOptionsItemSelected(item);
+    }
 
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
         super.onCreateContextMenu(menu, v, menuinfo);

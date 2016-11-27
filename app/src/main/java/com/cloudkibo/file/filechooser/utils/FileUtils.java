@@ -544,6 +544,17 @@ public class FileUtils {
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         return intent;
     }
+
+    public static Intent createGetDocumentContentIntent() {
+        // Implicitly allow the user to select a particular kind of data
+        final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        // The MIME data type filter
+        intent.setType(MIME_TYPE_APP);
+        // Only return URIs that can be opened with ContentResolver
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        return intent;
+    }
+
     /**
      * This function loads the file into bytes array 
      * 

@@ -140,9 +140,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"></activity>
         <activity
-            android:name=".ui.Invite_Friends"
-            android:label="@string/app_name"></activity>
-        <activity
             android:name=".ui.ResultActivity"
             android:label="@string/app_name"></activity>
         <activity
