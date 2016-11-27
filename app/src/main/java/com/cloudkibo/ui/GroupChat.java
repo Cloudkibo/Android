@@ -480,14 +480,14 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		{
 			Conversation c = getItem(pos);
 			if (c.isSent()) {
-				if(c.getType().equals("chat"))
+				if(true)//(c.getType().equals("chat"))
 					v = LayoutInflater.from(getActivity()).inflate(
 						R.layout.chat_item_sent, null);
 				else
 					v = LayoutInflater.from(getActivity()).inflate(
 							R.layout.chat_image_me, null);
 			} else {
-				if(c.getType().equals("chat"))
+				if(true)//(c.getType().equals("chat"))
 					v = LayoutInflater.from(getActivity()).inflate(
 						R.layout.chat_item_rcv, null);
 				else
@@ -495,7 +495,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							R.layout.chat_image_sender, null);
 			}
 
-			if(c.getType().equals("chat")) {
+			if(true){//(c.getType().equals("chat")) {
 				TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
 				lbl.setText(c.getDate().replaceAll("-", "/").split("/", 2)[1].split(" ")[1]);
 				TextView phone = (TextView) v.findViewById(R.id.phone);
@@ -510,13 +510,13 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				else
 					lbl.setText("");
 			} else {
-				if(c.getFile_type().equals("image")) {
+				/*if(c.getFile_type().equals("image")) {
 					ImageView stamp = (ImageView) v.findViewById(R.id.row_stamp);
 					stamp.setImageBitmap(BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.spinner));
 					if(c.getOnLocal()){
 
 					}
-				}
+				}*/
 			}
 
 			return v;
