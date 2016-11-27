@@ -234,6 +234,11 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         return "GroupChatUI";
     }
 
+    public String getGroupId()
+    {
+        return this.group_id;
+    }
+
     public String getFragmentContactPhone()
     {
         return "Group Chat";

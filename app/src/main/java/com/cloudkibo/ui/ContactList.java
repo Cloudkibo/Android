@@ -590,7 +590,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 			jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
 			jsonB = UserFunctions.sortJSONArray(jsonB, "display_name");
-
+//
 			ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 			String my_btmp;
 			//This loop adds contacts to the display list which are on cloudkibo
@@ -619,7 +619,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 			Toast.makeText(getContext(), "Contacts added:  ", Toast.LENGTH_LONG).show();
 
-			//This Loop Adds Contacts to the display list which are not on cloudkibo
+//			//This Loop Adds Contacts to the display list which are not on cloudkibo
 			for (int i=0; i < jsonB.length(); i++) {
 				JSONObject row = jsonB.getJSONObject(i);
 				my_btmp = row.optString("image_uri");

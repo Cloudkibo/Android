@@ -447,7 +447,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 						R.layout.chat_item_rcv, null);
 
 			TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
-			lbl.setText(c.getDate().replaceAll("-", "/").split("/",2)[1].split(" ")[1]);
+			lbl.setText(Utility.dateConversion(c.getDate().replaceAll("-", "/").split("/",2)[1].split(" ")[1]));
 			TextView phone = (TextView) v.findViewById(R.id.phone);
 			phone.setVisibility(View.GONE);
 

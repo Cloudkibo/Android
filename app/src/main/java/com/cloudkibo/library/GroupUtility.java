@@ -108,7 +108,7 @@ public class GroupUtility {
                 @Override
                 protected void onPostExecute(JSONObject row) {
                     if(row != null){
-                        sendNotification("Message Status Update To Seen", row.toString());
+                        sendNotification("Updated message status on server to seen", row.toString());
                     }
                 }
 
@@ -367,7 +367,7 @@ public class GroupUtility {
                 String current_status = db.getGroupMessageStatus(msg_unique_id);
                if(!current_status.equals("seen")){
                    db.updateGroupChatStatus(msg_unique_id, status);
-                   Toast.makeText(ctx, "Updated Chat Status to Seen", Toast.LENGTH_LONG).show();
+                   Toast.makeText(ctx, "Updated Chat Status to: " + status, Toast.LENGTH_LONG).show();
                }
                 MainActivity.mainActivity.updateGroupUIChat();
         } catch (JSONException e) {

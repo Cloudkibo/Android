@@ -151,4 +151,18 @@ public class Utility {
         }.execute();
     }
 
+    public static String dateConversion(String time){
+
+        try {
+            final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
+            final Date dateObj = sdf.parse(time);
+//            System.out.println(dateObj);
+//            System.out.println();
+            return new SimpleDateFormat("K:mm a").format(dateObj);
+        } catch (final ParseException e) {
+            e.printStackTrace();
+        }
+        return time;
+    }
+
 }
