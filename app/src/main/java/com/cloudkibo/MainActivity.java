@@ -212,6 +212,8 @@ public class MainActivity extends CustomActivity
 
         startContactsObserverService();
 
+
+
     }
 
     int countRetryConnectingSocket = 0;
@@ -1435,6 +1437,8 @@ public class MainActivity extends CustomActivity
                                 Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
                                 contactList1.add(name);
                                 contactList1Phone.add(phone);
+                                Utility utility = new Utility();
+                                utility.updateDatabaseWithContactImages(getApplicationContext(),contactList1Phone);
                             }
                             pCur.close();
                         }
@@ -1472,6 +1476,10 @@ public class MainActivity extends CustomActivity
                     }
                     loadNotFoundContacts(contactList1, contactList1Phone);
                     loadFoundContacts(contactList1Available, contactList1PhoneAvailable);
+
+                    Utility utility = new Utility();
+                    utility.updateDatabaseWithContactImages(getApplicationContext(),contactList1Phone);
+                    utility.updateDatabaseWithContactImages(getApplicationContext(),contactList1PhoneAvailable);
 
                     ToastNotify2("Contacts synced successfully.");
 

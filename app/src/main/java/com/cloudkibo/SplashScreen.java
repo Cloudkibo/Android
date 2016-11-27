@@ -6,6 +6,7 @@ import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.AccountGeneral;
 import com.cloudkibo.library.DisplayNameReg;
 import com.cloudkibo.library.UserFunctions;
+import com.cloudkibo.library.Utility;
 import com.cloudkibo.ui.Invite_Friends;
 import com.facebook.accountkit.AccessToken;
 import com.facebook.accountkit.AccountKit;
@@ -239,6 +240,8 @@ public class SplashScreen extends Activity
 			db.resetChatHistorySync();
 			db = new DatabaseHandler(getApplicationContext());
 			db.resetCallHistoryTable();
+			db = new DatabaseHandler(getApplicationContext());
+			db.resetContactImageTable();
 
 			logMessage("Old data removed from tables. Checking old facebook auth token.");
 
@@ -261,6 +264,8 @@ public class SplashScreen extends Activity
 					"Going to facebook authentication now.",
 					Toast.LENGTH_LONG)
 					.show();
+
+
 
 			doFinish();
 

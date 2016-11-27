@@ -7,8 +7,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -692,7 +690,7 @@ public class ContactListPending extends CustomFragment implements IFragmentName
             sendIntent.setType("text/plain");
             sendIntent.setData(Uri.parse("smsto:" +  c.getPhone()));
             //sendIntent.putExtra(Intent.EXTRA_TEXT, "Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
-            sendIntent.putExtra("sms_body", "Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
+            sendIntent.putExtra("sms_body", "Join me on KiboChat for video chat. Download from https://goo.gl/CBlIzM");
 
             if (defaultSmsPackageName != null)// Can be null in case that there is no default, then the user would be able to choose
             // any app that support this intent.
@@ -707,7 +705,7 @@ public class ContactListPending extends CustomFragment implements IFragmentName
             Intent smsIntent = new Intent(android.content.Intent.ACTION_VIEW);
             smsIntent.setType("vnd.android-dir/mms-sms");
             smsIntent.putExtra("address", c.getPhone());
-            smsIntent.putExtra("sms_body","Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
+            smsIntent.putExtra("sms_body","Join me on KiboChat for video chat. Download from https://goo.gl/CBlIzM");
             startActivity(smsIntent);
         }
     }
@@ -775,6 +773,15 @@ public class ContactListPending extends CustomFragment implements IFragmentName
 
             ImageView img3 = (ImageView) v.findViewById(R.id.messageicon);
             img3.setVisibility(c.hasUnreadMessage() ? View.VISIBLE : View.INVISIBLE);
+
+            TextView invite_button = (TextView) v.findViewById(R.id.invite_button);
+
+            invite_button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    sendInvite(view, c);
+                }
+            });
 
             v.setOnClickListener(new View.OnClickListener() {
                 @Override
