@@ -485,7 +485,7 @@ public class MainActivity extends CustomActivity
         al.add(new Data("Chat", null, R.drawable.ic_chat));
         al.add(new Data("Contacts", null, R.drawable.ic_notes));
         al.add(new Data("Calls", null, android.R.drawable.sym_action_call));
-        al.add(new Data("Invite", null, R.drawable.ic_notes));
+//        al.add(new Data("Invite", null, R.drawable.ic_notes));
         al.add(new Data("Create Group", null, R.drawable.ic_about));
         //al.add(new Data("Add Requests", null, R.drawable.ic_projects));
         //al.add(new Data("Conference", null, R.drawable.group1));
@@ -519,11 +519,11 @@ public class MainActivity extends CustomActivity
             title = "Calls History";
             f = new CallHistory();
         }
+//        else if(pos == 4){
+//            title = "Address Book";
+//            f = new ContactListPending();
+//        }
         else if(pos == 4){
-            title = "Address Book";
-            f = new ContactListPending();
-        }
-        else if(pos == 5){
             title = "Create Group";
             f = new CreateGroup();
         }
@@ -573,7 +573,7 @@ public class MainActivity extends CustomActivity
 
             alertD.show();
         }
-        else if (pos == 6)
+        else if (pos == 5)
         {
             title = "About KiboChat";
             f = new AboutChat();
