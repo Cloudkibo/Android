@@ -286,7 +286,7 @@ public class MyHandler extends NotificationsHandler {
                         // todo @dayem please test following when you are ready to send messsage, this is saving the received chat message
 
                         db.addGroupChat(row.getString("from"), row.getString("from_fullname"), row.getString("msg"),
-                                row.getString("date"), row.getString("type"),
+                                row.getString("date"), row.has("type") ? row.getString("type") : "",
                                 row.getString("unique_id"),
                                 row.getString("group_unique_id"));
 

@@ -402,13 +402,13 @@ public class GroupChat extends CustomFragment implements IFragmentName
 						row.getString("msg"),
 						Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
 						true, true, row.getString("status"), row.getString("uniqueid"),
-							row.getString("type")));
+							row.has("type") ? row.getString("type") : ""));
 				else
 					chatList1.add(new Conversation(
 							row.getString("msg"),
 							Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
 							false, true, row.getString("status"), row.getString("uniqueid"),
-							row.getString("type")));
+							row.has("type") ? row.getString("type") : ""));
 
 				if(row.getString("fromperson").equals(contactPhone)){
 					if(row.getString("status").equals("delivered")){
