@@ -9,10 +9,11 @@
     tools:context=".MainActivity" >
 
     <TextView
-        android:id="@+id/btnCamera"
+        android:id="@+id/btnAttach"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:drawable/ic_menu_call" />
+        android:background="@android:drawable/ic_menu_add"
+        android:autoText="false" />
 
     <EditText
         android:id="@+id/txt"

@@ -66,4 +66,7 @@
     <string name="title_activity_message_info">MessageInfo</string>
 
 
+    <string name="archived_menu_item">Archived</string>
+
+
 </resources>

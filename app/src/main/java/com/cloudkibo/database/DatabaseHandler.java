@@ -86,6 +86,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + UserChat.USERCHAT_MSG + " TEXT, "
                 + UserChat.USERCHAT_DATE + " TEXT, "
                 + "status" + " TEXT, "
+                + "type" + " TEXT, " // possible values : "chat" or "file"
+                + "file_type" + " TEXT, "
                 + "uniqueid" + " TEXT, "
                 + "isArchived" + " INTEGER DEFAULT 0 , "
                 + "contact_phone" + " TEXT "+ ")";
@@ -907,7 +909,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
     public void addChat(String to, String from, String from_fullname, String msg, String date, String status,
-                         String uniqueid) {
+                         String uniqueid, String type, String file_type) {
 
         String myPhone = getUserDetails().get("phone");
         String contactPhone = "";
@@ -924,6 +926,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(UserChat.USERCHAT_DATE, date); // DATE
         values.put("status", status); // status: pending, sent, delivered, seen
         values.put("uniqueid", uniqueid);
+        values.put("type", type);
+        values.put("file_type", file_type);
         values.put("contact_phone", contactPhone); // Contact
 
         // Inserting Row

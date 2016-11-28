@@ -1,9 +1,7 @@
 package com.cloudkibo;
 
 //import com.cloudkibo.R;
-import com.cloudkibo.R;
 import com.cloudkibo.database.DatabaseHandler;
-import com.cloudkibo.library.AccountGeneral;
 import com.cloudkibo.library.DisplayNameReg;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
@@ -15,11 +13,8 @@ import com.facebook.accountkit.ui.AccountKitActivity;
 import com.facebook.accountkit.ui.AccountKitConfiguration;
 import com.facebook.accountkit.ui.LoginType;
 import com.github.nkzawa.emitter.Emitter;
-import com.github.nkzawa.socketio.client.Ack;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
-
-import static com.cloudkibo.library.AccountGeneral.AUTHTOKEN_TYPE_FULL_ACCESS;
 
 
 import android.accounts.Account;
@@ -28,19 +23,12 @@ import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Toast;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.net.URISyntaxException;
 import java.util.TimeZone;
@@ -57,7 +45,7 @@ public class SplashScreen extends Activity
 	/** Check if the app is running. */
 	private boolean isRunning;
 	private AccountManager mAccountManager;
-	
+
 	private AlertDialog mAlertDialog;
     private boolean mInvalidate;
 
@@ -415,7 +403,7 @@ public class SplashScreen extends Activity
 		//if(isSocketConnected)
 		//	socket.emit("logClient", "ANDROID : "+ msg);
 	}
-	
+
 	/**
 	 * Get an auth token for the account.
 	 * If not exist - add it and then return its auth token.
@@ -433,14 +421,14 @@ public class SplashScreen extends Activity
 				try {
 					bnd = future.getResult();
 					String authtoken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
-					//Toast.makeText(getBaseContext(), ((authtoken != null) ? "SUCCESS!\ntoken: " + authtoken : "FAIL"), Toast.LENGTH_SHORT).show();                            
+					//Toast.makeText(getBaseContext(), ((authtoken != null) ? "SUCCESS!\ntoken: " + authtoken : "FAIL"), Toast.LENGTH_SHORT).show();
 					Log.d("SOJHARO", "GetTokenForAccount Bundle is " + bnd);
 
-					Intent i = new Intent(SplashScreen.this, Invite_Friends.class);
+					/*Intent i = new Intent(SplashScreen.this, Invite_Friends.class);
 					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					i.putExtra("authtoken", authtoken);
 					startActivity(i);
-					finish();
+					finish();*/
 
 
 				} catch (Exception e) {

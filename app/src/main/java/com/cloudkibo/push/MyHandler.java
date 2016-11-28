@@ -233,7 +233,9 @@ public class MyHandler extends NotificationsHandler {
                         db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
                                 row.getString("msg"), row.getString("date"),
                                 row.has("status") ? row.getString("status") : "",
-                                row.has("uniqueid") ? row.getString("uniqueid") : "");
+                                row.has("uniqueid") ? row.getString("uniqueid") : "",
+                                row.has("type") ? row.getString("type") : "",
+                                row.has("file_type") ? row.getString("file_type") : "");
 
                         Utility.sendLogToServer(""+ userDetail.get("phone") +" got the message using API and saved to Database: "+ row.toString());
 
@@ -284,7 +286,7 @@ public class MyHandler extends NotificationsHandler {
                         // todo @dayem please test following when you are ready to send messsage, this is saving the received chat message
 
                         db.addGroupChat(row.getString("from"), row.getString("from_fullname"), row.getString("msg"),
-                                row.getString("date"), row.getString("type"),
+                                row.getString("date"), row.has("type") ? row.getString("type") : "",
                                 row.getString("unique_id"),
                                 row.getString("group_unique_id"));
 

@@ -42,6 +42,8 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,6 +98,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 		//mAccountManager = AccountManager.get(getActivity());
 		
 		View v = inflater.inflate(R.layout.note, null);
+		setHasOptionsMenu(true);
 		
 		userFunction = new UserFunctions();
 		
@@ -144,18 +147,25 @@ public class ContactList extends CustomFragment implements IFragmentName
 			}
 		});
 
-		Button btnRefresh = (Button) v.findViewById(R.id.btnRefresh);
-
-		btnRefresh.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View view) {
-				MainActivity act1 = (MainActivity) getActivity();
-
-				act1.syncContacts();
-			}
-		});
-
 		return v;
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		inflater.inflate(R.menu.contacts, menu);  // Use filter.xml from step 1
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if(id == R.id.refreshContacts){
+			MainActivity act1 = (MainActivity) getActivity();
+
+			act1.syncContacts();
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 	
 	@Override 

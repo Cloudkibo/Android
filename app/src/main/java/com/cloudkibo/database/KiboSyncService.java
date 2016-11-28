@@ -631,7 +631,9 @@ public class KiboSyncService extends Service {
                                 db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
                                         row.getString("msg"), row.getString("date"),
                                         row.has("status") ? row.getString("status") : "",
-                                        row.has("uniqueid") ? row.getString("uniqueid") : "");
+                                        row.has("uniqueid") ? row.getString("uniqueid") : "",
+                                        row.has("type") ? row.getString("type") : "",
+                                        row.has("file_type") ? row.getString("file_type") : "");
 
                                 if(row.has("status")){
                                     if(row.getString("to").equals(db.getUserDetails().get("phone")) && row.getString("status").equals("sent")){
@@ -751,7 +753,9 @@ public class KiboSyncService extends Service {
                                     db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
                                             row.getString("msg"), row.getString("date"),
                                             row.has("status") ? row.getString("status") : "",
-                                            row.has("uniqueid") ? row.getString("uniqueid") : "");
+                                            row.has("uniqueid") ? row.getString("uniqueid") : "",
+                                            row.has("type") ? row.getString("type") : "",
+                                            row.has("file_type") ? row.getString("file_type") : "");
 
                                     if(row.has("status")){
                                         if(row.getString("to").equals(db.getUserDetails().get("phone")) && row.getString("status").equals("sent")){
