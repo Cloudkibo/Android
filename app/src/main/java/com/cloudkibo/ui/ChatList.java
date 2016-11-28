@@ -78,6 +78,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 	private String authtoken;
 	private ChatList reference = this;
+	private ArrayList<String> contact_phone = new ArrayList<String>();
 
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -91,6 +92,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 		authtoken = getActivity().getIntent().getExtras().getString("authtoken");
 		loadChatList();
+		Utility utility = new Utility();
+		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
 		ListView list = (ListView) v.findViewById(R.id.list);
 		adp = new ChatAdapter();
 		list.setAdapter(adp);
@@ -235,13 +238,13 @@ public class ChatList extends CustomFragment implements IFragmentName
 			ArrayList<ChatItem> chatList1 = new ArrayList<ChatItem>();
 
 
-
-			JSONArray chats = db.getChatList();
+			contact_phone.clear();
+			JSONArray chats = db.getChatListWithImages();
 //			JSONArray groups = db.getAllGroups();
 			JSONArray groups = db.getMyGroups(db.getUserDetails().get("phone"));
 			for (int i=0; i < chats.length(); i++) {
 				JSONObject row = chats.getJSONObject(i);
-				String image = getContactsDetails(row.getString("contact_phone"), getContext());
+				String image = row.optString("image_uri");
 				//if(row.getInt("isArchived") ==  0) {
 					chatList1.add(new ChatItem(
 							row.getString("display_name"),
@@ -252,8 +255,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 							false, Integer.parseInt(row.getString("pendingMsgs"))).setProfileImage(image));
 
 				//}
+				contact_phone.add(row.getString("contact_phone"));
 			}
-
 
 			for (int i=0; i < groups.length(); i++) {
 				JSONObject row = groups.getJSONObject(i);
@@ -314,23 +317,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 	}
 
 	public String getContactsDetails(String address, Context context) {
-
-//		Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.parseLong(contactId));
-//		return Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY).toString();
-		Uri contactUri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(address));
-
-		// querying contact data store
-		Cursor phones = context.getContentResolver().query(contactUri, new String[]{ContactsContract.CommonDataKinds.Phone.PHOTO_URI}, null, null, null);
-
-		String image_uri = "";
-		int phoneColumnIndex = phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI);
-		while (phones.moveToNext()) {
-			image_uri = phones.getString(phoneColumnIndex);
-
-		}
-		phones.close();
-		return image_uri;
-
+		DatabaseHandler db  = new DatabaseHandler(context);
+		return  db.getContactImage(address);
 	}
 
 	/**

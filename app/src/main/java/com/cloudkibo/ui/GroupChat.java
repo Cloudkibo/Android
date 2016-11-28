@@ -61,11 +61,11 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 	/** The Editext to compose the message. */
 	private EditText txt;
-	
+
 	private String authtoken;
 
 	private HashMap<String, String> user;
-	
+
 	String contactName;
 	String contactPhone;
 
@@ -90,7 +90,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		user = db.getUserDetails();
 
 		loadConversationList();
-		
+
 		ListView list = (ListView) v.findViewById(R.id.list);
 		adp = new ChatAdapter();
 		list.setAdapter(adp);
@@ -247,7 +247,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void receiveMessage(String msg, String uniqueid, String from, String date, String type) {
 
 		try {
@@ -269,7 +269,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		} catch (ParseException e){
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void sendMessageUsingAPI(final String msg, final String uniqueid){
@@ -366,7 +366,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		loadConversationList();
 		adp.notifyDataSetChanged();
 	}
-	
+
 
 	/**
 	 * This method currently loads a dummy list of conversations. You can write the
@@ -375,28 +375,28 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	public void loadConversationList()
 	{
 		convList = new ArrayList<Conversation>();
-		
+
 		loadChatFromDatabase();
-		
+
 		//loadChatMessagesFromServer();
 
 	}
 
-	
+
 	public void loadChatFromDatabase(){
 		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-		
+
 		try {
-			
+
 			MainActivity act1 = (MainActivity)getActivity();
-			
+
 			JSONArray jsonA = db.getChat(act1.getUserPhone(), contactPhone);
-			
+
 			ArrayList<Conversation> chatList1 = new ArrayList<Conversation>();
-			
+
 			for (int i=0; i < jsonA.length(); i++) {
 				JSONObject row = jsonA.getJSONObject(i);
-				
+
 				if(row.getString("toperson").equals(contactPhone))
 					chatList1.add(new Conversation(
 						row.getString("msg"),
@@ -422,14 +422,14 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					}
 				}*/
 			}
-			
+
 			convList.clear();
 
 			convList.addAll(chatList1);
 
 			if(adp != null)
 				adp.notifyDataSetChanged();
-			
+
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
@@ -495,9 +495,10 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							R.layout.chat_image_sender, null);
 			}
 
+
 			if(true){//(c.getType().equals("chat")) {
 				TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
-				lbl.setText(c.getDate().replaceAll("-", "/").split("/", 2)[1].split(" ")[1]);
+				lbl.setText(Utility.dateConversion(c.getDate().replaceAll("-", "/").split("/",2)[1].split(" ")[1]));
 				TextView phone = (TextView) v.findViewById(R.id.phone);
 				phone.setVisibility(View.GONE);
 
@@ -523,7 +524,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		}
 
 	}
-	
+
 	public String getFragmentName()
     {
       return "GroupChat";

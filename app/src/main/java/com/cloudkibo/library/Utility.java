@@ -1,7 +1,12 @@
 package com.cloudkibo.library;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.provider.ContactsContract;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.database.DatabaseHandler;
@@ -12,6 +17,7 @@ import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -68,6 +74,47 @@ public class Utility {
         */
     }
 
+    public String loadImageUriFromPhoneContact(String address, Context context) {
+        Uri contactUri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(address));
+        // querying contact data store
+        Cursor phones = context.getContentResolver().query(contactUri, new String[]{ContactsContract.CommonDataKinds.Phone.PHOTO_URI}, null, null, null);
+
+        String image_uri = "";
+        int phoneColumnIndex = phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI);
+        while (phones.moveToNext()) {
+            image_uri = phones.getString(phoneColumnIndex);
+
+        }
+        phones.close();
+        return image_uri;
+    }
+
+    public void updateDatabaseWithContactImages(final Context context, final ArrayList<String> phone){
+
+            final DatabaseHandler db = new DatabaseHandler(context);
+        Toast.makeText(context,"Starting Background Task", Toast.LENGTH_LONG).show();
+        new AsyncTask<String, String, String>() {
+
+            @Override
+            protected String doInBackground(String... args) {
+
+                for (int i=0; i < phone.size(); i++){
+                    db.addContactImage(phone.get(i),loadImageUriFromPhoneContact(phone.get(i), context));
+                }
+
+                return "Images Synced Successfully";
+            }
+
+            @Override
+            protected void onPostExecute(String row) {
+                Toast.makeText(context, row, Toast.LENGTH_LONG).show();
+                MainActivity.mainActivity.updateChatList();
+                MainActivity.mainActivity.updateGroupUIChat();
+            }
+
+        }.execute();
+    }
+
     public static String getCurrentTimeInISO(){
         TimeZone tZ = TimeZone.getTimeZone("UTC");
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"); // Quoted "Z" to indicate UTC, no timezone offset
@@ -102,6 +149,20 @@ public class Utility {
             }
 
         }.execute();
+    }
+
+    public static String dateConversion(String time){
+
+        try {
+            final SimpleDateFormat sdf = new SimpleDateFormat("H:mm");
+            final Date dateObj = sdf.parse(time);
+//            System.out.println(dateObj);
+//            System.out.println();
+            return new SimpleDateFormat("K:mm a").format(dateObj);
+        } catch (final ParseException e) {
+            e.printStackTrace();
+        }
+        return time;
     }
 
 }

@@ -4,6 +4,8 @@ package com.cloudkibo;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.DisplayNameReg;
 import com.cloudkibo.library.UserFunctions;
+import com.cloudkibo.library.Utility;
+import com.cloudkibo.ui.Invite_Friends;
 import com.facebook.accountkit.AccessToken;
 import com.facebook.accountkit.AccountKit;
 import com.facebook.accountkit.AccountKitLoginResult;
@@ -43,7 +45,7 @@ public class SplashScreen extends Activity
 	/** Check if the app is running. */
 	private boolean isRunning;
 	private AccountManager mAccountManager;
-	
+
 	private AlertDialog mAlertDialog;
     private boolean mInvalidate;
 
@@ -226,6 +228,8 @@ public class SplashScreen extends Activity
 			db.resetChatHistorySync();
 			db = new DatabaseHandler(getApplicationContext());
 			db.resetCallHistoryTable();
+			db = new DatabaseHandler(getApplicationContext());
+			db.resetContactImageTable();
 
 			logMessage("Old data removed from tables. Checking old facebook auth token.");
 
@@ -248,6 +252,8 @@ public class SplashScreen extends Activity
 					"Going to facebook authentication now.",
 					Toast.LENGTH_LONG)
 					.show();
+
+
 
 			doFinish();
 
@@ -397,7 +403,7 @@ public class SplashScreen extends Activity
 		//if(isSocketConnected)
 		//	socket.emit("logClient", "ANDROID : "+ msg);
 	}
-	
+
 	/**
 	 * Get an auth token for the account.
 	 * If not exist - add it and then return its auth token.
@@ -415,7 +421,7 @@ public class SplashScreen extends Activity
 				try {
 					bnd = future.getResult();
 					String authtoken = bnd.getString(AccountManager.KEY_AUTHTOKEN);
-					//Toast.makeText(getBaseContext(), ((authtoken != null) ? "SUCCESS!\ntoken: " + authtoken : "FAIL"), Toast.LENGTH_SHORT).show();                            
+					//Toast.makeText(getBaseContext(), ((authtoken != null) ? "SUCCESS!\ntoken: " + authtoken : "FAIL"), Toast.LENGTH_SHORT).show();
 					Log.d("SOJHARO", "GetTokenForAccount Bundle is " + bnd);
 
 					/*Intent i = new Intent(SplashScreen.this, Invite_Friends.class);

@@ -66,6 +66,7 @@ import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.CircleTransform;
 import com.cloudkibo.library.UserFunctions;
+import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.ContactItem;
 import com.cloudkibo.utils.IFragmentName;
 import android.content.ContentResolver;
@@ -83,7 +84,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 	//private AccountManager mAccountManager;
 	private String authtoken;
 	private ContactAdapter contactAdapter;
-	
+	private ArrayList<String> contact_phone = new ArrayList<String>();
 	UserFunctions userFunction;
 	ContactList  reference = this;
 
@@ -109,7 +110,9 @@ public class ContactList extends CustomFragment implements IFragmentName
 		contactAdapter = new ContactAdapter();
 		loadContactList();
 		list.setAdapter(contactAdapter);
-		
+		Utility utility = new Utility();
+		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
+
 		registerForContextMenu(list);
 		
 		list.setOnItemClickListener(new OnItemClickListener() {
@@ -588,23 +591,28 @@ public class ContactList extends CustomFragment implements IFragmentName
 		contactList = new ArrayList<ContactItem>(noteList);
 
 		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-
+		contact_phone.clear();
 		try {
+			Toast.makeText(getContext(), "Attempting to retrieve contacts", Toast.LENGTH_LONG).show();
 
-			JSONArray jsonA = db.getContacts();
-			JSONArray jsonB = db.getContactsOnAddressBook();
+			JSONArray jsonA = db.getContactsWithImages();
+			JSONArray jsonB = db.getContactsOnAddressBookWithImages();
 
 			jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
 			jsonB = UserFunctions.sortJSONArray(jsonB, "display_name");
-
+//
 			ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 			String my_btmp;
-			ContentResolver cursor = getContext().getContentResolver();
 			//This loop adds contacts to the display list which are on cloudkibo
+			Toast.makeText(getContext(), "Contacts retrieved:  " +  jsonA.length(), Toast.LENGTH_LONG).show();
+
 			for (int i=0; i < jsonA.length(); i++) {
 				JSONObject row = jsonA.getJSONObject(i);
-				my_btmp = getContactsDetails(row.getString("phone"), getContext());
-
+				my_btmp = row.optString("image_uri");
+//				if(my_btmp.equals("null")){
+//					my_btmp = null;
+//				}
+//				Log.d("Check", "Image Uri " + row.getString("image_uri"));
 				contactList1.add(new ContactItem(row.getString("_id"),
 						row.getString("display_name"),
 						"", // first name
@@ -616,15 +624,15 @@ public class ContactList extends CustomFragment implements IFragmentName
 						row.getString("detailsshared"),
 						false
 				).setProfile(my_btmp));
+				contact_phone.add(row.getString("phone"));
 			}
 
+			Toast.makeText(getContext(), "Contacts added:  ", Toast.LENGTH_LONG).show();
 
-
-
-			//This Loop Adds Contacts to the display list which are not on cloudkibo
+//			//This Loop Adds Contacts to the display list which are not on cloudkibo
 			for (int i=0; i < jsonB.length(); i++) {
 				JSONObject row = jsonB.getJSONObject(i);
-				my_btmp = getContactsDetails(row.getString("phone"), getContext());
+				my_btmp = row.optString("image_uri");
 
 				contactList1.add(new ContactItem(row.getString("_id"),
 						row.getString("display_name"),
@@ -637,6 +645,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 						row.getString("detailsshared"),
 						false
 				).setProfile(my_btmp));
+				contact_phone.add(row.getString("phone"));
 			}
 
 
@@ -737,21 +746,8 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 	public String getContactsDetails(String address, Context context) {
 
-//		Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.parseLong(contactId));
-//		return Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY).toString();
-		Uri contactUri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(address));
-
-		// querying contact data store
-		Cursor phones = context.getContentResolver().query(contactUri, new String[]{ContactsContract.CommonDataKinds.Phone.PHOTO_URI}, null, null, null);
-
-		String image_uri = "";
-		int phoneColumnIndex = phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI);
-		while (phones.moveToNext()) {
-			image_uri = phones.getString(phoneColumnIndex);
-
-		}
-		phones.close();
-		return image_uri;
+		DatabaseHandler db  = new DatabaseHandler(context);
+		return  db.getContactImage(address);
 
 	}
 
