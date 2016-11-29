@@ -20,6 +20,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.CalendarContract;
@@ -53,6 +54,7 @@ import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.CircleTransform;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.ChatItem;
+import com.cloudkibo.model.ContactItem;
 import com.cloudkibo.model.Conversation;
 import com.cloudkibo.utils.IFragmentName;
 
@@ -72,7 +74,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 {
 
 	/** The Chat list. */
-	private ArrayList<ChatItem> chatList;
+	private ArrayList<ChatItem> chatList = new ArrayList<ChatItem>();
 
 	private ChatAdapter adp;
 
@@ -232,63 +234,68 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 	public void loadChatList()
 	{
-		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-		try{
+		final DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+        final ArrayList<ChatItem> chatList1 = new ArrayList<ChatItem>();
 
-			ArrayList<ChatItem> chatList1 = new ArrayList<ChatItem>();
+        new AsyncTask<String, String, ArrayList<ChatItem>>() {
+
+            @Override
+            protected ArrayList<ChatItem> doInBackground(String... args) {
 
 
-			contact_phone.clear();
-			JSONArray chats = db.getChatListWithImages();
+                try{
+                    contact_phone.clear();
+                    JSONArray chats = db.getChatListWithImages();
 //			JSONArray groups = db.getAllGroups();
-			JSONArray groups = db.getMyGroups(db.getUserDetails().get("phone"));
-			for (int i=0; i < chats.length(); i++) {
-				JSONObject row = chats.getJSONObject(i);
-				String image = row.optString("image_uri");
-				//if(row.getInt("isArchived") ==  0) {
-					chatList1.add(new ChatItem(
-							row.getString("display_name"),
-							row.getString("contact_phone"),
-							row.getString("msg"),
-							Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
-							R.drawable.user1, false,
-							false, Integer.parseInt(row.getString("pendingMsgs"))).setProfileImage(image));
+                    JSONArray groups = db.getMyGroups(db.getUserDetails().get("phone"));
+                    for (int i=0; i < chats.length(); i++) {
+                        JSONObject row = chats.getJSONObject(i);
+                        String image = row.optString("image_uri");
+                        //if(row.getInt("isArchived") ==  0) {
+                        chatList1.add(new ChatItem(
+                                row.getString("display_name"),
+                                row.getString("contact_phone"),
+                                row.getString("msg"),
+                                Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
+                                R.drawable.user1, false,
+                                false, Integer.parseInt(row.getString("pendingMsgs"))).setProfileImage(image));
 
-				//}
-				contact_phone.add(row.getString("contact_phone"));
-			}
+                        //}
+                        contact_phone.add(row.getString("contact_phone"));
+                    }
 
-			for (int i=0; i < groups.length(); i++) {
-				JSONObject row = groups.getJSONObject(i);
+                    for (int i=0; i < groups.length(); i++) {
+                        JSONObject row = groups.getJSONObject(i);
 
-				//if (row.getInt("isArchived") == 0) {
-					chatList1.add(new ChatItem(
-							row.getString("group_name"),
-							row.getString("unique_id"),
-							"Last Message",
-							row.getString("date_creation"),
-							R.drawable.user1, false,
-							true, 0).setProfileImage(null));
-
-
-			}
+                        //if (row.getInt("isArchived") == 0) {
+                        chatList1.add(new ChatItem(
+                                row.getString("group_name"),
+                                row.getString("unique_id"),
+                                "Last Message",
+                                row.getString("date_creation"),
+                                R.drawable.user1, false,
+                                true, 0).setProfileImage(null));
 
 
+                    }
 
+                } catch(JSONException e){
+                    e.printStackTrace();
+                } catch (ParseException e){
+                    e.printStackTrace();
+                }
 
-
-			this.chatList = new ArrayList<ChatItem>(chatList1);
-			//this.chatList.addAll(chatList);
-			//this.chatList.addAll(chatList);
-			if(adp != null)
-				adp.notifyDataSetChanged();
-
-		} catch(JSONException e){
-			e.printStackTrace();
-		} catch (ParseException e){
-			e.printStackTrace();
-		}
-
+                return chatList1;
+            }
+            @Override
+            protected void onPostExecute(ArrayList<ChatItem> chatList1) {
+                chatList = new ArrayList<ChatItem>(chatList1);
+                //this.chatList.addAll(chatList);
+                //this.chatList.addAll(chatList);
+                if(adp != null)
+                    adp.notifyDataSetChanged();
+            }
+        }.execute();
 
 	}
 
