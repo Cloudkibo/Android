@@ -321,6 +321,17 @@ public class ChatList extends CustomFragment implements IFragmentName
 		return  db.getContactImage(address);
 	}
 
+	static class ViewHolderItem{
+		TextView lbl;
+		TextView lbl2;
+		TextView lbl3;
+		TextView lbl4;
+		TextView lbl5;
+		ImageView profile;
+		ImageView img2;
+		ImageView img3;
+	}
+
 	/**
 	 * The Class CutsomAdapter is the adapter class for Chat ListView.
 	 */
@@ -360,33 +371,50 @@ public class ChatList extends CustomFragment implements IFragmentName
 		@Override
 		public View getView(int pos, View v, ViewGroup arg2)
 		{
-			if (v == null)
+			ViewHolderItem viewHolder;
+			if (v == null){
 				v = LayoutInflater.from(getActivity()).inflate(
 						R.layout.chat_item, null);
 
+				viewHolder = new ViewHolderItem();
+				viewHolder.lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
+				viewHolder.lbl2 = (TextView) v.findViewById(R.id.lbl2);
+				viewHolder.lbl3 = (TextView) v.findViewById(R.id.lblContactPhone);
+				viewHolder.lbl4 = (TextView) v.findViewById(R.id.lblPendingMsgs);
+				viewHolder.lbl5 = (TextView) v.findViewById(R.id.lblContactStatus);
+				viewHolder.profile  = (ImageView)v.findViewById(R.id.img1);
+				viewHolder.img2 = (ImageView) v.findViewById(R.id.img2);
+				viewHolder.img3 = (ImageView) v.findViewById(R.id.online);
+
+				v.setTag(viewHolder);
+			}else {
+				viewHolder = (ViewHolderItem) v.getTag();
+			}
+
+
 			ChatItem c = getItem(pos);
-			TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
-			lbl.setText(c.getName());
-			if(c.getPendingMsgs() > 0) lbl.setTextColor(getResources().getColor(R.color.black));
-			else lbl.setTextColor(getResources().getColor(R.color.main_color_green));
+//			TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
+			viewHolder.lbl.setText(c.getName());
+			if(c.getPendingMsgs() > 0) viewHolder.lbl.setTextColor(getResources().getColor(R.color.black));
+			else viewHolder.lbl.setTextColor(getResources().getColor(R.color.main_color_green));
 
-			lbl = (TextView) v.findViewById(R.id.lbl2);
-			lbl.setText(c.getDate());
+//			TextView lbl2 = (TextView) v.findViewById(R.id.lbl2);
+			viewHolder.lbl2.setText(c.getDate());
 
-			lbl = (TextView) v.findViewById(R.id.lblContactPhone);
-			lbl.setText(c.getTitle());
+//			TextView lbl3 = (TextView) v.findViewById(R.id.lblContactPhone);
+			viewHolder.lbl3.setText(c.getTitle());
 
-			lbl = (TextView) v.findViewById(R.id.lblPendingMsgs);
-			if(c.getPendingMsgs() > 0) lbl.setText(Integer.toString(c.getPendingMsgs()));
-			else lbl.setText("");
+//			TextView lbl4 = (TextView) v.findViewById(R.id.lblPendingMsgs);
+			if(c.getPendingMsgs() > 0) viewHolder.lbl4.setText(Integer.toString(c.getPendingMsgs()));
+			else viewHolder.lbl4.setText("");
 
-			lbl = (TextView) v.findViewById(R.id.lblContactStatus);
-			lbl.setText(c.getMsg());
+//			TextView lbl5 = (TextView) v.findViewById(R.id.lblContactStatus);
+			viewHolder.lbl5.setText(c.getMsg());
 
-			if(c.getPendingMsgs() > 0) lbl.setTextColor(getResources().getColor(R.color.black));
-			else lbl.setTextColor(getResources().getColor(R.color.main_color_gray_lt));
+			if(c.getPendingMsgs() > 0) viewHolder.lbl5.setTextColor(getResources().getColor(R.color.black));
+			else viewHolder.lbl5.setTextColor(getResources().getColor(R.color.main_color_gray_lt));
 
-			ImageView profile  = (ImageView)v.findViewById(R.id.img1);
+//			ImageView profile  = (ImageView)v.findViewById(R.id.img1);
 
 
 			if(!c.isGroup()){
@@ -398,24 +426,23 @@ public class ChatList extends CustomFragment implements IFragmentName
 							.centerCrop()
 							.transform(new CircleTransform(getContext()))
 							.placeholder(R.drawable.avatar)
-							.into(profile);
+							.into(viewHolder.profile);
 
 				}else{
-					profile.setImageResource(R.drawable.avatar);
+					viewHolder.profile.setImageResource(R.drawable.avatar);
 				}
 
-            }else{
-                ImageView img = (ImageView) v.findViewById(R.id.img1);
-                img.setImageResource(R.drawable.avatar);
-            }
+			}else{
+				viewHolder.profile.setImageResource(R.drawable.avatar);
+			}
 
 
-			ImageView img = (ImageView) v.findViewById(R.id.img2);
-			img.setImageResource(c.isGroup() ? R.drawable.ic_group
+//			ImageView img2 = (ImageView) v.findViewById(R.id.img2);
+			viewHolder.img2.setImageResource(c.isGroup() ? R.drawable.ic_group
 					: R.drawable.ic_lock);
 
-			img = (ImageView) v.findViewById(R.id.online);
-			img.setVisibility(c.isOnline() ? View.VISIBLE : View.INVISIBLE);
+//			ImageView img3 = (ImageView) v.findViewById(R.id.online);
+			viewHolder.img3.setVisibility(c.isOnline() ? View.VISIBLE : View.INVISIBLE);
 			return v;
 		}
 
