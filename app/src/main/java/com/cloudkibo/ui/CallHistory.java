@@ -21,6 +21,8 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +68,7 @@ public class CallHistory extends CustomFragment implements IFragmentName
                              Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.call_history_list, null);
+        setHasOptionsMenu(true);
 
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
 
@@ -84,6 +87,24 @@ public class CallHistory extends CustomFragment implements IFragmentName
         registerForContextMenu(list);
 
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (menu != null) {
+            menu.findItem(R.id.archived).setVisible(false);
+        }
+        inflater.inflate(R.menu.newchat, menu);  // Use filter.xml from step 1
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.archived){
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)

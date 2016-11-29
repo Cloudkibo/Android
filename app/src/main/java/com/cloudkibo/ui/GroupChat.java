@@ -121,6 +121,9 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		if (menu != null) {
+			menu.findItem(R.id.archived).setVisible(false);
+		}
 		inflater.inflate(R.menu.chat, menu);  // Use filter.xml from step 1
 	}
 
@@ -343,15 +346,19 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					if (row != null) {
 						if(row.has("status")){
 							MainActivity act1 = (MainActivity) getActivity();
-							act1.resetSpecificChatHistorySync(row.getString("uniqueid"));
-							act1.updateChatStatus(row.getString("status"), row.getString("uniqueid"));
-							gotGoodServerResponse = true;
+							if(act1 != null) {
+								act1.resetSpecificChatHistorySync(row.getString("uniqueid"));
+								act1.updateChatStatus(row.getString("status"), row.getString("uniqueid"));
+								gotGoodServerResponse = true;
+							}
 						}
 					}
 					if(!gotGoodServerResponse){
 						MainActivity act1 = (MainActivity) getActivity();
-						act1.updateChatStatus("seen", row.getString("uniqueid"));
-						act1.addChatHistorySync(row.getString("uniqueid"), row.getString("fromperson"));
+						if(act1 != null) {
+							act1.updateChatStatus("seen", row.getString("uniqueid"));
+							act1.addChatHistorySync(row.getString("uniqueid"), row.getString("fromperson"));
+						}
 					}
 
 				} catch (JSONException e) {

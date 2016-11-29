@@ -838,7 +838,8 @@ public class KiboSyncService extends Service {
                     @Override
                     public void onCompleted(Exception e, JsonArray result) {
                         // todo messages are already given to us by push.. the sync don't get any undelivered message.. needs to test more
-                        Log.d("KiboSyncService", result.toString());
+                        if(result != null)
+                            Log.d("KiboSyncService", result.toString());
 
                     }
                 });

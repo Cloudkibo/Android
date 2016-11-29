@@ -9,18 +9,13 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.os.EnvironmentCompat;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.SplashScreen;
-import com.cloudkibo.database.CloudKiboDatabaseContract;
 import com.cloudkibo.database.DatabaseHandler;
-import com.cloudkibo.ui.ChatList;
-import com.cloudkibo.ui.GroupChat;
-import com.cloudkibo.utils.IFragmentName;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
@@ -48,7 +43,7 @@ public class GroupUtility {
         db = new DatabaseHandler(ctx);
     }
 
-    public void updateGroupToLocalDatabase(final String group_id, final String group_name,  final String auth_token){
+    public void updateGroupToLocalDatabase(final String group_id, final String group_name, final String auth_token, final String sender_id, final String msg){
 
         db.createGroup(group_id, group_name, 0);
 
@@ -83,8 +78,14 @@ public class GroupUtility {
                             if(MainActivity.isVisible){
                                 MainActivity.mainActivity.updateChatList();
                             }
-
                         }
+                        String message = msg;
+                        String member_phone = sender_id;
+                        String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+                        uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+                        uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+
+                        db.addGroupMessage(group_id,message,member_phone,member_phone,uniqueid, "log");
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -189,7 +190,7 @@ public class GroupUtility {
             String group_id = data.getString("groupId");
             sendNotification(message, message);
 
-            db.addGroupMessage(group_id,message,member_phone,member_phone,unique_id);
+            db.addGroupMessage(group_id,message,member_phone,member_phone,unique_id, "chat");
             if(MainActivity.isVisible){
                 updateMessageStatusToSeen(unique_id, auth_token);
                 MainActivity.mainActivity.updateGroupUIChat();
@@ -224,7 +225,7 @@ public class GroupUtility {
 
     public String sendGroupMessage(final String group_id, final  String message, final  String auth_token){
         final String unique_id = randomString();
-        db.addGroupMessage(group_id,message, db.getUserDetails().get("phone"),"", unique_id);
+        db.addGroupMessage(group_id,message, db.getUserDetails().get("phone"),"", unique_id, "chat");
         db.addGroupChatStatus(unique_id, "pending", db.getUserDetails().get("phone"));
         Toast.makeText(ctx, "Local Database Updated Successfully", Toast.LENGTH_LONG).show();
         new AsyncTask<String, String, JSONObject>() {

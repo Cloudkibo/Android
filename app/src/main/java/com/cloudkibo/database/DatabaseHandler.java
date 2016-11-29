@@ -26,7 +26,7 @@ import com.cloudkibo.database.CloudKiboDatabaseContract.UserChat;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 15;
+    private static final int DATABASE_VERSION = 16;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -164,7 +164,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String CREATE_GROUP_MUTE_SETTINGS = "CREATE TABLE MUTESETTING ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "groupid TEXT, "
+                + "groupid TEXT UNIQUE, "
                 + "isMute TEXT, "
                 + "muteTime TEXT, "
                 + "unMuteTime TEXT "
@@ -746,7 +746,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return contacts;
     }
 
-    public void addGroupMessage(String group_unique_id, String message, String from, String from_fullname, String unique_id) {
+    public void addGroupMessage(String group_unique_id, String message, String from, String from_fullname, String unique_id, String msg_type) {
         SQLiteDatabase db = this.getWritableDatabase();
 
 
@@ -754,7 +754,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //        values.put(User.KEY_UID, id); // FirstName    //values.put(User.KEY_FIRSTNAME, id); // FirstName
         values.put("group_unique_id", group_unique_id); // LastName
         values.put("_from", from); // Email
-        values.put("type", ""); // UserName
+        values.put("type", msg_type); // UserName
         values.put("msg", message); // Email
         values.put("from_fullname", from_fullname); // Email
         values.put("unique_id", unique_id); // Created At

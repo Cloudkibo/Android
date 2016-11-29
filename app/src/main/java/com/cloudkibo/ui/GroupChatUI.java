@@ -129,6 +129,9 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (menu != null) {
+            menu.findItem(R.id.archived).setVisible(false);
+        }
         inflater.inflate(R.menu.groupchat, menu);  // Use filter.xml from step 1
     }
 
@@ -231,6 +234,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                 String from = msgs.getJSONObject(i).get("from").toString();
                 String date = msgs.getJSONObject(i).get("date").toString();
                 String unique_id = msgs.getJSONObject(i).get("unique_id").toString();
+                String type = msgs.getJSONObject(i).get("type").toString();
                 boolean isSent = false;
                 if(db.getUserDetails().get("phone").equals(from)){
                     isSent = true;
@@ -240,7 +244,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                 if(!display_name.equals("")){
                     from = display_name;
                 }
-                convList.add(new Conversation(message, from, isSent, date, unique_id, db.getGroupMessageStatus(unique_id), "chat"));
+                convList.add(new Conversation(message, from, isSent, date, unique_id, db.getGroupMessageStatus(unique_id), type));
             }
 
             if(groupAdapter != null && lv != null){

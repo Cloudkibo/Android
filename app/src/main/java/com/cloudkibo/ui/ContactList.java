@@ -152,6 +152,9 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		if (menu != null) {
+			menu.findItem(R.id.archived).setVisible(false);
+		}
 		inflater.inflate(R.menu.contacts, menu);  // Use filter.xml from step 1
 	}
 

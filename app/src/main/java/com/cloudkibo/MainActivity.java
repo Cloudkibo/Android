@@ -3,9 +3,6 @@ package com.cloudkibo;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,8 +34,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -83,7 +78,6 @@ import com.cloudkibo.ui.AboutChat;
 import com.cloudkibo.ui.CallHistory;
 import com.cloudkibo.ui.ChatList;
 import com.cloudkibo.ui.ContactList;
-import com.cloudkibo.ui.ContactListPending;
 import com.cloudkibo.ui.CreateGroup;
 import com.cloudkibo.ui.GroupChat;
 import com.cloudkibo.ui.GroupChatUI;
@@ -98,7 +92,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.async.util.FileUtility;
 import com.koushikdutta.ion.Ion;
 import com.microsoft.windowsazure.notifications.NotificationsManager;
 
@@ -903,6 +896,30 @@ public class MainActivity extends CustomActivity
     }
 
     /* (non-Javadoc)
+    * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+    */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /* (non-Javadoc)
+     * @see com.newsfeeder.custom.CustomActivity#onOptionsItemSelected(android.view.MenuItem)
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        if (drawerToggle.onOptionsItemSelected(item))
+        {
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /* (non-Javadoc)
      * @see android.support.v4.app.FragmentActivity#onKeyDown(int, android.view.KeyEvent)
      */
     @Override
@@ -969,40 +986,6 @@ public class MainActivity extends CustomActivity
 
                 @Override
                 public void receiveSocketJson(String type, final JSONObject body) {
-
-                    if(type.equals("group:you_are_added")){
-                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                        try {
-                            groupUtility.updateGroupToLocalDatabase(body.getString("groupId"), body.getString("group_name"), authtoken);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-
-                    if(type.equals("group:added_to_group")){
-                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                        groupUtility.updateGroupMembers(body.toString(), authtoken);
-                    }
-
-                    if(type.equals("group:member_left_group")){
-                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                        groupUtility.memberLeftGroup(body.toString());
-                    }
-
-                    if(type.equals("group:chat_received")){
-                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                        groupUtility.updateGroupChat(body.toString(), authtoken);
-                    }
-
-                    if(type.equals("group:removed_from_group")){
-                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                        groupUtility.removedFromGroup(body.toString(), authtoken);
-                    }
-                    if(type.equals("group:msg_status_changed")){
-                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                        groupUtility.updateGroupMessageStatus(body.toString(), authtoken);
-                    }
 
                     if(type.equals("im")){
 

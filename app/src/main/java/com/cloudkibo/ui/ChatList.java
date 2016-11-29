@@ -160,6 +160,9 @@ public class ChatList extends CustomFragment implements IFragmentName
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (menu != null) {
+            menu.findItem(R.id.archived).setVisible(false);
+        }
         inflater.inflate(R.menu.main, menu);  // Use filter.xml from step 1
     }
 

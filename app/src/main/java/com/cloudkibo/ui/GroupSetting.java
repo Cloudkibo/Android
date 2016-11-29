@@ -6,12 +6,17 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +63,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                              Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.group_info, null);
+        setHasOptionsMenu(true);
         this.inflater = inflater;
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
 //        String names[] = getMembers();
@@ -70,6 +76,10 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         }
         Button leave_group = (Button) v.findViewById(R.id.leave_group);
         btnSelectIcon = (ImageButton) v.findViewById(R.id.selectIconBtn);
+        Switch muteSwitch = (Switch) v.findViewById(R.id.switch1);
+        try{
+        muteSwitch.setChecked(new DatabaseHandler(getActivity().getApplicationContext()).isMute(group_id));
+        } catch (JSONException e ){ e.printStackTrace();}
         lv=(ListView) v.findViewById(R.id.listView);
         participants = getMembers();
         lv.setAdapter(new CustomParticipantAdapter(inflater, participants, getContext(),group_id));
@@ -136,9 +146,40 @@ public class GroupSetting extends CustomFragment implements IFragmentName
             }
         });
 
+        muteSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(b){
+                    DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+                    db.muteGroup(group_id);
+                } else {
+                    DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+                    db.unmuteGroup(group_id);
+                }
+            }
+        });
+
 
         return v;
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (menu != null) {
+            menu.findItem(R.id.archived).setVisible(false);
+        }
+        inflater.inflate(R.menu.newchat, menu);  // Use filter.xml from step 1
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.archived){
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 
