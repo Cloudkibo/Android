@@ -5,7 +5,7 @@ import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.DisplayNameReg;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
-import com.cloudkibo.ui.Invite_Friends;
+//import com.cloudkibo.ui.Invite_Friends;
 import com.facebook.accountkit.AccessToken;
 import com.facebook.accountkit.AccountKit;
 import com.facebook.accountkit.AccountKitLoginResult;
