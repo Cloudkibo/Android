@@ -332,7 +332,8 @@ public class GroupUtility {
             @Override
             protected void onPostExecute(JSONObject row) {
                 if(row != null){
-                    Toast.makeText(ctx, row.toString(), Toast.LENGTH_LONG).show();
+                    db.leaveGroupMemberRemovePending(group_id, member_phone);
+                    Toast.makeText(ctx, "Member Successfullly Removed", Toast.LENGTH_LONG).show();
 //                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
                 }
             }

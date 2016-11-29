@@ -64,6 +64,8 @@ public class UserFunctions {
     public static String removeMember =          baseURL + "/api/groupmessaginguser/removeFromGroup";
     public static String groupMembers =          baseURL + "/api/groupmessaginguser/myspecificgroupsmembers";
     public static String updateGroupChatStatus =          baseURL + "/api/groupchatstatus/updateStatus";
+    public static String uploadIcon =          baseURL + "/api/groupmessaging/uploadIcon";
+    public static String downloadIcon =          baseURL + "/api/groupmessaging/downloadIcon";
     
     
     
@@ -321,7 +323,7 @@ public class UserFunctions {
     public JSONObject uploadIcon(String group_id, String filepath, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("unique_id", group_id));
-        JSONObject response = connection.sendObjectToServer(removeMember, authtoken, params);
+        JSONObject response = connection.sendObjectToServer(uploadIcon, authtoken, params);
         return response;
     }
 
