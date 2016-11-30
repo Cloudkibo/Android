@@ -179,7 +179,8 @@ public class MainActivity extends CustomActivity
 
         authtoken = getIntent().getExtras().getString("authtoken");
         shouldSync = getIntent().getExtras().getBoolean("sync");
-
+       // this.updateChatList();
+        //this.updatePartialContactList();
         setupContainer();
         setupDrawer();
 
@@ -211,8 +212,7 @@ public class MainActivity extends CustomActivity
         }
 
         startContactsObserverService();
-        this.updateChatList();
-        this.updatePartialContactList();
+
 //        Utility utility = new Utility();
 //        utility.updateDatabaseWithContactImages(getApplicationContext(),new ArrayList<String>());
 
