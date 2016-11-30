@@ -1259,6 +1259,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return contacts;
     }
 
+    public String [] getContactsPhone() throws JSONException {
+        String contacts[];
+        String selectQuery = "SELECT  phone FROM " + Contacts.TABLE_CONTACTS + "";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+       contacts = new String [cursor.getCount()];
+        int i = 0;
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                //contact.put(Contacts.CONTACT_FIRSTNAME, cursor.getString(1));
+                //contact.put(Contacts.CONTACT_LASTNAME, cursor.getString(2));
+//                contact.put(Contacts.CONTACT_PHONE, cursor.getString(1));
+                contacts[i] = cursor.getString(0);
+                i++;
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return contacts;
+    }
+
     public JSONArray getContactsOnAddressBookWithImages() throws JSONException {
         JSONArray contacts = new JSONArray();
         String selectQuery = "SELECT  contacts.phone, display_name, _id, detailsshared, status, on_cloudkibo, image_uri FROM " + Contacts.TABLE_CONTACTS +" LEFT JOIN CONTACT_IMAGE ON contacts.phone = CONTACT_IMAGE.phone where on_cloudkibo='false'";

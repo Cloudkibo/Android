@@ -130,9 +130,9 @@ public class ContactList extends CustomFragment implements IFragmentName
 //				act1.syncContacts();
 //			}
 //		});
-
-		Utility utility = new Utility();
-		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
+//
+//		Utility utility = new Utility();
+//		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
 
 
 		return v;
@@ -570,6 +570,9 @@ public class ContactList extends CustomFragment implements IFragmentName
 				try {
 					JSONArray jsonA = db.getContactsWithImages();
 					JSONArray jsonB = db.getContactsOnAddressBookWithImages();
+
+//                    JSONArray jsonA = db.getContacts();
+//                    JSONArray jsonB = db.getContactsOnAddressBook();
 
 					jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
 					jsonB = UserFunctions.sortJSONArray(jsonB, "display_name");
