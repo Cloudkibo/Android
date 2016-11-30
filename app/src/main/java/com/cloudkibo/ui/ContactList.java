@@ -555,12 +555,78 @@ public class ContactList extends CustomFragment implements IFragmentName
 		}*/
 	}
 
+    public void loadPartialContactList()
+    {
+
+        ArrayList<ContactItem> noteList = new ArrayList<ContactItem>();
+        contactList = new ArrayList<ContactItem>(noteList);
+        final DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+        contact_phone.clear();
+
+        new AsyncTask<String, String, ArrayList<ContactItem>>() {
+
+            @Override
+            protected ArrayList<ContactItem> doInBackground(String... args) {
+
+                try {
+                    JSONArray jsonA = db.getContactsWithImages();
+
+
+//                    JSONArray jsonA = db.getContacts();
+//                    JSONArray jsonB = db.getContactsOnAddressBook();
+
+                    jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
+
+//
+                    ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
+                    String my_btmp;
+                    //This loop adds contacts to the display list which are on cloudkibo
+
+                    for (int i=0; i < jsonA.length(); i++) {
+                        JSONObject row = jsonA.getJSONObject(i);
+                        my_btmp = row.optString("image_uri");
+
+                        contactList1.add(new ContactItem(row.getString("_id"),
+                                row.getString("display_name"),
+                                "", // first name
+                                row.getString("on_cloudkibo"),
+                                row.getString("phone"),
+                                01,
+                                false, "",
+                                row.getString("status"),
+                                row.getString("detailsshared"),
+                                false
+                        ).setProfile(my_btmp));
+                        contact_phone.add(row.getString("phone"));
+                    }
+
+                    return contactList1;
+                } catch (JSONException e) {
+
+                    e.printStackTrace();
+
+                }
+
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<ContactItem> contactList1) {
+                if(contactList1 != null) {
+                    loadNewContacts(contactList1);
+                }
+            }
+
+        }.execute();
+
+    }
 
 	public void loadContactList()
 	{
 
-		ArrayList<ContactItem> noteList = new ArrayList<ContactItem>();
-		contactList = new ArrayList<ContactItem>(noteList);
+		//ArrayList<ContactItem> noteList = new ArrayList<ContactItem>();
+		//contactList = new ArrayList<ContactItem>(noteList);
 		final DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
 		contact_phone.clear();
 
@@ -571,13 +637,13 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 				try {
 					JSONArray jsonA = db.getContactsWithImages();
-					JSONArray jsonB = db.getContactsOnAddressBookWithImages();
+
 
 //                    JSONArray jsonA = db.getContacts();
 //                    JSONArray jsonB = db.getContactsOnAddressBook();
 
 					jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
-					jsonB = UserFunctions.sortJSONArray(jsonB, "display_name");
+
 //
 					ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 					String my_btmp;
@@ -601,6 +667,8 @@ public class ContactList extends CustomFragment implements IFragmentName
 						contact_phone.add(row.getString("phone"));
 					}
 
+                    JSONArray jsonB = db.getContactsOnAddressBookWithImages();
+                    jsonB = UserFunctions.sortJSONArray(jsonB, "display_name");
 
 //			//This Loop Adds Contacts to the display list which are not on cloudkibo
 					for (int i=0; i < jsonB.length(); i++) {

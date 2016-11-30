@@ -212,6 +212,7 @@ public class MainActivity extends CustomActivity
 
         startContactsObserverService();
         this.updateChatList();
+        this.updatePartialContactList();
 //        Utility utility = new Utility();
 //        utility.updateDatabaseWithContactImages(getApplicationContext(),new ArrayList<String>());
 
@@ -1160,6 +1161,23 @@ public class MainActivity extends CustomActivity
                 @Override
                 public void run() {
                     myChatListFragment.loadChatList();
+                }
+            });
+
+        }
+    }
+
+    public void updatePartialContactList() {
+        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+        if(myFragment == null) return;
+        if(myFragment.getFragmentName().equals("ContactList"))
+        {
+            final ContactList myChatListFragment = (ContactList) myFragment;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    myChatListFragment.loadPartialContactList();
                 }
             });
 
