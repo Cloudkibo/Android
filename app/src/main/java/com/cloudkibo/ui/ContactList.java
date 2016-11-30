@@ -56,7 +56,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 {
 
 	/** The Note list. */
-	private ArrayList<ContactItem> contactList;
+	public static ArrayList<ContactItem> contactList;
 	//private AccountManager mAccountManager;
 	private String authtoken;
 	private ContactAdapter contactAdapter;
@@ -78,7 +78,9 @@ public class ContactList extends CustomFragment implements IFragmentName
 		userFunction = new UserFunctions();
 
 		authtoken = getActivity().getIntent().getExtras().getString("authtoken");
-
+		if(contactList == null){
+			contactList = new ArrayList<ContactItem>();
+		}
 
 
 		ListView list = (ListView) v.findViewById(R.id.list);

@@ -186,7 +186,7 @@ public class ContactService extends Service {
                                 Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
                                 contactList1.add(name);
                                 contactList1Phone.add(phone);
-                                db.addContactImage(phone, image_uri);
+//                                db.addContactImage(phone, image_uri);
                             }
                             pCur.close();
                         }
