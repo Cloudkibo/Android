@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.Telephony;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -28,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -60,7 +62,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 	//private AccountManager mAccountManager;
 	private String authtoken;
 	private ContactAdapter contactAdapter;
-	private ArrayList<String> contact_phone = new ArrayList<String>();
+	//private ArrayList<String> contact_phone = new ArrayList<String>();
 	UserFunctions userFunction;
 	ContactList  reference = this;
 
@@ -561,7 +563,7 @@ public class ContactList extends CustomFragment implements IFragmentName
         ArrayList<ContactItem> noteList = new ArrayList<ContactItem>();
         contactList = new ArrayList<ContactItem>(noteList);
         final DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-        contact_phone.clear();
+        //contact_phone.clear();
 
         new AsyncTask<String, String, ArrayList<ContactItem>>() {
 
@@ -597,7 +599,7 @@ public class ContactList extends CustomFragment implements IFragmentName
                                 row.getString("detailsshared"),
                                 false
                         ).setProfile(my_btmp));
-                        contact_phone.add(row.getString("phone"));
+                    //    contact_phone.add(row.getString("phone"));
                     }
 
                     return contactList1;
@@ -628,7 +630,8 @@ public class ContactList extends CustomFragment implements IFragmentName
 		//ArrayList<ContactItem> noteList = new ArrayList<ContactItem>();
 		//contactList = new ArrayList<ContactItem>(noteList);
 		final DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-		contact_phone.clear();
+		//contact_phone.clear();
+
 
 		new AsyncTask<String, String, ArrayList<ContactItem>>() {
 
@@ -637,15 +640,15 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 				try {
 					JSONArray jsonA = db.getContactsWithImages();
-
+                    JSONArray jsonB = db.getContactsOnAddressBookWithImages();
+					ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 
 //                    JSONArray jsonA = db.getContacts();
 //                    JSONArray jsonB = db.getContactsOnAddressBook();
 
 					jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
-
+                    jsonB = UserFunctions.sortJSONArray(jsonB, "display_name");
 //
-					ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 					String my_btmp;
 					//This loop adds contacts to the display list which are on cloudkibo
 
@@ -664,11 +667,11 @@ public class ContactList extends CustomFragment implements IFragmentName
 								row.getString("detailsshared"),
 								false
 						).setProfile(my_btmp));
-						contact_phone.add(row.getString("phone"));
+					//	contact_phone.add(row.getString("phone"));
 					}
 
-                    JSONArray jsonB = db.getContactsOnAddressBookWithImages();
-                    jsonB = UserFunctions.sortJSONArray(jsonB, "display_name");
+//                    SystemClock.sleep(200);
+//                    contactList1.clear();
 
 //			//This Loop Adds Contacts to the display list which are not on cloudkibo
 					for (int i=0; i < jsonB.length(); i++) {
@@ -686,7 +689,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 								row.getString("detailsshared"),
 								false
 						).setProfile(my_btmp));
-						contact_phone.add(row.getString("phone"));
+						//contact_phone.add(row.getString("phone"));
 					}
 					return contactList1;
 				} catch (JSONException e) {
@@ -698,6 +701,8 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 				return null;
 			}
+
+
 
 			@Override
 			protected void onPostExecute(ArrayList<ContactItem> contactList1) {
@@ -712,13 +717,11 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 	public void loadNewContacts(ArrayList<ContactItem> contactList1){
 		try{
-
-			MainActivity act1 = (MainActivity)getActivity();
-			act1.askFriendsOnlineStatus();
-
 			contactList.clear();
 			contactList.addAll(contactList1);
 			contactAdapter.notifyDataSetChanged();
+			MainActivity act1 = (MainActivity)getActivity();
+			act1.askFriendsOnlineStatus();
 		}catch(NullPointerException e){
 			e.printStackTrace();
 		}
