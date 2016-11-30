@@ -311,6 +311,8 @@ public class DisplayNameReg extends Activity
                                 cur.getColumnIndex(ContactsContract.Contacts._ID));
                         String name = cur.getString(
                                 cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                        String image_uri = cur.getString(
+                                cur.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
                         //Log.w("Contact Name : ", "Name " + name + "");
                         if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                             Cursor pCur = cr.query(
@@ -340,6 +342,7 @@ public class DisplayNameReg extends Activity
                                 Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
                                 contactList1.add(name);
                                 contactList1Phone.add(phone);
+                                db.addContactImage(phone,image_uri);
                             }
                             pCur.close();
                         }

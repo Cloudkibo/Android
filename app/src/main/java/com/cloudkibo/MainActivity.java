@@ -212,8 +212,8 @@ public class MainActivity extends CustomActivity
 
         startContactsObserverService();
         this.updateChatList();
-        Utility utility = new Utility();
-        utility.updateDatabaseWithContactImages(getApplicationContext(),new ArrayList<String>());
+//        Utility utility = new Utility();
+//        utility.updateDatabaseWithContactImages(getApplicationContext(),new ArrayList<String>());
 
 
     }
