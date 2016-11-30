@@ -26,7 +26,7 @@ import com.cloudkibo.database.CloudKiboDatabaseContract.UserChat;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 16;
+    private static final int DATABASE_VERSION = 17;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -75,7 +75,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + Contacts.CONTACT_UID + " TEXT,"
                 + Contacts.SHARED_DETAILS + " TEXT,"
                 + Contacts.CONTACT_STATUS + " TEXT,"
-                + "on_cloudkibo" + " TEXT"+ ")";
+                + "on_cloudkibo" + " TEXT,"
+                + "image_uri TEXT DEFAULT NULL "
+                + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
 
         String CREATE_USERCHAT_TABLE = "CREATE TABLE " + UserChat.TABLE_USERCHAT + "("
@@ -966,6 +968,31 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
+    public void addContact(String on_cloudkibo, String lname, String phone, String uname, String uid, String shareddetails,
+                           String status, String image_uri) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        //values.put(Contacts.CONTACT_FIRSTNAME, fname); // FirstName
+        //values.put(Contacts.CONTACT_LASTNAME, lname); // LastName
+        values.put(Contacts.CONTACT_PHONE, phone); // Phone
+        values.put("display_name", uname); // UserName
+        values.put(Contacts.CONTACT_UID, uid); // Uid
+        values.put(Contacts.CONTACT_STATUS, status); // Status
+        values.put(Contacts.SHARED_DETAILS, shareddetails); // Created At
+        values.put("on_cloudkibo", on_cloudkibo);
+        values.put("image_uri", image_uri);
+
+        // Inserting Row
+        try {
+            db.insert(Contacts.TABLE_CONTACTS, null, values);
+        } catch (android.database.sqlite.SQLiteConstraintException e){
+            Log.e("SQLITE_CONTACTS", uname + " - " + phone);
+            ACRA.getErrorReporter().handleSilentException(e);
+        }
+        db.close(); // Closing database connection
+    }
+
 
 
 
@@ -1194,8 +1221,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public JSONArray getContactsWithImages() throws JSONException {
         JSONArray contacts = new JSONArray();
 //        String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM GROUPMEMBER LEFT JOIN "+ Contacts.TABLE_CONTACTS +" ON phone = member_phone where group_unique_id='"+ group_id +"' AND membership_status='joined'";
-        String selectQuery = "SELECT  contacts.phone, display_name, _id, detailsshared, status, on_cloudkibo, image_uri FROM " + Contacts.TABLE_CONTACTS +" LEFT JOIN CONTACT_IMAGE ON contacts.phone = CONTACT_IMAGE.phone where on_cloudkibo='true'";
-
+//        String selectQuery = "SELECT  contacts.phone, display_name, _id, detailsshared, status, on_cloudkibo, image_uri FROM " + Contacts.TABLE_CONTACTS +" LEFT JOIN CONTACT_IMAGE ON contacts.phone = CONTACT_IMAGE.phone where on_cloudkibo='true'";
+        String selectQuery = "SELECT  contacts.phone, display_name, _id, detailsshared, status, on_cloudkibo, image_uri FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='true'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // Move to first row
@@ -1289,8 +1316,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public JSONArray getContactsOnAddressBookWithImages() throws JSONException {
         JSONArray contacts = new JSONArray();
-        String selectQuery = "SELECT  contacts.phone, display_name, _id, detailsshared, status, on_cloudkibo, image_uri FROM " + Contacts.TABLE_CONTACTS +" LEFT JOIN CONTACT_IMAGE ON contacts.phone = CONTACT_IMAGE.phone where on_cloudkibo='false'";
-
+        //String selectQuery = "SELECT  contacts.phone, display_name, _id, detailsshared, status, on_cloudkibo, image_uri FROM " + Contacts.TABLE_CONTACTS +" LEFT JOIN CONTACT_IMAGE ON contacts.phone = CONTACT_IMAGE.phone where on_cloudkibo='false'";
+        String selectQuery = "SELECT  contacts.phone, display_name, _id, detailsshared, status, on_cloudkibo, image_uri FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='false'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // Move to first row
@@ -1582,10 +1609,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         HashMap<String, String> userDetail = getUserDetails();
         JSONArray chats = new JSONArray();
 //        String selectQuery = "SELECT  contacts.phone, display_name, _id, detailsshared, status, on_cloudkibo, image_uri FROM " + Contacts.TABLE_CONTACTS +" LEFT JOIN CONTACT_IMAGE ON contacts.phone = CONTACT_IMAGE.phone where on_cloudkibo='true'";
+//        String selectQuery =
+//                " SELECT "+ UserChat.USERCHAT_DATE +", contact_phone, " + UserChat.USERCHAT_MSG
+//                        +", image_uri FROM " + UserChat.TABLE_USERCHAT
+//                        +" LEFT JOIN CONTACT_IMAGE ON contact_phone = CONTACT_IMAGE.phone WHERE isArchived=0"
+//                        +" GROUP BY contact_phone ORDER BY "+ UserChat.USERCHAT_DATE + " DESC";
         String selectQuery =
                 " SELECT "+ UserChat.USERCHAT_DATE +", contact_phone, " + UserChat.USERCHAT_MSG
                         +", image_uri FROM " + UserChat.TABLE_USERCHAT
-                        +" LEFT JOIN CONTACT_IMAGE ON contact_phone = CONTACT_IMAGE.phone WHERE isArchived=0"
+                        +" LEFT JOIN contacts ON contacts.phone = contact_phone WHERE isArchived=0"
                         +" GROUP BY contact_phone ORDER BY "+ UserChat.USERCHAT_DATE + " DESC";
 
         SQLiteDatabase db = this.getReadableDatabase();

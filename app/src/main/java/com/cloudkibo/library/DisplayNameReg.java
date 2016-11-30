@@ -5,7 +5,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.Manifest;
 import android.app.Activity;
@@ -71,6 +73,7 @@ public class DisplayNameReg extends Activity
 
     final ArrayList<String> contactList1 = new ArrayList<String>();
     final ArrayList<String> contactList1Phone = new ArrayList<String>();
+    final Map<String, String> photo_uri = new HashMap<>();
 
     /* (non-Javadoc)
 	 * @see com.chatt.custom.CustomActivity#onCreate(android.os.Bundle)
@@ -121,7 +124,8 @@ public class DisplayNameReg extends Activity
                     contactList1.get(i),
                     "null",
                     "No",
-                    "N/A");
+                    "N/A",
+                    photo_uri.get(contactList1Phone.get(i)));
         }
 
         try {
@@ -143,7 +147,8 @@ public class DisplayNameReg extends Activity
                     contactList1.get(i),
                     "null",
                     "Yes",
-                    "N/A");
+                    "N/A",
+                    photo_uri.get(contactList1Phone.get(i)));
         }
 
         kiboSyncService.startSyncWithoutAddressBookAccess(authtoken);
@@ -342,7 +347,7 @@ public class DisplayNameReg extends Activity
                                 Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
                                 contactList1.add(name);
                                 contactList1Phone.add(phone);
-                                db.addContactImage(phone,image_uri);
+                                photo_uri.put(phone,image_uri);
                             }
                             pCur.close();
                         }
