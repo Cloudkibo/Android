@@ -711,6 +711,10 @@ public class KiboSyncService extends Service {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                GroupUtility utility = new GroupUtility(getApplicationContext());
+                utility.syncGroupIcon(authtoken);
+
                 if(startWithAddressBook)
                     loadContactsFromAddressBook();
                 else
@@ -857,7 +861,9 @@ public class KiboSyncService extends Service {
                     @Override
                     public void onCompleted(Exception e, JsonArray result) {
                         // todo messages are already given to us by push.. the sync don't get any undelivered message.. needs to test more
+                        if(result != null){
                         Log.d("KiboSyncService", result.toString());
+                        }
 
                     }
                 });

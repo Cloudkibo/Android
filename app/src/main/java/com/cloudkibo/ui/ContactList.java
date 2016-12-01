@@ -707,7 +707,10 @@ public class ContactList extends CustomFragment implements IFragmentName
 			@Override
 			protected void onPostExecute(ArrayList<ContactItem> contactList1) {
 				if(contactList1 != null) {
-					loadNewContacts(contactList1);
+					//loadNewContacts(contactList1);
+					contactList.clear();
+					contactList.addAll(contactList1);
+					contactAdapter.notifyDataSetChanged();
 				}
 			}
 
@@ -717,9 +720,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 	public void loadNewContacts(ArrayList<ContactItem> contactList1){
 		try{
-			contactList.clear();
-			contactList.addAll(contactList1);
-			contactAdapter.notifyDataSetChanged();
+
 			MainActivity act1 = (MainActivity)getActivity();
 			act1.askFriendsOnlineStatus();
 		}catch(NullPointerException e){
@@ -993,7 +994,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 				sendIntent.setType("text/plain");
 				sendIntent.setData(Uri.parse("smsto:" +  c.getPhone()));
 				//sendIntent.putExtra(Intent.EXTRA_TEXT, "Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
-				sendIntent.putExtra("sms_body", "Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
+				sendIntent.putExtra("sms_body", "Join me on CloudKibo for video chat. Download from https://play.google.com/store/apps/details?id=com.cloudkibo&hl=en");
 
 				if (defaultSmsPackageName != null)// Can be null in case that there is no default, then the user would be able to choose
 				// any app that support this intent.
@@ -1008,7 +1009,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 				Intent smsIntent = new Intent(android.content.Intent.ACTION_VIEW);
 				smsIntent.setType("vnd.android-dir/mms-sms");
 				smsIntent.putExtra("address", c.getPhone());
-				smsIntent.putExtra("sms_body","Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
+				smsIntent.putExtra("sms_body","Join me on CloudKibo for video chat. Download from https://play.google.com/store/apps/details?id=com.cloudkibo&hl=en");
 				startActivity(smsIntent);
 			}
 		}
