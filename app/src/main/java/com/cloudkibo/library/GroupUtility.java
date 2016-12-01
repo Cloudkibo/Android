@@ -364,11 +364,11 @@ public class GroupUtility {
                JSONObject body = new JSONObject(payload);
                 String msg_unique_id = body.getString("uniqueId");
                 String status = body.getString("status");
-                String current_status = db.getGroupMessageStatus(msg_unique_id);
-               if(!current_status.equals("seen")){
+                //String current_status = db.getGroupMessageStatus(msg_unique_id);
+              // if(!current_status.equals("seen")){
                    db.updateGroupChatStatus(msg_unique_id, status);
                    Toast.makeText(ctx, "Updated Chat Status to Seen", Toast.LENGTH_LONG).show();
-               }
+               //}
                 MainActivity.mainActivity.updateGroupUIChat();
         } catch (JSONException e) {
             e.printStackTrace();

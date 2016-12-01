@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F1F3EE">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:background="#2ecc71">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="16dp"
+                    android:paddingTop="16dp"
+                    android:paddingRight="16dp"
+                    android:paddingBottom="16dp">
+
+                    <TextView
+                        android:id="@+id/group_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Group Name"
+                        android:textColor="#ffffff"
+                        android:textSize="25dp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:id="@+id/creation_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="10/3/16, 18:50"
+                        android:textColor="#ffffff"
+                        android:textSize="12dp"/>
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                android:paddingRight="16dp"
+                android:paddingBottom="16dp"
+                android:paddingLeft="16dp"
+                android:layout_weight="1">
+
+                <RelativeLayout
+                    android:id="@+id/mBody"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_marginTop="@dimen/pad_30dp"
+                    android:layout_marginBottom="@dimen/pad_30dp"
+                    >
+
+                    <LinearLayout
+                        android:id="@+id/v1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/chat_bubble_green"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:paddingRight="50dp"
+                        android:paddingLeft="@dimen/pad_15dp"
+                        android:paddingTop="@dimen/pad_5dp"
+                        android:paddingBottom="@dimen/pad_5dp"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginTop="@dimen/pad_5dp">
+
+
+                        <TextView
+                            android:id="@+id/lbl2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="sd"
+                            android:textColor="@color/main_color_gray_dk"
+                            android:textSize="@dimen/txt_14sp"
+                            />
+
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Status"
+                    android:textColor="#000000"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:textSize="20dp"/>
+
+                <ListView
+                    android:id="@+id/listView"
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:divider="@android:color/white"
+                    android:dividerHeight="10dp"
+                    android:layout_weight="1"
+                    android:background="@color/white">
+                </ListView>
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>

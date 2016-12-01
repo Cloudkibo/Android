@@ -148,18 +148,18 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
 
         if(item.getTitle() == "Message Info"){
 
-            MessageInfo mInfoFrag = new MessageInfo();
+            GroupMessageInfo mInfoFrag = new GroupMessageInfo();
             Bundle bundle = new Bundle();
 
             bundle.putString("authtoken",authtoken);
             bundle.putString("message",convList.get(info.position).getMsg());
-            bundle.putString("status",convList.get(info.position).getStatus());
-            bundle.putString("date",convList.get(info.position).getDate());
+            bundle.putString("group_id", group_id);
+            bundle.putString("message_id",convList.get(info.position).getUniqueid());
 
             mInfoFrag.setArguments(bundle);
             getFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, mInfoFrag, "messageInfoFragmentTag")
-                    .addToBackStack("Message Info")
+                    .addToBackStack("GroupMessageInfo")
                     .commit();
         }
 
@@ -179,11 +179,9 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         String msg_unique_id = groupUtility.sendGroupMessage(group_id, message, authtoken);
         messages.add(message);
         names.add("");
-        try {
-            convList.add(new Conversation(message, db.getUserDetails().get("phone"), true,"", msg_unique_id, db.getGroupMessageStatus(msg_unique_id)));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+
+        convList.add(new Conversation(message, db.getUserDetails().get("phone"), true,"", msg_unique_id,"" ));
+
         groupAdapter.notifyDataSetChanged();
         my_message.setText("");
     }
@@ -212,7 +210,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                 if(!display_name.equals("")){
                     from = display_name;
                 }
-                convList.add(new Conversation(message, from, isSent, date, unique_id, db.getGroupMessageStatus(unique_id)));
+                convList.add(new Conversation(message, from, isSent, date, unique_id, ""));
             }
 
             if(groupAdapter != null && lv != null){
