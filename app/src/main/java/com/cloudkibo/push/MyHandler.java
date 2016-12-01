@@ -62,7 +62,7 @@ public class MyHandler extends NotificationsHandler {
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();
                     groupUtility.updateGroupToLocalDatabase(payload.getString("groupId"), payload.getString("group_name"),
                             accessToken.getToken(), payload.getString("senderId"), payload.getString("msg"));
-                    
+
                     DatabaseHandler db = new DatabaseHandler(ctx);
                     if(!db.isMute(payload.getString("groupId")))
                         sendNotification(payload.getString("group_name"), payload.getString("msg"));

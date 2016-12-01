@@ -79,6 +79,14 @@ public class CustomContactAdapter extends BaseAdapter {
         holder.single_contact = (LinearLayout) rowView.findViewById(R.id.single_contact);
         holder.tv.setText(result[position]);
         holder.phone = phones[position];
+
+        if(!selected_contacts.contains(holder.phone)){
+            holder.single_contact.setBackgroundColor(Color.parseColor("#F1F3EE"));
+            holder.tv.setTextColor(Color.BLACK);
+        }else {
+            holder.single_contact.setBackgroundColor(Color.parseColor("#2ecc71"));
+            holder.tv.setTextColor(Color.WHITE);
+        }
         rowView.setOnClickListener(new View.OnClickListener() {
 
             @Override

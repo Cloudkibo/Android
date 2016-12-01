@@ -210,6 +210,84 @@ public class KiboSyncService extends Service {
         }
     }
 
+    private void letServerKnowIfIleftGroup(){
+        // todo
+        Ion.with(getApplicationContext())
+                .load("https://api.cloudkibo.com/api/groupmessaginguser/mygroupsmembers")
+                .setHeader("kibo-token", authtoken)
+                .asJsonArray()
+                .setCallback(new FutureCallback<JsonArray>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonArray result) {
+                        // do stuff with the result or error
+                        if(e==null) {
+                            Log.d("KIBOSyncSERVICE", result.toString());
+
+                            for(int i=0; i<result.size(); i++){
+                                JsonObject group = result.get(i).getAsJsonObject().getAsJsonObject("group_unique_id");
+
+                                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+                                try {
+                                    String group_unique_id = group.get("unique_id").getAsString();
+                                    String member_phone = result.get(i).getAsJsonObject().get("member_phone").getAsString();
+                                    String display_name = result.get(i).getAsJsonObject().get("display_name").getAsString();
+                                    int isAdmin = result.get(i).getAsJsonObject().get("isAdmin").getAsString().equals("Yes") ? 1 : 0;
+                                    String membership_status = result.get(i).getAsJsonObject().get("membership_status").getAsString();
+                                    String date_join = result.get(i).getAsJsonObject().get("date_join").getAsString();
+                                    db.syncGroupMember(group_unique_id,member_phone,isAdmin,membership_status,date_join);
+                                }catch (NullPointerException exc){
+                                    exc.printStackTrace();
+                                }
+
+                            }
+
+                        }
+
+                        mListener.contactsLoaded();
+                    }
+                });
+    }
+
+    private void updateServerAboutGroups(){
+        // todo
+        Ion.with(getApplicationContext())
+                .load("https://api.cloudkibo.com/api/groupmessaginguser/mygroupsmembers")
+                .setHeader("kibo-token", authtoken)
+                .asJsonArray()
+                .setCallback(new FutureCallback<JsonArray>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonArray result) {
+                        // do stuff with the result or error
+                        if(e==null) {
+                            Log.d("KIBOSyncSERVICE", result.toString());
+
+                            for(int i=0; i<result.size(); i++){
+                                JsonObject group = result.get(i).getAsJsonObject().getAsJsonObject("group_unique_id");
+
+                                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+                                try {
+                                    String group_unique_id = group.get("unique_id").getAsString();
+                                    String member_phone = result.get(i).getAsJsonObject().get("member_phone").getAsString();
+                                    String display_name = result.get(i).getAsJsonObject().get("display_name").getAsString();
+                                    int isAdmin = result.get(i).getAsJsonObject().get("isAdmin").getAsString().equals("Yes") ? 1 : 0;
+                                    String membership_status = result.get(i).getAsJsonObject().get("membership_status").getAsString();
+                                    String date_join = result.get(i).getAsJsonObject().get("date_join").getAsString();
+                                    db.syncGroupMember(group_unique_id,member_phone,isAdmin,membership_status,date_join);
+                                }catch (NullPointerException exc){
+                                    exc.printStackTrace();
+                                }
+
+                            }
+
+                        }
+
+                        mListener.contactsLoaded();
+                    }
+                });
+    }
+
     public void sendMessageUsingAPI(final String contactPhone, final String msg, final String uniqueid){
         new AsyncTask<String, String, JSONObject>() {
 
@@ -586,6 +664,7 @@ public class KiboSyncService extends Service {
                     }
                 });
     }
+
 
     private void loadChatFromServer() {
 

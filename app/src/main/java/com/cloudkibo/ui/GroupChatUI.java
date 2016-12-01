@@ -78,9 +78,9 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         setHasOptionsMenu(true);
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         final GroupChatUI temp = this;
-        LinearLayout group_header = (LinearLayout) v.findViewById(R.id.group_header);
-        group_header.setVisibility(View.VISIBLE);
-        Button settings = (Button) v.findViewById(R.id.setting);
+//        LinearLayout group_header = (LinearLayout) v.findViewById(R.id.group_header);
+//        group_header.setVisibility(View.VISIBLE);
+//        Button settings = (Button) v.findViewById(R.id.setting);
         Bundle args = getArguments();
         if (args  != null){
             group_id = args.getString("group_id");
@@ -102,19 +102,19 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             }
         });
 
-        settings.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                GroupSetting nextFrag= new GroupSetting();
-                Bundle args = new Bundle();
-                args.putString("group_id", group_id);
-                nextFrag.setArguments(args);
-                temp.getFragmentManager().beginTransaction()
-                        .replace(R.id.content_frame, nextFrag,null)
-                        .addToBackStack("ChatList")
-                        .commit();
-            }
-        });
+//        settings.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                GroupSetting nextFrag= new GroupSetting();
+//                Bundle args = new Bundle();
+//                args.putString("group_id", group_id);
+//                nextFrag.setArguments(args);
+//                temp.getFragmentManager().beginTransaction()
+//                        .replace(R.id.content_frame, nextFrag,null)
+//                        .addToBackStack("ChatList")
+//                        .commit();
+//            }
+//        });
 
         lv.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
