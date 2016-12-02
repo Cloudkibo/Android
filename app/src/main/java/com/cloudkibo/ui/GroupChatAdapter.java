@@ -72,7 +72,7 @@ public class GroupChatAdapter extends BaseAdapter{
         holder.message.setText(convList.get(position).getMsg());
         holder.status.setText(convList.get(position).getStatus());
         if(!convList.get(position).getDate().equals("")){
-            holder.date.setText(convList.get(position).getDate().replaceAll("-", "/").split("/",2)[1]);
+            holder.date.setText(convList.get(position).getDate().split(" ")[1]);
         }
         if(convList.get(position).getSender_phone().equals("")){
             holder.contact_phone.setText("You");
