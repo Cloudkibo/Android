@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -137,13 +138,29 @@ public class AddMembers extends CustomFragment implements IFragmentName
             @Override
             protected JSONObject doInBackground(String... args) {
                 UserFunctions userFunctions = new UserFunctions();
+                try {
+                    DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+                    db.createGroupServerPending(group_id, group_name, getGroupCreationData(group_name, group_id).getJSONArray("members").toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 return userFunctions.sendCreateGroupToServer(getGroupCreationData(group_name, group_id), authtoken);
             }
 
             @Override
             protected void onPostExecute(JSONObject row) {
                 if(row != null){
-                    Toast.makeText(getContext(), row.toString(), Toast.LENGTH_LONG).show();
+                    if(row.has("Error")){
+                        Log.d("Add Members", "No Internet. Group information saved in pending groups table.");
+                    } else {
+                        DatabaseHandler db = new DatabaseHandler(context);
+                        try {
+                            db.deleteGroupServerPending(row.getString("unique_id"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Toast.makeText(getContext(), row.toString(), Toast.LENGTH_LONG).show();
+                    }
 //                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
                 }
             }

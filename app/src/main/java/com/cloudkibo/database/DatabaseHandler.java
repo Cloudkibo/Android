@@ -26,7 +26,7 @@ import com.cloudkibo.database.CloudKiboDatabaseContract.UserChat;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 16;
+    private static final int DATABASE_VERSION = 17;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -119,6 +119,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "is_mute INTEGER DEFAULT 0 "+ ")";
         db.execSQL(CREATE_GROUP);
 
+        String CREATE_GROUP_SERVER_PENDING = "CREATE TABLE GROUPSERVERPENDING ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "group_name TEXT, "
+                + "members TEXT, "
+                + "unique_id TEXT UNIQUE "+ ")";
+        db.execSQL(CREATE_GROUP_SERVER_PENDING);
+
         String CREATE_GROUP_MEMBER = "CREATE TABLE GROUPMEMBER ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "group_unique_id TEXT, "
@@ -203,6 +210,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS GROUPCHAT");
         db.execSQL("DROP TABLE IF EXISTS GROUPCHATSTATUS");
         db.execSQL("DROP TABLE IF EXISTS GROUPMEMBERSERVERPENDING");
+        db.execSQL("DROP TABLE IF EXISTS GROUPSERVERPENDING");
         db.execSQL("DROP TABLE IF EXISTS MUTESETTING");
         db.execSQL("DROP TABLE IF EXISTS CONTACT_IMAGE");
 
@@ -261,8 +269,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         args.put("muteTime", "");// values : 0 or 1
         args.put("unMuteTime", "");// values : 0 or 1
         db.insert("MUTESETTING", null, args);
+
         db.close(); // Closing database connection
+
     }
+
+    public void createGroupServerPending(String unique_id, String group_name, String members) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues information = new ContentValues();
+        information.put("group_name", group_name); // values : Group Name
+        information.put("unique_id", unique_id); // values : random string
+        information.put("members", members);// values : 0 or 1
+
+        // Inserting Row
+        db.insert("GROUPSERVERPENDING", null, information);
+
+        db.close(); // Closing database connection
+
+    }
+
     public void syncGroup(String unique_id, String group_name, int isMute, String date) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -388,6 +414,43 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
         // return user
         return groups;
+    }
+
+    public JSONArray getGroupsServerPending() throws JSONException {
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT group_name, unique_id, members FROM GROUPSERVERPENDING";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("group_name", cursor.getString(0));
+                contact.put("unique_id", cursor.getString(1));
+                contact.put("members", cursor.getString(2));
+                groups.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return groups;
+    }
+
+    public void deleteGroupServerPending(String group_unique_id){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String deleteQuery = "DELETE FROM GROUPSERVERPENDING WHERE unique_id='"+ group_unique_id +"'";
+
+        db.execSQL(deleteQuery);
+        db.close();
     }
 
     public void makeGroupAdmin(String group_unique_id, String member_phone) {

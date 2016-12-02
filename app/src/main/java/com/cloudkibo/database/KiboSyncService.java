@@ -32,6 +32,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonParser;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
@@ -46,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 
 public class KiboSyncService extends Service {
@@ -161,6 +163,22 @@ public class KiboSyncService extends Service {
 
             }
 
+            JSONArray unSyncedCreatedGroups = db.getGroupsServerPending();
+
+            for(int i=0; i<unSyncedCreatedGroups.length(); i++) {
+                JSONObject row = unSyncedCreatedGroups.getJSONObject(i);
+
+                JsonObject payload = new JsonObject();
+                payload.addProperty("group_name", row.getString("group_name"));
+                payload.addProperty("unique_id", row.getString("unique_id"));
+                String array = row.getString("members").replace("\\", "");
+                payload.add("members", new JsonParser().parse(array).getAsJsonArray());
+
+                updateServerAboutGroups(payload);
+
+
+            }
+
             JSONArray groupMembers = db.getGroupMembersServerPending();
 
             for (int i=0; i < groupMembers.length(); i++) {
@@ -249,41 +267,23 @@ public class KiboSyncService extends Service {
                 });
     }
 
-    private void updateServerAboutGroups(){
+    private void updateServerAboutGroups(JsonObject body){
         // todo
         Ion.with(getApplicationContext())
-                .load("https://api.cloudkibo.com/api/groupmessaginguser/mygroupsmembers")
+                .load("https://api.cloudkibo.com/api/groupmessaging/")
                 .setHeader("kibo-token", authtoken)
-                .asJsonArray()
-                .setCallback(new FutureCallback<JsonArray>() {
+                .setJsonObjectBody(body)
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
                     @Override
-                    public void onCompleted(Exception e, JsonArray result) {
+                    public void onCompleted(Exception e, JsonObject result) {
                         // do stuff with the result or error
                         if(e==null) {
-                            Log.d("KIBOSyncSERVICE", result.toString());
-
-                            for(int i=0; i<result.size(); i++){
-                                JsonObject group = result.get(i).getAsJsonObject().getAsJsonObject("group_unique_id");
-
-                                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-
-                                try {
-                                    String group_unique_id = group.get("unique_id").getAsString();
-                                    String member_phone = result.get(i).getAsJsonObject().get("member_phone").getAsString();
-                                    String display_name = result.get(i).getAsJsonObject().get("display_name").getAsString();
-                                    int isAdmin = result.get(i).getAsJsonObject().get("isAdmin").getAsString().equals("Yes") ? 1 : 0;
-                                    String membership_status = result.get(i).getAsJsonObject().get("membership_status").getAsString();
-                                    String date_join = result.get(i).getAsJsonObject().get("date_join").getAsString();
-                                    db.syncGroupMember(group_unique_id,member_phone,isAdmin,membership_status,date_join);
-                                }catch (NullPointerException exc){
-                                    exc.printStackTrace();
-                                }
-
-                            }
+                            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                            db.deleteGroupServerPending(result.getAsJsonPrimitive("unique_id").getAsString());
+                        } else {
 
                         }
-
-                        mListener.contactsLoaded();
                     }
                 });
     }
