@@ -632,11 +632,25 @@ public class MainActivity extends CustomActivity
                                     if(e == null) {
                                         try {
 
-                                            String filename = icon_upload_group_id + FileUtils.getExtension(selectedFilePath);
+                                            String filename = icon_upload_group_id;
                                             FileOutputStream outputStream;
                                             outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
                                             outputStream.write(com.cloudkibo.webrtc.filesharing.Utility.convertFileToByteArray(new File(selectedFilePath)));
                                             outputStream.close();
+
+                                            IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+                                            if(myFragment == null) return;
+                                            if(myFragment.getFragmentName().equals("GroupSetting"))
+                                            {
+                                                final GroupSetting myGroupSettingFragment = (GroupSetting) myFragment;
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        myGroupSettingFragment.loadDisplayImage(); //here you call the method of your current Fragment.
+                                                    }
+                                                });
+                                            }
                                         } catch (Exception e2) {
                                             e2.printStackTrace();
                                         }
