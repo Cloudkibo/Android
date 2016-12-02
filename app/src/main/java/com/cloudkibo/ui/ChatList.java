@@ -1,6 +1,9 @@
 package com.cloudkibo.ui;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -452,7 +455,14 @@ public class ChatList extends CustomFragment implements IFragmentName
 				}
 
 			}else{
-				viewHolder.profile.setImageResource(R.drawable.avatar);
+				//viewHolder.profile.setImageResource(R.drawable.avatar);
+				try {
+					File f = new File(getActivity().getApplicationContext().getFilesDir(), c.getTitle());
+					Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+					viewHolder.profile.setImageBitmap(b);
+				} catch (FileNotFoundException e){
+					e.printStackTrace();
+				}
 			}
 
 
