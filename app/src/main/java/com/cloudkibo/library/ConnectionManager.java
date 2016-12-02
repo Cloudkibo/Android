@@ -3,6 +3,8 @@ package com.cloudkibo.library;
 
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,6 +19,7 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.HTTP;
@@ -25,9 +28,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.android.internal.http.multipart.MultipartEntity;
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.SplashScreen;
 import com.google.gson.Gson;
+import com.koushikdutta.async.http.body.FileBody;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
@@ -294,8 +299,8 @@ public class ConnectionManager {
         // return JSON String
         return jArr;
 	}
-    
-    
+
+
     
     
     

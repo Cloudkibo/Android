@@ -74,7 +74,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 {
 
 	/** The Chat list. */
-	private ArrayList<ChatItem> chatList = new ArrayList<ChatItem>();
+	public static ArrayList<ChatItem> chatList;
 
 	private ChatAdapter adp;
 
@@ -93,9 +93,11 @@ public class ChatList extends CustomFragment implements IFragmentName
 		setHasOptionsMenu(true);
 
 		authtoken = getActivity().getIntent().getExtras().getString("authtoken");
+		if(chatList == null){
+			chatList =  new ArrayList<ChatItem>();
+		}
 		loadChatList();
-		Utility utility = new Utility();
-		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
+
 		ListView list = (ListView) v.findViewById(R.id.list);
 		adp = new ChatAdapter();
 		list.setAdapter(adp);
@@ -145,6 +147,9 @@ public class ChatList extends CustomFragment implements IFragmentName
 		adp.notifyDataSetChanged();
 
 		setTouchNClick(v.findViewById(R.id.btnNewChat));
+//		Utility utility = new Utility();
+//		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
+        loadChatList();
 		return v;
 	}
 
@@ -232,6 +237,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 //	}
 
 
+
 	public void loadChatList()
 	{
 		final DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
@@ -245,7 +251,13 @@ public class ChatList extends CustomFragment implements IFragmentName
 
                 try{
                     contact_phone.clear();
-                    JSONArray chats = db.getChatListWithImages();
+					JSONArray chats = new JSONArray();
+					if(chatList == null){
+						 chats = db.getChatList();
+					}else {
+						chats = db.getChatListWithImages();
+					}
+//					JSONArray chats = db.getChatList();
 //			JSONArray groups = db.getAllGroups();
                     JSONArray groups = db.getMyGroups(db.getUserDetails().get("phone"));
                     for (int i=0; i < chats.length(); i++) {

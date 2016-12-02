@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.Telephony;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -28,6 +29,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -56,11 +58,11 @@ public class ContactList extends CustomFragment implements IFragmentName
 {
 
 	/** The Note list. */
-	private ArrayList<ContactItem> contactList;
+	public static ArrayList<ContactItem> contactList;
 	//private AccountManager mAccountManager;
 	private String authtoken;
 	private ContactAdapter contactAdapter;
-	private ArrayList<String> contact_phone = new ArrayList<String>();
+	//private ArrayList<String> contact_phone = new ArrayList<String>();
 	UserFunctions userFunction;
 	ContactList  reference = this;
 
@@ -78,7 +80,9 @@ public class ContactList extends CustomFragment implements IFragmentName
 		userFunction = new UserFunctions();
 
 		authtoken = getActivity().getIntent().getExtras().getString("authtoken");
-
+		if(contactList == null){
+			contactList = new ArrayList<ContactItem>();
+		}
 
 
 		ListView list = (ListView) v.findViewById(R.id.list);
@@ -130,9 +134,9 @@ public class ContactList extends CustomFragment implements IFragmentName
 //				act1.syncContacts();
 //			}
 //		});
-
-		Utility utility = new Utility();
-		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
+//
+//		Utility utility = new Utility();
+//		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
 
 
 		return v;
@@ -553,14 +557,81 @@ public class ContactList extends CustomFragment implements IFragmentName
 		}*/
 	}
 
+    public void loadPartialContactList()
+    {
+
+        ArrayList<ContactItem> noteList = new ArrayList<ContactItem>();
+        contactList = new ArrayList<ContactItem>(noteList);
+        final DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+        //contact_phone.clear();
+
+        new AsyncTask<String, String, ArrayList<ContactItem>>() {
+
+            @Override
+            protected ArrayList<ContactItem> doInBackground(String... args) {
+
+                try {
+                    JSONArray jsonA = db.getContactsWithImages();
+
+
+//                    JSONArray jsonA = db.getContacts();
+//                    JSONArray jsonB = db.getContactsOnAddressBook();
+
+                    jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
+
+//
+                    ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
+                    String my_btmp;
+                    //This loop adds contacts to the display list which are on cloudkibo
+
+                    for (int i=0; i < jsonA.length(); i++) {
+                        JSONObject row = jsonA.getJSONObject(i);
+                        my_btmp = row.optString("image_uri");
+
+                        contactList1.add(new ContactItem(row.getString("_id"),
+                                row.getString("display_name"),
+                                "", // first name
+                                row.getString("on_cloudkibo"),
+                                row.getString("phone"),
+                                01,
+                                false, "",
+                                row.getString("status"),
+                                row.getString("detailsshared"),
+                                false
+                        ).setProfile(my_btmp));
+                    //    contact_phone.add(row.getString("phone"));
+                    }
+
+                    return contactList1;
+                } catch (JSONException e) {
+
+                    e.printStackTrace();
+
+                }
+
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<ContactItem> contactList1) {
+                if(contactList1 != null) {
+                    loadNewContacts(contactList1);
+                }
+            }
+
+        }.execute();
+
+    }
 
 	public void loadContactList()
 	{
 
-		ArrayList<ContactItem> noteList = new ArrayList<ContactItem>();
-		contactList = new ArrayList<ContactItem>(noteList);
+		//ArrayList<ContactItem> noteList = new ArrayList<ContactItem>();
+		//contactList = new ArrayList<ContactItem>(noteList);
 		final DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-		contact_phone.clear();
+		//contact_phone.clear();
+
 
 		new AsyncTask<String, String, ArrayList<ContactItem>>() {
 
@@ -569,12 +640,15 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 				try {
 					JSONArray jsonA = db.getContactsWithImages();
-					JSONArray jsonB = db.getContactsOnAddressBookWithImages();
+                    JSONArray jsonB = db.getContactsOnAddressBookWithImages();
+					ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
+
+//                    JSONArray jsonA = db.getContacts();
+//                    JSONArray jsonB = db.getContactsOnAddressBook();
 
 					jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
-					jsonB = UserFunctions.sortJSONArray(jsonB, "display_name");
+                    jsonB = UserFunctions.sortJSONArray(jsonB, "display_name");
 //
-					ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 					String my_btmp;
 					//This loop adds contacts to the display list which are on cloudkibo
 
@@ -593,9 +667,11 @@ public class ContactList extends CustomFragment implements IFragmentName
 								row.getString("detailsshared"),
 								false
 						).setProfile(my_btmp));
-						contact_phone.add(row.getString("phone"));
+					//	contact_phone.add(row.getString("phone"));
 					}
 
+//                    SystemClock.sleep(200);
+//                    contactList1.clear();
 
 //			//This Loop Adds Contacts to the display list which are not on cloudkibo
 					for (int i=0; i < jsonB.length(); i++) {
@@ -613,7 +689,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 								row.getString("detailsshared"),
 								false
 						).setProfile(my_btmp));
-						contact_phone.add(row.getString("phone"));
+						//contact_phone.add(row.getString("phone"));
 					}
 					return contactList1;
 				} catch (JSONException e) {
@@ -626,10 +702,15 @@ public class ContactList extends CustomFragment implements IFragmentName
 				return null;
 			}
 
+
+
 			@Override
 			protected void onPostExecute(ArrayList<ContactItem> contactList1) {
 				if(contactList1 != null) {
-					loadNewContacts(contactList1);
+					//loadNewContacts(contactList1);
+					contactList.clear();
+					contactList.addAll(contactList1);
+					contactAdapter.notifyDataSetChanged();
 				}
 			}
 
@@ -642,10 +723,6 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 			MainActivity act1 = (MainActivity)getActivity();
 			act1.askFriendsOnlineStatus();
-
-			contactList.clear();
-			contactList.addAll(contactList1);
-			contactAdapter.notifyDataSetChanged();
 		}catch(NullPointerException e){
 			e.printStackTrace();
 		}
@@ -917,7 +994,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 				sendIntent.setType("text/plain");
 				sendIntent.setData(Uri.parse("smsto:" +  c.getPhone()));
 				//sendIntent.putExtra(Intent.EXTRA_TEXT, "Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
-				sendIntent.putExtra("sms_body", "Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
+				sendIntent.putExtra("sms_body", "Join me on CloudKibo for video chat. Download from https://play.google.com/store/apps/details?id=com.cloudkibo&hl=en");
 
 				if (defaultSmsPackageName != null)// Can be null in case that there is no default, then the user would be able to choose
 				// any app that support this intent.
@@ -932,7 +1009,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 				Intent smsIntent = new Intent(android.content.Intent.ACTION_VIEW);
 				smsIntent.setType("vnd.android-dir/mms-sms");
 				smsIntent.putExtra("address", c.getPhone());
-				smsIntent.putExtra("sms_body","Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
+				smsIntent.putExtra("sms_body","Join me on CloudKibo for video chat. Download from https://play.google.com/store/apps/details?id=com.cloudkibo&hl=en");
 				startActivity(smsIntent);
 			}
 		}

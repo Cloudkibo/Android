@@ -179,6 +179,25 @@ public class KiboSyncService extends Service {
 
             }
 
+            JSONArray groupMembersRemove = db.getGroupMembersRemovePending();
+
+            for (int i=0; i < groupMembersRemove.length(); i++) {
+                JSONObject row = groupMembersRemove.getJSONObject(i);
+
+
+                //String member_phone[] = new String[]{row.getString("member_phone")};
+                try {
+                    JSONObject info = db.getGroupInfo(row.getString("group_unique_id"));
+                    String group_name = info.getString("group_name");
+//                            Toast.makeText(getContext(), "Add member: "+ groupUtility.getMemberData(group_name, group_id, member_phone).toString(), Toast.LENGTH_LONG).show();
+                    GroupUtility groupUtility = new GroupUtility(getApplicationContext());
+                    groupUtility.removeMember(row.getString("group_unique_id"),row.getString("member_phone"),authtoken);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
             JSONArray sentMesssagesForStatus = db.getSentGroupMessagesForSync(db.getUserDetails().get("phone"));
 
             JSONArray array = new JSONArray();
@@ -692,6 +711,10 @@ public class KiboSyncService extends Service {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                GroupUtility utility = new GroupUtility(getApplicationContext());
+                utility.syncGroupIcon(authtoken);
+
                 if(startWithAddressBook)
                     loadContactsFromAddressBook();
                 else
@@ -838,7 +861,9 @@ public class KiboSyncService extends Service {
                     @Override
                     public void onCompleted(Exception e, JsonArray result) {
                         // todo messages are already given to us by push.. the sync don't get any undelivered message.. needs to test more
+                        if(result != null){
                         Log.d("KiboSyncService", result.toString());
+                        }
 
                     }
                 });

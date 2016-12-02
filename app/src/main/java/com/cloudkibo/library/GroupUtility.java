@@ -180,6 +180,37 @@ public class GroupUtility {
 
     }
 
+    // @// TODO: 12/1/16 Sojharo I need to discuss the url of the downloadGroupIcon function
+    public void syncGroupIcon(final String auth_token){
+//            JSONObject data = new JSONObject(payload);
+        try {
+            JSONArray groups =   db.getMyGroups(db.getUserDetails().get("phone"));
+
+            for (int i = 0; i < groups.length(); i++) {
+                String group_id = groups.getJSONObject(i).getString("unique_id");
+                Ion.with(ctx)
+                        .load("https://api.cloudkibo.com/api/groupmessaging/downloadIcon")
+                        .setHeader("kibo-token", auth_token)
+                        .setBodyParameter("unique_id", group_id)
+                        .write(new File(ctx.getFilesDir().getPath() + "" + group_id))
+                        .setCallback(new FutureCallback<File>() {
+                            @Override
+                            public void onCompleted(Exception e, File file) {
+                                // download done...
+                                // do stuff with the File or error
+
+                                Log.d("GROUPFILE", "Downloaded icon");
+                            }
+                        });
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void updateGroupChat(final String payload, final String auth_token){
         try {
             JSONObject data = new JSONObject(payload);
@@ -332,7 +363,8 @@ public class GroupUtility {
             @Override
             protected void onPostExecute(JSONObject row) {
                 if(row != null){
-                    Toast.makeText(ctx, row.toString(), Toast.LENGTH_LONG).show();
+                    db.leaveGroupMemberRemovePending(group_id, member_phone);
+                    Toast.makeText(ctx, "Member Successfullly Removed", Toast.LENGTH_LONG).show();
 //                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
                 }
             }

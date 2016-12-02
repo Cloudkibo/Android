@@ -90,7 +90,17 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                         // TODO Auto-generated method stub
                         Toast.makeText(getContext(), phoneList[which], Toast.LENGTH_LONG).show();
                         DatabaseHandler db = new DatabaseHandler(getContext());
-                        db.addGroupMember(group_id,phoneList[which],0,"joined");
+                        try {
+                            JSONObject group_member = db.getGroupMemberDetail(group_id, phoneList[which]);
+                            if(group_member != null){
+                                db.updateGroupMembershipStatus(group_id,phoneList[which], "joined");
+                            }else {
+                                db.addGroupMember(group_id,phoneList[which],0,"joined");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                         db = new DatabaseHandler(getContext());
                         db.addGroupMemberServerPending(group_id, phoneList[which]);
                         lv.setAdapter(new CustomParticipantAdapter(inflater, getMembers(), getContext(),group_id));

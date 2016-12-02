@@ -93,14 +93,21 @@ public class Utility {
 
             final DatabaseHandler db = new DatabaseHandler(context);
         Toast.makeText(context,"Starting Background Task", Toast.LENGTH_LONG).show();
+
         new AsyncTask<String, String, String>() {
 
             @Override
             protected String doInBackground(String... args) {
-
-                for (int i=0; i < phone.size(); i++){
-                    db.addContactImage(phone.get(i),loadImageUriFromPhoneContact(phone.get(i), context));
+                final String phone_array[];
+                try {
+                    phone_array = db.getContactsPhone();
+                    for (int i=0; i < phone_array.length; i++){
+                        db.addContactImage(phone_array[i],loadImageUriFromPhoneContact(phone_array[i], context));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
+
 
                 return "Images Synced Successfully";
             }
