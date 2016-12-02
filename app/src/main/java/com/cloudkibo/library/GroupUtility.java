@@ -227,7 +227,9 @@ public class GroupUtility {
             }
             loadSpecificGroupChat(unique_id, auth_token);
         } catch (JSONException e) {
-            MainActivity.mainActivity.updateGroupUIChat();
+            if(MainActivity.isVisible){
+                MainActivity.mainActivity.updateGroupUIChat();
+            }
             e.printStackTrace();
         }
 
@@ -267,7 +269,9 @@ public class GroupUtility {
                 if(!row.optString("group_unique_id").equals("")){
                     sendNotification("Message Sent To Server", "Your message was sync to server");
                     db.updateGroupChatStatus(msg_unique_id,"sent");
-                    MainActivity.mainActivity.updateGroupUIChat();
+                    if(MainActivity.isVisible) {
+                        MainActivity.mainActivity.updateGroupUIChat();
+                    }
                 }else if(row.optString("Error").equals("No Internet")){
                     sendNotification("No Internet Connection", "Message will be sent as soon as the device gets connected to internet");
                 }else{
@@ -297,7 +301,9 @@ public class GroupUtility {
                 if(!row.optString("group_unique_id").equals("")){
                     sendNotification("Message Sent To Server", row.toString());
                     db.updateGroupChatStatus(unique_id,"sent");
-                    MainActivity.mainActivity.updateGroupUIChat();
+                    if(MainActivity.isVisible) {
+                        MainActivity.mainActivity.updateGroupUIChat();
+                    }
                 }else if(row.optString("Error").equals("No Internet")){
                     sendNotification("No Internet Connection", "Message will be sent as soon as the device gets connected to internet");
                 }else{
@@ -432,7 +438,9 @@ public class GroupUtility {
                    db.updateGroupChatStatus(msg_unique_id, status);
                    Toast.makeText(ctx, "Updated Chat Status to: " + status, Toast.LENGTH_LONG).show();
                }
-                MainActivity.mainActivity.updateGroupUIChat();
+               if(MainActivity.isVisible) {
+                   MainActivity.mainActivity.updateGroupUIChat();
+               }
         } catch (JSONException e) {
             e.printStackTrace();
         }
