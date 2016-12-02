@@ -149,6 +149,16 @@ public class KiboSyncService extends Service {
 
             }
 
+            JSONArray groupChats = db.getPendingGroupChat();
+            GroupUtility utility = new GroupUtility(getApplicationContext());
+            for (int i=0; i < groupChats.length(); i++) {
+                JSONObject row = groupChats.getJSONObject(i);
+                String group_id = row.getString("group_unique_id");
+                String msg = row.getString("msg");
+                String msg_unique_id = row.getString("unique_id");
+                utility.syncGroupMessage(group_id,msg,msg_unique_id,authtoken);
+            }
+
             JSONArray seenChats = db.getChatHistoryStatus();
 
             for (int i=0; i < seenChats.length(); i++) {
