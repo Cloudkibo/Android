@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -1580,5 +1582,6 @@ public class MainActivity extends CustomActivity
         });
 
     }
+
 
 }

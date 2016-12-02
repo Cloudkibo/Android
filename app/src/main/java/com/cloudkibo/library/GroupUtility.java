@@ -253,6 +253,33 @@ public class GroupUtility {
 
     }
 
+
+    public String syncGroupMessage(final String group_id, final String message, final String msg_unique_id, final  String auth_token){
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                return user.sendGroupChat(group_id,db.getUserDetails().get("phone"),"",message,db.getUserDetails().get("display_name"),msg_unique_id, auth_token);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                if(!row.optString("group_unique_id").equals("")){
+                    sendNotification("Message Sent To Server", "Your message was sync to server");
+                    db.updateGroupChatStatus(msg_unique_id,"sent");
+                    MainActivity.mainActivity.updateGroupUIChat();
+                }else if(row.optString("Error").equals("No Internet")){
+                    sendNotification("No Internet Connection", "Message will be sent as soon as the device gets connected to internet");
+                }else{
+                    sendNotification("Failed to Send Message", "Oops message was not synced due to some reason");
+                }
+            }
+
+        }.execute();
+
+        return msg_unique_id;
+    }
+
     public String sendGroupMessage(final String group_id, final  String message, final  String auth_token){
         final String unique_id = randomString();
         db.addGroupMessage(group_id,message, db.getUserDetails().get("phone"),"", unique_id);
@@ -267,10 +294,14 @@ public class GroupUtility {
 
             @Override
             protected void onPostExecute(JSONObject row) {
-                if(row != null){
+                if(!row.optString("group_unique_id").equals("")){
                     sendNotification("Message Sent To Server", row.toString());
                     db.updateGroupChatStatus(unique_id,"sent");
                     MainActivity.mainActivity.updateGroupUIChat();
+                }else if(row.optString("Error").equals("No Internet")){
+                    sendNotification("No Internet Connection", "Message will be sent as soon as the device gets connected to internet");
+                }else{
+                    sendNotification("Failed to Send Message", "Oops message was not sent due to some reason");
                 }
             }
 

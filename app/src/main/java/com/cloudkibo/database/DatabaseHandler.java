@@ -1577,6 +1577,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return chats;
     }
 
+    public JSONArray getPendingGroupChat() throws JSONException {
+            JSONArray contacts = new JSONArray();
+            String selectQuery = "SELECT  _from, type, msg, from_fullname, date, unique_id, group_unique_id  FROM GROUPCHAT, GROUPCHATSTATUS where unique_id = msg_unique_id AND status = 'pending'";
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            // Move to first row
+            cursor.moveToFirst();
+            if(cursor.getCount() > 0){
+
+                while (cursor.isAfterLast() != true) {
+                    JSONObject contact = new JSONObject();
+                    contact.put("from", cursor.getString(0));
+                    contact.put("type", cursor.getString(1));
+                    contact.put("msg", cursor.getString(2));
+                    contact.put("from_fullname", cursor.getString(3));
+                    contact.put("date", cursor.getString(4));
+                    contact.put("unique_id", cursor.getString(5));
+                    contact.put("group_unique_id", cursor.getString(6));
+                    contacts.put(contact);
+                    cursor.moveToNext();
+                }
+            }
+            cursor.close();
+            db.close();
+            // return user
+            return contacts;
+    }
+
     public JSONArray getChatHistoryStatus() throws JSONException {
         JSONArray chats = new JSONArray();
         String selectQuery = "SELECT uniqueid, status, fromperson FROM chat_history_sync";
