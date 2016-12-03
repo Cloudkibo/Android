@@ -8,6 +8,8 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -172,7 +174,8 @@ public class MainActivity extends CustomActivity
 
         authtoken = getIntent().getExtras().getString("authtoken");
         shouldSync = getIntent().getExtras().getBoolean("sync");
-
+       // this.updateChatList();
+        //this.updatePartialContactList();
         setupContainer();
         setupDrawer();
 
@@ -205,6 +208,8 @@ public class MainActivity extends CustomActivity
 
         startContactsObserverService();
 
+//        Utility utility = new Utility();
+//        utility.updateDatabaseWithContactImages(getApplicationContext(),new ArrayList<String>());
 
 
     }
@@ -584,6 +589,14 @@ public class MainActivity extends CustomActivity
         }
     }
 
+    public void createContact () {
+        Intent i = new Intent(Intent.ACTION_INSERT);
+        i.setType(ContactsContract.Contacts.CONTENT_TYPE);
+        if (Integer.valueOf(Build.VERSION.SDK) > 14)
+            i.putExtra("finishActivityOnSaveCompleted", true); // Fix for 4.0.3 +
+        startActivityForResult(i, 5123);
+    }
+
     String icon_upload_group_id = "";
     public void uploadIcon(String group_id){
         icon_upload_group_id = group_id;
@@ -625,11 +638,25 @@ public class MainActivity extends CustomActivity
                                     if(e == null) {
                                         try {
 
-                                            String filename = icon_upload_group_id + FileUtils.getExtension(selectedFilePath);
+                                            String filename = icon_upload_group_id;
                                             FileOutputStream outputStream;
                                             outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
                                             outputStream.write(com.cloudkibo.webrtc.filesharing.Utility.convertFileToByteArray(new File(selectedFilePath)));
                                             outputStream.close();
+
+                                            IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+                                            if(myFragment == null) return;
+                                            if(myFragment.getFragmentName().equals("GroupSetting"))
+                                            {
+                                                final GroupSetting myGroupSettingFragment = (GroupSetting) myFragment;
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        myGroupSettingFragment.loadDisplayImage(); //here you call the method of your current Fragment.
+                                                    }
+                                                });
+                                            }
                                         } catch (Exception e2) {
                                             e2.printStackTrace();
                                         }
@@ -697,6 +724,11 @@ public class MainActivity extends CustomActivity
                                     }
                                 }
                             });*/
+                }
+                break;
+            case 5123:
+                if(resultCode != -1){
+                    syncContacts();
                 }
                 break;
             case REQUEST_CHOOSER:
@@ -807,43 +839,7 @@ public class MainActivity extends CustomActivity
 
     }
 
-    public void updateChatStatus(String status, String uniqueid){
-        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-        db.updateChat(status, uniqueid);
-    }
 
-    public void resetSpecificChatHistorySync(String uniqueid){
-        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-        db.resetSpecificChatHistorySync(uniqueid);
-    }
-
-    public void addChatHistorySync(String uniqueid, String from){
-        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-        db.addChatSyncHistory("seen", uniqueid, from);
-    }
-
-    public void sendMessage(String contactPhone, String msg, String uniqueid){
-        socketService.sendMessage(contactPhone, msg, uniqueid);
-    }
-
-    public void sendPendingMessage(String contactPhone, String msg, String uniqueid){
-        //socketService.sendPendingMessage(contactPhone, msg, uniqueid);
-    }
-
-    public void sendMessageStatusUsingSocket(String status, String uniqueid, String sender){
-        if(socketService.isSocketConnected()) {
-            socketService.updateReceivedMessageStatusToServer(status, uniqueid, sender);
-        }
-    }
-
-    public Boolean isSocketConnected() {
-        return socketService.isSocketConnected();
-    }
-
-
-    public void askFriendsOnlineStatus(){
-        socketService.askFriendsOnlineStatus();
-    }
 
     public void getUserFromSQLiteDatabase(){
         DatabaseHandler db = new DatabaseHandler(getApplicationContext());
@@ -956,81 +952,15 @@ public class MainActivity extends CustomActivity
                 @Override
                 public void receiveSocketMessage(String type, String msg) {
 
-
                 }
 
                 @Override
                 public void receiveSocketArray(String type, final JSONArray body) {
 
-
-
-
-                    if(type.equals("theseareonline")){
-                        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-
-                        if(myFragment == null) return;
-                        if(myFragment.getFragmentName().equals("ContactList"))
-                        {
-                            final ContactList myContactListFragment = (ContactList) myFragment;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    myContactListFragment.setOnlineStatus(body); //here you call the method of your current Fragment.
-                                }
-                            });
-                        }
-
-                    }
-
                 }
 
                 @Override
                 public void receiveSocketJson(String type, final JSONObject body) {
-
-                    if(type.equals("im")){
-
-                        handleIncomingChatMessage(type, body);
-
-                    }
-                    else if(type.equals("updateSentMessageStatus")){
-
-                        handleIncomingStatusForSentMessage(type, body);
-
-                    }
-                    else if(type.equals("offline")){
-                        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-
-                        if(myFragment == null) return;
-                        if(myFragment.getFragmentName().equals("ContactList"))
-                        {
-                            final ContactList myContactListFragment = (ContactList) myFragment;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    myContactListFragment.setOfflineStatusIndividual(body); //here you call the method of your current Fragment.
-                                }
-                            });
-                        }
-                    }
-                    else if(type.equals("online")){
-                        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-
-                        if(myFragment == null) return;
-                        if(myFragment.getFragmentName().equals("ContactList"))
-                        {
-                            final ContactList myContactListFragment = (ContactList) myFragment;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    myContactListFragment.setOnlineStatusIndividual(body); //here you call the method of your current Fragment.
-                                }
-                            });
-                        }
-                    } else if(type.equals("joinedroom")){
-                        if(shouldSync){
-                            startSyncService();
-                        }
-                    }
 
                 }
 
@@ -1087,16 +1017,12 @@ public class MainActivity extends CustomActivity
 
                 @Override
                 public void sendPendingMessageUsingSocket(String contactPhone, String msg, String uniqueid) {
-                    if(socketService.isSocketConnected()) {
-                        sendPendingMessage(contactPhone, msg, uniqueid);
-                    }
+
                 }
 
                 @Override
                 public void sendMessageStatusUsingSocket(String contactPhone, String status, String uniqueid) {
-                    if(socketService.isSocketConnected()) {
-                        socketService.updateReceivedMessageStatusToServer(status, uniqueid, contactPhone);
-                    }
+
                 }
 
             });
@@ -1141,6 +1067,23 @@ public class MainActivity extends CustomActivity
                 @Override
                 public void run() {
                     myChatListFragment.loadChatList();
+                }
+            });
+
+        }
+    }
+
+    public void updatePartialContactList() {
+        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+        if(myFragment == null) return;
+        if(myFragment.getFragmentName().equals("ContactList"))
+        {
+            final ContactList myChatListFragment = (ContactList) myFragment;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    myChatListFragment.loadPartialContactList();
                 }
             });
 
@@ -1543,5 +1486,6 @@ public class MainActivity extends CustomActivity
         });
 
     }
+
 
 }

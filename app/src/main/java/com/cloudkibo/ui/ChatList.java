@@ -1,6 +1,9 @@
 package com.cloudkibo.ui;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -74,7 +77,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 {
 
 	/** The Chat list. */
-	private ArrayList<ChatItem> chatList = new ArrayList<ChatItem>();
+	public static ArrayList<ChatItem> chatList;
 
 	private ChatAdapter adp;
 
@@ -93,9 +96,11 @@ public class ChatList extends CustomFragment implements IFragmentName
 		setHasOptionsMenu(true);
 
 		authtoken = getActivity().getIntent().getExtras().getString("authtoken");
+		if(chatList == null){
+			chatList =  new ArrayList<ChatItem>();
+		}
 		loadChatList();
-		Utility utility = new Utility();
-		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
+
 		ListView list = (ListView) v.findViewById(R.id.list);
 		adp = new ChatAdapter();
 		list.setAdapter(adp);
@@ -145,6 +150,9 @@ public class ChatList extends CustomFragment implements IFragmentName
 		adp.notifyDataSetChanged();
 
 		setTouchNClick(v.findViewById(R.id.btnNewChat));
+//		Utility utility = new Utility();
+//		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
+        loadChatList();
 		return v;
 	}
 
@@ -235,6 +243,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 //	}
 
 
+
 	public void loadChatList()
 	{
 		final DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
@@ -248,7 +257,13 @@ public class ChatList extends CustomFragment implements IFragmentName
 
                 try{
                     contact_phone.clear();
-                    JSONArray chats = db.getChatListWithImages();
+					JSONArray chats = new JSONArray();
+					if(chatList == null){
+						 chats = db.getChatList();
+					}else {
+						chats = db.getChatListWithImages();
+					}
+//					JSONArray chats = db.getChatList();
 //			JSONArray groups = db.getAllGroups();
                     JSONArray groups = db.getMyGroups(db.getUserDetails().get("phone"));
                     for (int i=0; i < chats.length(); i++) {
@@ -443,7 +458,14 @@ public class ChatList extends CustomFragment implements IFragmentName
 				}
 
 			}else{
-				viewHolder.profile.setImageResource(R.drawable.avatar);
+				//viewHolder.profile.setImageResource(R.drawable.avatar);
+				try {
+					File f = new File(getActivity().getApplicationContext().getFilesDir(), c.getTitle());
+					Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+					viewHolder.profile.setImageBitmap(b);
+				} catch (FileNotFoundException e){
+					e.printStackTrace();
+				}
 			}
 
 

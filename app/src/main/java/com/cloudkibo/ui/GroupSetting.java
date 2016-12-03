@@ -3,6 +3,9 @@ package com.cloudkibo.ui;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -14,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Switch;
@@ -32,6 +36,10 @@ import com.cloudkibo.utils.IFragmentName;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -54,6 +62,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
     JSONArray participants;
     LayoutInflater inflater;
     ImageButton btnSelectIcon;
+    View view;
 
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -64,12 +73,14 @@ public class GroupSetting extends CustomFragment implements IFragmentName
     {
         View v = inflater.inflate(R.layout.group_info, null);
         setHasOptionsMenu(true);
+        this.view = v;
         this.inflater = inflater;
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
 //        String names[] = getMembers();
 //        Toast.makeText(getContext(), getMembers().length, Toast.LENGTH_LONG).show();
   //      Toast.makeText(getContext(), getMembers().toString(), Toast.LENGTH_LONG).show();
         setGroupInfo(v);
+        loadDisplayImage();
         Bundle args = getArguments();
         if (args  != null){
             group_id = args.getString("group_id");
@@ -100,7 +111,17 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                         // TODO Auto-generated method stub
                         Toast.makeText(getContext(), phoneList[which], Toast.LENGTH_LONG).show();
                         DatabaseHandler db = new DatabaseHandler(getContext());
-                        db.addGroupMember(group_id,phoneList[which],0,"joined");
+                        try {
+                            JSONObject group_member = db.getGroupMemberDetail(group_id, phoneList[which]);
+                            if(group_member != null){
+                                db.updateGroupMembershipStatus(group_id,phoneList[which], "joined");
+                            }else {
+                                db.addGroupMember(group_id,phoneList[which],0,"joined");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
                         db = new DatabaseHandler(getContext());
                         db.addGroupMemberServerPending(group_id, phoneList[which]);
                         lv.setAdapter(new CustomParticipantAdapter(inflater, getMembers(), getContext(),group_id));
@@ -250,7 +271,19 @@ public class GroupSetting extends CustomFragment implements IFragmentName
 //            Toast.makeText(getContext(), "Group Name is: " + group_info.toString() + " and group id is: " + group_id, Toast.LENGTH_LONG).show();
             ((TextView)v.findViewById(R.id.group_name)).setText(group_info.getString("group_name"));
             ((TextView)v.findViewById(R.id.creation_date)).setText(group_info.getString("date_creation"));
+
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadDisplayImage(){
+        ImageView dp = (ImageView) view.findViewById(R.id.display_ic);
+        try {
+            File f = new File(getActivity().getApplicationContext().getFilesDir(), group_id);
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            dp.setImageBitmap(b);
+        } catch (FileNotFoundException e){
             e.printStackTrace();
         }
     }

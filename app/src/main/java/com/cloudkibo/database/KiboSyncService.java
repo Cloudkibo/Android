@@ -151,6 +151,16 @@ public class KiboSyncService extends Service {
 
             }
 
+            JSONArray groupChats = db.getPendingGroupChat();
+            GroupUtility utility = new GroupUtility(getApplicationContext());
+            for (int i=0; i < groupChats.length(); i++) {
+                JSONObject row = groupChats.getJSONObject(i);
+                String group_id = row.getString("group_unique_id");
+                String msg = row.getString("msg");
+                String msg_unique_id = row.getString("unique_id");
+                utility.syncGroupMessage(group_id,msg,msg_unique_id,authtoken);
+            }
+
             JSONArray seenChats = db.getChatHistoryStatus();
 
             for (int i=0; i < seenChats.length(); i++) {
@@ -197,6 +207,25 @@ public class KiboSyncService extends Service {
 
             }
 
+            JSONArray groupMembersRemove = db.getGroupMembersRemovePending();
+
+            for (int i=0; i < groupMembersRemove.length(); i++) {
+                JSONObject row = groupMembersRemove.getJSONObject(i);
+
+
+                //String member_phone[] = new String[]{row.getString("member_phone")};
+                try {
+                    JSONObject info = db.getGroupInfo(row.getString("group_unique_id"));
+                    String group_name = info.getString("group_name");
+//                            Toast.makeText(getContext(), "Add member: "+ groupUtility.getMemberData(group_name, group_id, member_phone).toString(), Toast.LENGTH_LONG).show();
+                    GroupUtility groupUtility = new GroupUtility(getApplicationContext());
+                    groupUtility.removeMember(row.getString("group_unique_id"),row.getString("member_phone"),authtoken);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
             JSONArray sentMesssagesForStatus = db.getSentGroupMessagesForSync(db.getUserDetails().get("phone"));
 
             JSONArray array = new JSONArray();
@@ -226,45 +255,6 @@ public class KiboSyncService extends Service {
         }catch(JSONException e ){
             e.printStackTrace();
         }
-    }
-
-    private void letServerKnowIfIleftGroup(){
-        // todo
-        Ion.with(getApplicationContext())
-                .load("https://api.cloudkibo.com/api/groupmessaginguser/mygroupsmembers")
-                .setHeader("kibo-token", authtoken)
-                .asJsonArray()
-                .setCallback(new FutureCallback<JsonArray>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonArray result) {
-                        // do stuff with the result or error
-                        if(e==null) {
-                            Log.d("KIBOSyncSERVICE", result.toString());
-
-                            for(int i=0; i<result.size(); i++){
-                                JsonObject group = result.get(i).getAsJsonObject().getAsJsonObject("group_unique_id");
-
-                                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-
-                                try {
-                                    String group_unique_id = group.get("unique_id").getAsString();
-                                    String member_phone = result.get(i).getAsJsonObject().get("member_phone").getAsString();
-                                    String display_name = result.get(i).getAsJsonObject().get("display_name").getAsString();
-                                    int isAdmin = result.get(i).getAsJsonObject().get("isAdmin").getAsString().equals("Yes") ? 1 : 0;
-                                    String membership_status = result.get(i).getAsJsonObject().get("membership_status").getAsString();
-                                    String date_join = result.get(i).getAsJsonObject().get("date_join").getAsString();
-                                    db.syncGroupMember(group_unique_id,member_phone,isAdmin,membership_status,date_join);
-                                }catch (NullPointerException exc){
-                                    exc.printStackTrace();
-                                }
-
-                            }
-
-                        }
-
-                        mListener.contactsLoaded();
-                    }
-                });
     }
 
     private void updateServerAboutGroups(JsonObject body){
@@ -323,7 +313,6 @@ public class KiboSyncService extends Service {
                             DatabaseHandler db = new DatabaseHandler(getApplicationContext());
                             db.updateChat(row.getString("status"), row.getString("uniqueid"));
                             mListener.chatLoaded();
-                            //updateStatusSentMessage(row.getJSONObject("msg").getString("status"), row.getJSONObject("msg").getString("uniqueid"));
                         }
                     }
 
@@ -771,6 +760,10 @@ public class KiboSyncService extends Service {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+                GroupUtility utility = new GroupUtility(getApplicationContext());
+                utility.syncGroupIcon(authtoken);
+
                 if(startWithAddressBook)
                     loadContactsFromAddressBook();
                 else
@@ -917,8 +910,11 @@ public class KiboSyncService extends Service {
                     @Override
                     public void onCompleted(Exception e, JsonArray result) {
                         // todo messages are already given to us by push.. the sync don't get any undelivered message.. needs to test more
-                        if(result != null)
-                            Log.d("KiboSyncService", result.toString());
+
+                        if(result != null){
+                        Log.d("KiboSyncService", result.toString());
+                        }
+
 
                     }
                 });

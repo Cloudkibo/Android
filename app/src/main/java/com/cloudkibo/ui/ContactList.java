@@ -18,6 +18,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.provider.Telephony;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -30,6 +31,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -58,11 +60,11 @@ public class ContactList extends CustomFragment implements IFragmentName
 {
 
 	/** The Note list. */
-	private ArrayList<ContactItem> contactList;
+	public static ArrayList<ContactItem> contactList;
 	//private AccountManager mAccountManager;
 	private String authtoken;
 	private ContactAdapter contactAdapter;
-	private ArrayList<String> contact_phone = new ArrayList<String>();
+	//private ArrayList<String> contact_phone = new ArrayList<String>();
 	UserFunctions userFunction;
 	ContactList  reference = this;
 
@@ -76,11 +78,14 @@ public class ContactList extends CustomFragment implements IFragmentName
 		//mAccountManager = AccountManager.get(getActivity());
 
 		View v = inflater.inflate(R.layout.note, null);
+		setHasOptionsMenu(true);
 
 		userFunction = new UserFunctions();
 
 		authtoken = getActivity().getIntent().getExtras().getString("authtoken");
-
+		if(contactList == null){
+			contactList = new ArrayList<ContactItem>();
+		}
 
 
 		ListView list = (ListView) v.findViewById(R.id.list);
@@ -132,9 +137,10 @@ public class ContactList extends CustomFragment implements IFragmentName
 //				act1.syncContacts();
 //			}
 //		});
+//
+//		Utility utility = new Utility();
+//		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
 
-		Utility utility = new Utility();
-		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
 
 
 		return v;
@@ -155,6 +161,12 @@ public class ContactList extends CustomFragment implements IFragmentName
 			MainActivity act1 = (MainActivity) getActivity();
 
 			act1.syncContacts();
+			return true;
+		}
+		if(id == R.id.addContact){
+			MainActivity act1 = (MainActivity) getActivity();
+
+			act1.createContact();
 			return true;
 		}
 
@@ -186,31 +198,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 			act1.callThisPerson(contactList.get(info.position).getPhone(),
 					contactList.get(info.position).getUserName());
-         		/*
-         		// custom dialog
-      			final Dialog dialog = new Dialog(getActivity().getApplicationContext());
-      			dialog.setContentView(R.layout.call_dialog);
-      			dialog.setTitle("Calling");
 
-      			// set the custom dialog components - text, image and button
-      			TextView text = (TextView) dialog.findViewById(R.id.textDialog);
-      			text.setText("Making a call to "+ contactList.get(info.position).getUserName());
-      			ImageView image = (ImageView) dialog.findViewById(R.id.imageDialog);
-      			image.setImageResource(R.drawable.ic_launcher);
-
-      			Button dialogButton = (Button) dialog.findViewById(R.id.declineButton);
-      			// if button is clicked, close the custom dialog
-      			dialogButton.setOnClickListener(new OnClickListener() {
-      				@Override
-      				public void onClick(View v) {
-      					dialog.dismiss();
-      				}
-      			});
-
-      			dialog.show();*/
-
-
-			// Code to execute when clicked on This Item
 		}
 		else if(item.getTitle()=="Transfer File")
 		{
@@ -408,180 +396,81 @@ public class ContactList extends CustomFragment implements IFragmentName
 	public void onClick(View v)
 	{
 		super.onClick(v);
-		/*if (v.getId() == R.id.btnNewChat){
-
-			LayoutInflater layoutInflater = LayoutInflater.from(getActivity().getApplicationContext());
-
-			View promptView = layoutInflater.inflate(R.layout.prompt, null);
-
-			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
-
-			final EditText input = (EditText) promptView.findViewById(R.id.userInput);
-
-			// set prompts.xml to be the layout file of the alertdialog builder
-			alertDialogBuilder.setView(promptView);
-
-			// setup a dialog window
-			alertDialogBuilder
-					.setCancelable(false)
-					.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog, int id) {
-									// get user input and send it to server
-									Log.d("SOJHARO", "VALUE = "+ input.getText());
-
-									new AsyncTask<String, String, Boolean>() {
-
-										@Override
-										protected Boolean doInBackground(String... args) {
-
-											ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-											NetworkInfo netInfo = cm.getActiveNetworkInfo();
-											if (netInfo != null && netInfo.isConnected()) {
-												try {
-													URL url = new URL("http://www.google.com");
-													HttpURLConnection urlc = (HttpURLConnection) url
-															.openConnection();
-													urlc.setConnectTimeout(3000);
-													urlc.connect();
-													if (urlc.getResponseCode() == 200) {
-														return true;
-													}
-												} catch (MalformedURLException e1) {
-													e1.printStackTrace();
-												} catch (IOException e) {
-													e.printStackTrace();
-												}
-											}
-											return false;
-
-										}
-
-										@Override
-										protected void onPostExecute(Boolean th) {
-
-											if (th == true) {
-
-												new AsyncTask<String, String, JSONObject>() {
-
-													@Override
-													protected JSONObject doInBackground(String... args) {
-														JSONObject result = null;
-
-														result = userFunction.saveContact(input.getText().toString(), authtoken);
-
-														return result;
-
-													}
-
-													@Override
-													protected void onPostExecute(JSONObject json) {
-
-														try{
-
-															if(json.getString("status").equals("success")){
-
-																ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
-
-																if(json.isNull("msg")){
-																	Toast.makeText(getActivity().getApplicationContext(),
-																			"User not found on CloudKibo", Toast.LENGTH_SHORT)
-																			.show();
-																}
-																else{
-																	JSONArray jsonA = json.getJSONArray("msg");
-
-																	for (int i=0; i < jsonA.length(); i++) {
-																		JSONObject row = jsonA.getJSONObject(i);
-
-																		try{
-																			contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
-																					row.getJSONObject("contactid").getString("username"),
-																					row.getJSONObject("contactid").getString("firstname"),
-																					row.getJSONObject("contactid").getString("lastname"),
-																					row.getJSONObject("contactid").getString("phone"), 01,
-																					false, "",
-																					row.getJSONObject("contactid").getString("status"),
-																					row.getString("detailsshared"),
-																					row.getBoolean("unreadMessage")
-																					));
-																		}catch(JSONException e){
-																			contactList1.add(new ContactItem(row.getJSONObject("contactid").getString("_id"),
-																					row.getJSONObject("contactid").getString("username"),
-																					row.getJSONObject("contactid").getString("firstname"),
-																					row.getJSONObject("contactid").getString("lastname"),
-																					"nill", 01,
-																					false, "",
-																					row.getJSONObject("contactid").getString("status"),
-																					row.getString("detailsshared"),
-																					row.getBoolean("unreadMessage")
-																					));
-																		}
-
-
-																	}
-
-																	loadNewContacts(contactList1);
-																	insertContactsIntoDB(contactList1);
-																}
-
-
-
-															}
-															else{
-																Toast.makeText(getActivity().getApplicationContext(),
-																		json.getString("msg"), Toast.LENGTH_SHORT)
-																		.show();
-															}
-
-
-
-														} catch (JSONException e) {
-															// TODO Auto-generated catch block
-															e.printStackTrace();
-														}
-
-													}
-
-										        }.execute();
-
-											} else {
-												Toast.makeText(getActivity().getApplicationContext(),
-														"Could not connect to Internet", Toast.LENGTH_SHORT)
-														.show();
-											}
-										}
-
-							        }.execute();
-
-
-								}
-							})
-					.setNegativeButton("Cancel",
-							new DialogInterface.OnClickListener() {
-								public void onClick(DialogInterface dialog,	int id) {
-									dialog.cancel();
-								}
-							});
-
-			// create an alert dialog
-			AlertDialog alertD = alertDialogBuilder.create();
-
-			alertD.show();
-
-
-
-
-		}*/
 	}
 
+    public void loadPartialContactList()
+    {
+
+        ArrayList<ContactItem> noteList = new ArrayList<ContactItem>();
+        contactList = new ArrayList<ContactItem>(noteList);
+        final DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+        //contact_phone.clear();
+
+        new AsyncTask<String, String, ArrayList<ContactItem>>() {
+
+            @Override
+            protected ArrayList<ContactItem> doInBackground(String... args) {
+
+                try {
+                    JSONArray jsonA = db.getContactsWithImages();
+
+
+//                    JSONArray jsonA = db.getContacts();
+//                    JSONArray jsonB = db.getContactsOnAddressBook();
+
+                    jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
+
+//
+                    ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
+                    String my_btmp;
+                    //This loop adds contacts to the display list which are on cloudkibo
+
+                    for (int i=0; i < jsonA.length(); i++) {
+                        JSONObject row = jsonA.getJSONObject(i);
+                        my_btmp = row.optString("image_uri");
+
+                        contactList1.add(new ContactItem(row.getString("_id"),
+                                row.getString("display_name"),
+                                "", // first name
+                                row.getString("on_cloudkibo"),
+                                row.getString("phone"),
+                                01,
+                                false, "",
+                                row.getString("status"),
+                                row.getString("detailsshared"),
+                                false
+                        ).setProfile(my_btmp));
+                    //    contact_phone.add(row.getString("phone"));
+                    }
+
+                    return contactList1;
+                } catch (JSONException e) {
+
+                    e.printStackTrace();
+
+                }
+
+
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(ArrayList<ContactItem> contactList1) {
+
+            }
+
+        }.execute();
+
+    }
 
 	public void loadContactList()
 	{
 
-		ArrayList<ContactItem> noteList = new ArrayList<ContactItem>();
-		contactList = new ArrayList<ContactItem>(noteList);
+		//ArrayList<ContactItem> noteList = new ArrayList<ContactItem>();
+		//contactList = new ArrayList<ContactItem>(noteList);
 		final DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-		contact_phone.clear();
+		//contact_phone.clear();
+
 
 		new AsyncTask<String, String, ArrayList<ContactItem>>() {
 
@@ -590,12 +479,15 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 				try {
 					JSONArray jsonA = db.getContactsWithImages();
-					JSONArray jsonB = db.getContactsOnAddressBookWithImages();
+                    JSONArray jsonB = db.getContactsOnAddressBookWithImages();
+					ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
+
+//                    JSONArray jsonA = db.getContacts();
+//                    JSONArray jsonB = db.getContactsOnAddressBook();
 
 					jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
-					jsonB = UserFunctions.sortJSONArray(jsonB, "display_name");
+                    jsonB = UserFunctions.sortJSONArray(jsonB, "display_name");
 //
-					ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 					String my_btmp;
 					//This loop adds contacts to the display list which are on cloudkibo
 
@@ -614,9 +506,11 @@ public class ContactList extends CustomFragment implements IFragmentName
 								row.getString("detailsshared"),
 								false
 						).setProfile(my_btmp));
-						contact_phone.add(row.getString("phone"));
+					//	contact_phone.add(row.getString("phone"));
 					}
 
+//                    SystemClock.sleep(200);
+//                    contactList1.clear();
 
 //			//This Loop Adds Contacts to the display list which are not on cloudkibo
 					for (int i=0; i < jsonB.length(); i++) {
@@ -634,7 +528,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 								row.getString("detailsshared"),
 								false
 						).setProfile(my_btmp));
-						contact_phone.add(row.getString("phone"));
+						//contact_phone.add(row.getString("phone"));
 					}
 					return contactList1;
 				} catch (JSONException e) {
@@ -647,10 +541,15 @@ public class ContactList extends CustomFragment implements IFragmentName
 				return null;
 			}
 
+
+
 			@Override
 			protected void onPostExecute(ArrayList<ContactItem> contactList1) {
 				if(contactList1 != null) {
-					loadNewContacts(contactList1);
+					//loadNewContacts(contactList1);
+					contactList.clear();
+					contactList.addAll(contactList1);
+					contactAdapter.notifyDataSetChanged();
 				}
 			}
 
@@ -658,90 +557,8 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 	}
 
-	public void loadNewContacts(ArrayList<ContactItem> contactList1){
-		try{
 
-			MainActivity act1 = (MainActivity)getActivity();
-			act1.askFriendsOnlineStatus();
 
-			contactList.clear();
-			contactList.addAll(contactList1);
-			contactAdapter.notifyDataSetChanged();
-		}catch(NullPointerException e){
-			e.printStackTrace();
-		}
-	}
-
-	public void setOnlineStatus(JSONArray contacts){
-
-		for(int i=0; i<contactList.size(); i++)
-			contactList.get(i).setOnline(false);
-
-		try{
-			for(int j=0; j<contacts.length(); j++)
-				for(int i=0; i<contactList.size(); i++){
-					if(contactList.get(i).getPhone().equals(contacts.getJSONObject(j).getString("phone"))){
-						contactList.get(i).setOnline(true);
-						break;
-					}
-				}
-
-			contactAdapter.notifyDataSetChanged();
-
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-
-		}
-	}
-
-	public void setOfflineStatusIndividual(JSONObject individual){
-		for(int i=0; i<contactList.size(); i++){
-			try {
-				if(contactList.get(i).getPhone().equals(individual.getString("phone"))){
-					contactList.get(i).setOnline(false);
-					break;
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		contactAdapter.notifyDataSetChanged();
-	}
-
-	public void setOnlineStatusIndividual(JSONObject individual){
-		for(int i=0; i<contactList.size(); i++){
-			try {
-				if(contactList.get(i).getPhone().equals(individual.getString("phone"))){
-					contactList.get(i).setOnline(true);
-					break;
-				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		contactAdapter.notifyDataSetChanged();
-	}
-
-	public void insertContactsIntoDB(ArrayList<ContactItem> contactList1){
-		try{
-			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-
-			db.resetContactsTable();
-
-			for(int i=0; i<contactList1.size(); i++){
-				db.addContact(contactList1.get(i).firstName(),
-						contactList1.get(i).lastName(), contactList1.get(i).getPhone(),
-						contactList1.get(i).getUserName(), contactList1.get(i).getUserId(),
-						contactList1.get(i).details_shared(), contactList1.get(i).status());
-			}
-		}catch(NullPointerException e){
-			e.printStackTrace();
-		}
-	}
 
 	public String getContactsDetails(String address, Context context) {
 
@@ -938,7 +755,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 				sendIntent.setType("text/plain");
 				sendIntent.setData(Uri.parse("smsto:" +  c.getPhone()));
 				//sendIntent.putExtra(Intent.EXTRA_TEXT, "Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
-				sendIntent.putExtra("sms_body", "Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
+				sendIntent.putExtra("sms_body", "Join me on CloudKibo for video chat. Download from https://play.google.com/store/apps/details?id=com.cloudkibo&hl=en");
 
 				if (defaultSmsPackageName != null)// Can be null in case that there is no default, then the user would be able to choose
 				// any app that support this intent.
@@ -953,7 +770,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 				Intent smsIntent = new Intent(android.content.Intent.ACTION_VIEW);
 				smsIntent.setType("vnd.android-dir/mms-sms");
 				smsIntent.putExtra("address", c.getPhone());
-				smsIntent.putExtra("sms_body","Join me on CloudKibo for video chat. Download from https://www.cloudkibo.com");
+				smsIntent.putExtra("sms_body","Join me on CloudKibo for video chat. Download from https://play.google.com/store/apps/details?id=com.cloudkibo&hl=en");
 				startActivity(smsIntent);
 			}
 		}

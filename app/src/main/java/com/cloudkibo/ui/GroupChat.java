@@ -264,10 +264,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			adp.notifyDataSetChanged();
 
-			MainActivity act1 = (MainActivity) getActivity();
-
-			act1.updateChatStatus("seen", uniqueid);
-			//act1.sendMessageStatusUsingSocket("seen", uniqueid, from);
+			updateChatStatus("seen", uniqueid);
 			sendMessageStatusUsingAPI("seen", uniqueid, from);
 		} catch (ParseException e){
 			e.printStackTrace();
@@ -305,8 +302,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 					if (row != null) {
 						if(row.has("status")){
-							MainActivity act1 = (MainActivity) getActivity();
-							act1.updateChatStatus(row.getString("status"), row.getString("uniqueid"));
+							updateChatStatus(row.getString("status"), row.getString("uniqueid"));
 							updateStatusSentMessage(row.getString("status"), row.getString("uniqueid"));
 						}
 					}
@@ -345,20 +341,14 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					Boolean gotGoodServerResponse = false;
 					if (row != null) {
 						if(row.has("status")){
-							MainActivity act1 = (MainActivity) getActivity();
-							if(act1 != null) {
-								act1.resetSpecificChatHistorySync(row.getString("uniqueid"));
-								act1.updateChatStatus(row.getString("status"), row.getString("uniqueid"));
-								gotGoodServerResponse = true;
-							}
+							resetSpecificChatHistorySync(row.getString("uniqueid"));
+							updateChatStatus("seen", row.getString("uniqueid"));
+							gotGoodServerResponse = true;
 						}
 					}
 					if(!gotGoodServerResponse){
-						MainActivity act1 = (MainActivity) getActivity();
-						if(act1 != null) {
-							act1.updateChatStatus("seen", row.getString("uniqueid"));
-							act1.addChatHistorySync(row.getString("uniqueid"), row.getString("fromperson"));
-						}
+						updateChatStatus("seen", row.getString("uniqueid"));
+						addChatHistorySync(row.getString("uniqueid"), row.getString("fromperson"));
 					}
 
 				} catch (JSONException e) {
@@ -370,8 +360,40 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	}
 
 	public void updateStatusSentMessage(String status, String uniqueid){
-		loadConversationList();
+		for(int i=convList.size()-1; i>-1; i--){
+			if(convList.get(i).getUniqueid().equals(uniqueid)){
+				convList.get(i).setStatus(status);
+				break;
+			}
+		}
 		adp.notifyDataSetChanged();
+	}
+
+	public void updateChatStatus(String status, String uniqueid){
+		try {
+			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			db.updateChat(status, uniqueid);
+		} catch (NullPointerException e){
+			e.printStackTrace();
+		}
+	}
+
+	public void resetSpecificChatHistorySync(String uniqueid){
+		try {
+			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			db.resetSpecificChatHistorySync(uniqueid);
+		} catch (NullPointerException e){
+			e.printStackTrace();
+		}
+	}
+
+	public void addChatHistorySync(String uniqueid, String from){
+		try {
+			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			db.addChatSyncHistory("seen", uniqueid, from);
+		} catch (NullPointerException e){
+			e.printStackTrace();
+		}
 	}
 
 
@@ -384,8 +406,6 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		convList = new ArrayList<Conversation>();
 
 		loadChatFromDatabase();
-
-		//loadChatMessagesFromServer();
 
 	}
 
