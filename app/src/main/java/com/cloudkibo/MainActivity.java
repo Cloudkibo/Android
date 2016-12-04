@@ -298,6 +298,18 @@ public class MainActivity extends CustomActivity
             } else {
                 ToastNotify2("Can't refresh contacts without permission.");
             }
+        } else if (requestCode == 101) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                uploadChatAttachmentFileChooser();
+            } else {
+                ToastNotify2("Can't load file without permission.");
+            }
+        } else if (requestCode == 102) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                uploadIconChooser();
+            } else {
+                ToastNotify2("Can't load file without permission.");
+            }
         }
     }
 
@@ -600,6 +612,15 @@ public class MainActivity extends CustomActivity
     String icon_upload_group_id = "";
     public void uploadIcon(String group_id){
         icon_upload_group_id = group_id;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 102);
+            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            uploadIconChooser();
+        }
+    }
+
+    private void uploadIconChooser(){
         Intent getContentIntent = FileUtils.createGetImageContentIntent();
 
         Intent intent = Intent.createChooser(getContentIntent, "Select an image");
@@ -609,8 +630,17 @@ public class MainActivity extends CustomActivity
     String attachmentType = "";
     public void uploadChatAttachment(String type){
         attachmentType = type;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 101);
+            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            uploadChatAttachmentFileChooser();
+        }
+    }
+
+    private void uploadChatAttachmentFileChooser(){
         Intent getContentIntent = FileUtils.createGetImageContentIntent();
-        if(type.equals("document")) getContentIntent = FileUtils.createGetDocumentContentIntent();
+        if(attachmentType.equals("document")) getContentIntent = FileUtils.createGetDocumentContentIntent();
 
         Intent intent = Intent.createChooser(getContentIntent, "Select file");
         startActivityForResult(intent, 112);
