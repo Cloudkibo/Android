@@ -391,7 +391,7 @@ public class DisplayNameReg extends Activity
                 publishProgress(-1);
                 UserFunctions userFunction = new UserFunctions();
                 JSONObject json = userFunction.sendAddressBookPhoneContactsToServer(phones, authtoken);
-                Log.w("SERVER SENT RESPONSE", json.toString());ggggg
+                Log.w("SERVER SENT RESPONSE", json.toString());
                 return json;
             }
 
