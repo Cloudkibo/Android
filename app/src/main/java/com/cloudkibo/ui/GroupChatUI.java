@@ -64,6 +64,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     private ArrayList<String> messages = new ArrayList<String>();
     private ArrayList<String> names = new ArrayList<String>();
     private String group_id="";
+    private String group_name="";
     private GroupChatAdapter groupAdapter;
     private ArrayList<Conversation> convList = new ArrayList<Conversation>();
     /* (non-Javadoc)
@@ -84,6 +85,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         Bundle args = getArguments();
         if (args  != null){
             group_id = args.getString("group_id");
+            group_name = args.getString("group_name");
             Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
         }
         final EditText my_message = (EditText) v.findViewById(R.id.txt);
@@ -146,7 +148,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             nextFrag.setArguments(args);
             temp.getFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, nextFrag,null)
-                    .addToBackStack("ChatList")
+                    .addToBackStack(group_name)
                     .commit();
             return true;
         }
