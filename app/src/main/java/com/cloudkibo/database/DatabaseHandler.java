@@ -392,13 +392,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("member_phone", member_phone); //
         values.put("isAdmin", isAdmin);// values : 0 or 1
         values.put("membership_status", membership_status);// values : left or joined
-        values.put("date_joined", date_joined);// values : left or joined
+        values.put("date_joined", date_joined);
         // Inserting Row
         db.insert("GROUPMEMBER", null, values);
         db.close(); // Closing database connection
     }
 
-
+    public void resetGroupMembers(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from GROUPMEMBER");
+    }
 
     public void leaveGroup(String group_unique_id, String member_phone){
         SQLiteDatabase db = this.getWritableDatabase();

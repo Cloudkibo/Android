@@ -628,10 +628,12 @@ public class KiboSyncService extends Service {
                         if(e==null) {
                             Log.d("KIBOSyncSERVICE", result.toString());
 
+                            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                            db.resetGroupMembers();
                             for(int i=0; i<result.size(); i++){
                                 JsonObject group = result.get(i).getAsJsonObject().getAsJsonObject("group_unique_id");
 
-                                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
 
                                 try {
                                     String group_unique_id = group.get("unique_id").getAsString();
