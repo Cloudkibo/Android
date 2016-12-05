@@ -3,21 +3,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F1F3EE">
+    android:background="#F1F3EE"
+    android:orientation="vertical">
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:fillViewport="true">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             >
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="250dp">
+                android:layout_height="250dp"
+                >
 
                 <ImageView
                     android:layout_width="match_parent"
@@ -146,20 +148,6 @@
 
                 </LinearLayout>
             </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingRight="16dp"
-            android:paddingBottom="16dp"
-            android:paddingLeft="16dp"
-            android:layout_weight="1">
-
-
-
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -167,34 +155,56 @@
                 android:textColor="#000000"
                 android:textSize="20dp"/>
 
-            <ListView
-                android:id="@+id/listView"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:divider="@android:color/transparent"
-                android:dividerHeight="10dp"
-                android:layout_weight="1">
-            </ListView>
-
-
-
-
-
-
-
-            <Button
-                android:id="@+id/leave_group"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/rounded_button"
-                android:text="Leave Group"
-                android:backgroundTint="#90C43E"
-                android:textColor="#ffffff"
-                android:layout_marginTop="5dp"
-                />
-
         </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingRight="16dp"
+        android:paddingBottom="16dp"
+        android:paddingLeft="16dp"
+        android:layout_weight="1">
+
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Participants"
+            android:textColor="#000000"
+            android:textSize="20dp"/>
+
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="fill_parent"
+            android:layout_height="220dp"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="10dp"
+            >
+        </ListView>
+
+
+
+
+
+
+
+        <Button
+            android:id="@+id/leave_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_button"
+            android:text="Leave Group"
+            android:backgroundTint="#90C43E"
+            android:textColor="#ffffff"
+            android:layout_marginTop="5dp"
+            />
+
+    </LinearLayout>
+
 
 </LinearLayout>
