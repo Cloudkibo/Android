@@ -213,7 +213,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         messages.add(message);
         names.add("");
         try {
-            convList.add(new Conversation(message, db.getUserDetails().get("phone"), true,"", msg_unique_id, db.getGroupMessageStatus(msg_unique_id), "chat"));
+            convList.add(new Conversation(message, db.getUserDetails().get("phone"), true,"", msg_unique_id, db.getGroupMessageStatus(msg_unique_id, db.getUserDetails().get("phone")), "chat"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -246,7 +246,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                 if(!display_name.equals("")){
                     from = display_name;
                 }
-                convList.add(new Conversation(message, from, isSent, date, unique_id, db.getGroupMessageStatus(unique_id), type));
+                convList.add(new Conversation(message, from, isSent, date, unique_id, db.getGroupMessageStatus(unique_id, db.getUserDetails().get("phone")), type));
             }
 
             if(groupAdapter != null && lv != null){

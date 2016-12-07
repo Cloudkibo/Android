@@ -24,6 +24,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -288,7 +290,16 @@ public class GroupUtility {
     public String sendGroupMessage(final String group_id, final  String message, final  String auth_token){
         final String unique_id = randomString();
         db.addGroupMessage(group_id,message, db.getUserDetails().get("phone"),"", unique_id, "chat");
-        db.addGroupChatStatus(unique_id, "pending", db.getUserDetails().get("phone"));
+        try {
+            JSONArray group_members = db.getGroupMembers(group_id);
+            for (int i = 0; i < group_members.length(); i++)
+            {
+                JSONObject member = group_members.getJSONObject(i);
+                db.addGroupChatStatus(unique_id, "pending", member.getString("phone"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         Toast.makeText(ctx, "Local Database Updated Successfully", Toast.LENGTH_LONG).show();
         new AsyncTask<String, String, JSONObject>() {
 
@@ -301,7 +312,16 @@ public class GroupUtility {
             protected void onPostExecute(JSONObject row) {
                 if(!row.optString("group_unique_id").equals("")){
                     sendNotification("Message Sent To Server", row.toString());
-                    db.updateGroupChatStatus(unique_id,"sent");
+                    try {
+                        JSONArray group_members = db.getGroupMembers(group_id);
+                        for (int i = 0; i < group_members.length(); i++)
+                        {
+                            JSONObject member = group_members.getJSONObject(i);
+                            db.updateGroupChatStatus(unique_id, "sent", member.getString("phone"));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     if(MainActivity.isVisible) {
                         MainActivity.mainActivity.updateGroupUIChat();
                     }
@@ -434,9 +454,21 @@ public class GroupUtility {
                JSONObject body = new JSONObject(payload);
                 String msg_unique_id = body.getString("uniqueId");
                 String status = body.getString("status");
-                String current_status = db.getGroupMessageStatus(msg_unique_id);
+                String user_phone = body.getString("user_phone");
+                String current_status = db.getGroupMessageStatus(msg_unique_id,user_phone);
+                String read_time = "";
+                String delivered_time = "";
+               DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+               Date date = new Date();
                if(!current_status.equals("seen")){
-                   db.updateGroupChatStatus(msg_unique_id, status);
+                   if(status.equals("delivered")){
+                       delivered_time = dateFormat.format(date);
+                       db.updateGroupChatStatusDeliveredTime(msg_unique_id, status, user_phone, delivered_time);
+                   }
+                   if(status.equals("seen")){
+                       read_time = dateFormat.format(date);
+                       db.updateGroupChatStatusReadTime(msg_unique_id, status, user_phone, read_time);
+                   }
                    Toast.makeText(ctx, "Updated Chat Status to: " + status, Toast.LENGTH_LONG).show();
                }
                if(MainActivity.isVisible) {
