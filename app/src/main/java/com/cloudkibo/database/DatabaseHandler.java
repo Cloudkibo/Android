@@ -244,7 +244,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public String getContactImage(String phone){
-        String selectQuery = "SELECT image_uri FROM CONTACT_IMAGE WHERE phone = '" + phone + "'";
+        String selectQuery = "SELECT image_uri FROM contacts WHERE phone = '" + phone + "'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -254,6 +254,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
             while (cursor.isAfterLast() != true) {
                     return  cursor.getString(0);
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return null;
+    }
+
+    public String getContactName(String phone){
+        String selectQuery = "SELECT display_name FROM contacts WHERE phone = '" + phone + "'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+                return  cursor.getString(0);
             }
         }
         cursor.close();
