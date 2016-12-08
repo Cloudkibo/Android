@@ -118,7 +118,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                         DatabaseHandler db = new DatabaseHandler(getContext());
                         try {
                             JSONObject group_member = db.getGroupMemberDetail(group_id, phoneList[which]);
-                            if(group_member != null){
+                            if(group_member.getString("phone").equals(phoneList[which])){
                                 db.updateGroupMembershipStatus(group_id,phoneList[which], "joined");
                                 Toast.makeText(getContext(), "Member Status Updated", Toast.LENGTH_LONG).show();
                             }else {
@@ -235,6 +235,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
        try {
            participants = new JSONArray();
            participants = db.getGroupMembers(group_id);
+           Toast.makeText(getContext(), "New Contacts: "+ participants, Toast.LENGTH_LONG).show();
 //           participants.put(db.getMyDetailsInGroup(group_id));
 
 //           Toast.makeText(getContext(), "Custom Members "+participants.toString(), Toast.LENGTH_LONG).show();
@@ -314,6 +315,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                 contactList[i] = row.getString("display_name");
                 phoneList[i] = row.getString(CloudKiboDatabaseContract.Contacts.CONTACT_PHONE);
             }
+            Toast.makeText(getContext(), "Number of contacts in group are: " + phoneList.length, Toast.LENGTH_LONG).show();
             return contactList;
         } catch (JSONException e) {
             e.printStackTrace();
