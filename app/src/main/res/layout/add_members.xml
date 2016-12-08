@@ -62,7 +62,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/editText"
+            android:id="@+id/group_name"
             android:hint="Type a group subject here..."
             android:layout_gravity="center"
             />
