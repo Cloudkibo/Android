@@ -71,7 +71,9 @@ public class GroupSetting extends CustomFragment implements IFragmentName
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View v = inflater.inflate(R.layout.group_info, null);
+        ViewGroup v = (ViewGroup)inflater.inflate(R.layout.group_setting_header, lv, false);
+        ViewGroup footer = (ViewGroup)inflater.inflate(R.layout.group_setting_footer, lv, false);
+        View vg = inflater.inflate(R.layout.group_setting, null);
         setHasOptionsMenu(true);
         this.view = v;
         this.inflater = inflater;
@@ -85,13 +87,16 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         if (args  != null){
             group_id = args.getString("group_id");
         }
-        Button leave_group = (Button) v.findViewById(R.id.leave_group);
-        btnSelectIcon = (ImageButton) v.findViewById(R.id.selectIconBtn);
+        Button leave_group = (Button) footer.findViewById(R.id.leave_group);
+//        btnSelectIcon = (ImageButton) v.findViewById(R.id.selectIconBtn);
         Switch muteSwitch = (Switch) v.findViewById(R.id.switch1);
         try{
         muteSwitch.setChecked(new DatabaseHandler(getActivity().getApplicationContext()).isMute(group_id));
         } catch (JSONException e ){ e.printStackTrace();}
-        lv=(ListView) v.findViewById(R.id.listView);
+        lv=(ListView) vg.findViewById(R.id.listView);
+
+        lv.addHeaderView(v, null, false);
+        lv.addFooterView(footer, null, false);
         participants = getMembers();
         lv.setAdapter(new CustomParticipantAdapter(inflater, participants, getContext(),group_id));
         LinearLayout add_members = (LinearLayout) v.findViewById(R.id.add_members);
@@ -115,14 +120,14 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                             JSONObject group_member = db.getGroupMemberDetail(group_id, phoneList[which]);
                             if(group_member != null){
                                 db.updateGroupMembershipStatus(group_id,phoneList[which], "joined");
+                                Toast.makeText(getContext(), "Member Status Updated", Toast.LENGTH_LONG).show();
                             }else {
                                 db.addGroupMember(group_id,phoneList[which],0,"joined");
+                                Toast.makeText(getContext(), "Member Added", Toast.LENGTH_LONG).show();
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-                        db = new DatabaseHandler(getContext());
                         db.addGroupMemberServerPending(group_id, phoneList[which]);
                         lv.setAdapter(new CustomParticipantAdapter(inflater, getMembers(), getContext(),group_id));
                         GroupUtility groupUtility = new GroupUtility(getContext());
@@ -144,14 +149,14 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                 alert.show();
             }
         });
-
-        btnSelectIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MainActivity act1 = (MainActivity)getActivity();
-                act1.uploadIcon(group_id);
-            }
-        });
+//
+//        btnSelectIcon.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                MainActivity act1 = (MainActivity)getActivity();
+//                act1.uploadIcon(group_id);
+//            }
+//        });
 
         leave_group.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,8 +186,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         });
 
 
-        return v;
-
+        return vg;
     }
 
     @Override
@@ -190,13 +194,15 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         if (menu != null) {
             menu.findItem(R.id.archived).setVisible(false);
         }
-        inflater.inflate(R.menu.newchat, menu);  // Use filter.xml from step 1
+        inflater.inflate(R.menu.groupsetting, menu);  // Use filter.xml from step 1
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == R.id.archived){
+        if(id == R.id.settingMenu){
+            MainActivity act1 = (MainActivity)getActivity();
+            act1.uploadIcon(group_id);
             return true;
         }
 
@@ -269,8 +275,8 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         try {
             JSONObject group_info = db.getGroupInfo(group_id);
 //            Toast.makeText(getContext(), "Group Name is: " + group_info.toString() + " and group id is: " + group_id, Toast.LENGTH_LONG).show();
-            ((TextView)v.findViewById(R.id.group_name)).setText(group_info.getString("group_name"));
-            ((TextView)v.findViewById(R.id.creation_date)).setText(group_info.getString("date_creation"));
+//            ((TextView)v.findViewById(R.id.group_name)).setText(group_info.getString("group_name"));
+//            ((TextView)v.findViewById(R.id.creation_date)).setText(group_info.getString("date_creation"));
 
         } catch (JSONException e) {
             e.printStackTrace();

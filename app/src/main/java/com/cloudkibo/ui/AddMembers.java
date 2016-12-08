@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -63,6 +64,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
     private String group_id = "";
     private String group_name = "";
     CustomContactAdapter contactAdapter;
+    ArrayList<String> selected_contacts;
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
      */
@@ -77,33 +79,35 @@ public class AddMembers extends CustomFragment implements IFragmentName
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         db = new DatabaseHandler(getContext());
         gv=(GridView) v.findViewById(R.id.gridView1);
-        contactAdapter = new CustomContactAdapter(inflater, getContacts(), getPhone());
+        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
+        fab.bringToFront();
+        contactAdapter = new CustomContactAdapter(inflater, selected_contacts, getContext());
         gv.setAdapter(contactAdapter);
-        final AddMembers temp = this;
-        Button add_contacts = (Button) v.findViewById(R.id.add_contacts);
-        Bundle args = getArguments();
+//        final AddMembers temp = this;
+//        Button add_contacts = (Button) v.findViewById(R.id.add_contacts);
+//        Bundle args = getArguments();
+//
+//        if (args  != null){
+//            group_id = args.getString("group_id");
+//            group_name = args.getString("group_name");
+//            Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
+//        }
 
-        if (args  != null){
-            group_id = args.getString("group_id");
-            group_name = args.getString("group_name");
-            Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
-        }
-
-        add_contacts.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addMembers(contactAdapter.getSelected_contacts());
-                createGroupOnServer(group_name, group_id,authtoken);
-                GroupChatUI nextFrag= new GroupChatUI();
-                Bundle args = new Bundle();
-                args.putString("group_id", group_id);
-                nextFrag.setArguments(args);
-                temp.getFragmentManager().beginTransaction()
-                        .replace(R.id.content_frame, nextFrag,null)
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
+//        add_contacts.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                addMembers(contactAdapter.getSelected_contacts());
+//                createGroupOnServer(group_name, group_id,authtoken);
+//                GroupChatUI nextFrag= new GroupChatUI();
+//                Bundle args = new Bundle();
+//                args.putString("group_id", group_id);
+//                nextFrag.setArguments(args);
+//                temp.getFragmentManager().beginTransaction()
+//                        .replace(R.id.content_frame, nextFrag,null)
+//                        .addToBackStack(null)
+//                        .commit();
+//            }
+//        });
         return v;
     }
 
@@ -255,5 +259,9 @@ public class AddMembers extends CustomFragment implements IFragmentName
     public String getFragmentContactPhone()
     {
         return "About Chat";
+    }
+
+    public void setSelectedContacts(ArrayList<String> selected_contacts){
+        this.selected_contacts = selected_contacts;
     }
 }

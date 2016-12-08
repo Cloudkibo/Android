@@ -279,6 +279,11 @@ public class SplashScreen extends Activity
 			isRunning = false;
 
 			AccessToken accessToken = null;
+			Toast.makeText(
+					this,
+					"Getting Access Token.",
+					Toast.LENGTH_LONG)
+					.show();
 			try {
 				accessToken = AccountKit.getCurrentAccessToken();
 			} catch (Exception e) {
@@ -287,6 +292,11 @@ public class SplashScreen extends Activity
 
 			if (accessToken != null) {
 				//Handle Returning User
+                Toast.makeText(
+                        this,
+                        "Got Access Token.",
+                        Toast.LENGTH_LONG)
+                        .show();
 				if(isDevelopment) {
 					socket.disconnect();
 					socket.close();
