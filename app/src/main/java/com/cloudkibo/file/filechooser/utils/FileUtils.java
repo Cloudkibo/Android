@@ -535,7 +535,7 @@ public class FileUtils {
      * @return The intent for opening a file with Intent.createChooser()
      * @author paulburke
      */
-    public static Intent createGetImageContentIntent() {
+    public static Intent createGetContentIntentForImage() {
         // Implicitly allow the user to select a particular kind of data
         final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         // The MIME data type filter
@@ -545,7 +545,7 @@ public class FileUtils {
         return intent;
     }
 
-    public static Intent createGetDocumentContentIntent() {
+    public static Intent createGetContentIntentForDocument() {
         // Implicitly allow the user to select a particular kind of data
         final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         // The MIME data type filter
@@ -614,5 +614,19 @@ public class FileUtils {
             Log.e("FILESTORAGE", "Directory not created");
         }
         return file;
+    }
+
+    public static boolean isFreeSpaceAvailableForFileSize(String foldername, int fileSize){
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOWNLOADS), foldername);
+        if (!file.mkdirs()) {
+            Log.e("FILESTORAGE", "Directory not created");
+        }
+
+        if(fileSize < (file.getFreeSpace() - 10000000)){
+            return true;
+        }
+
+        return false;
     }
 }

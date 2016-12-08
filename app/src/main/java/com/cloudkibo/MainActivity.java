@@ -619,7 +619,7 @@ public class MainActivity extends CustomActivity
     }
 
     private void uploadIconChooser(){
-        Intent getContentIntent = FileUtils.createGetImageContentIntent();
+        Intent getContentIntent = FileUtils.createGetContentIntentForImage();
 
         Intent intent = Intent.createChooser(getContentIntent, "Select an image");
         startActivityForResult(intent, 111);
@@ -637,8 +637,8 @@ public class MainActivity extends CustomActivity
     }
 
     private void uploadChatAttachmentFileChooser(){
-        Intent getContentIntent = FileUtils.createGetImageContentIntent();
-        if(attachmentType.equals("document")) getContentIntent = FileUtils.createGetDocumentContentIntent();
+        Intent getContentIntent = FileUtils.createGetContentIntentForImage();
+        if(attachmentType.equals("document")) getContentIntent = FileUtils.createGetContentIntentForDocument();
 
         Intent intent = Intent.createChooser(getContentIntent, "Select file");
         startActivityForResult(intent, 112);
