@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.Manifest;
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -358,7 +356,7 @@ public class MainActivity extends CustomActivity
     protected void onDestroy() {
 
         if(isBound){
-            //unbindService(socketConnection);
+            unbindService(socketConnection);
             //stopSocketService();
         }
 
@@ -706,7 +704,7 @@ public class MainActivity extends CustomActivity
                     final Uri uri = data.getData();
                     final String selectedFilePath = FileUtils.getPath(getApplicationContext(), uri);
                     String fileType = attachmentType;
-                    if(com.cloudkibo.webrtc.filesharing.Utility.isExternalStorageWritable()){
+                    if(FileUtils.isExternalStorageWritable()){
                         try {
                             if (com.cloudkibo.webrtc.filesharing.Utility.isFreeSpaceAvailableForFileSize(
                                     Integer.parseInt(com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath).getString("size"))
@@ -824,6 +822,7 @@ public class MainActivity extends CustomActivity
      */
     private void setActionBarTitle()
     {
+        if(drawerLayout == null) setupDrawer();
         if (drawerLayout.isDrawerOpen(drawerLeft))
         {
             getActionBar().setTitle(R.string.app_name);
