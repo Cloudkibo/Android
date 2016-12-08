@@ -26,7 +26,7 @@ import com.cloudkibo.database.CloudKiboDatabaseContract.UserChat;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 17;
+    private static final int DATABASE_VERSION = 18;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -171,11 +171,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String CREATE_GROUP_CHAT_STATUS = "CREATE TABLE GROUPCHATSTATUS ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + "msg_unique_id TEXT UNIQUE, "
+                + "msg_unique_id TEXT, "
                 + "status TEXT, "
                 + "user_phone TEXT, "
                 + "read_date DATETIME, "
-                + "delivered_date DATETIME "
+                + "delivered_date DATETIME, "
+                + "unique (msg_unique_id, user_phone)"
                 + ")";
         db.execSQL(CREATE_GROUP_CHAT_STATUS);
 
@@ -244,7 +245,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public String getContactImage(String phone){
-        String selectQuery = "SELECT image_uri FROM CONTACT_IMAGE WHERE phone = '" + phone + "'";
+        String selectQuery = "SELECT image_uri FROM contacts WHERE phone = '" + phone + "'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -254,6 +255,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
             while (cursor.isAfterLast() != true) {
                     return  cursor.getString(0);
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return null;
+    }
+
+    public String getContactName(String phone){
+        String selectQuery = "SELECT display_name FROM contacts WHERE phone = '" + phone + "'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+                return  cursor.getString(0);
             }
         }
         cursor.close();
@@ -348,6 +368,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
+    public void addGroupChatStatus(String msg_unique_id, String status, String user_phone, String read_time, String delivered_time){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("msg_unique_id", msg_unique_id); // values : Group Name
+        values.put("status", status); //
+        values.put("user_phone", user_phone);
+        values.put("read_date", read_time);// values : 0 or 1
+        values.put("delivered_date", delivered_time);
+        // Inserting Row
+        db.insert("GROUPCHATSTATUS", null, values);
+        db.close(); // Closing database connection
+    }
+
 
     public void updateGroupMembershipStatus(String group_unique_id, String member_phone, String status){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -363,6 +396,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             args.put("status", status);
             db.update("GROUPCHATSTATUS",args,"msg_unique_id='"+msg_unique_id+"'",null);
             db.close(); // Closing database connection
+    }
+    public void updateGroupChatStatus(String msg_unique_id, String status, String phone){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put("status", status);
+        db.update("GROUPCHATSTATUS",args,"msg_unique_id='"+msg_unique_id+"' AND user_phone='"+ phone +"'",null);
+        db.close(); // Closing database connection
+    }
+    public void updateGroupChatStatusReadTime(String msg_unique_id, String status, String phone, String read_time){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put("status", status);
+        args.put("read_date", read_time);// values : 0 or 1
+        db.update("GROUPCHATSTATUS",args,"msg_unique_id='"+msg_unique_id+"' AND user_phone='"+ phone +"'",null);
+        db.close(); // Closing database connection
+    }
+    public void updateGroupChatStatusDeliveredTime(String msg_unique_id, String status, String phone, String delivered_time){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put("status", status);
+        args.put("delivered_date", delivered_time);
+        db.update("GROUPCHATSTATUS",args,"msg_unique_id='"+msg_unique_id+"' AND user_phone='"+ phone +"'",null);
+        db.close(); // Closing database connection
     }
 
     public void addGroupMemberServerPending(String group_unique_id, String member_phone) {
@@ -392,13 +448,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("member_phone", member_phone); //
         values.put("isAdmin", isAdmin);// values : 0 or 1
         values.put("membership_status", membership_status);// values : left or joined
-        values.put("date_joined", date_joined);// values : left or joined
+        values.put("date_joined", date_joined);
         // Inserting Row
         db.insert("GROUPMEMBER", null, values);
         db.close(); // Closing database connection
     }
 
-
+    public void resetGroupMembers(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from GROUPMEMBER");
+    }
 
     public void leaveGroup(String group_unique_id, String member_phone){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -565,6 +624,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 db.close();
                 // return user
             return "";
+    }
+
+    public String getGroupMessageStatus(String msg_unique_id, String user_phone) throws JSONException {
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT status FROM GROUPCHATSTATUS WHERE msg_unique_id='" + msg_unique_id +"' AND user_phone='" + user_phone +"'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                //                contact.put("status", cursor.getString(0));
+                //                contact.put("group_name", cursor.getString(1));
+                //                contact.put("is_mute", cursor.getString(2));
+                //                contact.put("date_creation", cursor.getString(3));
+                //                groups.put(contact);
+                return cursor.getString(0);
+                //                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return "";
     }
 
     public JSONArray getAllGroups() throws JSONException {
@@ -822,7 +910,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public JSONArray getMembersNotInGroup(String group_id) throws JSONException {
         JSONArray contacts = new JSONArray();
-        String selectQuery = "SELECT  * FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='true' AND contacts.phone NOT IN (SELECT  member_phone FROM GROUPMEMBER, "+ Contacts.TABLE_CONTACTS + "  where group_unique_id='"+ group_id + "' AND membership_status='joined')";
+        String selectQuery = "SELECT  * FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='true' AND contacts.phone NOT IN (SELECT  member_phone FROM GROUPMEMBER  where group_unique_id='"+ group_id + "' AND membership_status='joined')";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

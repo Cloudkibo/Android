@@ -64,6 +64,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     private ArrayList<String> messages = new ArrayList<String>();
     private ArrayList<String> names = new ArrayList<String>();
     private String group_id="";
+    private String group_name="";
     private GroupChatAdapter groupAdapter;
     private ArrayList<Conversation> convList = new ArrayList<Conversation>();
     /* (non-Javadoc)
@@ -84,6 +85,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         Bundle args = getArguments();
         if (args  != null){
             group_id = args.getString("group_id");
+            group_name = args.getString("group_name");
             Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
         }
         final EditText my_message = (EditText) v.findViewById(R.id.txt);
@@ -146,7 +148,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             nextFrag.setArguments(args);
             temp.getFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, nextFrag,null)
-                    .addToBackStack("ChatList")
+                    .addToBackStack(group_name)
                     .commit();
             return true;
         }
@@ -211,7 +213,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         messages.add(message);
         names.add("");
         try {
-            convList.add(new Conversation(message, db.getUserDetails().get("phone"), true,"", msg_unique_id, db.getGroupMessageStatus(msg_unique_id), "chat"));
+            convList.add(new Conversation(message, db.getUserDetails().get("phone"), true,"", msg_unique_id, db.getGroupMessageStatus(msg_unique_id, db.getUserDetails().get("phone")), "chat"));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -244,7 +246,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                 if(!display_name.equals("")){
                     from = display_name;
                 }
-                convList.add(new Conversation(message, from, isSent, date, unique_id, db.getGroupMessageStatus(unique_id), type));
+                convList.add(new Conversation(message, from, isSent, date, unique_id, db.getGroupMessageStatus(unique_id, db.getUserDetails().get("phone")), type));
             }
 
             if(groupAdapter != null && lv != null){

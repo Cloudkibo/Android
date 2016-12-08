@@ -525,7 +525,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			if(true){//(c.getType().equals("chat")) {
 				TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
-				lbl.setText(Utility.dateConversion(c.getDate().replaceAll("-", "/").split("/",2)[1].split(" ")[1]));
+				lbl.setText(c.getDate().replaceAll("-", "/").split(" ")[0]+" "+Utility.dateConversion(c.getDate().replaceAll("-", "/").split("/",2)[1].split(" ")[1]));
 				TextView phone = (TextView) v.findViewById(R.id.phone);
 				phone.setVisibility(View.GONE);
 
