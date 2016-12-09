@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cloudkibo"
     android:hardwareAccelerated="true"
-    android:versionCode="85"
+    android:versionCode="86"
     android:versionName="1.1"
     android:installLocation="preferExternal">
 
@@ -202,10 +202,12 @@
         <service
             android:name=".database.ContactService"
             android:exported="false"></service>
+
         <service
             android:name=".webrtc.conference.FileTransferService"
             android:enabled="true"
             android:exported="true"></service>
+
         <service
             android:name=".database.KiboSyncService"
             android:enabled="true"
