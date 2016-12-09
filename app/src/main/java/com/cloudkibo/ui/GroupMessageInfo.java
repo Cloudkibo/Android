@@ -167,9 +167,7 @@ public class GroupMessageInfo extends CustomFragment implements IFragmentName {
         DatabaseHandler db = new DatabaseHandler(getContext());
         try {
             JSONObject group_info = db.getGroupInfo(group_id);
-//            Toast.makeText(getContext(), "Group Name is: " + group_info.toString() + " and group id is: " + group_id, Toast.LENGTH_LONG).show();
-            ((TextView)v.findViewById(R.id.group_name)).setText(group_info.getString("group_name"));
-            ((TextView)v.findViewById(R.id.creation_date)).setText(group_info.getString("date_creation"));
+//
             ((TextView)v.findViewById(R.id.lbl2)).setText(message);
         } catch (JSONException e) {
             e.printStackTrace();

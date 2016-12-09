@@ -1,4 +1,4 @@
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools">
 
     <style name="AppBaseTheme" parent="android:Theme.Holo.Light.DarkActionBar">
     </style>
@@ -8,9 +8,14 @@
     </style>
 
     <style name="AppLoginTheme" parent="Theme.AccountKit" />
-    
-     
-     <style name="editext_graybg" parent="android:Widget.EditText">
+
+    <style name="FAB" parent="Theme.AppCompat.Light">
+
+    </style>
+
+
+
+    <style name="editext_graybg" parent="android:Widget.EditText">
           <item name="android:background">@drawable/editext_bg_gray</item>
           <item name="android:drawablePadding">@dimen/pad_10dp</item>
           <item name="android:ems">10</item>

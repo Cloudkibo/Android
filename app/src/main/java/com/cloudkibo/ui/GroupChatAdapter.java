@@ -60,6 +60,7 @@ public class GroupChatAdapter extends BaseAdapter{
     public View getView(final int position, View convertView, ViewGroup parent) {
         // TODO Auto-generated method stub
         Holder holder=new Holder();
+
         View rowView;
         if (convList.get(position).isSent())
             rowView = inflater.inflate(R.layout.chat_item_sent, null);
@@ -72,7 +73,7 @@ public class GroupChatAdapter extends BaseAdapter{
         holder.message.setText(convList.get(position).getMsg());
         holder.status.setText(convList.get(position).getStatus());
         if(!convList.get(position).getDate().equals("")){
-            holder.date.setText(convList.get(position).getDate().replaceAll("-", "/").split("/",2)[1]);
+            holder.date.setText(convList.get(position).getDate().split(" ")[1]);
         }
         if(convList.get(position).getSender_phone().equals("")){
             holder.contact_phone.setText("You");
@@ -86,6 +87,7 @@ public class GroupChatAdapter extends BaseAdapter{
                 // TODO Auto-generated method stub
                 //Toast.makeText(inflater.getContext(), "item clicked", Toast.LENGTH_SHORT).show();
             }
+
         });
 
         rowView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -94,6 +96,7 @@ public class GroupChatAdapter extends BaseAdapter{
                 return false;
             }
         });
+
         return rowView;
     }
 } 

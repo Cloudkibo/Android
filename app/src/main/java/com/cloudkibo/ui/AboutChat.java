@@ -2,6 +2,9 @@ package com.cloudkibo.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -26,8 +29,27 @@ public class AboutChat extends CustomFragment implements IFragmentName
 			Bundle savedInstanceState)
 	{
 		View v = inflater.inflate(R.layout.about, null);
+		setHasOptionsMenu(true);
 
 		return v;
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		if (menu != null) {
+			menu.findItem(R.id.archived).setVisible(false);
+		}
+		inflater.inflate(R.menu.newchat, menu);  // Use filter.xml from step 1
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if(id == R.id.archived){
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 	
 	 public String getFragmentName()

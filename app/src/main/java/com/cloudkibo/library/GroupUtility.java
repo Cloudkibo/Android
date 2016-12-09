@@ -9,18 +9,13 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.os.EnvironmentCompat;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.SplashScreen;
-import com.cloudkibo.database.CloudKiboDatabaseContract;
 import com.cloudkibo.database.DatabaseHandler;
-import com.cloudkibo.ui.ChatList;
-import com.cloudkibo.ui.GroupChat;
-import com.cloudkibo.utils.IFragmentName;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
@@ -29,6 +24,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -48,7 +45,7 @@ public class GroupUtility {
         db = new DatabaseHandler(ctx);
     }
 
-    public void updateGroupToLocalDatabase(final String group_id, final String group_name,  final String auth_token){
+    public void updateGroupToLocalDatabase(final String group_id, final String group_name, final String auth_token, final String sender_id, final String msg){
 
         db.createGroup(group_id, group_name, 0);
 
@@ -83,8 +80,14 @@ public class GroupUtility {
                             if(MainActivity.isVisible){
                                 MainActivity.mainActivity.updateChatList();
                             }
-
                         }
+                        String message = msg;
+                        String member_phone = sender_id;
+                        String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+                        uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+                        uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+
+                        db.addGroupMessage(group_id,message,member_phone,member_phone,uniqueid, "log");
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -108,7 +111,7 @@ public class GroupUtility {
                 @Override
                 protected void onPostExecute(JSONObject row) {
                     if(row != null){
-                        sendNotification("Message Status Update To Seen", row.toString());
+                        sendNotification("Updated message status on server to seen", row.toString());
                     }
                 }
 
@@ -180,6 +183,37 @@ public class GroupUtility {
 
     }
 
+    // @// TODO: 12/1/16 Sojharo I need to discuss the url of the downloadGroupIcon function
+    public void syncGroupIcon(final String auth_token){
+//            JSONObject data = new JSONObject(payload);
+        try {
+            JSONArray groups =   db.getMyGroups(db.getUserDetails().get("phone"));
+
+            for (int i = 0; i < groups.length(); i++) {
+                String group_id = groups.getJSONObject(i).getString("unique_id");
+                Ion.with(ctx)
+                        .load("https://api.cloudkibo.com/api/groupmessaging/downloadIcon")
+                        .setHeader("kibo-token", auth_token)
+                        .setBodyParameter("unique_id", group_id)
+                        .write(new File(ctx.getFilesDir().getPath() + "" + group_id))
+                        .setCallback(new FutureCallback<File>() {
+                            @Override
+                            public void onCompleted(Exception e, File file) {
+                                // download done...
+                                // do stuff with the File or error
+
+                                Log.d("GROUPFILE", "Downloaded icon");
+                            }
+                        });
+            }
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
     public void updateGroupChat(final String payload, final String auth_token){
         try {
             JSONObject data = new JSONObject(payload);
@@ -189,14 +223,16 @@ public class GroupUtility {
             String group_id = data.getString("groupId");
             sendNotification(message, message);
 
-            db.addGroupMessage(group_id,message,member_phone,member_phone,unique_id);
+            db.addGroupMessage(group_id,message,member_phone,member_phone,unique_id, "chat");
             if(MainActivity.isVisible){
                 updateMessageStatusToSeen(unique_id, auth_token);
                 MainActivity.mainActivity.updateGroupUIChat();
             }
             loadSpecificGroupChat(unique_id, auth_token);
         } catch (JSONException e) {
-            MainActivity.mainActivity.updateGroupUIChat();
+            if(MainActivity.isVisible){
+                MainActivity.mainActivity.updateGroupUIChat();
+            }
             e.printStackTrace();
         }
 
@@ -222,10 +258,48 @@ public class GroupUtility {
 
     }
 
+
+    public String syncGroupMessage(final String group_id, final String message, final String msg_unique_id, final  String auth_token){
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                return user.sendGroupChat(group_id,db.getUserDetails().get("phone"),"",message,db.getUserDetails().get("display_name"),msg_unique_id, auth_token);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                if(!row.optString("group_unique_id").equals("")){
+                    sendNotification("Message Sent To Server", "Your message was sync to server");
+                    db.updateGroupChatStatus(msg_unique_id,"sent");
+                    if(MainActivity.isVisible) {
+                        MainActivity.mainActivity.updateGroupUIChat();
+                    }
+                }else if(row.optString("Error").equals("No Internet")){
+                    sendNotification("No Internet Connection", "Message will be sent as soon as the device gets connected to internet");
+                }else{
+                    sendNotification("Failed to Send Message", "Oops message was not synced due to some reason");
+                }
+            }
+
+        }.execute();
+
+        return msg_unique_id;
+    }
+
     public String sendGroupMessage(final String group_id, final  String message, final  String auth_token){
         final String unique_id = randomString();
-        db.addGroupMessage(group_id,message, db.getUserDetails().get("phone"),"", unique_id);
-        db.addGroupChatStatus(unique_id, "pending", db.getUserDetails().get("phone"));
+        db.addGroupMessage(group_id,message, db.getUserDetails().get("phone"),"", unique_id, "chat");
+        try {
+            JSONArray group_members = db.getGroupMembers(group_id);
+            for (int i = 0; i < group_members.length(); i++)
+            {
+                JSONObject member = group_members.getJSONObject(i);
+                db.addGroupChatStatus(unique_id, "pending", member.getString("phone"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         Toast.makeText(ctx, "Local Database Updated Successfully", Toast.LENGTH_LONG).show();
         new AsyncTask<String, String, JSONObject>() {
 
@@ -236,10 +310,25 @@ public class GroupUtility {
 
             @Override
             protected void onPostExecute(JSONObject row) {
-                if(row != null){
+                if(!row.optString("group_unique_id").equals("")){
                     sendNotification("Message Sent To Server", row.toString());
-                    db.updateGroupChatStatus(unique_id,"sent");
-                    MainActivity.mainActivity.updateGroupUIChat();
+                    try {
+                        JSONArray group_members = db.getGroupMembers(group_id);
+                        for (int i = 0; i < group_members.length(); i++)
+                        {
+                            JSONObject member = group_members.getJSONObject(i);
+                            db.updateGroupChatStatus(unique_id, "sent", member.getString("phone"));
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    if(MainActivity.isVisible) {
+                        MainActivity.mainActivity.updateGroupUIChat();
+                    }
+                }else if(row.optString("Error").equals("No Internet")){
+                    sendNotification("No Internet Connection", "Message will be sent as soon as the device gets connected to internet");
+                }else{
+                    sendNotification("Failed to Send Message", "Oops message was not sent due to some reason");
                 }
             }
 
@@ -332,7 +421,8 @@ public class GroupUtility {
             @Override
             protected void onPostExecute(JSONObject row) {
                 if(row != null){
-                    Toast.makeText(ctx, row.toString(), Toast.LENGTH_LONG).show();
+                    db.leaveGroupMemberRemovePending(group_id, member_phone);
+                    Toast.makeText(ctx, "Member Successfullly Removed", Toast.LENGTH_LONG).show();
 //                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
                 }
             }
@@ -364,12 +454,27 @@ public class GroupUtility {
                JSONObject body = new JSONObject(payload);
                 String msg_unique_id = body.getString("uniqueId");
                 String status = body.getString("status");
-                //String current_status = db.getGroupMessageStatus(msg_unique_id);
-              // if(!current_status.equals("seen")){
-                   db.updateGroupChatStatus(msg_unique_id, status);
-                   Toast.makeText(ctx, "Updated Chat Status to Seen", Toast.LENGTH_LONG).show();
-               //}
-                MainActivity.mainActivity.updateGroupUIChat();
+
+                String user_phone = body.getString("user_phone");
+                String current_status = db.getGroupMessageStatus(msg_unique_id,user_phone).getJSONObject(0).getString("status");
+                String read_time = "";
+                String delivered_time = "";
+               DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+               Date date = new Date();
+               if(!current_status.equals("seen")){
+                   if(status.equals("delivered")){
+                       delivered_time = dateFormat.format(date);
+                       db.updateGroupChatStatusDeliveredTime(msg_unique_id, status, user_phone, delivered_time);
+                   }
+                   if(status.equals("seen")){
+                       read_time = dateFormat.format(date);
+                       db.updateGroupChatStatusReadTime(msg_unique_id, status, user_phone, read_time);
+                   }
+                   Toast.makeText(ctx, "Updated Chat Status to: " + status, Toast.LENGTH_LONG).show();
+               }
+               if(MainActivity.isVisible) {
+                   MainActivity.mainActivity.updateGroupUIChat();
+               }
         } catch (JSONException e) {
             e.printStackTrace();
         }

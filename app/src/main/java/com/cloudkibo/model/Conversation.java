@@ -26,6 +26,14 @@ public class Conversation
 
 	private String sender_name;
 
+	private String type;
+
+	private String file_type;
+
+	private String uri;
+
+	private Boolean onLocal;
+
 	/**
 	 * Instantiates a new conversation.
 	 *
@@ -35,7 +43,7 @@ public class Conversation
 	 * @param isSuccess the is success
 	 */
 	public Conversation(String msg, String date, boolean isSent,
-			boolean isSuccess, String status, String uniqueid)
+			boolean isSuccess, String status, String uniqueid, String type)
 	{
 		this.msg = msg;
 		this.isSent = isSent;
@@ -47,15 +55,17 @@ public class Conversation
 
 		this.status = status;
 		this.uniqueid = uniqueid;
+		this.type = type;
 	}
 
-	public Conversation(String msg, String sender_phone, boolean isSent, String date, String uniqueid, String status){
+	public Conversation(String msg, String sender_phone, boolean isSent, String date, String uniqueid, String status, String type){
 		this.msg = msg;
 		this.sender_phone = sender_phone;
 		this.isSent = isSent;
 		this.date = date;
 		this.uniqueid = uniqueid;
 		this.status = status;
+		this.type = type;
 	}
 
 
@@ -151,4 +161,35 @@ public class Conversation
 
 	public void setUniqueid (String uniqueid) { this.uniqueid = uniqueid; }
 
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getFile_type() {
+		return file_type;
+	}
+
+	public void setFile_type(String file_type) {
+		this.file_type = file_type;
+	}
+
+	public String getUri() {
+		return uri;
+	}
+
+	public void setUri(String uri) {
+		this.uri = uri;
+	}
+
+	public Boolean getOnLocal() {
+		return onLocal;
+	}
+
+	public void setOnLocal(Boolean onLocal) {
+		this.onLocal = onLocal;
+	}
 }

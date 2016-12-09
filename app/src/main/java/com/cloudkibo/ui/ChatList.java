@@ -1,6 +1,9 @@
 package com.cloudkibo.ui;
 
 import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -20,6 +23,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.CalendarContract;
@@ -28,6 +32,8 @@ import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,6 +57,7 @@ import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.CircleTransform;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.ChatItem;
+import com.cloudkibo.model.ContactItem;
 import com.cloudkibo.model.Conversation;
 import com.cloudkibo.utils.IFragmentName;
 
@@ -70,12 +77,13 @@ public class ChatList extends CustomFragment implements IFragmentName
 {
 
 	/** The Chat list. */
-	private ArrayList<ChatItem> chatList;
+	public static ArrayList<ChatItem> chatList;
 
 	private ChatAdapter adp;
 
 	private String authtoken;
 	private ChatList reference = this;
+	private ArrayList<String> contact_phone = new ArrayList<String>();
 
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -85,11 +93,15 @@ public class ChatList extends CustomFragment implements IFragmentName
 			Bundle savedInstanceState)
 	{
 		View v = inflater.inflate(R.layout.chat_list, null);
+		setHasOptionsMenu(true);
 
 		authtoken = getActivity().getIntent().getExtras().getString("authtoken");
+		if(chatList == null){
+			chatList =  new ArrayList<ChatItem>();
+		}
 		loadChatList();
+
 		ListView list = (ListView) v.findViewById(R.id.list);
-        Button archivedBtn = (Button) v.findViewById(R.id.btnArchiveChat);
 		adp = new ChatAdapter();
 		list.setAdapter(adp);
 
@@ -109,6 +121,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 				if(item.isGroup()){
 					GroupChatUI groupChatFragment = new GroupChatUI();
 					bundle.putString("group_id", chatList.get(pos).getTitle());
+					bundle.putString("group_name", chatList.get(pos).getName());
+
 					bundle.putString("authtoken", authtoken);
 					groupChatFragment.setArguments(bundle);
 					getFragmentManager().beginTransaction()
@@ -138,7 +152,9 @@ public class ChatList extends CustomFragment implements IFragmentName
 		adp.notifyDataSetChanged();
 
 		setTouchNClick(v.findViewById(R.id.btnNewChat));
-        setTouchNClick(v.findViewById(R.id.btnArchiveChat));
+//		Utility utility = new Utility();
+//		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
+        loadChatList();
 		return v;
 	}
 
@@ -151,16 +167,33 @@ public class ChatList extends CustomFragment implements IFragmentName
 		super.onClick(v);
 		if (v.getId() == R.id.btnNewChat) {
 			startActivity(new Intent(getActivity(), NewChat.class));
-		} else if(v.getId() == R.id.btnArchiveChat){
+		}
+	}
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (menu != null) {
+            menu.findItem(R.id.archived).setVisible(false);
+        }
+        inflater.inflate(R.menu.main, menu);  // Use filter.xml from step 1
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.archived){
             ArchivedChat archivedChatFragment = new ArchivedChat();
-			Bundle bundle = new Bundle();
-			bundle.putString("authToken", authtoken);
-			archivedChatFragment.setArguments(bundle);
+            Bundle bundle = new Bundle();
+            bundle.putString("authToken", authtoken);
+            archivedChatFragment.setArguments(bundle);
             getFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, archivedChatFragment, "archivedChatFragmentTag").addToBackStack("Archived")
-					.commit();
+                    .commit();
+            return true;
         }
-	}
+
+        return super.onOptionsItemSelected(item);
+    }
 
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
         super.onCreateContextMenu(menu, v, menuinfo);
@@ -212,65 +245,77 @@ public class ChatList extends CustomFragment implements IFragmentName
 //	}
 
 
+
 	public void loadChatList()
 	{
-		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-		try{
+		final DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+        final ArrayList<ChatItem> chatList1 = new ArrayList<ChatItem>();
 
-			ArrayList<ChatItem> chatList1 = new ArrayList<ChatItem>();
+        new AsyncTask<String, String, ArrayList<ChatItem>>() {
+
+            @Override
+            protected ArrayList<ChatItem> doInBackground(String... args) {
 
 
-
-			JSONArray chats = db.getChatList();
+                try{
+                    contact_phone.clear();
+					JSONArray chats = new JSONArray();
+					if(chatList == null){
+						 chats = db.getChatList();
+					}else {
+						chats = db.getChatListWithImages();
+					}
+//					JSONArray chats = db.getChatList();
 //			JSONArray groups = db.getAllGroups();
-			JSONArray groups = db.getMyGroups(db.getUserDetails().get("phone"));
-			for (int i=0; i < chats.length(); i++) {
-				JSONObject row = chats.getJSONObject(i);
-				String image = getContactsDetails(row.getString("contact_phone"), getContext());
-				//if(row.getInt("isArchived") ==  0) {
-					chatList1.add(new ChatItem(
-							row.getString("display_name"),
-							row.getString("contact_phone"),
-							row.getString("msg"),
-							Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
-							R.drawable.user1, false,
-							false, Integer.parseInt(row.getString("pendingMsgs"))).setProfileImage(image));
+                    JSONArray groups = db.getMyGroups(db.getUserDetails().get("phone"));
+                    for (int i=0; i < chats.length(); i++) {
+                        JSONObject row = chats.getJSONObject(i);
+                        String image = row.optString("image_uri");
+                        //if(row.getInt("isArchived") ==  0) {
+                        chatList1.add(new ChatItem(
+                                row.getString("display_name"),
+                                row.getString("contact_phone"),
+                                row.getString("msg"),
+                                Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
+                                R.drawable.user1, false,
+                                false, Integer.parseInt(row.getString("pendingMsgs"))).setProfileImage(image));
 
-				//}
-			}
+                        //}
+                        contact_phone.add(row.getString("contact_phone"));
+                    }
 
+                    for (int i=0; i < groups.length(); i++) {
+                        JSONObject row = groups.getJSONObject(i);
 
-			for (int i=0; i < groups.length(); i++) {
-				JSONObject row = groups.getJSONObject(i);
-
-				//if (row.getInt("isArchived") == 0) {
-					chatList1.add(new ChatItem(
-							row.getString("group_name"),
-							row.getString("unique_id"),
-							"Last Message",
-							row.getString("date_creation"),
-							R.drawable.user1, false,
-							true, 0).setProfileImage(null));
-
-
-			}
+                        //if (row.getInt("isArchived") == 0) {
+                        chatList1.add(new ChatItem(
+                                row.getString("group_name"),
+                                row.getString("unique_id"),
+                                "Last Message",
+                                row.getString("date_creation"),
+                                R.drawable.user1, false,
+                                true, 0).setProfileImage(null));
 
 
+                    }
 
+                } catch(JSONException e){
+                    e.printStackTrace();
+                } catch (ParseException e){
+                    e.printStackTrace();
+                }
 
-
-			this.chatList = new ArrayList<ChatItem>(chatList1);
-			//this.chatList.addAll(chatList);
-			//this.chatList.addAll(chatList);
-			if(adp != null)
-				adp.notifyDataSetChanged();
-
-		} catch(JSONException e){
-			e.printStackTrace();
-		} catch (ParseException e){
-			e.printStackTrace();
-		}
-
+                return chatList1;
+            }
+            @Override
+            protected void onPostExecute(ArrayList<ChatItem> chatList1) {
+                chatList = new ArrayList<ChatItem>(chatList1);
+                //this.chatList.addAll(chatList);
+                //this.chatList.addAll(chatList);
+                if(adp != null)
+                    adp.notifyDataSetChanged();
+            }
+        }.execute();
 
 	}
 
@@ -299,23 +344,19 @@ public class ChatList extends CustomFragment implements IFragmentName
 	}
 
 	public String getContactsDetails(String address, Context context) {
+		DatabaseHandler db  = new DatabaseHandler(context);
+		return  db.getContactImage(address);
+	}
 
-//		Uri contactUri = ContentUris.withAppendedId(ContactsContract.Contacts.CONTENT_URI, Long.parseLong(contactId));
-//		return Uri.withAppendedPath(contactUri, ContactsContract.Contacts.Photo.CONTENT_DIRECTORY).toString();
-		Uri contactUri = Uri.withAppendedPath(ContactsContract.CommonDataKinds.Phone.CONTENT_FILTER_URI, Uri.encode(address));
-
-		// querying contact data store
-		Cursor phones = context.getContentResolver().query(contactUri, new String[]{ContactsContract.CommonDataKinds.Phone.PHOTO_URI}, null, null, null);
-
-		String image_uri = "";
-		int phoneColumnIndex = phones.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI);
-		while (phones.moveToNext()) {
-			image_uri = phones.getString(phoneColumnIndex);
-
-		}
-		phones.close();
-		return image_uri;
-
+	static class ViewHolderItem{
+		TextView lbl;
+		TextView lbl2;
+		TextView lbl3;
+		TextView lbl4;
+		TextView lbl5;
+		ImageView profile;
+		ImageView img2;
+		ImageView img3;
 	}
 
 	/**
@@ -357,33 +398,50 @@ public class ChatList extends CustomFragment implements IFragmentName
 		@Override
 		public View getView(int pos, View v, ViewGroup arg2)
 		{
-			if (v == null)
+			ViewHolderItem viewHolder;
+			if (v == null){
 				v = LayoutInflater.from(getActivity()).inflate(
 						R.layout.chat_item, null);
 
+				viewHolder = new ViewHolderItem();
+				viewHolder.lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
+				viewHolder.lbl2 = (TextView) v.findViewById(R.id.lbl2);
+				viewHolder.lbl3 = (TextView) v.findViewById(R.id.lblContactPhone);
+				viewHolder.lbl4 = (TextView) v.findViewById(R.id.lblPendingMsgs);
+				viewHolder.lbl5 = (TextView) v.findViewById(R.id.lblContactStatus);
+				viewHolder.profile  = (ImageView)v.findViewById(R.id.img1);
+				viewHolder.img2 = (ImageView) v.findViewById(R.id.img2);
+				viewHolder.img3 = (ImageView) v.findViewById(R.id.online);
+
+				v.setTag(viewHolder);
+			}else {
+				viewHolder = (ViewHolderItem) v.getTag();
+			}
+
+
 			ChatItem c = getItem(pos);
-			TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
-			lbl.setText(c.getName());
-			if(c.getPendingMsgs() > 0) lbl.setTextColor(getResources().getColor(R.color.black));
-			else lbl.setTextColor(getResources().getColor(R.color.main_color_green));
+//			TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
+			viewHolder.lbl.setText(c.getName());
+			if(c.getPendingMsgs() > 0) viewHolder.lbl.setTextColor(getResources().getColor(R.color.black));
+			else viewHolder.lbl.setTextColor(getResources().getColor(R.color.main_color_green));
 
-			lbl = (TextView) v.findViewById(R.id.lbl2);
-			lbl.setText(c.getDate());
+//			TextView lbl2 = (TextView) v.findViewById(R.id.lbl2);
+			viewHolder.lbl2.setText(c.getDate());
 
-			lbl = (TextView) v.findViewById(R.id.lblContactPhone);
-			lbl.setText(c.getTitle());
+//			TextView lbl3 = (TextView) v.findViewById(R.id.lblContactPhone);
+			viewHolder.lbl3.setText(c.getTitle());
 
-			lbl = (TextView) v.findViewById(R.id.lblPendingMsgs);
-			if(c.getPendingMsgs() > 0) lbl.setText(Integer.toString(c.getPendingMsgs()));
-			else lbl.setText("");
+//			TextView lbl4 = (TextView) v.findViewById(R.id.lblPendingMsgs);
+			if(c.getPendingMsgs() > 0) viewHolder.lbl4.setText(Integer.toString(c.getPendingMsgs()));
+			else viewHolder.lbl4.setText("");
 
-			lbl = (TextView) v.findViewById(R.id.lblContactStatus);
-			lbl.setText(c.getMsg());
+//			TextView lbl5 = (TextView) v.findViewById(R.id.lblContactStatus);
+			viewHolder.lbl5.setText(c.getMsg());
 
-			if(c.getPendingMsgs() > 0) lbl.setTextColor(getResources().getColor(R.color.black));
-			else lbl.setTextColor(getResources().getColor(R.color.main_color_gray_lt));
+			if(c.getPendingMsgs() > 0) viewHolder.lbl5.setTextColor(getResources().getColor(R.color.black));
+			else viewHolder.lbl5.setTextColor(getResources().getColor(R.color.main_color_gray_lt));
 
-			ImageView profile  = (ImageView)v.findViewById(R.id.img1);
+//			ImageView profile  = (ImageView)v.findViewById(R.id.img1);
 
 
 			if(!c.isGroup()){
@@ -395,24 +453,30 @@ public class ChatList extends CustomFragment implements IFragmentName
 							.centerCrop()
 							.transform(new CircleTransform(getContext()))
 							.placeholder(R.drawable.avatar)
-							.into(profile);
+							.into(viewHolder.profile);
 
 				}else{
-					profile.setImageResource(R.drawable.avatar);
+					viewHolder.profile.setImageResource(R.drawable.avatar);
 				}
 
-            }else{
-                ImageView img = (ImageView) v.findViewById(R.id.img1);
-                img.setImageResource(R.drawable.avatar);
-            }
+			}else{
+				//viewHolder.profile.setImageResource(R.drawable.avatar);
+				try {
+					File f = new File(getActivity().getApplicationContext().getFilesDir(), c.getTitle());
+					Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+					viewHolder.profile.setImageBitmap(b);
+				} catch (FileNotFoundException e){
+					e.printStackTrace();
+				}
+			}
 
 
-			ImageView img = (ImageView) v.findViewById(R.id.img2);
-			img.setImageResource(c.isGroup() ? R.drawable.ic_group
+//			ImageView img2 = (ImageView) v.findViewById(R.id.img2);
+			viewHolder.img2.setImageResource(c.isGroup() ? R.drawable.ic_group
 					: R.drawable.ic_lock);
 
-			img = (ImageView) v.findViewById(R.id.online);
-			img.setVisibility(c.isOnline() ? View.VISIBLE : View.INVISIBLE);
+//			ImageView img3 = (ImageView) v.findViewById(R.id.online);
+			viewHolder.img3.setVisibility(c.isOnline() ? View.VISIBLE : View.INVISIBLE);
 			return v;
 		}
 

@@ -9,15 +9,12 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.WakefulBroadcastReceiver;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
@@ -50,7 +47,7 @@ public class MyHandler extends NotificationsHandler {
         AccountKit.initialize(ctx.getApplicationContext());
         String nhMessage = bundle.getString("message");
         userDetail = new DatabaseHandler(ctx.getApplicationContext()).getUserDetails();
-        sendNotification("Test Push Notification", nhMessage); // todo remove this
+        //sendNotification("Test Push Notification", nhMessage); // todo remove this
         Utility.sendLogToServer(""+ userDetail.get("phone") +" gets push notification payload : "+ nhMessage);
         JSONObject payload;
         try {
@@ -63,7 +60,13 @@ public class MyHandler extends NotificationsHandler {
                     }
                     GroupUtility groupUtility = new GroupUtility(context);
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();
-                    groupUtility.updateGroupToLocalDatabase(payload.getString("groupId"), payload.getString("group_name"), accessToken.getToken());
+                    groupUtility.updateGroupToLocalDatabase(payload.getString("groupId"), payload.getString("group_name"),
+                            accessToken.getToken(), payload.getString("senderId"), payload.getString("msg"));
+
+                    DatabaseHandler db = new DatabaseHandler(ctx);
+                    if(!db.isMute(payload.getString("groupId")))
+                        sendNotification(payload.getString("group_name"), payload.getString("msg"));
+
                 }
 
                 if(payload.getString("type").equals("group:chat_received")){
@@ -233,7 +236,9 @@ public class MyHandler extends NotificationsHandler {
                         db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
                                 row.getString("msg"), row.getString("date"),
                                 row.has("status") ? row.getString("status") : "",
-                                row.has("uniqueid") ? row.getString("uniqueid") : "");
+                                row.has("uniqueid") ? row.getString("uniqueid") : "",
+                                row.has("type") ? row.getString("type") : "",
+                                row.has("file_type") ? row.getString("file_type") : "");
 
                         Utility.sendLogToServer(""+ userDetail.get("phone") +" got the message using API and saved to Database: "+ row.toString());
 
@@ -284,7 +289,7 @@ public class MyHandler extends NotificationsHandler {
                         // todo @dayem please test following when you are ready to send messsage, this is saving the received chat message
 
                         db.addGroupChat(row.getString("from"), row.getString("from_fullname"), row.getString("msg"),
-                                row.getString("date"), row.getString("type"),
+                                row.getString("date"), row.has("type") ? row.getString("type") : "",
                                 row.getString("unique_id"),
                                 row.getString("group_unique_id"));
 

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -24,6 +25,7 @@ public class MessageInfo extends CustomFragment implements IFragmentName {
     public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.message_info, null);
+        setHasOptionsMenu(true);
 
         authtoken = this.getArguments().getString("authtoken");
 
@@ -43,6 +45,24 @@ public class MessageInfo extends CustomFragment implements IFragmentName {
 
         getActivity().getActionBar().setTitle("Message Info");
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (menu != null) {
+            menu.findItem(R.id.archived).setVisible(false);
+        }
+        inflater.inflate(R.menu.newchat, menu);  // Use filter.xml from step 1
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.archived){
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 

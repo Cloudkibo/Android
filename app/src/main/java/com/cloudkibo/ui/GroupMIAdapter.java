@@ -83,7 +83,6 @@ public class GroupMIAdapter extends BaseAdapter {
                 if(members.getJSONObject(position).getString("phone").toString().equals(db.getUserDetails().get("phone"))){
                     holder.name.setText(db.getUserDetails().get("display_name"));
 
-                    Toast.makeText(context, "Asad" , Toast.LENGTH_SHORT).show();
 
                 }else{
                     holder.name.setText("Anonymous");
@@ -92,19 +91,20 @@ public class GroupMIAdapter extends BaseAdapter {
             else{
                 holder.name.setText(members.getJSONObject(position).getString("display_name"));
             }
+            status = db.getGroupMessageStatus(message_id, members.getJSONObject(position).getString("phone"));
 
-            holder.status.setText(db.getGroupMessageStatus(message_id).getJSONObject(position).getString("status"));
-           // if(members.getJSONObject(position).getString("phone").toString().equals(status.getJSONObject(position).getString("user_phone").toString())) {
+            holder.status.setText(status.getJSONObject(0).getString("status"));
+            holder.time.setText("--");
 
-                //holder.status.setText(status.getJSONObject(position).getString("status").toString());
-               // Toast.makeText(context, "Asad" , Toast.LENGTH_LONG).show();
-//                if(status.getJSONObject(position).getString("status").toString().equals("seen")) {
-//                    holder.time.setText(status.getJSONObject(position).getString("seen_time"));
-//                }
+            Toast.makeText(context, status.getJSONObject(0).getString("delivered_date"), Toast.LENGTH_LONG).show();
+
+                if(status.getJSONObject(0).getString("delivered_date")!=null) {
+                    if (status.getJSONObject(0).getString("status").equals("seen")) {
+                        holder.time.setText(status.getJSONObject(0).getString("read_date"));
+                    }
 //                else
 //                    holder.time.setText(status.getJSONObject(position).getString("delivered_time"));
-
-            //}
+                }
 
 
         } catch (JSONException e) {

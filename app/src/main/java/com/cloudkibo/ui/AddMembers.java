@@ -5,13 +5,19 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -38,6 +44,7 @@ import org.json.JSONObject;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -59,6 +66,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
     private String group_id = "";
     private String group_name = "";
     CustomContactAdapter contactAdapter;
+    ArrayList<String> selected_contacts;
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
      */
@@ -69,26 +77,41 @@ public class AddMembers extends CustomFragment implements IFragmentName
                              Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.add_members, null);
+        setHasOptionsMenu(true);
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         db = new DatabaseHandler(getContext());
         gv=(GridView) v.findViewById(R.id.gridView1);
-        contactAdapter = new CustomContactAdapter(inflater, getContacts(), getPhone());
+        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
+        fab.bringToFront();
+        final EditText group_name = (EditText) v.findViewById(R.id.group_name);
+        contactAdapter = new CustomContactAdapter(inflater, selected_contacts, getContext());
         gv.setAdapter(contactAdapter);
         final AddMembers temp = this;
-        Button add_contacts = (Button) v.findViewById(R.id.add_contacts);
-        Bundle args = getArguments();
+        context = getContext();
+//        Button add_contacts = (Button) v.findViewById(R.id.add_contacts);
+//        Bundle args = getArguments();
+//
+//        if (args  != null){
+//            group_id = args.getString("group_id");
+//            group_name = args.getString("group_name");
+//            Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
+//        }
 
-        if (args  != null){
-            group_id = args.getString("group_id");
-            group_name = args.getString("group_name");
-            Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
-        }
-
-        add_contacts.setOnClickListener(new View.OnClickListener() {
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                addMembers(contactAdapter.getSelected_contacts());
-                createGroupOnServer(group_name, group_id,authtoken);
+                group_id = randomString(10);
+                Toast.makeText(getContext(), "Group Name: " + group_name.getText().toString(), Toast.LENGTH_LONG).show();
+                db.createGroup(group_id, group_name.getText().toString(), 0);
+                addMembers(selected_contacts);
+
+//                try {
+//                  Toast.makeText(getContext(), "Total Members are: " + db.getGroupMembers(group_id).length(), Toast.LENGTH_LONG).show();
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+
+                createGroupOnServer(group_name.getText().toString(), group_id,authtoken);
                 GroupChatUI nextFrag= new GroupChatUI();
                 Bundle args = new Bundle();
                 args.putString("group_id", group_id);
@@ -100,6 +123,24 @@ public class AddMembers extends CustomFragment implements IFragmentName
             }
         });
         return v;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if (menu != null) {
+            menu.findItem(R.id.archived).setVisible(false);
+        }
+        inflater.inflate(R.menu.newchat, menu);  // Use filter.xml from step 1
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.archived){
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
     /* (non-Javadoc)
@@ -115,13 +156,31 @@ public class AddMembers extends CustomFragment implements IFragmentName
             @Override
             protected JSONObject doInBackground(String... args) {
                 UserFunctions userFunctions = new UserFunctions();
+                try {
+                    DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+                    db.createGroupServerPending(group_id, group_name, getGroupCreationData(group_name, group_id).getJSONArray("members").toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 return userFunctions.sendCreateGroupToServer(getGroupCreationData(group_name, group_id), authtoken);
             }
 
             @Override
             protected void onPostExecute(JSONObject row) {
+
                 if(row != null){
-                    Toast.makeText(getContext(), row.toString(), Toast.LENGTH_LONG).show();
+                    if(row.has("Error")){
+                        Log.d("Add Members", "No Internet. Group information saved in pending groups table.");
+                    } else {
+                        try {
+                            DatabaseHandler db = new DatabaseHandler(getContext());
+                            db.deleteGroupServerPending(row.getString("unique_id"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Toast.makeText(getContext(), row.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(),"New Group Created Successfully", Toast.LENGTH_LONG).show();
+                    }
 //                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
                 }
             }
@@ -193,7 +252,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
         try {
             body.put("group_name", group_name);
             body.put("unique_id",  group_id);
-            body.put("members",  new JSONArray(contactAdapter.getSelected_contacts()));
+            body.put("members",  new JSONArray(selected_contacts));
             groupPost.put("body", body);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -202,10 +261,13 @@ public class AddMembers extends CustomFragment implements IFragmentName
     }
 
     public void addMembers(ArrayList<String> phones){
+
         for (int i = 0; i< phones.size(); i++){
             db.addGroupMember(group_id,phones.get(i),0,"joined");
+            Toast.makeText(context, phones.get(i) + "Added", Toast.LENGTH_SHORT).show();
         }
         db.addGroupMember(group_id,db.getUserDetails().get("phone"),1,"joined");
+        Toast.makeText(context,db.getUserDetails().get("phone") + " added as admin", Toast.LENGTH_SHORT).show();
     }
 
     public String getFragmentName()
@@ -216,5 +278,16 @@ public class AddMembers extends CustomFragment implements IFragmentName
     public String getFragmentContactPhone()
     {
         return "About Chat";
+    }
+
+    public void setSelectedContacts(ArrayList<String> selected_contacts){
+        this.selected_contacts = selected_contacts;
+    }
+
+    String randomString(final int length) {
+        String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+        uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+        uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+        return uniqueid;
     }
 }

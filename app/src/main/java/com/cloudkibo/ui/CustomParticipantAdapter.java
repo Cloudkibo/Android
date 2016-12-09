@@ -116,6 +116,7 @@ public class CustomParticipantAdapter extends BaseAdapter{
                                 db.leaveGroup(group_id, members.getJSONObject(position).getString("phone"));
                                 GroupUtility groupUtility = new GroupUtility(context);
                                 final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+                                db.addGroupMemberServerPending(group_id, members.getJSONObject(position).getString("phone"));
                                 groupUtility.removeMember(group_id, members.getJSONObject(position).getString("phone"), accessToken.getToken());
                                 updateData(db);
                             }

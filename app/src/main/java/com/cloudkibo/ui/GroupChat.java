@@ -10,6 +10,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,7 +27,9 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import com.cloudkibo.MainActivity;
@@ -58,11 +61,11 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 	/** The Editext to compose the message. */
 	private EditText txt;
-	
+
 	private String authtoken;
 
 	private HashMap<String, String> user;
-	
+
 	String contactName;
 	String contactPhone;
 
@@ -74,7 +77,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			Bundle savedInstanceState)
 	{
 		View v = inflater.inflate(R.layout.group_chat, null);
-		
+		setHasOptionsMenu(true);
+
 		contactName = this.getArguments().getString("contactusername");
 
 		contactPhone = this.getArguments().getString("contactphone");
@@ -86,7 +90,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		user = db.getUserDetails();
 
 		loadConversationList();
-		
+
 		ListView list = (ListView) v.findViewById(R.id.list);
 		adp = new ChatAdapter();
 		list.setAdapter(adp);
@@ -109,10 +113,32 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		txt.setInputType(InputType.TYPE_CLASS_TEXT
 				| InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 
-		setTouchNClick(v.findViewById(R.id.btnCamera));
+		setTouchNClick(v.findViewById(R.id.btnAttach));
 		setTouchNClick(v.findViewById(R.id.btnSend));
 
 		return v;
+	}
+
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		if (menu != null) {
+			menu.findItem(R.id.archived).setVisible(false);
+		}
+		inflater.inflate(R.menu.chat, menu);  // Use filter.xml from step 1
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if(id == R.id.callMenu){
+			MainActivity act1 = (MainActivity)getActivity();
+
+			act1.callThisPerson(contactPhone,
+					contactName);
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
 	}
 
 	/* (non-Javadoc)
@@ -126,11 +152,29 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		{
 			sendMessage();
 
-		} else if (v.getId() == R.id.btnCamera) {
-			MainActivity act1 = (MainActivity)getActivity();
+		} else if (v.getId() == R.id.btnAttach) {
+			PopupMenu popup = new PopupMenu(getActivity().getApplicationContext(), v);
+			MenuInflater inflater = popup.getMenuInflater();
+			inflater.inflate(R.menu.attachment, popup.getMenu());
+			popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+				@Override
+				public boolean onMenuItemClick(MenuItem item) {
+					switch (item.getItemId()) {
+						case R.id.sendImage:
+							MainActivity act3 = (MainActivity)getActivity();
+							act3.uploadChatAttachment("image");
+							return true;
+						case R.id.sendDoc:
+							MainActivity act2 = (MainActivity)getActivity();
+							act2.uploadChatAttachment("document");
+							return true;
+						default:
+							return false;
 
-			act1.callThisPerson(contactPhone,
-					 contactName);
+					}
+				}
+			});
+			popup.show();
 		}
 
 	}
@@ -190,16 +234,13 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			String messageString = txt.getText().toString();
 
-			MainActivity act1 = (MainActivity) getActivity();
-
-			// todo deprecated remove this way
-			//act1.sendMessage(contactPhone, messageString, uniqueid);
-
 			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
 			db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
-					messageString, Utility.getCurrentTimeInISO(), "pending", uniqueid);
+					messageString, Utility.getCurrentTimeInISO(), "pending", uniqueid, "chat", "");
 
-			convList.add(new Conversation(messageString, Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()), true, true, "pending", uniqueid));
+			convList.add(new Conversation(messageString,
+					Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()),
+					true, true, "pending", uniqueid, "chat"));
 			adp.notifyDataSetChanged();
 
 			sendMessageUsingAPI(messageString, uniqueid);
@@ -209,8 +250,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			e.printStackTrace();
 		}
 	}
-	
-	public void receiveMessage(String msg, String uniqueid, String from, String date) {
+
+	public void receiveMessage(String msg, String uniqueid, String from, String date, String type) {
 
 		try {
 
@@ -219,19 +260,16 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			GroupUtility groupUtility = new GroupUtility(getContext());
 			groupUtility.sendNotification("Single message", msg);
 			// todo see if this really needs the uniqueid and status
-			convList.add(new Conversation(msg, Utility.convertDateToLocalTimeZoneAndReadable(date), false, true, "seen", uniqueid));
+			convList.add(new Conversation(msg, Utility.convertDateToLocalTimeZoneAndReadable(date), false, true, "seen", uniqueid, type));
 
 			adp.notifyDataSetChanged();
 
-			MainActivity act1 = (MainActivity) getActivity();
-
-			act1.updateChatStatus("seen", uniqueid);
-			//act1.sendMessageStatusUsingSocket("seen", uniqueid, from);
+			updateChatStatus("seen", uniqueid);
 			sendMessageStatusUsingAPI("seen", uniqueid, from);
 		} catch (ParseException e){
 			e.printStackTrace();
 		}
-		
+
 	}
 
 	public void sendMessageUsingAPI(final String msg, final String uniqueid){
@@ -264,8 +302,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 					if (row != null) {
 						if(row.has("status")){
-							MainActivity act1 = (MainActivity) getActivity();
-							act1.updateChatStatus(row.getString("status"), row.getString("uniqueid"));
+							updateChatStatus(row.getString("status"), row.getString("uniqueid"));
 							updateStatusSentMessage(row.getString("status"), row.getString("uniqueid"));
 						}
 					}
@@ -304,16 +341,14 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					Boolean gotGoodServerResponse = false;
 					if (row != null) {
 						if(row.has("status")){
-							MainActivity act1 = (MainActivity) getActivity();
-							act1.resetSpecificChatHistorySync(row.getString("uniqueid"));
-							act1.updateChatStatus(row.getString("status"), row.getString("uniqueid"));
+							resetSpecificChatHistorySync(row.getString("uniqueid"));
+							updateChatStatus("seen", row.getString("uniqueid"));
 							gotGoodServerResponse = true;
 						}
 					}
 					if(!gotGoodServerResponse){
-						MainActivity act1 = (MainActivity) getActivity();
-						act1.updateChatStatus("seen", row.getString("uniqueid"));
-						act1.addChatHistorySync(row.getString("uniqueid"), row.getString("fromperson"));
+						updateChatStatus("seen", row.getString("uniqueid"));
+						addChatHistorySync(row.getString("uniqueid"), row.getString("fromperson"));
 					}
 
 				} catch (JSONException e) {
@@ -325,10 +360,42 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	}
 
 	public void updateStatusSentMessage(String status, String uniqueid){
-		loadConversationList();
+		for(int i=convList.size()-1; i>-1; i--){
+			if(convList.get(i).getUniqueid().equals(uniqueid)){
+				convList.get(i).setStatus(status);
+				break;
+			}
+		}
 		adp.notifyDataSetChanged();
 	}
-	
+
+	public void updateChatStatus(String status, String uniqueid){
+		try {
+			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			db.updateChat(status, uniqueid);
+		} catch (NullPointerException e){
+			e.printStackTrace();
+		}
+	}
+
+	public void resetSpecificChatHistorySync(String uniqueid){
+		try {
+			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			db.resetSpecificChatHistorySync(uniqueid);
+		} catch (NullPointerException e){
+			e.printStackTrace();
+		}
+	}
+
+	public void addChatHistorySync(String uniqueid, String from){
+		try {
+			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			db.addChatSyncHistory("seen", uniqueid, from);
+		} catch (NullPointerException e){
+			e.printStackTrace();
+		}
+	}
+
 
 	/**
 	 * This method currently loads a dummy list of conversations. You can write the
@@ -337,38 +404,38 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	public void loadConversationList()
 	{
 		convList = new ArrayList<Conversation>();
-		
+
 		loadChatFromDatabase();
-		
-		//loadChatMessagesFromServer();
 
 	}
 
-	
+
 	public void loadChatFromDatabase(){
 		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-		
+
 		try {
-			
+
 			MainActivity act1 = (MainActivity)getActivity();
-			
+
 			JSONArray jsonA = db.getChat(act1.getUserPhone(), contactPhone);
-			
+
 			ArrayList<Conversation> chatList1 = new ArrayList<Conversation>();
-			
+
 			for (int i=0; i < jsonA.length(); i++) {
 				JSONObject row = jsonA.getJSONObject(i);
-				
+
 				if(row.getString("toperson").equals(contactPhone))
 					chatList1.add(new Conversation(
 						row.getString("msg"),
 						Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
-						true, true, row.getString("status"), row.getString("uniqueid")));
+						true, true, row.getString("status"), row.getString("uniqueid"),
+							row.has("type") ? row.getString("type") : ""));
 				else
 					chatList1.add(new Conversation(
 							row.getString("msg"),
 							Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
-							false, true, row.getString("status"), row.getString("uniqueid")));
+							false, true, row.getString("status"), row.getString("uniqueid"),
+							row.has("type") ? row.getString("type") : ""));
 
 				if(row.getString("fromperson").equals(contactPhone)){
 					if(row.getString("status").equals("delivered")){
@@ -382,14 +449,14 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					}
 				}*/
 			}
-			
+
 			convList.clear();
 
 			convList.addAll(chatList1);
 
 			if(adp != null)
 				adp.notifyDataSetChanged();
-			
+
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
@@ -439,32 +506,53 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		public View getView(int pos, View v, ViewGroup arg2)
 		{
 			Conversation c = getItem(pos);
-			if (c.isSent())
-				v = LayoutInflater.from(getActivity()).inflate(
+			if (c.isSent()) {
+				if(true)//(c.getType().equals("chat"))
+					v = LayoutInflater.from(getActivity()).inflate(
 						R.layout.chat_item_sent, null);
-			else
-				v = LayoutInflater.from(getActivity()).inflate(
+				else
+					v = LayoutInflater.from(getActivity()).inflate(
+							R.layout.chat_image_me, null);
+			} else {
+				if(true)//(c.getType().equals("chat"))
+					v = LayoutInflater.from(getActivity()).inflate(
 						R.layout.chat_item_rcv, null);
+				else
+					v = LayoutInflater.from(getActivity()).inflate(
+							R.layout.chat_image_sender, null);
+			}
 
-			TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
-			lbl.setText(c.getDate().replaceAll("-", "/").split("/",2)[1].split(" ")[1]);
-			TextView phone = (TextView) v.findViewById(R.id.phone);
-			phone.setVisibility(View.GONE);
 
-			lbl = (TextView) v.findViewById(R.id.lbl2);
-			lbl.setText(c.getMsg());
+			if(true){//(c.getType().equals("chat")) {
+				TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
+				String date_temp = c.getDate().replaceAll("-", "/").split(" ")[0].split("/")[1] + "/" +c.getDate().replaceAll("-", "/").split(" ")[0].split("/")[2];
+				lbl.setText(date_temp+" "+Utility.dateConversion(c.getDate().replaceAll("-", "/").split("/",2)[1].split(" ")[1]));
+				TextView phone = (TextView) v.findViewById(R.id.phone);
+				phone.setVisibility(View.GONE);
 
-			lbl = (TextView) v.findViewById(R.id.lblContactPhone);
-			if (c.isSuccess())
-				lbl.setText(c.getStatus());
-			else
-				lbl.setText("");
+				lbl = (TextView) v.findViewById(R.id.lbl2);
+				lbl.setText(c.getMsg());
+
+				lbl = (TextView) v.findViewById(R.id.lblContactPhone);
+				if (c.isSuccess())
+					lbl.setText(c.getStatus());
+				else
+					lbl.setText("");
+			} else {
+				/*if(c.getFile_type().equals("image")) {
+					ImageView stamp = (ImageView) v.findViewById(R.id.row_stamp);
+					stamp.setImageBitmap(BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.spinner));
+					if(c.getOnLocal()){
+
+					}
+				}*/
+			}
 
 			return v;
 		}
 
 	}
-	
+
 	public String getFragmentName()
     {
       return "GroupChat";

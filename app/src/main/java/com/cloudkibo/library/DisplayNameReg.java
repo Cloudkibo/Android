@@ -5,7 +5,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.Manifest;
 import android.app.Activity;
@@ -66,11 +68,12 @@ public class DisplayNameReg extends Activity
     String authtoken;
 
     Boolean regButtonPressed = false;
-
+    AsyncTask<String, String, String> progress;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
 
     final ArrayList<String> contactList1 = new ArrayList<String>();
     final ArrayList<String> contactList1Phone = new ArrayList<String>();
+    final Map<String, String> photo_uri = new HashMap<>();
 
     /* (non-Javadoc)
 	 * @see com.chatt.custom.CustomActivity#onCreate(android.os.Bundle)
@@ -101,6 +104,7 @@ public class DisplayNameReg extends Activity
             }
         });
         Intent intentSync = new Intent(getApplicationContext(), KiboSyncService.class);
+//        startService(intentSync);
         bindService(intentSync, kiboSyncConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -121,7 +125,8 @@ public class DisplayNameReg extends Activity
                     contactList1.get(i),
                     "null",
                     "No",
-                    "N/A");
+                    "N/A",
+                    photo_uri.get(contactList1Phone.get(i)));
         }
 
         try {
@@ -143,7 +148,8 @@ public class DisplayNameReg extends Activity
                     contactList1.get(i),
                     "null",
                     "Yes",
-                    "N/A");
+                    "N/A",
+                    photo_uri.get(contactList1Phone.get(i)));
         }
 
         kiboSyncService.startSyncWithoutAddressBookAccess(authtoken);
@@ -292,9 +298,18 @@ public class DisplayNameReg extends Activity
     // todo this is temporary fix, fix it with 6.0 testing
     private void loadContactsFromAddressBook(){
 
-        new AsyncTask<String, String, JSONObject>() {
+        final TextView hintText = (TextView) findViewById(id.hintText);
+        final int loadCount = 0;
+        final DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+        new AsyncTask<String, Integer, JSONObject>() {
             private ProgressDialog nDialog;
 
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                hintText.setText(loadCount + " Contacts loaded...");
+            }
 
             @Override
             protected JSONObject doInBackground(String... args) {
@@ -302,15 +317,23 @@ public class DisplayNameReg extends Activity
                 List<NameValuePair> phones = new ArrayList<NameValuePair>();
                 List<NameValuePair> emails = new ArrayList<NameValuePair>();
 
+
+//                Cursor managedCursor = getContentResolver()
+//                        .query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
+//                                new String[] {Phone._ID, Phone.DISPLAY_NAME, Phone.NUMBER}, null, null,  Phone.DISPLAY_NAME + " ASC");
+
                 ContentResolver cr = getApplicationContext().getContentResolver();
                 Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
                         null, null, null, null);
+
                 if (cur.getCount() > 0) {
                     while (cur.moveToNext()) {
                         String id = cur.getString(
                                 cur.getColumnIndex(ContactsContract.Contacts._ID));
                         String name = cur.getString(
                                 cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                        String image_uri = cur.getString(
+                                cur.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
                         //Log.w("Contact Name : ", "Name " + name + "");
                         if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                             Cursor pCur = cr.query(
@@ -319,8 +342,6 @@ public class DisplayNameReg extends Activity
                                     ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
                                     new String[]{id}, null);
                             while (pCur.moveToNext()) {
-                                DatabaseHandler db = new DatabaseHandler(
-                                        getApplicationContext());
                                 String phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                                 if(phone.length() < 6) continue;
                                 if(phone.charAt(0) != '+') {
@@ -333,13 +354,14 @@ public class DisplayNameReg extends Activity
                                 //    name = name.substring(0, 1).toUpperCase() + name.substring(1);
                                 phone = phone.replaceAll("\\s+","");
                                 phone = phone.replaceAll("\\p{P}","");
-                                db = new DatabaseHandler(getApplicationContext());
                                 String userPhone = db.getUserDetails().get("phone");
                                 if(userPhone.equals(phone)) continue;
                                 phones.add(new BasicNameValuePair("phonenumbers", phone));
                                 Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
                                 contactList1.add(name);
                                 contactList1Phone.add(phone);
+                                photo_uri.put(phone,image_uri);
+                                publishProgress(contactList1Phone.size());
                             }
                             pCur.close();
                         }
@@ -366,6 +388,7 @@ public class DisplayNameReg extends Activity
                 }
                 cur.close();
 
+                publishProgress(-1);
                 UserFunctions userFunction = new UserFunctions();
                 JSONObject json = userFunction.sendAddressBookPhoneContactsToServer(phones, authtoken);
                 Log.w("SERVER SENT RESPONSE", json.toString());
@@ -373,7 +396,18 @@ public class DisplayNameReg extends Activity
             }
 
             @Override
+            protected void onProgressUpdate(Integer... progress) {
+                if(progress[0] == -1){
+                    hintText.setText("Sending Network Request");
+                }else {
+                    hintText.setText(progress[0] + " Contacts Loaded");
+                }
+            }
+
+            @Override
             protected void onPostExecute(JSONObject json) {
+
+                hintText.setText("Network Request Complete");
 
                 try {
 
@@ -381,7 +415,6 @@ public class DisplayNameReg extends Activity
                     ArrayList<String> contactList1PhoneAvailable = new ArrayList<String>();
 
                     if(json != null){
-
                         JSONArray jArray = json.getJSONArray("available");
 
                         for(int i = 0; i<jArray.length(); i++){
@@ -393,8 +426,10 @@ public class DisplayNameReg extends Activity
                         }
 
                     }
+                    hintText.setText("Updating local database");
                     loadNotFoundContacts(contactList1, contactList1Phone);
                     loadFoundContacts(contactList1Available, contactList1PhoneAvailable);
+                    hintText.setText("local database successfully update");
 
                 } catch (JSONException e) {
                     e.printStackTrace();

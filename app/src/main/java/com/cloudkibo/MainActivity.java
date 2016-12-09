@@ -3,14 +3,13 @@ package com.cloudkibo;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 import android.Manifest;
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -37,8 +36,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -83,7 +80,6 @@ import com.cloudkibo.ui.AboutChat;
 import com.cloudkibo.ui.CallHistory;
 import com.cloudkibo.ui.ChatList;
 import com.cloudkibo.ui.ContactList;
-import com.cloudkibo.ui.ContactListPending;
 import com.cloudkibo.ui.CreateGroup;
 import com.cloudkibo.ui.GroupChat;
 import com.cloudkibo.ui.GroupChatUI;
@@ -98,7 +94,6 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.async.util.FileUtility;
 import com.koushikdutta.ion.Ion;
 import com.microsoft.windowsazure.notifications.NotificationsManager;
 
@@ -179,7 +174,8 @@ public class MainActivity extends CustomActivity
 
         authtoken = getIntent().getExtras().getString("authtoken");
         shouldSync = getIntent().getExtras().getBoolean("sync");
-
+       // this.updateChatList();
+        //this.updatePartialContactList();
         setupContainer();
         setupDrawer();
 
@@ -211,6 +207,10 @@ public class MainActivity extends CustomActivity
         }
 
         startContactsObserverService();
+
+//        Utility utility = new Utility();
+//        utility.updateDatabaseWithContactImages(getApplicationContext(),new ArrayList<String>());
+
 
     }
 
@@ -297,6 +297,18 @@ public class MainActivity extends CustomActivity
                 }
             } else {
                 ToastNotify2("Can't refresh contacts without permission.");
+            }
+        } else if (requestCode == 101) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                uploadChatAttachmentFileChooser();
+            } else {
+                ToastNotify2("Can't load file without permission.");
+            }
+        } else if (requestCode == 102) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                uploadIconChooser();
+            } else {
+                ToastNotify2("Can't load file without permission.");
             }
         }
     }
@@ -483,7 +495,7 @@ public class MainActivity extends CustomActivity
         al.add(new Data("Chat", null, R.drawable.ic_chat));
         al.add(new Data("Contacts", null, R.drawable.ic_notes));
         al.add(new Data("Calls", null, android.R.drawable.sym_action_call));
-        al.add(new Data("Invite", null, R.drawable.ic_notes));
+//        al.add(new Data("Invite", null, R.drawable.ic_notes));
         al.add(new Data("Create Group", null, R.drawable.ic_about));
         //al.add(new Data("Add Requests", null, R.drawable.ic_projects));
         //al.add(new Data("Conference", null, R.drawable.group1));
@@ -517,11 +529,11 @@ public class MainActivity extends CustomActivity
             title = "Calls History";
             f = new CallHistory();
         }
+//        else if(pos == 4){
+//            title = "Address Book";
+//            f = new ContactListPending();
+//        }
         else if(pos == 4){
-            title = "Address Book";
-            f = new ContactListPending();
-        }
-        else if(pos == 5){
             title = "Create Group";
             f = new CreateGroup();
         }
@@ -571,7 +583,7 @@ public class MainActivity extends CustomActivity
 
             alertD.show();
         }
-        else if (pos == 6)
+        else if (pos == 5)
         {
             title = "About KiboChat";
             f = new AboutChat();
@@ -589,13 +601,49 @@ public class MainActivity extends CustomActivity
         }
     }
 
+    public void createContact () {
+        Intent i = new Intent(Intent.ACTION_INSERT);
+        i.setType(ContactsContract.Contacts.CONTENT_TYPE);
+        if (Integer.valueOf(Build.VERSION.SDK) > 14)
+            i.putExtra("finishActivityOnSaveCompleted", true); // Fix for 4.0.3 +
+        startActivityForResult(i, 5123);
+    }
+
     String icon_upload_group_id = "";
     public void uploadIcon(String group_id){
         icon_upload_group_id = group_id;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 102);
+            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            uploadIconChooser();
+        }
+    }
+
+    private void uploadIconChooser(){
         Intent getContentIntent = FileUtils.createGetImageContentIntent();
 
         Intent intent = Intent.createChooser(getContentIntent, "Select an image");
         startActivityForResult(intent, 111);
+    }
+
+    String attachmentType = "";
+    public void uploadChatAttachment(String type){
+        attachmentType = type;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 101);
+            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+        } else {
+            uploadChatAttachmentFileChooser();
+        }
+    }
+
+    private void uploadChatAttachmentFileChooser(){
+        Intent getContentIntent = FileUtils.createGetImageContentIntent();
+        if(attachmentType.equals("document")) getContentIntent = FileUtils.createGetDocumentContentIntent();
+
+        Intent intent = Intent.createChooser(getContentIntent, "Select file");
+        startActivityForResult(intent, 112);
     }
 
     @Override
@@ -607,6 +655,75 @@ public class MainActivity extends CustomActivity
                     final String selectedFilePath = FileUtils.getPath(getApplicationContext(), uri);
                     String groupId = icon_upload_group_id;
                     Ion.with(getApplicationContext())
+                            .load("https://api.cloudkibo.com/api/groupmessaging/uploadIcon")
+                            //.uploadProgressBar(uploadProgressBar)
+                            .setHeader("kibo-token", authtoken)
+                            .setMultipartParameter("unique_id", icon_upload_group_id)
+                            .setMultipartFile("file", FileUtils.getExtension(selectedFilePath), new File(selectedFilePath))
+                            .asJsonObject()
+                            .setCallback(new FutureCallback<JsonObject>() {
+                                @Override
+                                public void onCompleted(Exception e, JsonObject result) {
+                                    // do stuff with the result or error
+                                    if(e == null) {
+                                        try {
+
+                                            String filename = icon_upload_group_id;
+                                            FileOutputStream outputStream;
+                                            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
+                                            outputStream.write(com.cloudkibo.webrtc.filesharing.Utility.convertFileToByteArray(new File(selectedFilePath)));
+                                            outputStream.close();
+
+                                            IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+                                            if(myFragment == null) return;
+                                            if(myFragment.getFragmentName().equals("GroupSetting"))
+                                            {
+                                                final GroupSetting myGroupSettingFragment = (GroupSetting) myFragment;
+                                                runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        myGroupSettingFragment.loadDisplayImage(); //here you call the method of your current Fragment.
+                                                    }
+                                                });
+                                            }
+                                        } catch (Exception e2) {
+                                            e2.printStackTrace();
+                                        }
+
+                                        Toast.makeText(getApplicationContext(), result.toString(), Toast.LENGTH_LONG).show();
+                                    }
+                                    else {
+                                        Toast.makeText(getApplicationContext(), "Some error has occurred or Internet not available. Please try later.", Toast.LENGTH_LONG).show();
+                                        e.printStackTrace();
+                                    }
+                                }
+                            });
+                }
+                break;
+            case 112:
+                if (resultCode == -1) {
+                    final Uri uri = data.getData();
+                    final String selectedFilePath = FileUtils.getPath(getApplicationContext(), uri);
+                    String fileType = attachmentType;
+                    if(com.cloudkibo.webrtc.filesharing.Utility.isExternalStorageWritable()){
+                        try {
+                            if (com.cloudkibo.webrtc.filesharing.Utility.isFreeSpaceAvailableForFileSize(
+                                    Integer.parseInt(com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath).getString("size"))
+                            )) {
+                                // todo save the file in external storage
+                                Toast.makeText(getApplicationContext(), "Under construction. File storing in external storage crashes.", Toast.LENGTH_LONG).show();
+                            } else {
+                                Toast.makeText(getApplicationContext(), "Not enough storage available.", Toast.LENGTH_LONG).show();
+                            }
+                        } catch(JSONException e){
+                            Toast.makeText(getApplicationContext(), "Unexpected Error occurred.", Toast.LENGTH_LONG).show();
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Storage is not available.", Toast.LENGTH_LONG).show();
+                    }
+                    /*Ion.with(getApplicationContext())
                             .load("https://api.cloudkibo.com/api/groupmessaging/uploadIcon")
                             //.uploadProgressBar(uploadProgressBar)
                             .setHeader("kibo-token", authtoken)
@@ -636,7 +753,12 @@ public class MainActivity extends CustomActivity
                                         e.printStackTrace();
                                     }
                                 }
-                            });
+                            });*/
+                }
+                break;
+            case 5123:
+                if(resultCode != -1){
+                    syncContacts();
                 }
                 break;
             case REQUEST_CHOOSER:
@@ -747,43 +869,7 @@ public class MainActivity extends CustomActivity
 
     }
 
-    public void updateChatStatus(String status, String uniqueid){
-        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-        db.updateChat(status, uniqueid);
-    }
 
-    public void resetSpecificChatHistorySync(String uniqueid){
-        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-        db.resetSpecificChatHistorySync(uniqueid);
-    }
-
-    public void addChatHistorySync(String uniqueid, String from){
-        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-        db.addChatSyncHistory("seen", uniqueid, from);
-    }
-
-    public void sendMessage(String contactPhone, String msg, String uniqueid){
-        socketService.sendMessage(contactPhone, msg, uniqueid);
-    }
-
-    public void sendPendingMessage(String contactPhone, String msg, String uniqueid){
-        //socketService.sendPendingMessage(contactPhone, msg, uniqueid);
-    }
-
-    public void sendMessageStatusUsingSocket(String status, String uniqueid, String sender){
-        if(socketService.isSocketConnected()) {
-            socketService.updateReceivedMessageStatusToServer(status, uniqueid, sender);
-        }
-    }
-
-    public Boolean isSocketConnected() {
-        return socketService.isSocketConnected();
-    }
-
-
-    public void askFriendsOnlineStatus(){
-        socketService.askFriendsOnlineStatus();
-    }
 
     public void getUserFromSQLiteDatabase(){
         DatabaseHandler db = new DatabaseHandler(getApplicationContext());
@@ -836,8 +922,8 @@ public class MainActivity extends CustomActivity
     }
 
     /* (non-Javadoc)
-     * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
-     */
+    * @see android.app.Activity#onCreateOptionsMenu(android.view.Menu)
+    */
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -878,102 +964,6 @@ public class MainActivity extends CustomActivity
         return super.onKeyDown(keyCode, event);
     }
 
-    private void fetchUserFromServerForFirstTime() {
-        new AsyncTask<String, String, Boolean>() {
-
-            @Override
-            protected Boolean doInBackground(String... args) {
-
-                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo netInfo = cm.getActiveNetworkInfo();
-                if (netInfo != null && netInfo.isConnected()) {
-                    try {
-                        URL url = new URL("http://www.google.com");
-                        HttpURLConnection urlc = (HttpURLConnection) url
-                                .openConnection();
-                        urlc.setConnectTimeout(3000);
-                        urlc.connect();
-                        if (urlc.getResponseCode() == 200) {
-                            return true;
-                        }
-                    } catch (MalformedURLException e1) {
-                        e1.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                return false;
-
-            }
-
-            @Override
-            protected void onPostExecute(Boolean th) {
-
-                if (th == true) {
-
-                    new AsyncTask<String, String, JSONObject>() {
-
-                        @Override
-                        protected JSONObject doInBackground(String... args) {
-                            UserFunctions userFunction = new UserFunctions();
-                            JSONObject json = userFunction.getUserData(authtoken);
-                            return json;
-                        }
-
-                        @Override
-                        protected void onPostExecute(JSONObject json) {
-                            try {
-
-                                if(json != null){
-
-                                    DatabaseHandler db = new DatabaseHandler(
-                                            getApplicationContext());
-
-                                    // Clear all previous data in SQlite database.
-
-                                    UserFunctions logout = new UserFunctions();
-                                    logout.logoutUser(getApplicationContext());
-
-                                    db.addUser(json.getString("firstname"),
-                                            json.getString("lastname"),
-                                            json.getString("email"),
-                                            json.getString("username"),
-                                            json.getString("_id"),
-                                            json.getString("date"));
-
-                                    final TextView userFirstName = (TextView)findViewById(R.id.textViewUserNameOnNavigationBar);
-                                    userFirstName.setText(db.getUserDetails().get("firstname")+" "+db.getUserDetails().get("lastname"));
-
-                                    final TextView userEmail = (TextView)findViewById(R.id.textViewUserEmailOnNavigationBar);
-                                    userEmail.setText(db.getUserDetails().get("email"));
-
-
-
-                                    // Hashmap to load data from the Sqlite database
-                                    user = new HashMap<String, String>();
-                                    user = db.getUserDetails();
-
-                                    startSocketService();
-
-                                }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                    }.execute();
-
-                } else {
-                    Toast.makeText(getApplicationContext(),
-                            "Could not connect to Internet", Toast.LENGTH_SHORT)
-                            .show();
-                }
-            }
-
-        }.execute();
-    }
-
     private ServiceConnection socketConnection = new ServiceConnection() {
 
         @Override
@@ -992,115 +982,15 @@ public class MainActivity extends CustomActivity
                 @Override
                 public void receiveSocketMessage(String type, String msg) {
 
-
                 }
 
                 @Override
                 public void receiveSocketArray(String type, final JSONArray body) {
 
-
-
-
-                    if(type.equals("theseareonline")){
-                        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-
-                        if(myFragment == null) return;
-                        if(myFragment.getFragmentName().equals("ContactList"))
-                        {
-                            final ContactList myContactListFragment = (ContactList) myFragment;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    myContactListFragment.setOnlineStatus(body); //here you call the method of your current Fragment.
-                                }
-                            });
-                        }
-
-                    }
-
                 }
 
                 @Override
                 public void receiveSocketJson(String type, final JSONObject body) {
-
-                    if(type.equals("group:you_are_added")){
-                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                        try {
-                            groupUtility.updateGroupToLocalDatabase(body.getString("groupId"), body.getString("group_name"), authtoken);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-
-                    if(type.equals("group:added_to_group")){
-                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                        groupUtility.updateGroupMembers(body.toString(), authtoken);
-                    }
-
-                    if(type.equals("group:member_left_group")){
-                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                        groupUtility.memberLeftGroup(body.toString());
-                    }
-
-                    if(type.equals("group:chat_received")){
-                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                        groupUtility.updateGroupChat(body.toString(), authtoken);
-                    }
-
-                    if(type.equals("group:removed_from_group")){
-                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                        groupUtility.removedFromGroup(body.toString(), authtoken);
-                    }
-                    if(type.equals("group:msg_status_changed")){
-                        GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                        groupUtility.updateGroupMessageStatus(body.toString(), authtoken);
-                    }
-
-                    if(type.equals("im")){
-
-                        handleIncomingChatMessage(type, body);
-
-                    }
-                    else if(type.equals("updateSentMessageStatus")){
-
-                        handleIncomingStatusForSentMessage(type, body);
-
-                    }
-                    else if(type.equals("offline")){
-                        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-
-                        if(myFragment == null) return;
-                        if(myFragment.getFragmentName().equals("ContactList"))
-                        {
-                            final ContactList myContactListFragment = (ContactList) myFragment;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    myContactListFragment.setOfflineStatusIndividual(body); //here you call the method of your current Fragment.
-                                }
-                            });
-                        }
-                    }
-                    else if(type.equals("online")){
-                        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-
-                        if(myFragment == null) return;
-                        if(myFragment.getFragmentName().equals("ContactList"))
-                        {
-                            final ContactList myContactListFragment = (ContactList) myFragment;
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    myContactListFragment.setOnlineStatusIndividual(body); //here you call the method of your current Fragment.
-                                }
-                            });
-                        }
-                    } else if(type.equals("joinedroom")){
-                        if(shouldSync){
-                            startSyncService();
-                        }
-                    }
 
                 }
 
@@ -1157,16 +1047,12 @@ public class MainActivity extends CustomActivity
 
                 @Override
                 public void sendPendingMessageUsingSocket(String contactPhone, String msg, String uniqueid) {
-                    if(socketService.isSocketConnected()) {
-                        sendPendingMessage(contactPhone, msg, uniqueid);
-                    }
+
                 }
 
                 @Override
                 public void sendMessageStatusUsingSocket(String contactPhone, String status, String uniqueid) {
-                    if(socketService.isSocketConnected()) {
-                        socketService.updateReceivedMessageStatusToServer(status, uniqueid, contactPhone);
-                    }
+
                 }
 
             });
@@ -1211,6 +1097,23 @@ public class MainActivity extends CustomActivity
                 @Override
                 public void run() {
                     myChatListFragment.loadChatList();
+                }
+            });
+
+        }
+    }
+
+    public void updatePartialContactList() {
+        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+        if(myFragment == null) return;
+        if(myFragment.getFragmentName().equals("ContactList"))
+        {
+            final ContactList myChatListFragment = (ContactList) myFragment;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    myChatListFragment.loadPartialContactList();
                 }
             });
 
@@ -1267,7 +1170,7 @@ public class MainActivity extends CustomActivity
                             try {
                                 GroupUtility groupUtility = new GroupUtility(getApplicationContext());
                                 groupUtility.sendNotification("Single message", body.getString("msg"));
-                                myGroupChatFragment.receiveMessage(body.getString("msg"), body.getString("uniqueid"), body.getString("from"), body.getString("date"));
+                                myGroupChatFragment.receiveMessage(body.getString("msg"), body.getString("uniqueid"), body.getString("from"), body.getString("date"), body.getString("type"));
                                 Utility.sendLogToServer(""+ body.getString("to") +" is now going to show the message on the UI in chat window");
                             } catch(JSONException e){
                                 e.printStackTrace();
@@ -1435,6 +1338,8 @@ public class MainActivity extends CustomActivity
                                 Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
                                 contactList1.add(name);
                                 contactList1Phone.add(phone);
+                                Utility utility = new Utility();
+                                utility.updateDatabaseWithContactImages(getApplicationContext(),contactList1Phone);
                             }
                             pCur.close();
                         }
@@ -1472,6 +1377,10 @@ public class MainActivity extends CustomActivity
                     }
                     loadNotFoundContacts(contactList1, contactList1Phone);
                     loadFoundContacts(contactList1Available, contactList1PhoneAvailable);
+
+                    Utility utility = new Utility();
+                    utility.updateDatabaseWithContactImages(getApplicationContext(),contactList1Phone);
+                    utility.updateDatabaseWithContactImages(getApplicationContext(),contactList1PhoneAvailable);
 
                     ToastNotify2("Contacts synced successfully.");
 
@@ -1607,5 +1516,6 @@ public class MainActivity extends CustomActivity
         });
 
     }
+
 
 }

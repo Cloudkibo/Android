@@ -139,75 +139,6 @@ public class SocketService extends Service {
                     }
                 }
 
-            }).on("im", new Emitter.Listener() {
-
-                @Override
-                public void call(Object... args) {
-                    Log.w("SOCKETTEST", args[0].toString());
-
-                    try {
-
-                        JSONObject payload = new JSONObject(args[0].toString());
-
-                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-
-                        String message = payload.getString("msg");
-
-                        // todo correct current date
-                        // commented as push notification handler is doing this work - this was written before push notification
-                        /*db.addChat(payload.getString("to"),
-                                payload.getString("from"),
-                                payload.getString("fromFullName"),
-                                message,
-                                (new Date().toString()), "delivered",
-                                payload.getString("uniqueid"));*/
-
-                        updateReceivedMessageStatusToServer("delivered",
-                                payload.getString("uniqueid"), payload.getString("from"));
-
-                        if (isForeground("com.cloudkibo")) {
-                            //mListener.receiveSocketJson("im", payload);
-                        } else {
-                            Intent intent = new Intent(getApplicationContext(), SplashScreen.class);
-                            PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-
-                            String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
-                            Notification n = new Notification.Builder(getApplicationContext())
-                                    .setContentTitle(payload.getString("fromFullName"))
-                                    .setContentText(subMsg)
-                                    .setSmallIcon(R.drawable.icon)
-                                    .setContentIntent(pIntent)
-                                    .setAutoCancel(true)
-                                    .build();
-
-                            NotificationManager notificationManager =
-                                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-                            //notificationManager.notify(0, n);
-
-                            try {
-                                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                                //r.play();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
-                        }
-
-                    } catch (NullPointerException e) {
-                        e.printStackTrace();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-            }).on("youareonline", new Emitter.Listener() {
-                @Override
-                public void call(Object... args) {
-                    if(mListener != null)
-                        mListener.receiveSocketJson("youareonline", new JSONObject());
-                }
             }).on("messagefordatachannel", new Emitter.Listener() {
 
                 @Override
@@ -280,24 +211,6 @@ public class SocketService extends Service {
 
                 }
 
-            }).on("theseareonline", new Emitter.Listener() {
-
-                @Override
-                public void call(Object... args) {
-
-                    try {
-
-                        JSONArray payload = new JSONArray(args[0].toString());
-
-                        if (isForeground("com.cloudkibo"))
-                            mListener.receiveSocketArray("theseareonline", payload);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
             }).on("areyoufreeforcall", new Emitter.Listener() {
 
                 @Override
@@ -353,42 +266,6 @@ public class SocketService extends Service {
 
                             socket.emit("message", message3);
                         }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-            }).on("online", new Emitter.Listener() {
-
-                @Override
-                public void call(Object... args) {
-
-                    try {
-
-                        JSONObject payload = new JSONObject(args[0].toString());
-
-                        if (isForeground("com.cloudkibo"))
-                            mListener.receiveSocketJson("online", payload);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-            }).on("offline", new Emitter.Listener() {
-
-                @Override
-                public void call(Object... args) {
-
-                    try {
-
-                        JSONObject payload = new JSONObject(args[0].toString());
-
-                        if (isForeground("com.cloudkibo"))
-                            mListener.receiveSocketJson("offline", payload);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -480,22 +357,6 @@ public class SocketService extends Service {
 
                 }
 
-            }).on("messageStatusUpdate", new Emitter.Listener() {
-
-                @Override
-                public void call(Object... args) {
-
-                    //try {
-                    //    JSONObject resp = new JSONObject(args[0].toString());
-                    //    DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-                    //    db.updateChat(resp.getString("status"), resp.getString("uniqueid"));
-                    //    mListener.receiveSocketJson("updateSentMessageStatus", resp);
-                    //} catch (JSONException e) {
-                    //    e.printStackTrace();
-                    //} // todo remove it from here
-
-                }
-
             }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
 
                 @Override
@@ -510,62 +371,6 @@ public class SocketService extends Service {
         } catch (URISyntaxException e) {
             e.printStackTrace();
         }
-
-		/*
-		SocketIOClient.connect("https://api.cloudkibo.com", new ConnectCallback() {
-
-			@Override
-			public void onConnectCompleted(Exception ex, SocketIOClient socket) {
-
-				if (ex != null) {
-					Log.e("SOCKET.IO","WebRtcClient connect failed: "+ex.getMessage());
-					return;
-				}
-
-
-				Log.d("SOCKET.IO","WebRtcClient connected.");
-
-				client = socket;
-
-				JSONObject message = new JSONObject();
-
-				try {
-					
-					JSONObject userInfo = new JSONObject();
-					userInfo.put("username", user.get("username"));
-					userInfo.put("_id", user.get("_id"));
-
-
-					message.put("user", userInfo);
-					message.put("room", room);
-
-					socket.emit("join global chatroom", new JSONArray().put(message));
-					
-
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			// specify which events you are interested in receiving
-
-				client.addListener("id", messageHandler);
-				client.addListener("message", messageHandler);
-				//client.addListener("youareonline", messageHandler);
-				client.addListener("im", messageHandler);
-				client.addListener("theseareonline", messageHandler);
-				client.addListener("offline", messageHandler);
-				client.addListener("online", messageHandler);
-				client.addListener("Reject Call", messageHandler);
-				client.addListener("Accept Call", messageHandler);
-				client.addListener("areyoufreeforcall", messageHandler);
-				client.addListener("othersideringing", messageHandler);
-				client.addListener("calleeisbusy", messageHandler);
-				client.addListener("calleeisoffline", messageHandler);
-				client.addListener("messagefordatachannel", messageHandler);
-
-			}
-		}, new Handler());
-
-	*/
     }
 
     /**
@@ -853,130 +658,6 @@ public class SocketService extends Service {
         }
     }
 
-    // todo deprecated - remove this
-    public void sendMessage(String contactPhone, String msg, String uniqueid) {
-
-        try {
-
-            JSONObject message = new JSONObject();
-
-            message.put("from", user.get("phone"));
-            message.put("to", contactPhone);
-            message.put("fromFullName", user.get("display_name"));
-            message.put("msg", msg);
-            message.put("date", (new Date().toString()));
-            message.put("uniqueid", uniqueid);
-            message.put("type", "chat");
-            message.put("file_type", "");
-
-            JSONObject completeMessage = new JSONObject();
-
-            completeMessage.put("room", room);
-            completeMessage.put("stanza", message);
-
-            socket.emit("im", completeMessage, new Ack() {
-                @Override
-                public void call(Object... args) {
-                    try {
-                        JSONObject resp = new JSONObject(args[0].toString());
-                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-                        db.updateChat(resp.getString("status"), resp.getString("uniqueid"));
-                        mListener.receiveSocketJson("updateSentMessageStatus", resp);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            Toast.makeText(getApplicationContext(),
-                    "Message not sent. No Internet", Toast.LENGTH_SHORT)
-                    .show();
-        }
-    }
-
-    public void sendPendingMessage(String contactPhone, String msg, String uniqueid) {
-
-        try {
-
-            JSONObject message = new JSONObject();
-
-            message.put("from", user.get("phone"));
-            message.put("to", contactPhone);
-            message.put("fromFullName", user.get("display_name"));
-            message.put("msg", msg);
-            message.put("date", (new Date().toString()));
-            message.put("uniqueid", uniqueid);
-
-            JSONObject completeMessage = new JSONObject();
-
-            completeMessage.put("room", room);
-            completeMessage.put("stanza", message);
-
-
-            socket.emit("im", completeMessage, new Ack() {
-                @Override
-                public void call(Object... args) {
-                    try {
-                        JSONObject resp = new JSONObject(args[0].toString());
-                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-                        db.updateChat(resp.getString("status"), resp.getString("uniqueid"));
-                        mListener.receiveSocketJson("updateSentMessageStatus", resp);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            Toast.makeText(getApplicationContext(),
-                    "Message not sent. No Internet", Toast.LENGTH_SHORT)
-                    .show();
-        }
-    }
-
-    public void updateReceivedMessageStatusToServer(String status, String uniqueid, String sender) {
-
-        try {
-
-            JSONObject message = new JSONObject();
-
-            message.put("status", status);
-            message.put("sender", sender);;
-            message.put("uniqueid", uniqueid);
-
-            final String ackStatus = status;
-
-            socket.emit("messageStatusUpdate", message, new Ack() {
-                @Override
-                public void call(Object... args) {
-                    // todo keep track of received messages status and see if they are properly communicated to server or not
-                    String test = args.toString();
-
-                    try {
-                        JSONObject resp = new JSONObject(args[0].toString());
-                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-                        db.resetSpecificChatHistorySync(resp.getString("uniqueid"));
-                        db = new DatabaseHandler(getApplicationContext());
-                        db.updateChat(ackStatus, resp.getString("uniqueid"));
-                    } catch (JSONException e ){
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-
-        }
-    }
 
     public void joinConference(JSONObject data){
         socket.emit("init", data, new Ack() {
