@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
 import java.util.TimeZone;
+import java.util.UUID;
 
 import android.content.Context;
 import android.content.Intent;
@@ -47,6 +48,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.NewChat;
 //import com.cloudkibo.R;
@@ -461,13 +463,17 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 			}else{
 				//viewHolder.profile.setImageResource(R.drawable.avatar);
-				try {
-					File f = new File(getActivity().getApplicationContext().getFilesDir(), c.getTitle());
-					Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
-					viewHolder.profile.setImageBitmap(b);
-				} catch (FileNotFoundException e){
-					e.printStackTrace();
-				}
+//
+
+                Glide
+                        .with(reference)
+                        .load(getActivity().getApplicationContext().getFilesDir()+"/"+c.getTitle())
+                        .signature(new StringSignature(UUID.randomUUID().toString()))
+                        .thumbnail(0.1f)
+                        .centerCrop()
+                        .transform(new CircleTransform(getContext()))
+                        .placeholder(R.drawable.avatar)
+                        .into(viewHolder.profile);
 			}
 
 
