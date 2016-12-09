@@ -710,7 +710,7 @@ public class MainActivity extends CustomActivity
                                     Integer.parseInt(com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath).getString("size"))
                             )) {
                                 // todo save the file in external storage
-                                Toast.makeText(getApplicationContext(), "Under construction. File storing in external storage crashes.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Under construction. Working on downloading part", Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), "Not enough storage available.", Toast.LENGTH_LONG).show();
                             }

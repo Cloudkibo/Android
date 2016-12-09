@@ -69,6 +69,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	String contactName;
 	String contactPhone;
 
+	View view;
+
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
@@ -77,6 +79,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			Bundle savedInstanceState)
 	{
 		View v = inflater.inflate(R.layout.group_chat, null);
+		view = v;
 		setHasOptionsMenu(true);
 
 		contactName = this.getArguments().getString("contactusername");
@@ -113,7 +116,6 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		txt.setInputType(InputType.TYPE_CLASS_TEXT
 				| InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 
-		setTouchNClick(v.findViewById(R.id.btnAttach));
 		setTouchNClick(v.findViewById(R.id.btnSend));
 
 		return v;
@@ -137,23 +139,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					contactName);
 			return true;
 		}
-
-		return super.onOptionsItemSelected(item);
-	}
-
-	/* (non-Javadoc)
-	 * @see com.socialshare.custom.CustomFragment#onClick(android.view.View)
-	 */
-	@Override
-	public void onClick(View v)
-	{
-		super.onClick(v);
-		if (v.getId() == R.id.btnSend)
-		{
-			sendMessage();
-
-		} else if (v.getId() == R.id.btnAttach) {
-			PopupMenu popup = new PopupMenu(getActivity().getApplicationContext(), v);
+		if(id == R.id.attachMenu){
+			PopupMenu popup = new PopupMenu(getActivity().getApplicationContext(), view);
 			MenuInflater inflater = popup.getMenuInflater();
 			inflater.inflate(R.menu.attachment, popup.getMenu());
 			popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
@@ -175,6 +162,23 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				}
 			});
 			popup.show();
+			return true;
+		}
+
+		return super.onOptionsItemSelected(item);
+	}
+
+	/* (non-Javadoc)
+	 * @see com.socialshare.custom.CustomFragment#onClick(android.view.View)
+	 */
+	@Override
+	public void onClick(View v)
+	{
+		super.onClick(v);
+		if (v.getId() == R.id.btnSend)
+		{
+			sendMessage();
+
 		}
 
 	}

@@ -24,11 +24,14 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.CloudKiboDatabaseContract;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.CircleTransform;
 import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.utils.IFragmentName;
@@ -40,6 +43,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.UUID;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -88,7 +92,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
             group_id = args.getString("group_id");
         }
         Button leave_group = (Button) footer.findViewById(R.id.leave_group);
-//        btnSelectIcon = (ImageButton) v.findViewById(R.id.selectIconBtn);
+  //      btnSelectIcon = (ImageButton) v.findViewById(R.id.selectIconBtn);
         Switch muteSwitch = (Switch) v.findViewById(R.id.switch1);
         try{
         muteSwitch.setChecked(new DatabaseHandler(getActivity().getApplicationContext()).isMute(group_id));
@@ -149,7 +153,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                 alert.show();
             }
         });
-//
+
 //        btnSelectIcon.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -286,13 +290,17 @@ public class GroupSetting extends CustomFragment implements IFragmentName
 
     public void loadDisplayImage(){
         ImageView dp = (ImageView) view.findViewById(R.id.display_ic);
-        try {
-            File f = new File(getActivity().getApplicationContext().getFilesDir(), group_id);
-            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
-            dp.setImageBitmap(b);
-        } catch (FileNotFoundException e){
-            e.printStackTrace();
-        }
+
+        Glide
+                .with(this)
+                .load(getActivity().getApplicationContext().getFilesDir()+"/"+group_id)
+                .signature(new StringSignature(UUID.randomUUID().toString()))
+                .thumbnail(0.1f)
+                .centerCrop()
+                .transform(new CircleTransform(context))
+                .placeholder(R.drawable.avatar)
+                .into(dp);
+
     }
 
     public CharSequence[] getAddtionalMembers(){
