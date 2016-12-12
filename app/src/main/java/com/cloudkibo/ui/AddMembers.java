@@ -80,14 +80,14 @@ public class AddMembers extends CustomFragment implements IFragmentName
         setHasOptionsMenu(true);
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         db = new DatabaseHandler(getContext());
-        gv=(GridView) v.findViewById(R.id.gridView1);
-        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
-        fab.bringToFront();
-        final EditText group_name = (EditText) v.findViewById(R.id.group_name);
-        contactAdapter = new CustomContactAdapter(inflater, selected_contacts, getContext());
-        gv.setAdapter(contactAdapter);
-        final AddMembers temp = this;
-        context = getContext();
+//        gv=(GridView) v.findViewById(R.id.gridView1);
+//        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
+//        fab.bringToFront();
+//        final EditText group_name = (EditText) v.findViewById(R.id.group_name);
+//        contactAdapter = new CustomContactAdapter(inflater, selected_contacts, getContext());
+//        gv.setAdapter(contactAdapter);
+//        final AddMembers temp = this;
+//        context = getContext();
 //        Button add_contacts = (Button) v.findViewById(R.id.add_contacts);
 //        Bundle args = getArguments();
 //
@@ -97,31 +97,31 @@ public class AddMembers extends CustomFragment implements IFragmentName
 //            Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
 //        }
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                group_id = randomString(10);
-                Toast.makeText(getContext(), "Group Name: " + group_name.getText().toString(), Toast.LENGTH_LONG).show();
-                db.createGroup(group_id, group_name.getText().toString(), 0);
-                addMembers(selected_contacts);
-
-//                try {
-//                  Toast.makeText(getContext(), "Total Members are: " + db.getGroupMembers(group_id).length(), Toast.LENGTH_LONG).show();
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-
-                createGroupOnServer(group_name.getText().toString(), group_id,authtoken);
-                GroupChatUI nextFrag= new GroupChatUI();
-                Bundle args = new Bundle();
-                args.putString("group_id", group_id);
-                nextFrag.setArguments(args);
-                temp.getFragmentManager().beginTransaction()
-                        .replace(R.id.content_frame, nextFrag,null)
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                group_id = randomString(10);
+//                Toast.makeText(getContext(), "Group Name: " + group_name.getText().toString(), Toast.LENGTH_LONG).show();
+//                db.createGroup(group_id, group_name.getText().toString(), 0);
+//                addMembers(selected_contacts);
+//
+////                try {
+////                  Toast.makeText(getContext(), "Total Members are: " + db.getGroupMembers(group_id).length(), Toast.LENGTH_LONG).show();
+////                } catch (JSONException e) {
+////                    e.printStackTrace();
+////                }
+//
+//                createGroupOnServer(group_name.getText().toString(), group_id,authtoken);
+//                GroupChatUI nextFrag= new GroupChatUI();
+//                Bundle args = new Bundle();
+//                args.putString("group_id", group_id);
+//                nextFrag.setArguments(args);
+//                temp.getFragmentManager().beginTransaction()
+//                        .replace(R.id.content_frame, nextFrag,null)
+//                        .addToBackStack(null)
+//                        .commit();
+//            }
+//        });
         return v;
     }
 
