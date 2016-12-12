@@ -469,8 +469,9 @@ public class GroupUtility {
                JSONObject body = new JSONObject(payload);
                 String msg_unique_id = body.getString("uniqueId");
                 String status = body.getString("status");
+
                 String user_phone = body.getString("user_phone");
-                String current_status = db.getGroupMessageStatus(msg_unique_id,user_phone);
+                String current_status = db.getGroupMessageStatus(msg_unique_id,user_phone).getJSONObject(0).getString("status");
                 String read_time = "";
                 String delivered_time = "";
                DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");

@@ -597,8 +597,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
 
-    public String getGroupMessageStatus(String msg_unique_id) throws JSONException {
-                JSONArray groups = new JSONArray();
+    public JSONArray getGroupMessageStatus(String msg_unique_id) throws JSONException {
+                JSONArray status = new JSONArray();
 
             String selectQuery = "SELECT status FROM GROUPCHATSTATUS WHERE msg_unique_id='" + msg_unique_id +"'";
 
@@ -611,25 +611,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 while (cursor.isAfterLast() != true) {
 
                 JSONObject contact = new JSONObject();
-    //                contact.put("status", cursor.getString(0));
-    //                contact.put("group_name", cursor.getString(1));
-    //                contact.put("is_mute", cursor.getString(2));
-    //                contact.put("date_creation", cursor.getString(3));
-    //                groups.put(contact);
-                    return cursor.getString(0);
-    //                cursor.moveToNext();
+                    contact.put("status", cursor.getString(0));
+                    //contact.put("user_phone", cursor.getString(1));
+                    //contact.put("read_date", cursor.getString(2));
+                    //contact.put("delivered_date", cursor.getString(3));
+                    status.put(contact);
+                    //return cursor.getString(0);
+                    cursor.moveToNext();
                 }
             }
                 cursor.close();
                 db.close();
-                // return user
-            return "";
+                 return status;
+
     }
 
-    public String getGroupMessageStatus(String msg_unique_id, String user_phone) throws JSONException {
-        JSONArray groups = new JSONArray();
+    public JSONArray getGroupMessageStatus(String msg_unique_id, String user_phone) throws JSONException {
+        JSONArray status = new JSONArray();
 
-        String selectQuery = "SELECT status FROM GROUPCHATSTATUS WHERE msg_unique_id='" + msg_unique_id +"' AND user_phone='" + user_phone +"'";
+        String selectQuery = "SELECT status, read_date, delivered_date FROM GROUPCHATSTATUS WHERE msg_unique_id='" + msg_unique_id +"' AND user_phone='" + user_phone +"'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -640,19 +640,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             while (cursor.isAfterLast() != true) {
 
                 JSONObject contact = new JSONObject();
-                //                contact.put("status", cursor.getString(0));
-                //                contact.put("group_name", cursor.getString(1));
-                //                contact.put("is_mute", cursor.getString(2));
-                //                contact.put("date_creation", cursor.getString(3));
-                //                groups.put(contact);
-                return cursor.getString(0);
-                //                cursor.moveToNext();
+                                contact.put("status", cursor.getString(0));
+                                contact.put("read_date", cursor.getString(1));
+                                contact.put("delivered_date", cursor.getString(2));
+                                //contact.put("delivered_date", cursor.getString(3));
+
+                                status.put(contact);
+                //return cursor.getString(0);
+                cursor.moveToNext();
             }
         }
         cursor.close();
         db.close();
-        // return user
-        return "";
+         return status;
+
     }
 
     public JSONArray getAllGroups() throws JSONException {
