@@ -67,6 +67,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
     private String group_name = "";
     CustomContactAdapter contactAdapter;
     ArrayList<String> selected_contacts;
+    AddMembers temp = this;
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
      */
@@ -80,10 +81,11 @@ public class AddMembers extends CustomFragment implements IFragmentName
         setHasOptionsMenu(true);
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         db = new DatabaseHandler(getContext());
+        Button create_button = (Button) v.findViewById(R.id.create_group);
 //        gv=(GridView) v.findViewById(R.id.gridView1);
 //        FloatingActionButton fab = (FloatingActionButton) v.findViewById(R.id.fab);
 //        fab.bringToFront();
-//        final EditText group_name = (EditText) v.findViewById(R.id.group_name);
+        final EditText group_name = (EditText) v.findViewById(R.id.group_name);
 //        contactAdapter = new CustomContactAdapter(inflater, selected_contacts, getContext());
 //        gv.setAdapter(contactAdapter);
 //        final AddMembers temp = this;
@@ -97,19 +99,30 @@ public class AddMembers extends CustomFragment implements IFragmentName
 //            Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
 //        }
 
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                group_id = randomString(10);
-//                Toast.makeText(getContext(), "Group Name: " + group_name.getText().toString(), Toast.LENGTH_LONG).show();
-//                db.createGroup(group_id, group_name.getText().toString(), 0);
+        create_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                group_id = randomString(10);
+                Toast.makeText(getContext(), "Group Name: " + group_name.getText().toString(), Toast.LENGTH_LONG).show();
+                db.createGroup(group_id, group_name.getText().toString(), 0);
 //                addMembers(selected_contacts);
-//
-////                try {
-////                  Toast.makeText(getContext(), "Total Members are: " + db.getGroupMembers(group_id).length(), Toast.LENGTH_LONG).show();
-////                } catch (JSONException e) {
-////                    e.printStackTrace();
-////                }
+                CreateGroup nextFrag= new CreateGroup();
+                Bundle args = new Bundle();
+                args.putString("group_id", group_id);
+                args.putString("group_name", group_name.getText().toString());
+                nextFrag.setArguments(args);
+                temp.getFragmentManager().beginTransaction()
+                        .replace(R.id.content_frame, nextFrag,null)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+
+//                try {
+//                  Toast.makeText(getContext(), "Total Members are: " + db.getGroupMembers(group_id).length(), Toast.LENGTH_LONG).show();
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
 //
 //                createGroupOnServer(group_name.getText().toString(), group_id,authtoken);
 //                GroupChatUI nextFrag= new GroupChatUI();
@@ -147,47 +160,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
      * @see com.socialshare.custom.CustomFragment#onClick(android.view.View)
      */
 
-    public void createGroupOnServer(final String group_name, final String group_id, final String authtoken){
 
-
-
-        new AsyncTask<String, String, JSONObject>() {
-
-            @Override
-            protected JSONObject doInBackground(String... args) {
-                UserFunctions userFunctions = new UserFunctions();
-                try {
-                    DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-                    db.createGroupServerPending(group_id, group_name, getGroupCreationData(group_name, group_id).getJSONArray("members").toString());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                return userFunctions.sendCreateGroupToServer(getGroupCreationData(group_name, group_id), authtoken);
-            }
-
-            @Override
-            protected void onPostExecute(JSONObject row) {
-
-                if(row != null){
-                    if(row.has("Error")){
-                        Log.d("Add Members", "No Internet. Group information saved in pending groups table.");
-                    } else {
-                        try {
-                            DatabaseHandler db = new DatabaseHandler(getContext());
-                            db.deleteGroupServerPending(row.getString("unique_id"));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        Toast.makeText(getContext(), row.toString(), Toast.LENGTH_LONG).show();
-                        Toast.makeText(getContext(),"New Group Created Successfully", Toast.LENGTH_LONG).show();
-                    }
-//                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
-                }
-            }
-
-        }.execute();
-
-    }
 
     @Override
     public void onClick(View v)
@@ -246,29 +219,8 @@ public class AddMembers extends CustomFragment implements IFragmentName
         return null;
     }
 
-    public JSONObject getGroupCreationData(String group_name, String group_id){
-        JSONObject groupPost = new JSONObject();
-        JSONObject body = new JSONObject();
-        try {
-            body.put("group_name", group_name);
-            body.put("unique_id",  group_id);
-            body.put("members",  new JSONArray(selected_contacts));
-            groupPost.put("body", body);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return body;
-    }
 
-    public void addMembers(ArrayList<String> phones){
 
-        for (int i = 0; i< phones.size(); i++){
-            db.addGroupMember(group_id,phones.get(i),0,"joined");
-            Toast.makeText(context, phones.get(i) + "Added", Toast.LENGTH_SHORT).show();
-        }
-        db.addGroupMember(group_id,db.getUserDetails().get("phone"),1,"joined");
-        Toast.makeText(context,db.getUserDetails().get("phone") + " added as admin", Toast.LENGTH_SHORT).show();
-    }
 
     public String getFragmentName()
     {

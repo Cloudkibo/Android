@@ -75,6 +75,7 @@ import com.cloudkibo.socket.BoundServiceListener;
 import com.cloudkibo.socket.SocketService;
 import com.cloudkibo.socket.SocketService.SocketBinder;
 import com.cloudkibo.ui.AboutChat;
+import com.cloudkibo.ui.AddMembers;
 import com.cloudkibo.ui.CallHistory;
 import com.cloudkibo.ui.ChatList;
 import com.cloudkibo.ui.ContactList;
@@ -533,7 +534,7 @@ public class MainActivity extends CustomActivity
 //        }
         else if(pos == 4){
             title = "Create Group";
-            f = new CreateGroup();
+            f = new AddMembers();
         }
 
         else if(pos == -5){ // this is removing of conference tab

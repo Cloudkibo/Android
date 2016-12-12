@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.provider.Telephony;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -68,6 +69,8 @@ public class CreateGroup extends CustomFragment implements IFragmentName
     private ContactAdapter contactAdapter;
     CreateGroup  reference = this;
     HorizontalViewAdapter adapter;
+    String group_id;
+    String group_name;
 
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -84,6 +87,13 @@ public class CreateGroup extends CustomFragment implements IFragmentName
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         if(contactList == null){
             contactList = new ArrayList<ContactItem>();
+        }
+        Bundle args = getArguments();
+
+        if (args  != null){
+            group_id = args.getString("group_id");
+            group_name = args.getString("group_name");
+            Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
         }
 
         adapter = new HorizontalViewAdapter(innerLay);
@@ -103,15 +113,16 @@ public class CreateGroup extends CustomFragment implements IFragmentName
                 //String group_id = randomString(10);
                 //Toast.makeText(getContext(), "Group Name: " + group_name.getText().toString(), Toast.LENGTH_LONG).show();
                 //db.createGroup(group_id, group_name.getText().toString(), 0);
-                AddMembers nextFrag= new AddMembers();
-//                Bundle args = new Bundle();
-//                args.putString("group_id", group_id);
-//                args.putString("group_name", group_name.getText().toString());
-//                nextFrag.setArguments(args);
-                nextFrag.setSelectedContacts(adapter.getPhones());
+                addMembers(adapter.getPhones());
+                createGroupOnServer(group_name, group_id, adapter.getPhones(), authtoken);
+                GroupChatUI nextFrag= new GroupChatUI();
+                Bundle args = new Bundle();
+                args.putString("group_id", group_id);
+                args.putString("group_name", group_name);
+                nextFrag.setArguments(args);
                 temp.getFragmentManager().beginTransaction()
                         .replace(R.id.content_frame, nextFrag,null)
-                        .addToBackStack(null)
+                        .addToBackStack(group_name)
                         .commit();
             }
         });
@@ -184,6 +195,15 @@ public class CreateGroup extends CustomFragment implements IFragmentName
         return "About Chat";
     }
 
+    public void addMembers(ArrayList<String> phones){
+
+        for (int i = 0; i< phones.size(); i++){
+            db.addGroupMember(group_id,phones.get(i),0,"joined");
+            Toast.makeText(getContext(), phones.get(i) + "Added", Toast.LENGTH_SHORT).show();
+        }
+        db.addGroupMember(group_id,db.getUserDetails().get("phone"),1,"joined");
+        Toast.makeText(getContext(),db.getUserDetails().get("phone") + " added as admin", Toast.LENGTH_SHORT).show();
+    }
 
     String randomString(final int length) {
         String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
@@ -310,6 +330,63 @@ public class CreateGroup extends CustomFragment implements IFragmentName
             }
         }
 
+
+    }
+
+
+    public JSONObject getGroupCreationData(String group_name, String group_id, ArrayList<String> selected_contacts){
+        JSONObject groupPost = new JSONObject();
+        JSONObject body = new JSONObject();
+        try {
+            body.put("group_name", group_name);
+            body.put("unique_id",  group_id);
+            body.put("members",  new JSONArray(selected_contacts));
+            groupPost.put("body", body);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return body;
+    }
+
+    public void createGroupOnServer(final String group_name, final String group_id, final ArrayList<String> selected_contacts, final String authtoken){
+
+
+
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunctions = new UserFunctions();
+                try {
+                    DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+                    db.createGroupServerPending(group_id, group_name, getGroupCreationData(group_name, group_id, selected_contacts).getJSONArray("members").toString());
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return userFunctions.sendCreateGroupToServer(getGroupCreationData(group_name, group_id, selected_contacts), authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+
+                if(row != null){
+                    if(row.has("Error")){
+                        Log.d("Add Members", "No Internet. Group information saved in pending groups table.");
+                    } else {
+                        try {
+                            DatabaseHandler db = new DatabaseHandler(getContext());
+                            db.deleteGroupServerPending(row.getString("unique_id"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Toast.makeText(getContext(), row.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(),"New Group Created Successfully", Toast.LENGTH_LONG).show();
+                    }
+//                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
+                }
+            }
+
+        }.execute();
 
     }
 
