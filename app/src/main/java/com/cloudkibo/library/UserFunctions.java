@@ -358,16 +358,6 @@ public class UserFunctions {
         return userchatresponse;
 	}
 
-    public JSONObject sendAddressBookNumberContactsToServer(List<NameValuePair> params, String authtoken) {
-        JSONObject contactresponse = connection.sendObjectToServer(phoneContactsURL, authtoken, params);
-        return contactresponse;
-    }
-
-    public JSONObject sendAddressBookEmailContactsToServer(List<NameValuePair> params, String authtoken) {
-        JSONObject contactresponse = connection.sendObjectToServer(emailContactsURL, authtoken, params);
-        return contactresponse;
-    }
-
     public JSONObject sendAddressBookPhoneContactsToServer(List<NameValuePair> params, String authtoken) {
         JSONObject contactresponse = connection.sendObjectToServer(phoneContactsURL, authtoken, params);
         return contactresponse;

@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.Manifest;
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
@@ -358,7 +356,7 @@ public class MainActivity extends CustomActivity
     protected void onDestroy() {
 
         if(isBound){
-            //unbindService(socketConnection);
+            unbindService(socketConnection);
             //stopSocketService();
         }
 
@@ -621,7 +619,7 @@ public class MainActivity extends CustomActivity
     }
 
     private void uploadIconChooser(){
-        Intent getContentIntent = FileUtils.createGetImageContentIntent();
+        Intent getContentIntent = FileUtils.createGetContentIntentForImage();
 
         Intent intent = Intent.createChooser(getContentIntent, "Select an image");
         startActivityForResult(intent, 111);
@@ -639,8 +637,8 @@ public class MainActivity extends CustomActivity
     }
 
     private void uploadChatAttachmentFileChooser(){
-        Intent getContentIntent = FileUtils.createGetImageContentIntent();
-        if(attachmentType.equals("document")) getContentIntent = FileUtils.createGetDocumentContentIntent();
+        Intent getContentIntent = FileUtils.createGetContentIntentForImage();
+        if(attachmentType.equals("document")) getContentIntent = FileUtils.createGetContentIntentForDocument();
 
         Intent intent = Intent.createChooser(getContentIntent, "Select file");
         startActivityForResult(intent, 112);
@@ -706,13 +704,13 @@ public class MainActivity extends CustomActivity
                     final Uri uri = data.getData();
                     final String selectedFilePath = FileUtils.getPath(getApplicationContext(), uri);
                     String fileType = attachmentType;
-                    if(com.cloudkibo.webrtc.filesharing.Utility.isExternalStorageWritable()){
+                    if(FileUtils.isExternalStorageWritable()){
                         try {
                             if (com.cloudkibo.webrtc.filesharing.Utility.isFreeSpaceAvailableForFileSize(
                                     Integer.parseInt(com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath).getString("size"))
                             )) {
                                 // todo save the file in external storage
-                                Toast.makeText(getApplicationContext(), "Under construction. File storing in external storage crashes.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "Under construction. Working on downloading part", Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), "Not enough storage available.", Toast.LENGTH_LONG).show();
                             }
@@ -824,6 +822,7 @@ public class MainActivity extends CustomActivity
      */
     private void setActionBarTitle()
     {
+        if(drawerLayout == null) setupDrawer();
         if (drawerLayout.isDrawerOpen(drawerLeft))
         {
             getActionBar().setTitle(R.string.app_name);

@@ -535,7 +535,7 @@ public class FileUtils {
      * @return The intent for opening a file with Intent.createChooser()
      * @author paulburke
      */
-    public static Intent createGetImageContentIntent() {
+    public static Intent createGetContentIntentForImage() {
         // Implicitly allow the user to select a particular kind of data
         final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         // The MIME data type filter
@@ -545,7 +545,7 @@ public class FileUtils {
         return intent;
     }
 
-    public static Intent createGetDocumentContentIntent() {
+    public static Intent createGetContentIntentForDocument() {
         // Implicitly allow the user to select a particular kind of data
         final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         // The MIME data type filter
@@ -586,4 +586,47 @@ public class FileUtils {
 	    is.close();
 	    return bytes;
 	}
+
+    /* Checks if external storage is available for read and write */
+    public static boolean isExternalStorageWritable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    /* Checks if external storage is available to at least read */
+    public static boolean isExternalStorageReadable() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state) ||
+            Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static File getDownloadStorageDir(String foldername) {
+        // Get the directory for the user's public pictures directory.
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOWNLOADS), foldername);
+        if (!file.mkdirs()) {
+            Log.e("FILESTORAGE", "Directory not created");
+        }
+        return file;
+    }
+
+    public static boolean isFreeSpaceAvailableForFileSize(String foldername, int fileSize){
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOWNLOADS), foldername);
+        if (!file.mkdirs()) {
+            Log.e("FILESTORAGE", "Directory not created");
+        }
+
+        if(fileSize < (file.getFreeSpace() - 10000000)){
+            return true;
+        }
+
+        return false;
+    }
 }

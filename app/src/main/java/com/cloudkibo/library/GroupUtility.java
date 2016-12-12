@@ -24,6 +24,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -160,11 +162,11 @@ public class GroupUtility {
 
     }
 
-    public void downloadGroupIcon(final String payload, Context context, final String auth_token){
+    public void downloadGroupIcon(final String payload, final Context context, final String auth_token){
         try {
-            JSONObject data = new JSONObject(payload);
+            final JSONObject data = new JSONObject(payload);
             Ion.with(context)
-                    .load("https://api.cloudkibo.com/api/groupmessaging/uploadIcon")
+                    .load("https://api.cloudkibo.com/api/groupmessaging/downloadIcon")
                     .setHeader("kibo-token", auth_token)
                     .setBodyParameter("unique_id", data.getString("groupId"))
                     .write(new File(context.getFilesDir().getPath() + "" + data.getString("groupId")))
@@ -173,6 +175,19 @@ public class GroupUtility {
                         public void onCompleted(Exception e, File file) {
                             // download done...
                             // do stuff with the File or error
+
+                            try {
+                                FileOutputStream outputStream;
+                                outputStream = context.openFileOutput(data.getString("groupId"), Context.MODE_PRIVATE);
+                                outputStream.write(com.cloudkibo.webrtc.filesharing.Utility.convertFileToByteArray(file));
+                                outputStream.close();
+                            }catch (IOException e2){
+                                e2.printStackTrace();
+                            }catch (JSONException e3){
+                                e3.printStackTrace();
+                            }
+
+                            file.delete();
 
                             Log.d("GROUPFILE", "Downloaded icon");
                         }

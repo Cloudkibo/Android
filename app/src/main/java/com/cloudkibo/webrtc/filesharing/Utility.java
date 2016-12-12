@@ -40,12 +40,12 @@ public class Utility {
 		
 		try {
 			
-			if(isExternalStorageWritable()){
+			if(FileUtils.isExternalStorageWritable()){
 			
 				String folderName = FOLDER_NAME;
 				//convert array of bytes into file
 			    FileOutputStream fileOuputStream = 
-		                  new FileOutputStream(getDownloadStorageDir(folderName)+"/"+fileName); 
+		                  new FileOutputStream(FileUtils.getDownloadStorageDir(folderName)+"/"+fileName);
 			    fileOuputStream.write(bytes);
 			    fileOuputStream.close();
 			    
@@ -97,26 +97,7 @@ public class Utility {
 	public static int getChunksPerACK(){
 		return CHUNKS_PER_ACK;
 	}
-	
-	/* Checks if external storage is available for read and write */
-	public static boolean isExternalStorageWritable() {
-	    String state = Environment.getExternalStorageState();
-	    if (Environment.MEDIA_MOUNTED.equals(state)) {
-	        return true;
-	    }
-	    return false;
-	}
 
-	/* Checks if external storage is available to at least read */
-	public static boolean isExternalStorageReadable() {
-	    String state = Environment.getExternalStorageState();
-	    if (Environment.MEDIA_MOUNTED.equals(state) ||
-	        Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-	        return true;
-	    }
-	    return false;
-	}
-	
 	public static boolean isFreeSpaceAvailableForFileSize(int fileSize){
 		 File file = new File(Environment.getExternalStoragePublicDirectory(
 		            Environment.DIRECTORY_DOWNLOADS), FOLDER_NAME);
@@ -130,15 +111,5 @@ public class Utility {
 		    
 		    return false;
 	}
-	
-	public static File getDownloadStorageDir(String foldername) {
-	    // Get the directory for the user's public pictures directory. 
-	    File file = new File(Environment.getExternalStoragePublicDirectory(
-	            Environment.DIRECTORY_DOWNLOADS), foldername);
-	    if (!file.mkdirs()) {
-	        Log.e("FILESTORAGE", "Directory not created");
-	    }
-	    return file;
-	}
-	
+
 }
