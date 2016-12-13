@@ -234,7 +234,7 @@ public class MyHandler extends NotificationsHandler {
                         row = row.getJSONArray("msg").getJSONObject(0);
 
                         db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
-                                row.getString("msg"), row.getString("date"),
+                                row.getString("msg"), row.getString("date_server_received"),
                                 row.has("status") ? row.getString("status") : "",
                                 row.has("uniqueid") ? row.getString("uniqueid") : "",
                                 row.has("type") ? row.getString("type") : "",

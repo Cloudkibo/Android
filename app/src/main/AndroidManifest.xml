@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cloudkibo"
     android:hardwareAccelerated="true"
-    android:versionCode="86"
+    android:versionCode="87"
     android:versionName="1.1"
     android:installLocation="preferExternal">
 

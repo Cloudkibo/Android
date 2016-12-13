@@ -1169,7 +1169,7 @@ public class MainActivity extends CustomActivity
                             try {
                                 GroupUtility groupUtility = new GroupUtility(getApplicationContext());
                                 groupUtility.sendNotification("Single message", body.getString("msg"));
-                                myGroupChatFragment.receiveMessage(body.getString("msg"), body.getString("uniqueid"), body.getString("from"), body.getString("date"), body.getString("type"));
+                                myGroupChatFragment.receiveMessage(body.getString("msg"), body.getString("uniqueid"), body.getString("from"), body.getString("date_server_received"), body.getString("type"));
                                 Utility.sendLogToServer(""+ body.getString("to") +" is now going to show the message on the UI in chat window");
                             } catch(JSONException e){
                                 e.printStackTrace();

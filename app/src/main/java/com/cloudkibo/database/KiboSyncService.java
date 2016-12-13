@@ -705,12 +705,21 @@ public class KiboSyncService extends Service {
                             for (int i=0; i < jsonA.length(); i++) {
                                 JSONObject row = jsonA.getJSONObject(i);
 
-                                db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
-                                        row.getString("msg"), row.getString("date"),
-                                        row.has("status") ? row.getString("status") : "",
-                                        row.has("uniqueid") ? row.getString("uniqueid") : "",
-                                        row.has("type") ? row.getString("type") : "",
-                                        row.has("file_type") ? row.getString("file_type") : "");
+                                if(db.getUserDetails().get("phone").equals(row.getString("from"))) {
+                                    db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
+                                            row.getString("msg"), row.getString("date"),
+                                            row.has("status") ? row.getString("status") : "",
+                                            row.has("uniqueid") ? row.getString("uniqueid") : "",
+                                            row.has("type") ? row.getString("type") : "",
+                                            row.has("file_type") ? row.getString("file_type") : "");
+                                } else {
+                                    db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
+                                            row.getString("msg"), row.getString("date_server_received"),
+                                            row.has("status") ? row.getString("status") : "",
+                                            row.has("uniqueid") ? row.getString("uniqueid") : "",
+                                            row.has("type") ? row.getString("type") : "",
+                                            row.has("file_type") ? row.getString("file_type") : "");
+                                }
 
                                 if(row.has("status")){
                                     if(row.getString("to").equals(db.getUserDetails().get("phone")) && row.getString("status").equals("sent")){
@@ -763,6 +772,8 @@ public class KiboSyncService extends Service {
                             e.printStackTrace();
                         }*/
 
+                            mListener.chatLoaded();
+                        } else {
                             mListener.chatLoaded();
                         }
                     }
@@ -831,12 +842,21 @@ public class KiboSyncService extends Service {
                                     db = new DatabaseHandler(
                                             getApplicationContext());
 
-                                    db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
-                                            row.getString("msg"), row.getString("date"),
-                                            row.has("status") ? row.getString("status") : "",
-                                            row.has("uniqueid") ? row.getString("uniqueid") : "",
-                                            row.has("type") ? row.getString("type") : "",
-                                            row.has("file_type") ? row.getString("file_type") : "");
+                                    if(db.getUserDetails().get("phone").equals(row.getString("from"))) {
+                                        db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
+                                                row.getString("msg"), row.getString("date"),
+                                                row.has("status") ? row.getString("status") : "",
+                                                row.has("uniqueid") ? row.getString("uniqueid") : "",
+                                                row.has("type") ? row.getString("type") : "",
+                                                row.has("file_type") ? row.getString("file_type") : "");
+                                    } else {
+                                        db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
+                                                row.getString("msg"), row.getString("date_server_received"),
+                                                row.has("status") ? row.getString("status") : "",
+                                                row.has("uniqueid") ? row.getString("uniqueid") : "",
+                                                row.has("type") ? row.getString("type") : "",
+                                                row.has("file_type") ? row.getString("file_type") : "");
+                                    }
 
                                     if(row.has("status")){
                                         if(row.getString("to").equals(db.getUserDetails().get("phone")) && row.getString("status").equals("sent")){

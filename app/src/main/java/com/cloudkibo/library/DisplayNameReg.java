@@ -185,7 +185,8 @@ public class DisplayNameReg extends Activity
         final EditText displayNameText = (EditText) findViewById(R.id.editTextDisplayName);
 
 
-        new AsyncTask<String, String, Boolean>() {
+        new AsyncTask<String, String, JSONObject>() {
+
             String displayName;
 
             @Override
@@ -196,99 +197,58 @@ public class DisplayNameReg extends Activity
             }
 
             @Override
-            protected Boolean doInBackground(String... args) {
-
-                ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-                NetworkInfo netInfo = cm.getActiveNetworkInfo();
-                if (netInfo != null && netInfo.isConnected()) {
-                    try {
-                        URL url = new URL("http://www.google.com");
-                        HttpURLConnection urlc = (HttpURLConnection) url
-                                .openConnection();
-                        urlc.setConnectTimeout(3000);
-                        urlc.connect();
-                        if (urlc.getResponseCode() == 200) {
-                            return true;
-                        }
-                    } catch (MalformedURLException e1) {
-                        e1.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-                return false;
-
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunction = new UserFunctions();
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                params.add(new BasicNameValuePair("display_name", displayName));
+                JSONObject json = userFunction.setDisplayName(params, authtoken);
+                return json;
             }
 
             @Override
-            protected void onPostExecute(Boolean th) {
+            protected void onPostExecute(JSONObject json) {
+                try {
 
-                if (th == true) {
+                    if(json != null){
 
-                    new AsyncTask<String, String, JSONObject>() {
+                        DatabaseHandler db = new DatabaseHandler(
+                                getApplicationContext());
 
-                        @Override
-                        protected JSONObject doInBackground(String... args) {
-                            UserFunctions userFunction = new UserFunctions();
-                            List<NameValuePair> params = new ArrayList<NameValuePair>();
-                            params.add(new BasicNameValuePair("display_name", displayName));
-                            JSONObject json = userFunction.setDisplayName(params, authtoken);
-                            return json;
-                        }
+                        // Clear all previous data in SQlite database.
 
-                        @Override
-                        protected void onPostExecute(JSONObject json) {
-                            try {
+                        UserFunctions logout = new UserFunctions();
+                        logout.logoutUser(getApplicationContext());
 
-                                if(json != null){
+                        db.resetTables();
+                        db.resetContactsTable();
+                        db.resetChatsTable();
 
-                                    DatabaseHandler db = new DatabaseHandler(
-                                            getApplicationContext());
+                        db.addUser(json.getString("_id"),
+                                json.getString("display_name"),
+                                json.getString("phone"),
+                                json.getString("national_number"),
+                                json.getString("country_prefix"),
+                                json.getString("date"));
 
-                                    // Clear all previous data in SQlite database.
-
-                                    UserFunctions logout = new UserFunctions();
-                                    logout.logoutUser(getApplicationContext());
-
-                                    db.resetTables();
-                                    db.resetContactsTable();
-                                    db.resetChatsTable();
-
-                                    db.addUser(json.getString("_id"),
-                                            json.getString("display_name"),
-                                            json.getString("phone"),
-                                            json.getString("national_number"),
-                                            json.getString("country_prefix"),
-                                            json.getString("date"));
-
-                                    if(!json.has("display_name")) {
-                                        hintText.setText("Some error occurred. Please contact author.");
-                                    } else {
-                                        hintText.setText(hintText.getText() + "\n"+ "Setting contact list...");
-                                        //HashMap<String,String> user = db.getUserDetails();
-                                        //user.isEmpty();
-                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
-                                            requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
-                                            //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
-                                        } else {
-                                            loadContactsFromAddressBook(); // todo this is temporary fix, fix it with 6.0 testing
-                                            //kiboSyncService.startSync(authtoken);
-                                        }
-                                    }
-
-                                }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                        if(!json.has("display_name")) {
+                            hintText.setText("Some error occurred. Please contact author.");
+                        } else {
+                            hintText.setText(hintText.getText() + "\n"+ "Setting contact list...");
+                            //HashMap<String,String> user = db.getUserDetails();
+                            //user.isEmpty();
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+                                requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+                                //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+                            } else {
+                                loadContactsFromAddressBook(); // todo this is temporary fix, fix it with 6.0 testing
+                                //kiboSyncService.startSync(authtoken);
                             }
                         }
 
-                    }.execute();
+                    }
 
-                } else {
-                    Toast.makeText(getApplicationContext(),
-                            "Could not connect to Internet", Toast.LENGTH_SHORT)
-                            .show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
                 }
             }
 
