@@ -34,7 +34,7 @@ public class GroupChatAdapter extends BaseAdapter{
     @Override
     public int getCount() {
         // TODO Auto-generated method stub
-        return result.size();
+        return convList.size();
     }
 
     @Override
