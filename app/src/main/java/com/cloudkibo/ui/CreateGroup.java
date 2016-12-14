@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.cloudkibo.MainActivity;
 import com.cloudkibo.NewChat;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
@@ -71,6 +72,7 @@ public class CreateGroup extends CustomFragment implements IFragmentName
     HorizontalViewAdapter adapter;
     String group_id;
     String group_name;
+    Context context = getContext();
 
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -358,7 +360,6 @@ public class CreateGroup extends CustomFragment implements IFragmentName
             protected JSONObject doInBackground(String... args) {
                 UserFunctions userFunctions = new UserFunctions();
                 try {
-                    DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
                     db.createGroupServerPending(group_id, group_name, getGroupCreationData(group_name, group_id, selected_contacts).getJSONArray("members").toString());
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -374,13 +375,12 @@ public class CreateGroup extends CustomFragment implements IFragmentName
                         Log.d("Add Members", "No Internet. Group information saved in pending groups table.");
                     } else {
                         try {
-                            DatabaseHandler db = new DatabaseHandler(getContext());
                             db.deleteGroupServerPending(row.getString("unique_id"));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        Toast.makeText(getContext(), row.toString(), Toast.LENGTH_LONG).show();
-                        Toast.makeText(getContext(),"New Group Created Successfully", Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.mainActivity, row.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(MainActivity.mainActivity,"New Group Created Successfully", Toast.LENGTH_LONG).show();
                     }
 //                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
                 }

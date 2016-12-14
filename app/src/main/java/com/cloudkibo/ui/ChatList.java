@@ -57,6 +57,7 @@ import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.CloudKiboDatabaseContract;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.CircleTransform;
+import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.ChatItem;
 import com.cloudkibo.model.ContactItem;
@@ -86,6 +87,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 	private String authtoken;
 	private ChatList reference = this;
 	private ArrayList<String> contact_phone = new ArrayList<String>();
+    DatabaseHandler db;
 
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -98,7 +100,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 		setHasOptionsMenu(true);
 
 		authtoken = getActivity().getIntent().getExtras().getString("authtoken");
-		if(chatList == null){
+        db = new DatabaseHandler(getContext());
+        if(chatList == null){
 			chatList =  new ArrayList<ChatItem>();
 		}
 		loadChatList();
@@ -250,7 +253,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 	public void loadChatList()
 	{
-		final DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+
         final ArrayList<ChatItem> chatList1 = new ArrayList<ChatItem>();
 
         new AsyncTask<String, String, ArrayList<ChatItem>>() {
@@ -270,6 +273,10 @@ public class ChatList extends CustomFragment implements IFragmentName
 //					JSONArray chats = db.getChatList();
 //			JSONArray groups = db.getAllGroups();
                     JSONArray groups = db.getMyGroups(db.getUserDetails().get("phone"));
+
+                    groups = UserFunctions.sortJSONArray(groups, "group_name");
+                    chats = UserFunctions.sortJSONArray(chats, "display_name");
+
                     for (int i=0; i < chats.length(); i++) {
                         JSONObject row = chats.getJSONObject(i);
                         String image = row.optString("image_uri");
