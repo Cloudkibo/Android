@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -156,6 +157,7 @@ public class MainActivity extends CustomActivity
 
     Boolean shouldSync;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
+    final Map<String, String> photo_uri = new HashMap<>();
 
 
     /* (non-Javadoc)
@@ -1309,6 +1311,8 @@ public class MainActivity extends CustomActivity
                                 cur.getColumnIndex(ContactsContract.Contacts._ID));
                         String name = cur.getString(
                                 cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                        String image_uri = cur.getString(
+                                cur.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
                         //Log.w("Contact Name : ", "Name " + name + "");
                         if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
                             Cursor pCur = cr.query(
@@ -1338,8 +1342,7 @@ public class MainActivity extends CustomActivity
                                 Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
                                 contactList1.add(name);
                                 contactList1Phone.add(phone);
-                                Utility utility = new Utility();
-                                utility.updateDatabaseWithContactImages(getApplicationContext(),contactList1Phone);
+                                photo_uri.put(phone,image_uri);
                             }
                             pCur.close();
                         }
@@ -1377,10 +1380,6 @@ public class MainActivity extends CustomActivity
                     }
                     loadNotFoundContacts(contactList1, contactList1Phone);
                     loadFoundContacts(contactList1Available, contactList1PhoneAvailable);
-
-                    Utility utility = new Utility();
-                    utility.updateDatabaseWithContactImages(getApplicationContext(),contactList1Phone);
-                    utility.updateDatabaseWithContactImages(getApplicationContext(),contactList1PhoneAvailable);
 
                     ToastNotify2("Contacts synced successfully.");
 
@@ -1425,7 +1424,8 @@ public class MainActivity extends CustomActivity
                     contactList1.get(i),
                     "null",
                     "No",
-                    "N/A");
+                    "N/A",
+                    photo_uri.get(contactList1Phone.get(i)));
         }
 
         try {
@@ -1447,7 +1447,8 @@ public class MainActivity extends CustomActivity
                     contactList1.get(i),
                     "null",
                     "Yes",
-                    "I am on CloudKibo");
+                    "I am on CloudKibo",
+                    photo_uri.get(contactList1Phone.get(i)));
             // todo work for status here
         }
 
