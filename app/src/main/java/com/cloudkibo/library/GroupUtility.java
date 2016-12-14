@@ -474,15 +474,14 @@ public class GroupUtility {
                 String current_status = db.getGroupMessageStatus(msg_unique_id,user_phone).getJSONObject(0).getString("status");
                 String read_time = "";
                 String delivered_time = "";
-               DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-               Date date = new Date();
+                String current_time = Utility.getCurrentTimeInISO();
                if(!current_status.equals("seen")){
                    if(status.equals("delivered")){
-                       delivered_time = dateFormat.format(date);
+                       delivered_time = current_time;
                        db.updateGroupChatStatusDeliveredTime(msg_unique_id, status, user_phone, delivered_time);
                    }
                    if(status.equals("seen")){
-                       read_time = dateFormat.format(date);
+                       read_time = current_time;
                        db.updateGroupChatStatusReadTime(msg_unique_id, status, user_phone, read_time);
                    }
                    Toast.makeText(ctx, "Updated Chat Status to: " + status, Toast.LENGTH_LONG).show();

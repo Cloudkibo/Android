@@ -239,7 +239,7 @@ public class KiboSyncService extends Service {
             data.put("unique_ids", array);
 
             UserFunctions userFunc = new UserFunctions();
-            JSONArray resultChat = userFunc.checkStatusOfGroupMessages(data, authtoken);
+//            JSONArray resultChat = userFunc.checkStatusOfGroupMessages(data, authtoken);
 
             
         }catch(JSONException e ){
@@ -463,9 +463,9 @@ public class KiboSyncService extends Service {
                     }
                     loadNotFoundContacts(contactList1, contactList1Phone);
                     loadFoundContacts(contactList1Available, contactList1PhoneAvailable);
-                    Utility utility = new Utility();
-                    utility.updateDatabaseWithContactImages(getApplicationContext(), contactList1Phone);
-                    utility.updateDatabaseWithContactImages(getApplicationContext(), contactList1PhoneAvailable);
+//                    Utility utility = new Utility();
+//                    utility.updateDatabaseWithContactImages(getApplicationContext(), contactList1Phone);
+//                    utility.updateDatabaseWithContactImages(getApplicationContext(), contactList1PhoneAvailable);
 
                 } catch (JSONException e) {
                     e.printStackTrace();

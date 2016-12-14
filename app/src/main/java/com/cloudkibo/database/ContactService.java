@@ -26,7 +26,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by sojharo on 26/09/2016.
@@ -35,6 +37,7 @@ public class ContactService extends Service {
 
     private int mContactCount;
     private String authtoken;
+    final Map<String, String> photo_uri = new HashMap<>();
 
     @Override
     public IBinder onBind(Intent arg0) {
@@ -186,6 +189,7 @@ public class ContactService extends Service {
                                 Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
                                 contactList1.add(name);
                                 contactList1Phone.add(phone);
+                                photo_uri.put(phone,image_uri);
 //                                db.addContactImage(phone, image_uri);
                             }
                             pCur.close();
@@ -255,7 +259,8 @@ public class ContactService extends Service {
                     contactList1.get(i),
                     "null",
                     "No",
-                    "N/A");
+                    "N/A",
+                    photo_uri.get(contactList1Phone.get(i)));
         }
 
         try {
@@ -277,7 +282,8 @@ public class ContactService extends Service {
                     contactList1.get(i),
                     "null",
                     "Yes",
-                    "I am on CloudKibo");
+                    "I am on CloudKibo",
+                    photo_uri.get(contactList1Phone.get(i)));
             // todo work for status here
         }
 
