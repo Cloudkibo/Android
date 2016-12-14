@@ -238,22 +238,10 @@ public class KiboSyncService extends Service {
             JSONObject data = new JSONObject();
             data.put("unique_ids", array);
 
-            JsonObject payload = new JsonObject();
-            payload.getAsJsonObject(data.toString());
-            Ion.with(getApplicationContext())
-                    .load("https://api.cloudkibo.com/api/groupchatstatus/checkStatus")
-                    .setHeader("kibo-token", authtoken)
-                    .setJsonObjectBody(payload)
-                    .asJsonObject()
-                    .setCallback(new FutureCallback<JsonObject>() {
-                        @Override
-                        public void onCompleted(Exception e, JsonObject result) {
-                            // do stuff with the result or error
-                            if(e==null)
-                            Log.d("KIBOSyncSERVICE", result.toString());
-                        }
-                    });
+            UserFunctions userFunc = new UserFunctions();
+            JSONArray resultChat = userFunc.checkStatusOfGroupMessages(data, authtoken);
 
+            
         }catch(JSONException e ){
             e.printStackTrace();
         }
@@ -299,6 +287,7 @@ public class KiboSyncService extends Service {
                     message.put("msg", msg);
                     message.put("date", Utility.getCurrentTimeInISO());
                     message.put("uniqueid", uniqueid);
+                    message.put("type", "chat"); // todo make it dynamic
                 } catch (JSONException e){
                     e.printStackTrace();
                 }

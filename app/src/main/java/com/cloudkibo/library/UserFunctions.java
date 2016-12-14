@@ -66,6 +66,7 @@ public class UserFunctions {
     public static String updateGroupChatStatus =          baseURL + "/api/groupchatstatus/updateStatus";
     public static String uploadIcon =          baseURL + "/api/groupmessaging/uploadIcon";
     public static String downloadIcon =          baseURL + "/api/groupmessaging/downloadIcon";
+    public static String checkGroupChatStatus =          baseURL + "/api/groupchatstatus/checkStatus";
     
     
     
@@ -254,6 +255,10 @@ public class UserFunctions {
 
     public JSONObject addGroupMembers(JSONObject data, String authtoken){
         return connection.sendJSONObjectToServer(addGroupMembers, authtoken, data);
+    }
+
+    public JSONArray checkStatusOfGroupMessages(JSONObject data, String authtoken){
+        return connection.sendJSONObjectToServerReturnArray(checkGroupChatStatus, authtoken, data);
     }
 
     public JSONObject sendChatMessageStatusToServer(JSONObject data, String authtoken) {
