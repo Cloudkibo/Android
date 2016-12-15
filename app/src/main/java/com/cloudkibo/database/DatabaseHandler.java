@@ -1131,7 +1131,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(Contacts.SHARED_DETAILS, shareddetails); // Created At
         values.put("on_cloudkibo", on_cloudkibo);
         values.put("image_uri", image_uri);
-        Log.e("ADDED","Contact Added");
+
 
         // Inserting Row
         try {
@@ -1141,7 +1141,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 //                Log.d("ADDED", "Updated the contact: " + name);
 //            }else{
                 db.replace(Contacts.TABLE_CONTACTS, null, values);
-                Log.d("ADDED", "Added new contact");
+            Log.e("ADDED","Contact Added");
 //            }
         } catch (android.database.sqlite.SQLiteConstraintException e){
             Log.e("SQLITE_CONTACTS", uname + " - " + phone);

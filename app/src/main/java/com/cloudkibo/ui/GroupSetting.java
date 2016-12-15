@@ -118,7 +118,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO Auto-generated method stub
-                        Toast.makeText(getContext(), phoneList[which], Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getContext(), phoneList[which], Toast.LENGTH_LONG).show();
                         DatabaseHandler db = new DatabaseHandler(getContext());
                         try {
                             JSONObject group_member = db.getGroupMemberDetail(group_id, phoneList[which]);
@@ -166,7 +166,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
             @Override
             public void onClick(View view) {
                 GroupUtility groupUtility = new GroupUtility(getContext());
-                if(isAdmin(group_id) && groupUtility.adminCount(group_id) <= 1 ){
+                if(isAdmin(group_id) && groupUtility.adminCount(group_id) <= 1){
                     Toast.makeText(getContext(), "Please make someone else admin before you leave the group: " + groupUtility.adminCount(group_id), Toast.LENGTH_LONG ).show();
                 }else {
 //                    Toast.makeText(getContext(), "Left the group: " + groupUtility.adminCount(group_id), Toast.LENGTH_LONG ).show();

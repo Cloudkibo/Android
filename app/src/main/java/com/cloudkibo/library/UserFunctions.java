@@ -67,6 +67,7 @@ public class UserFunctions {
     public static String uploadIcon =          baseURL + "/api/groupmessaging/uploadIcon";
     public static String downloadIcon =          baseURL + "/api/groupmessaging/downloadIcon";
     public static String checkGroupChatStatus =          baseURL + "/api/groupchatstatus/checkStatus";
+    public static String updateMemberRole =          baseURL + "/api/groupmessaginguser/updateRole";
     
     
     
@@ -349,6 +350,15 @@ public class UserFunctions {
     public JSONObject getSingleGroupChat(String id, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("unique_id", id));
+        JSONObject response = connection.sendObjectToServer(getSingleGroupChatURL, authtoken, params);
+        return response;
+    }
+
+    public JSONObject updateMemberRole(String group_id, String member_phone, String makeAdmin, String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("group_uniquei_id", group_id));
+        params.add(new BasicNameValuePair("member_phone", member_phone));
+        params.add(new BasicNameValuePair("makeAdmin", makeAdmin));
         JSONObject response = connection.sendObjectToServer(getSingleGroupChatURL, authtoken, params);
         return response;
     }

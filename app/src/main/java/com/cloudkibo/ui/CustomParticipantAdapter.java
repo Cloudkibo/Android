@@ -103,20 +103,22 @@ public class CustomParticipantAdapter extends BaseAdapter{
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO Auto-generated method stub
                         DatabaseHandler db = new DatabaseHandler(context);
+                        GroupUtility groupUtility = new GroupUtility(context);
+                        final AccessToken accessToken = AccountKit.getCurrentAccessToken();
                         try {
                             if(which == 0) {
                                 // Toast.makeText(context,"I was clicked",Toast.LENGTH_LONG).show();
                                 db.makeGroupAdmin(group_id, members.getJSONObject(position).getString("phone"));
+                                groupUtility.updateMemberRole(group_id, members.getJSONObject(position).getString("phone"),"Yes",accessToken.getToken());
                                 // Toast.makeText(context,db.getGroupAdmins(group_id).toString(),Toast.LENGTH_LONG).show();
                                 updateData(db);
                             } else if (which == 1){
                                   db.demoteGroupAdmin(group_id,members.getJSONObject(position).getString("phone"));
+                                  groupUtility.updateMemberRole(group_id, members.getJSONObject(position).getString("phone"),"No",accessToken.getToken());
                                   updateData(db);
                             } else if (which == 2) {
                                 db.leaveGroup(group_id, members.getJSONObject(position).getString("phone"));
-                                GroupUtility groupUtility = new GroupUtility(context);
-                                final AccessToken accessToken = AccountKit.getCurrentAccessToken();
-                                db.addGroupMemberServerPending(group_id, members.getJSONObject(position).getString("phone"));
+
                                 groupUtility.removeMember(group_id, members.getJSONObject(position).getString("phone"), accessToken.getToken());
                                 updateData(db);
                             }
