@@ -228,20 +228,19 @@ public class KiboSyncService extends Service {
 
             }
 
-            JSONArray sentMesssagesForStatus = db.getSentGroupMessagesForSync(db.getUserDetails().get("phone"));
+            JSONArray sentGroupMesssagesForStatus = db.getSentGroupMessagesForSync(db.getUserDetails().get("phone"));
 
             JSONArray array = new JSONArray();
-            for (int i=0; i < sentMesssagesForStatus.length(); i++) {
-                JSONObject row = sentMesssagesForStatus.getJSONObject(i);
+            for (int i=0; i < sentGroupMesssagesForStatus.length(); i++) {
+                JSONObject row = sentGroupMesssagesForStatus.getJSONObject(i);
                 array.put(row.getString("unique_id"));
             }
             JSONObject data = new JSONObject();
             data.put("unique_ids", array);
 
-            UserFunctions userFunc = new UserFunctions();
-            JSONArray resultChat = userFunc.checkStatusOfGroupMessages(data, authtoken);
+            checkStatusOfGroupMessage(data);
 
-            
+
         }catch(JSONException e ){
             e.printStackTrace();
         }
@@ -304,6 +303,45 @@ public class KiboSyncService extends Service {
                             DatabaseHandler db = new DatabaseHandler(getApplicationContext());
                             db.updateChat(row.getString("status"), row.getString("uniqueid"));
                             mListener.chatLoaded();
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.execute();
+    }
+
+    public void checkStatusOfGroupMessage(final JSONObject data){
+        new AsyncTask<String, String, JSONArray>() {
+
+            @Override
+            protected JSONArray doInBackground(String... args) {
+                return new UserFunctions().checkStatusOfGroupMessages(data, authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONArray jsonA) {
+                try {
+
+                    if (jsonA != null) {
+                        for (int i=0; i < jsonA.length(); i++) {
+                            JSONObject row = jsonA.getJSONObject(i);
+                            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                            String msg_unique_id = row.getString("chat_unique_id");
+                            String status = row.getString("status");
+                            String user_phone = row.getString("user_phone");
+                            String current_status = db.getGroupMessageStatus(msg_unique_id,user_phone).getJSONObject(0).getString("status");
+                            if(!current_status.equals("seen")){
+                                if(status.equals("delivered")){
+                                    db.updateGroupChatStatusDeliveredTime(msg_unique_id, status, user_phone, row.getString("delivered_date"));
+                                }
+                                if(status.equals("seen")){
+                                    db.updateGroupChatStatusReadTime(msg_unique_id, status, user_phone, row.getString("read_date"));
+                                }
+                            }
                         }
                     }
 

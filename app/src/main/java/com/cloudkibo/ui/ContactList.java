@@ -482,6 +482,9 @@ public class ContactList extends CustomFragment implements IFragmentName
                     JSONArray jsonB = db.getContactsOnAddressBookWithImages();
 					ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 
+					Utility.sendLogToServer("In Contact List page: the size of contacts on cloudkibo "+ jsonA.length());
+					Utility.sendLogToServer("In Contact List page: the size of contacts on address book "+ jsonB.length());
+
 //                    JSONArray jsonA = db.getContacts();
 //                    JSONArray jsonB = db.getContactsOnAddressBook();
 
