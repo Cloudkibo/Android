@@ -398,33 +398,9 @@ public class GroupUtility {
     }
 
 
-    public void leaveGroup(final String group_id, String member_phone, final String authtoken){
+    public void leaveGroup(final String group_id,final String member_phone, final String authtoken){
         db.leaveGroup(group_id,member_phone);
-
-        new AsyncTask<String, String, JSONObject>() {
-
-            @Override
-            protected JSONObject doInBackground(String... args) {
-                UserFunctions userFunctions = new UserFunctions();
-                return  user.leaveGroup(group_id,authtoken);
-            }
-
-            @Override
-            protected void onPostExecute(JSONObject row) {
-                if(row != null){
-                    Toast.makeText(ctx, row.toString(), Toast.LENGTH_LONG).show();
-//                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
-                }
-            }
-
-        }.execute();
-
-
-    }
-
-    public void removeMember(final String group_id, final String member_phone, final String authtoken){
-        db.leaveGroup(group_id,member_phone);
-
+        db.addGroupMemberRemovePending(group_id, member_phone);
         new AsyncTask<String, String, JSONObject>() {
 
             @Override
@@ -436,9 +412,71 @@ public class GroupUtility {
             @Override
             protected void onPostExecute(JSONObject row) {
                 if(row != null){
+                    if(row.optString("Error").equals("No Internet")){
+                        sendNotification("No Internet Connection", "Server will be update that u left the group with id:" + group_id + " once the internet is restored");
+                    }else {
+                        db.leaveGroupMemberRemovePending(group_id, member_phone);
+                        Toast.makeText(ctx, row.toString(), Toast.LENGTH_LONG).show();
+                        Toast.makeText(ctx, "You Left the group successfully", Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+        }.execute();
+
+
+    }
+
+
+    public void updateMemberRole(final String group_id, final String member_phone, final String makeAdmin, final String authtoken){
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunctions = new UserFunctions();
+                return  userFunctions.updateMemberRole(group_id,member_phone, makeAdmin,authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                if(row != null){
+                    if(row.optString("Error").equals("No Internet")){
+                        sendNotification("No Internet Connection", "Cannot update member role to the server");
+                    }else{
+                        Toast.makeText(ctx, "Member Role Successfullly Updated", Toast.LENGTH_LONG).show();
+                    }
+                }else{
+                    Toast.makeText(ctx, "Something when wrong! cannot update member role!", Toast.LENGTH_LONG).show();
+                }
+            }
+
+        }.execute();
+
+
+    }
+
+    public void removeMember(final String group_id, final String member_phone, final String authtoken){
+        db.leaveGroup(group_id,member_phone);
+        db.addGroupMemberRemovePending(group_id, member_phone);
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunctions = new UserFunctions();
+                return  userFunctions.removeMember(group_id, member_phone, authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                if(row != null){
+                    if(row.optString("Error").equals("No Internet")){
+                        sendNotification("No Internet Connection", "Message will be sent as soon as the device gets connected to internet");
+                    }else{
                     db.leaveGroupMemberRemovePending(group_id, member_phone);
                     Toast.makeText(ctx, "Member Successfullly Removed", Toast.LENGTH_LONG).show();
-//                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
+                 }
+                }else{
+                    Toast.makeText(ctx, "Member will be reomved from server when internet is restored!", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -474,15 +512,14 @@ public class GroupUtility {
                 String current_status = db.getGroupMessageStatus(msg_unique_id,user_phone).getJSONObject(0).getString("status");
                 String read_time = "";
                 String delivered_time = "";
-               DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-               Date date = new Date();
+                String current_time = Utility.getCurrentTimeInISO();
                if(!current_status.equals("seen")){
                    if(status.equals("delivered")){
-                       delivered_time = dateFormat.format(date);
+                       delivered_time = current_time;
                        db.updateGroupChatStatusDeliveredTime(msg_unique_id, status, user_phone, delivered_time);
                    }
                    if(status.equals("seen")){
-                       read_time = dateFormat.format(date);
+                       read_time = current_time;
                        db.updateGroupChatStatusReadTime(msg_unique_id, status, user_phone, read_time);
                    }
                    Toast.makeText(ctx, "Updated Chat Status to: " + status, Toast.LENGTH_LONG).show();

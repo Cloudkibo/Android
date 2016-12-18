@@ -12,6 +12,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Random;
@@ -272,10 +274,10 @@ public class ChatList extends CustomFragment implements IFragmentName
 					}
 //					JSONArray chats = db.getChatList();
 //			JSONArray groups = db.getAllGroups();
-                    JSONArray groups = db.getMyGroups(db.getUserDetails().get("phone"));
+                    JSONArray groups = db.getGroupChatList();//db.getMyGroups(db.getUserDetails().get("phone"));
 
-                    groups = UserFunctions.sortJSONArray(groups, "group_name");
-                    chats = UserFunctions.sortJSONArray(chats, "display_name");
+                    //groups = UserFunctions.sortJSONArray(groups, "group_name");
+                    //chats = UserFunctions.sortJSONArray(chats, "display_name");
 
                     for (int i=0; i < chats.length(); i++) {
                         JSONObject row = chats.getJSONObject(i);
@@ -300,7 +302,7 @@ public class ChatList extends CustomFragment implements IFragmentName
                         chatList1.add(new ChatItem(
                                 row.getString("group_name"),
                                 row.getString("unique_id"),
-                                "Last Message",
+								row.getString("msg"),
                                 row.getString("date_creation"),
                                 R.drawable.user1, false,
                                 true, 0).setProfileImage(null));
@@ -313,6 +315,21 @@ public class ChatList extends CustomFragment implements IFragmentName
                 } catch (ParseException e){
                     e.printStackTrace();
                 }
+
+				Collections.sort(chatList1, new Comparator<ChatItem>() {
+					public int compare(ChatItem o1, ChatItem o2) {
+						if (o1.getDate() == null || o2.getDate() == null)
+							return 0;
+						DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
+						try {
+							Date date1 = format.parse(o1.getDate());
+							Date date2 = format.parse(o2.getDate());
+							return date2.compareTo(date1);
+						} catch (ParseException e) {
+							return 0;
+						}
+					}
+				});
 
                 return chatList1;
             }
