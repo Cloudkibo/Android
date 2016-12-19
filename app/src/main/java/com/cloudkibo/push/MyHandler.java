@@ -120,6 +120,27 @@ public class MyHandler extends NotificationsHandler {
                         e.printStackTrace();
                     }
                     return ;
+                } else if(payload.getString("type").equals("chat")) {
+                    if (MainActivity.isVisible) {
+                        loadSpecificChatFromServer(payload.getString("uniqueId"));
+                        MainActivity.mainActivity.ToastNotify(nhMessage);
+                        MainActivity.mainActivity.ToastNotify2("got push notification for chat single message."
+                                + nhMessage);
+                    } else {
+                        String displayName = "";
+                        DatabaseHandler db = new DatabaseHandler(context);
+                        JSONArray contactInAddressBook = db.getSpecificContact(payload.getString("senderId"));
+                        if(contactInAddressBook.length() > 0) {
+                            displayName = contactInAddressBook.getJSONObject(0).getString("display_name");
+                        } else {
+                            displayName = payload.getString("senderId");
+                        }
+                        sendNotification(
+                                "Here",
+                                payload.getString("msg").split("\"")[1]
+                        );
+                        loadSpecificChatFromServer(payload.getString("uniqueId"));
+                    }
                 }
 
 
@@ -149,26 +170,7 @@ public class MyHandler extends NotificationsHandler {
 
 
             }
-            if (MainActivity.isVisible) {
-                loadSpecificChatFromServer(payload.getString("uniqueId"));
-                MainActivity.mainActivity.ToastNotify(nhMessage);
-                MainActivity.mainActivity.ToastNotify2("got push notification for chat single message."
-                 + nhMessage);
-            } else {
-                String displayName = "";
-                DatabaseHandler db = new DatabaseHandler(context);
-                JSONArray contactInAddressBook = db.getSpecificContact(payload.getString("senderId"));
-                if(contactInAddressBook.length() > 0) {
-                    displayName = contactInAddressBook.getJSONObject(0).getString("display_name");
-                } else {
-                    displayName = payload.getString("senderId");
-                }
-                sendNotification(
-                        "Here",
-                        payload.getString("msg").split("\"")[1]
-                );
-                loadSpecificChatFromServer(payload.getString("uniqueId"));
-            }
+
         }catch (JSONException e) {
             e.printStackTrace();
         }

@@ -740,6 +740,7 @@ public class KiboSyncService extends Service {
                                             row.has("type") ? row.getString("type") : "",
                                             row.has("file_type") ? row.getString("file_type") : "");
                                 } else {
+                                    Log.d("KIBO_SYNC_SERVICE", row.getString("date_server_received"));
                                     db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
                                             row.getString("msg"), row.getString("date_server_received"),
                                             row.has("status") ? row.getString("status") : "",
