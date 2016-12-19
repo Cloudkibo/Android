@@ -92,6 +92,10 @@ public class CustomParticipantAdapter extends BaseAdapter{
             public void onClick(View v) {
                 // TODO Auto-generated method stub
                 //Toast.makeText(context, "You Clicked "+result[position], Toast.LENGTH_LONG).show();
+                GroupUtility groupUtility = new GroupUtility(context);
+                if(!groupUtility.isAdmin(group_id)){
+                    return;
+                }
 
                 final CharSequence[] items = {"Make Admin", "Demote Admin", "Remove from group"};
 
