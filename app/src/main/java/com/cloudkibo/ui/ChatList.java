@@ -183,6 +183,7 @@ public class ChatList extends CustomFragment implements IFragmentName
             menu.findItem(R.id.archived).setVisible(false);
         }
         inflater.inflate(R.menu.main, menu);  // Use filter.xml from step 1
+        getActivity().getActionBar().setSubtitle(null);
     }
 
     @Override
@@ -207,6 +208,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 
         menu.setHeaderTitle("Select the Action");
         menu.add(0, v.getId(), 0, "Archive");
+
     }
 
     public boolean onContextItemSelected(MenuItem item){
@@ -245,10 +247,11 @@ public class ChatList extends CustomFragment implements IFragmentName
 
         return true;
     }
-
+//
 //	@Override
-//	protected View onResume(){
+//	public void onResume(){
 //		super.onResume();
+//		getActivity().getActionBar().setSubtitle(null);
 //	}
 
 
