@@ -959,6 +959,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
 
+        // todo dayem siddiqui
         ContentValues values = new ContentValues();
 //        values.put(User.KEY_UID, id); // FirstName    //values.put(User.KEY_FIRSTNAME, id); // FirstName
         values.put("group_unique_id", group_unique_id); // LastName
@@ -1931,9 +1932,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             while (cursor.isAfterLast() != true) {
                 JSONObject groupInfo = getGroupInfo(cursor.getString(0));
                 JSONArray lastMessage = getLastMessageInGroupChat(cursor.getString(0));
+                JSONArray lastSender = getLastMessageSenderInGroupChat(cursor.getString(0));
 
                 JSONObject group = new JSONObject();
                 group.put("unique_id", cursor.getString(0));
+                if(lastSender.length() > 0) {
+                    JSONArray contactInAddressBook = getSpecificContact(lastSender.getJSONObject(0).getString("_from"));
+                    if (contactInAddressBook.length() > 0) {
+                        group.put("last_sender", contactInAddressBook.getJSONObject(0).getString("display_name"));
+                    } else {
+                        group.put("last_sender", lastSender.getJSONObject(0).getString("from_fullname"));
+                    }
+                } else {
+                    group.put("last_sender", "New Group");
+                }
                 group.put("date_creation", cursor.getString(1));
                 group.put("msg", lastMessage.getJSONObject(0).getString("msg"));
                 //group.put("pendingMsgs", getUnReadMessagesCount(cursor.getString(1)));
@@ -2080,6 +2092,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return chats;
     }
 
+    public JSONArray getLastMessageSenderInGroupChat(String unique_id) throws JSONException {
+        JSONArray chats = new JSONArray();
+        String selectQuery = "SELECT _from, from_fullname FROM GROUPCHAT WHERE group_unique_id='"+ unique_id+"' AND _from!='"+ getUserDetails().get("phone")+"' order by date DESC LIMIT 1";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                // todo _from should not be the user of app and sync all messages of group
+                JSONObject contact = new JSONObject();
+                contact.put("_from", cursor.getString(0));
+                contact.put("from_fullname", cursor.getString(1));
+
+                chats.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return chats;
+    }
+
     public JSONArray getLastMessageInChat(String user1, String user2) throws JSONException {
         JSONArray chats = new JSONArray();
         String selectQuery = "SELECT  * FROM " + UserChat.TABLE_USERCHAT + " WHERE ("+
@@ -2132,6 +2172,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public int getUnReadMessagesCountInGroupChat(String unique_id) {
         // todo under construction: status needs to be fetched from other table by join
         String countQuery = "SELECT * FROM GROUPCHAT WHERE status = 'delivered' AND group_unique_id = '"+ unique_id +"'";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        int rowCount = cursor.getCount();
+        db.close();
+        cursor.close();
+
+        // return row count
+        return rowCount;
+    }
+
+    public int getAllMessagesCountInGroupChat(String unique_id) {
+        // todo under construction: status needs to be fetched from other table by join
+        String countQuery = "SELECT  _from, type, msg, from_fullname, date, unique_id  FROM GROUPCHAT  where group_unique_id='"+ unique_id +"'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         int rowCount = cursor.getCount();

@@ -249,7 +249,12 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                     from = display_name;
                 }
 
-                convList.add(new Conversation(message, from, isSent, date, unique_id, db.getGroupMessageStatus(unique_id, db.getUserDetails().get("phone")).getJSONObject(0).getString("status"), type));
+                JSONArray msgStatus = db.getGroupMessageStatus(unique_id, db.getUserDetails().get("phone"));
+                String status = "";
+                if(msgStatus.length() != 0){
+                    status = msgStatus.getJSONObject(0).getString("status");
+                }
+                convList.add(new Conversation(message, from, isSent, date, unique_id, status, type));
 
             }
 

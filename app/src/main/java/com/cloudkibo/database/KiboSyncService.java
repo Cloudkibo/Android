@@ -637,6 +637,7 @@ public class KiboSyncService extends Service {
                                 try {
                                     db.syncGroup(group.get("unique_id").getAsString(),
                                             group.get("group_name").getAsString(), 0, group.get("date_creation").getAsString());
+
                                 }catch (NullPointerException exc){
                                     exc.printStackTrace();
                                 }
@@ -677,7 +678,28 @@ public class KiboSyncService extends Service {
                                     String membership_status = result.get(i).getAsJsonObject().get("membership_status").getAsString();
                                     String date_join = result.get(i).getAsJsonObject().get("date_join").getAsString();
                                     db.syncGroupMember(group_unique_id,member_phone,isAdmin,membership_status,date_join);
+                                    if(isAdmin == 1){
+                                        if(db.getAllMessagesCountInGroupChat(group_unique_id) < 1) {
+                                            JSONArray specificContact = db.getSpecificContact(member_phone);
+                                            if(specificContact.length() > 0) {
+                                                display_name = specificContact.getJSONObject(0).getString("display_name");
+                                            }
+                                            String message = "";
+                                            if(db.getUserDetails().get("phone").equals(member_phone)){
+                                                message = "You created this group";
+                                            } else {
+                                                message = display_name + " added you to the group "+ db.getGroupInfo(group_unique_id).getString("group_name");
+                                            }
+                                            String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+                                            uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+                                            uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+
+                                            db.addGroupMessage(group_unique_id,message,member_phone,display_name,uniqueid, "log");
+                                        }
+                                    }
                                 }catch (NullPointerException exc){
+                                    exc.printStackTrace();
+                                }catch (JSONException exc){
                                     exc.printStackTrace();
                                 }
 

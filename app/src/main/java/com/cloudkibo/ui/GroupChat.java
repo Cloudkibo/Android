@@ -337,24 +337,20 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					e.printStackTrace();
 				}
 
+				updateChatStatus("seen", uniqueid);
+				addChatHistorySync(uniqueid, sender);
+
 				return userFunction.sendChatMessageStatusToServer(message, authtoken);
 			}
 
 			@Override
 			protected void onPostExecute(JSONObject row) {
 				try {
-
-					Boolean gotGoodServerResponse = false;
 					if (row != null) {
 						if(row.has("status")){
 							resetSpecificChatHistorySync(row.getString("uniqueid"));
 							updateChatStatus("seen", row.getString("uniqueid"));
-							gotGoodServerResponse = true;
 						}
-					}
-					if(!gotGoodServerResponse){
-						updateChatStatus("seen", row.getString("uniqueid"));
-						addChatHistorySync(row.getString("uniqueid"), row.getString("fromperson"));
 					}
 
 				} catch (JSONException e) {
@@ -540,6 +536,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				} catch (ParseException e) {
 					e.printStackTrace();
 				}
+
 				TextView phone = (TextView) v.findViewById(R.id.phone);
 				phone.setVisibility(View.GONE);
 

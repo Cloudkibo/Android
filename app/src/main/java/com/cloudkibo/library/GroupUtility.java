@@ -89,6 +89,7 @@ public class GroupUtility {
                         uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
                         uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
 
+                        // todo add group creators name also
                         db.addGroupMessage(group_id,message,member_phone,member_phone,uniqueid, "log");
 
                     } catch (JSONException e) {

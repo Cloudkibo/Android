@@ -289,7 +289,7 @@ public class ChatList extends CustomFragment implements IFragmentName
                                 row.getString("msg"),
                                 Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
                                 R.drawable.user1, false,
-                                false, Integer.parseInt(row.getString("pendingMsgs"))).setProfileImage(image));
+                                false, Integer.parseInt(row.getString("pendingMsgs")), "").setProfileImage(image));
 
                         //}
                         contact_phone.add(row.getString("contact_phone"));
@@ -305,7 +305,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 								row.getString("msg"),
                                 row.getString("date_creation"),
                                 R.drawable.user1, false,
-                                true, 0).setProfileImage(null));
+                                true, 0, row.getString("last_sender")).setProfileImage(null));
 
 
                     }
@@ -455,7 +455,11 @@ public class ChatList extends CustomFragment implements IFragmentName
 			viewHolder.lbl2.setText(c.getDate());
 
 //			TextView lbl3 = (TextView) v.findViewById(R.id.lblContactPhone);
-			viewHolder.lbl3.setText(c.getTitle());
+			if(!c.isGroup()) {
+				viewHolder.lbl3.setText(c.getTitle());
+			} else {
+				viewHolder.lbl3.setText(c.getLastSender());
+			}
 
 //			TextView lbl4 = (TextView) v.findViewById(R.id.lblPendingMsgs);
 			if(c.getPendingMsgs() > 0) viewHolder.lbl4.setText(Integer.toString(c.getPendingMsgs()));
