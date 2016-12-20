@@ -335,24 +335,20 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					e.printStackTrace();
 				}
 
+				updateChatStatus("seen", uniqueid);
+				addChatHistorySync(uniqueid, sender);
+
 				return userFunction.sendChatMessageStatusToServer(message, authtoken);
 			}
 
 			@Override
 			protected void onPostExecute(JSONObject row) {
 				try {
-
-					Boolean gotGoodServerResponse = false;
 					if (row != null) {
 						if(row.has("status")){
 							resetSpecificChatHistorySync(row.getString("uniqueid"));
 							updateChatStatus("seen", row.getString("uniqueid"));
-							gotGoodServerResponse = true;
 						}
-					}
-					if(!gotGoodServerResponse){
-						updateChatStatus("seen", row.getString("uniqueid"));
-						addChatHistorySync(row.getString("uniqueid"), row.getString("fromperson"));
 					}
 
 				} catch (JSONException e) {
@@ -530,7 +526,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			if(true){//(c.getType().equals("chat")) {
 				TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
 				String date_temp = c.getDate().replaceAll("-", "/").split(" ")[0].split("/")[1] + "/" +c.getDate().replaceAll("-", "/").split(" ")[0].split("/")[2];
-				lbl.setText(c.getDate() +" - "+ date_temp+" "+Utility.dateConversion(c.getDate().replaceAll("-", "/").split("/",2)[1].split(" ")[1]));
+				lbl.setText(date_temp+" "+Utility.dateConversion(c.getDate().replaceAll("-", "/").split("/",2)[1].split(" ")[1]));
 				TextView phone = (TextView) v.findViewById(R.id.phone);
 				phone.setVisibility(View.GONE);
 

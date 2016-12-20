@@ -34,6 +34,8 @@ public class ChatItem
 	private int pendingMsgs;
 	private String profileimg;
 
+	private String lastSender;
+
 	/**
 	 * Instantiates a new chat item.
 	 * 
@@ -53,7 +55,7 @@ public class ChatItem
 	 *            the is group
 	 */
 	public ChatItem(String name, String title, String msg, String date,
-			int icon, boolean online, boolean isGroup, int pending)
+			int icon, boolean online, boolean isGroup, int pending, String lastSender)
 	{
 		this.name = name;
 		this.date = date;
@@ -64,6 +66,7 @@ public class ChatItem
 		this.title = title;
 		this.pendingMsgs = pending;
 		this.isArchived=false;
+		this.lastSender = lastSender;
 	}
 
 	public ChatItem setProfileImage(String profileimg){
@@ -252,4 +255,11 @@ public class ChatItem
 		this.pendingMsgs = pendingMsgs;
 	}
 
+	public String getLastSender() {
+		return lastSender;
+	}
+
+	public void setLastSender(String lastSender) {
+		this.lastSender = lastSender;
+	}
 }

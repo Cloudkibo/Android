@@ -199,7 +199,7 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
                             row.getString("msg"),
                             Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
                             R.drawable.user1, false,
-                            false, Integer.parseInt(row.getString("pendingMsgs"))));
+                            false, Integer.parseInt(row.getString("pendingMsgs")), ""));
 
 
             }
@@ -213,7 +213,7 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
                         "Last Message",
                         row.getString("date_creation"),
                         R.drawable.user1, false,
-                        true, 0));
+                        true, 0, ""));
 
             }
 
