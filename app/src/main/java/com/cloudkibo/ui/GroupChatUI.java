@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -88,6 +89,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             group_name = args.getString("group_name");
             Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
         }
+
         final EditText my_message = (EditText) v.findViewById(R.id.txt);
         lv=(ListView) v.findViewById(R.id.list);
         populateMessages();
@@ -126,8 +128,12 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         });
         registerForContextMenu(lv);
 
+        getActivity().getActionBar().setSubtitle(getMembersName(group_id));
+
         return v;
     }
+
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -135,6 +141,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             menu.findItem(R.id.archived).setVisible(false);
         }
         inflater.inflate(R.menu.groupchat, menu);  // Use filter.xml from step 1
+
     }
 
     @Override
@@ -266,6 +273,44 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+
+
+
+    public String getMembersName(String group_id){
+
+        String members = "";
+
+        DatabaseHandler db = new DatabaseHandler(getContext());
+
+        try {
+            JSONArray participants = new JSONArray();
+            participants = db.getGroupMembers(group_id);
+            Toast.makeText(getContext(), "New Contacts: "+ participants, Toast.LENGTH_LONG).show();
+//           participants.put(db.getMyDetailsInGroup(group_id));
+
+//           Toast.makeText(getContext(), "Custom Members "+participants.toString(), Toast.LENGTH_LONG).show();
+
+            for(int i = 0; i < participants.length(); i++)
+            {
+
+                if(!participants.getJSONObject(i).has("display_name")){
+                    if(participants.getJSONObject(i).getString("phone").toString().equals(db.getUserDetails().get("phone"))){
+                        members = members + db.getUserDetails().get("display_name") + ",";
+                    }else{
+                        members = members + participants.getJSONObject(i).getString("phone") + ",";
+                    }
+                }else {
+                    members = members + participants.getJSONObject(i).getString("display_name") + ",";
+                }
+            }
+
+            return  members;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return members;
     }
 
 

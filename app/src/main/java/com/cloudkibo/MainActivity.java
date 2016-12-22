@@ -876,6 +876,7 @@ public class MainActivity extends CustomActivity
                 getSupportFragmentManager().getBackStackEntryCount() - 1)
                 .getName();
         getActionBar().setTitle(title);
+
     }
 	
 	/**
