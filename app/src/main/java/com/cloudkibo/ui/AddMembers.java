@@ -112,7 +112,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
                 String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
                 uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
                 uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
-
+                Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
                 db.addGroupMessage(group_id,message,member_phone,member_name,uniqueid, "log");
 
 //                addMembers(selected_contacts);

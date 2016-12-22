@@ -22,11 +22,12 @@ import org.json.JSONObject;
 import com.cloudkibo.database.CloudKiboDatabaseContract.Contacts;
 import com.cloudkibo.database.CloudKiboDatabaseContract.User;
 import com.cloudkibo.database.CloudKiboDatabaseContract.UserChat;
+import com.cloudkibo.library.Utility;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 19;
+    private static final int DATABASE_VERSION = 20;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -164,7 +165,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "msg TEXT, "
                 + "isArchived" + " INTEGER DEFAULT 0 , "
                 + "from_fullname TEXT, "
-                + "date DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
+                + "date TEXT, "
                 + "unique_id TEXT UNIQUE"
                 + ")";
         db.execSQL(CREATE_GROUP_CHAT);
@@ -977,6 +978,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("msg", message); // Email
         values.put("from_fullname", from_fullname); // Email
         values.put("unique_id", unique_id); // Created At
+        values.put("date", Utility.getCurrentTimeInISO());
 
         // Inserting Row
         db.insert("GROUPCHAT", null, values);
