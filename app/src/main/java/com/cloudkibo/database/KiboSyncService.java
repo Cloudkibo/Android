@@ -330,7 +330,7 @@ public class KiboSyncService extends Service {
                         for (int i=0; i < jsonA.length(); i++) {
                             JSONObject row = jsonA.getJSONObject(i);
                             DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-                            String msg_unique_id = row.getString("chat_unique_id");
+                                String msg_unique_id = row.getString("chat_unique_id");
                             String status = row.getString("status");
                             String user_phone = row.getString("user_phone");
                             String current_status = db.getGroupMessageStatus(msg_unique_id,user_phone).getJSONObject(0).getString("status");

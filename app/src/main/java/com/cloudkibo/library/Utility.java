@@ -1,6 +1,8 @@
 package com.cloudkibo.library;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -169,6 +171,20 @@ public class Utility {
             e.printStackTrace();
         }
         return time;
+    }
+
+    public static String getContact(Context context, Intent data) {
+        Uri contactData = data.getData();
+
+        ContentResolver cr = context.getContentResolver();
+        Cursor cur = cr.query(contactData,
+                null, null, null, null);
+        String name = "";
+        if (cur.moveToFirst()) {
+            name = cur.getString(cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+        }
+        return name;
+
     }
 
 }

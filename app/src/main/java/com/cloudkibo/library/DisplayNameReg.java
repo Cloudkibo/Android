@@ -309,13 +309,19 @@ public class DisplayNameReg extends Activity
                                     if(phone.charAt(0) == '1') phone = "+" + phone;
                                     else phone = "+" + db.getUserDetails().get("country_prefix") + phone;
                                 }
-                                if(contactList1Phone.contains(phone)) continue;
-                                //if(Character.isLetter(name.charAt(0)))
-                                //    name = name.substring(0, 1).toUpperCase() + name.substring(1);
                                 phone = phone.replaceAll("\\s+","");
                                 phone = phone.replaceAll("\\p{P}","");
                                 String userPhone = db.getUserDetails().get("phone");
                                 if(userPhone.equals(phone)) continue;
+                                if(phone.equals("+923323800399") || phone.equals("+14255035617")) {
+                                    Utility.sendLogToServer("CONTACT LOADING.. GOT NUMBER "+ phone);
+                                }
+                                if(contactList1Phone.contains(phone)) continue;
+                                //if(Character.isLetter(name.charAt(0)))
+                                //    name = name.substring(0, 1).toUpperCase() + name.substring(1);
+                                if(phone.equals("+923323800399") || phone.equals("+14255035617")) {
+                                    Utility.sendLogToServer("CONTACT LOADING.. THIS NUMBER WENT INTO LIST "+ phone);
+                                }
                                 phones.add(new BasicNameValuePair("phonenumbers", phone));
                                 Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
                                 contactList1.add(name);

@@ -3,16 +3,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical">
 
 
     <LinearLayout
+        android:id="@+id/newContactOptionsBtns"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
+        android:visibility="gone"
+        android:background="@color/main_color_gray_dk"
         android:orientation="horizontal" >
 
-            </LinearLayout>
+        <Button
+            android:id="@+id/tab1"
+            style="@style/tab_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/block" />
+
+        <View
+            android:id="@+id/view2"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/main_color_gray" />
+
+        <Button
+            android:id="@+id/tab2"
+            style="@style/tab_btn"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/add_contact" />
+    </LinearLayout>
 
     <View
         android:id="@+id/view1"

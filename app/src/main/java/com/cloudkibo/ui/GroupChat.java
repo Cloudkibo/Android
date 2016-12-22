@@ -28,8 +28,10 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
@@ -89,6 +91,28 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		contactPhone = this.getArguments().getString("contactphone");
 
 		authtoken = this.getArguments().getString("authtoken");
+
+		if(contactName.equals(contactPhone)){
+			LinearLayout tabs = (LinearLayout) v.findViewById(R.id.newContactOptionsBtns);
+			tabs.setVisibility(View.VISIBLE);
+			Button tab1 = (Button) v.findViewById(R.id.tab1);
+			tab1.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					MainActivity act1 = (MainActivity) getActivity();
+					act1.ToastNotify2("Under Construction");
+				}
+			});
+			Button tab2 = (Button) v.findViewById(R.id.tab2);
+			tab2.setOnClickListener(new View.OnClickListener() {
+				@Override
+				public void onClick(View view) {
+					// todo under construction, should start sync and update UI
+					MainActivity act1 = (MainActivity) getActivity();
+					act1.createContact(contactPhone);
+				}
+			});
+		}
 
 		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
 
@@ -411,6 +435,11 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 	}
 
+	public void setNewContactName(String contact_name){
+		contactName = contact_name;
+		LinearLayout tabs = (LinearLayout) view.findViewById(R.id.newContactOptionsBtns);
+		tabs.setVisibility(View.GONE);
+	}
 
 	public void loadChatFromDatabase(){
 		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());

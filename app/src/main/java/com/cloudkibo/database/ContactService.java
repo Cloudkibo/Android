@@ -14,6 +14,7 @@ import android.util.Log;
 
 import com.cloudkibo.R;
 import com.cloudkibo.library.UserFunctions;
+import com.cloudkibo.library.Utility;
 import com.cloudkibo.ui.ContactList;
 import com.cloudkibo.utils.IFragmentName;
 import com.facebook.accountkit.AccessToken;
@@ -173,18 +174,26 @@ public class ContactService extends Service {
                                 String phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
                                 if(phone.length() < 6) continue;
                                 if(phone.charAt(0) != '+') {
-                                    if(phone.charAt(0) == '0') phone = phone.substring(1, phone.length());
-                                    if(phone.charAt(0) == '1') phone = "+" + phone;
-                                    else phone = "+" + db.getUserDetails().get("country_prefix") + phone;
+                                    if (phone.charAt(0) == '0')
+                                        phone = phone.substring(1, phone.length());
+                                    if (phone.charAt(0) == '1') phone = "+" + phone;
+                                    else
+                                        phone = "+" + db.getUserDetails().get("country_prefix") + phone;
                                 }
-                                if(contactList1Phone.contains(phone)) continue;
-                                //if(Character.isLetter(name.charAt(0)))
-                                //    name = name.substring(0, 1).toUpperCase() + name.substring(1);
                                 phone = phone.replaceAll("\\s+","");
                                 phone = phone.replaceAll("\\p{P}","");
                                 db = new DatabaseHandler(getApplicationContext());
                                 String userPhone = db.getUserDetails().get("phone");
                                 if(userPhone.equals(phone)) continue;
+                                if(phone.equals("+923323800399") || phone.equals("+14255035617")) {
+                                    Utility.sendLogToServer("CONTACT LOADING.. GOT NUMBER "+ phone);
+                                }
+                                if(contactList1Phone.contains(phone)) continue;
+                                //if(Character.isLetter(name.charAt(0)))
+                                //    name = name.substring(0, 1).toUpperCase() + name.substring(1);
+                                if(phone.equals("+923323800399") || phone.equals("+14255035617")) {
+                                    Utility.sendLogToServer("CONTACT LOADING.. THIS NUMBER WENT INTO LIST "+ phone);
+                                }
                                 phones.add(new BasicNameValuePair("phonenumbers", phone));
                                 Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
                                 contactList1.add(name);
