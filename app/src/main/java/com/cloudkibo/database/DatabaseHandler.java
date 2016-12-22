@@ -568,6 +568,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void deleteGroupChatMessage(String message_unique_id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String deleteQuery = "DELETE FROM GROUPCHAT WHERE unique_id='"+ message_unique_id +"'";
+        db.execSQL(deleteQuery);
+        String deleteStatusQuery = "DELETE FROM GROUPCHATSTATUS WHERE msg_unique_id='"+ message_unique_id +"'";
+        db.execSQL(deleteStatusQuery);
+        db.close();
+    }
+
     public void makeGroupAdmin(String group_unique_id, String member_phone) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues args = new ContentValues();
