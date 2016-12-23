@@ -141,8 +141,9 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             menu.findItem(R.id.archived).setVisible(false);
         }
         inflater.inflate(R.menu.groupchat, menu);  // Use filter.xml from step 1
-
     }
+
+
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -179,6 +180,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
 
         menu.setHeaderTitle("Select the Action");
         menu.add(0, v.getId(), 0, "Message Info");
+        menu.add("Remove Message");
     }
 
 
@@ -201,6 +203,12 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                     .replace(R.id.content_frame, mInfoFrag, "messageInfoFragmentTag")
                     .addToBackStack("GroupMessageInfo")
                     .commit();
+        }
+        if(item.getTitle() == "Remove Message"){
+            DatabaseHandler db = new DatabaseHandler(getContext());
+            db.deleteGroupChatMessage(convList.get(info.position).getUniqueid());
+            populateMessages();
+            Toast.makeText(getContext(), "Message Removed", Toast.LENGTH_LONG).show();
         }
 
 

@@ -90,7 +90,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 	private ChatList reference = this;
 	private ArrayList<String> contact_phone = new ArrayList<String>();
     DatabaseHandler db;
-
+	JSONArray groups;
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
@@ -203,6 +203,7 @@ public class ChatList extends CustomFragment implements IFragmentName
         return super.onOptionsItemSelected(item);
     }
 
+	@Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
         super.onCreateContextMenu(menu, v, menuinfo);
 
@@ -277,7 +278,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 					}
 //					JSONArray chats = db.getChatList();
 //			JSONArray groups = db.getAllGroups();
-                    JSONArray groups = db.getGroupChatList();//db.getMyGroups(db.getUserDetails().get("phone"));
+                    groups = db.getGroupChatList();//db.getMyGroups(db.getUserDetails().get("phone"));
 
                     //groups = UserFunctions.sortJSONArray(groups, "group_name");
                     //chats = UserFunctions.sortJSONArray(chats, "display_name");
@@ -306,7 +307,7 @@ public class ChatList extends CustomFragment implements IFragmentName
                                 row.getString("group_name"),
                                 row.getString("unique_id"),
 								row.getString("msg"),
-                                row.getString("date_creation"),
+                                Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date_creation")),
                                 R.drawable.user1, false,
                                 true, 0, row.getString("last_sender")).setProfileImage(null));
 
@@ -341,6 +342,7 @@ public class ChatList extends CustomFragment implements IFragmentName
                 chatList = new ArrayList<ChatItem>(chatList1);
                 //this.chatList.addAll(chatList);
                 //this.chatList.addAll(chatList);
+//				Toast.makeText(getContext(), "Total Groups: " + groups.length(), Toast.LENGTH_LONG).show();
                 if(adp != null)
                     adp.notifyDataSetChanged();
             }
@@ -455,6 +457,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 			else viewHolder.lbl.setTextColor(getResources().getColor(R.color.main_color_green));
 
 //			TextView lbl2 = (TextView) v.findViewById(R.id.lbl2);
+			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
 			viewHolder.lbl2.setText(c.getDate());
 
 //			TextView lbl3 = (TextView) v.findViewById(R.id.lblContactPhone);
