@@ -123,7 +123,7 @@ public class MyHandler extends NotificationsHandler {
                 } else if(payload.getString("type").equals("chat")) {
                     if (MainActivity.isVisible) {
                         loadSpecificChatFromServer(payload.getString("uniqueId"));
-                        MainActivity.mainActivity.ToastNotify(nhMessage);
+                        //MainActivity.mainActivity.ToastNotify(nhMessage);
                         MainActivity.mainActivity.ToastNotify2("got push notification for chat single message."
                                 + nhMessage);
                     } else {
@@ -135,10 +135,6 @@ public class MyHandler extends NotificationsHandler {
                         } else {
                             displayName = payload.getString("senderId");
                         }
-                        sendNotification(
-                                "Here",
-                                payload.getString("msg").split("\"")[1]
-                        );
                         loadSpecificChatFromServer(payload.getString("uniqueId"));
                     }
                 }

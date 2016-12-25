@@ -110,9 +110,9 @@ public class CallHistory extends CustomFragment implements IFragmentName
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo)
     {
         super.onCreateContextMenu(menu, v, menuInfo);
-        menu.setHeaderTitle("Select The Action");
-        menu.add(0, v.getId(), 0, "Call");
-        menu.add(0, v.getId(), 0, "Send Message");
+        menu.setHeaderTitle(getString(R.string.common_select_action));
+        menu.add(0, v.getId(), 0, getString(R.string.common_call));
+        menu.add(0, v.getId(), 0, getString(R.string.common_send_message));
     }
 
     @Override
@@ -121,7 +121,7 @@ public class CallHistory extends CustomFragment implements IFragmentName
 
         final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 
-        if(item.getTitle()=="Call")
+        if(item.getTitle()==getString(R.string.common_call))
         {
 
             Log.d("CALL", "Call button pressed");
@@ -132,7 +132,7 @@ public class CallHistory extends CustomFragment implements IFragmentName
                     callList.get(info.position).getContact_name());
 
         }
-        else if(item.getTitle()=="Send Message")
+        else if(item.getTitle()==getString(R.string.common_send_message))
         {
             Bundle bundle = new Bundle();
             bundle.putString("contactusername", callList.get(info.position).getContact_name());

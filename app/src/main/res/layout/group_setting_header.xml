@@ -29,7 +29,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Settings"
+            android:text="@string/common_settings"
             android:textColor="#000000"
             android:textSize="20dp"/>
 
@@ -56,7 +56,7 @@
                 <Switch
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Mute Notifications"
+                    android:text="@string/group_utility_group_mute"
                     android:id="@+id/switch1"
                     android:checked="false"
                     />
@@ -80,7 +80,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Add Members"
+                    android:text="@string/group_utility_member_add"
                     android:textColor="#000000"
                     android:textSize="18dp"
                     android:layout_weight="1"
@@ -93,7 +93,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Participants"
+            android:text="@string/group_utility_group_participants"
             android:textColor="#000000"
             android:textSize="20dp"/>
 

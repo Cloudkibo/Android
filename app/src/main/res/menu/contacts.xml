@@ -5,14 +5,14 @@
         android:id="@+id/refreshContacts"
         android:icon="@drawable/refresh"
         app:showAsAction="always"
-        android:title="Refresh Contacts"
+        android:title="@string/menu_refresh_contacts"
         />
 
     <item
         android:id="@+id/addContact"
         android:icon="@drawable/ic_add"
-        app:showAsAction="always"
-        android:title="Add Contact"
+        app:showAsAction="ifRoom"
+        android:title="@string/add_contact"
         />
 
 </menu>

@@ -5,14 +5,14 @@
         android:id="@+id/callMenu"
         android:icon="@android:drawable/ic_menu_call"
         app:showAsAction="always"
-        android:title="Call"
+        android:title="@string/common_call"
         />
 
     <item
         android:id="@+id/attachMenu"
         android:icon="@drawable/ic_add"
-        app:showAsAction="always"
-        android:title="Attach"
+        app:showAsAction="ifRoom"
+        android:title="@string/menu_attach"
         />
 
 </menu>

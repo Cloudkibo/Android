@@ -147,9 +147,9 @@ public class Login extends AccountAuthenticatorActivity implements
 
         btnForgot.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
-                Intent myIntent = new Intent(getBaseContext(), ForgotPassword.class);
+                //Intent myIntent = new Intent(getBaseContext(), ForgotPassword.class);
                 //myIntent.putExtras(getIntent().getExtras());
-                startActivityForResult(myIntent, REQ_FORGOT);
+                //startActivityForResult(myIntent, REQ_FORGOT);
                 //finish(); //Don't Finish this activity for now
             }
         });

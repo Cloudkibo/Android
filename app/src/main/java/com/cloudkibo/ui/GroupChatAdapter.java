@@ -83,7 +83,7 @@ public class GroupChatAdapter extends BaseAdapter{
             }
         }
         if(convList.get(position).getSender_phone().equals("")){
-            holder.contact_phone.setText("You");
+            holder.contact_phone.setText(inflater.getContext().getString(R.string.common_you));
         }else{
             holder.contact_phone.setText(convList.get(position).getSender_phone());
         }

@@ -27,7 +27,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Group Name"
+                    android:text="@string/group_utility_group_name"
                     android:textColor="#ffffff"
                     android:textSize="25dp"
                     android:textStyle="bold"/>
@@ -44,7 +44,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Settings"
+                android:text="@string/common_settings"
                 android:layout_gravity="right"
                 android:textColor="@android:color/white"
                 android:id="@+id/setting"
@@ -136,7 +136,7 @@
             android:textColor="@android:color/black"
             android:inputType="textCapSentences|textMultiLine"
             android:padding="10dp"
-            android:hint="Type your message here"
+            android:hint="@string/common_type_your_message"
             android:background="@android:color/white"
             android:layout_weight="1"
             >

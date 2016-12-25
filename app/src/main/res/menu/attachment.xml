@@ -5,12 +5,12 @@
         android:id="@+id/sendImage"
         android:icon="@drawable/ic_camera"
         app:showAsAction="always"
-        android:title="Send Image"
+        android:title="@string/menu_send_image"
         />
     <item
         android:id="@+id/sendDoc"
         android:icon="@drawable/ic_notes"
-        app:showAsAction="always"
-        android:title="Send Document"
+        app:showAsAction="ifRoom"
+        android:title="@string/menu_send_document"
         />
 </menu>

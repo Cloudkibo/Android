@@ -159,10 +159,6 @@ public class MainActivity extends CustomActivity
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     final Map<String, String> photo_uri = new HashMap<>();
 
-
-    /* (non-Javadoc)
-     * @see com.newsfeeder.custom.CustomActivity#onCreate(android.os.Bundle)
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -297,19 +293,19 @@ public class MainActivity extends CustomActivity
                     loadContactsFromAddressBook();
                 }
             } else {
-                ToastNotify2("Can't refresh contacts without permission.");
+                ToastNotify2(getString(R.string.main_activity_contacts_permission_denied));
             }
         } else if (requestCode == 101) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 uploadChatAttachmentFileChooser();
             } else {
-                ToastNotify2("Can't load file without permission.");
+                ToastNotify2(getString(R.string.main_activity_file_permission_denied));
             }
         } else if (requestCode == 102) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 uploadIconChooser();
             } else {
-                ToastNotify2("Can't load file without permission.");
+                ToastNotify2(getString(R.string.main_activity_file_permission_denied));
             }
         }
     }
@@ -493,15 +489,15 @@ public class MainActivity extends CustomActivity
     private ArrayList<Data> getDummyLeftNavItems()
     {
         ArrayList<Data> al = new ArrayList<Data>();
-        al.add(new Data("Chat", null, R.drawable.ic_chat));
-        al.add(new Data("Contacts", null, R.drawable.ic_notes));
-        al.add(new Data("Calls", null, android.R.drawable.sym_action_call));
+        al.add(new Data(getString(R.string.side_menu_chat), null, R.drawable.ic_chat));
+        al.add(new Data(getString(R.string.side_menu_contacts), null, R.drawable.ic_notes));
+        al.add(new Data(getString(R.string.side_menu_calls_history), null, android.R.drawable.sym_action_call));
 //        al.add(new Data("Invite", null, R.drawable.ic_notes));
-        al.add(new Data("Create Group", null, R.drawable.ic_about));
+        al.add(new Data(getString(R.string.side_menu_create_group), null, R.drawable.ic_about));
         //al.add(new Data("Add Requests", null, R.drawable.ic_projects));
         //al.add(new Data("Conference", null, R.drawable.group1));
         //al.add(new Data("Settings", null, R.drawable.ic_setting));
-        al.add(new Data("About KiboChat", null, R.drawable.ic_about));
+        al.add(new Data(getString(R.string.side_menu_about), null, R.drawable.ic_about));
         //al.add(new Data("Logout", null, R.drawable.ic_logout));
         return al;
     }
@@ -519,23 +515,19 @@ public class MainActivity extends CustomActivity
         String title = null;
         if (pos == 1)
         {
-            title = "Chat";
+            title = getString(R.string.side_menu_chat);
             f = new ChatList();
         }
         else if(pos == 2){
-            title = "Contacts";
+            title = getString(R.string.side_menu_contacts);
             f = new ContactList();
         }
         else if(pos == 3){
-            title = "Calls History";
+            title = getString(R.string.side_menu_calls_history);
             f = new CallHistory();
         }
-//        else if(pos == 4){
-//            title = "Address Book";
-//            f = new ContactListPending();
-//        }
         else if(pos == 4){
-            title = "Create Group";
+            title = getString(R.string.side_menu_create_group);
             f = new AddMembers();
         }
 
@@ -586,7 +578,7 @@ public class MainActivity extends CustomActivity
         }
         else if (pos == 5)
         {
-            title = "About KiboChat";
+            title = getString(R.string.side_menu_about);
             f = new AboutChat();
         }
         if (f != null)
@@ -706,7 +698,7 @@ public class MainActivity extends CustomActivity
                                         Toast.makeText(getApplicationContext(), result.toString(), Toast.LENGTH_LONG).show();
                                     }
                                     else {
-                                        Toast.makeText(getApplicationContext(), "Some error has occurred or Internet not available. Please try later.", Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getApplicationContext(), getString(R.string.main_activity_file_upload_error), Toast.LENGTH_LONG).show();
                                         e.printStackTrace();
                                     }
                                 }
@@ -726,14 +718,14 @@ public class MainActivity extends CustomActivity
                                 // todo save the file in external storage
                                 Toast.makeText(getApplicationContext(), "Under construction. Working on downloading part", Toast.LENGTH_LONG).show();
                             } else {
-                                Toast.makeText(getApplicationContext(), "Not enough storage available.", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), getString(R.string.common_not_enough_storage), Toast.LENGTH_LONG).show();
                             }
                         } catch(JSONException e){
                             Toast.makeText(getApplicationContext(), "Unexpected Error occurred.", Toast.LENGTH_LONG).show();
                             e.printStackTrace();
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), "Storage is not available.", Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.common_no_storage), Toast.LENGTH_LONG).show();
                     }
                     /*Ion.with(getApplicationContext())
                             .load("https://api.cloudkibo.com/api/groupmessaging/uploadIcon")
@@ -906,7 +898,7 @@ public class MainActivity extends CustomActivity
 
         Intent getContentIntent = FileUtils.createGetContentIntent();
 
-        Intent intent = Intent.createChooser(getContentIntent, "Select a file");
+        Intent intent = Intent.createChooser(getContentIntent, getString(R.string.common_select_file));
         startActivityForResult(intent, REQUEST_CHOOSER);
 
     }
@@ -1541,17 +1533,6 @@ public class MainActivity extends CustomActivity
         }
     }
 
-    public void ToastNotify(final String notificationMessage) {
-        /*runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                //Toast.makeText(MainActivity.this, notificationMessage, Toast.LENGTH_LONG).show();
-                //startSocketService();
-            }
-        });*/
-        //startSocketService();
-        reconnectSocket();
-    }
 
     public void ToastNotify2(final String notificationMessage){
 

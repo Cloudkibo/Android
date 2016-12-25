@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_id">456637644436523</string>
+    <string name="app_id" translatable="false">456637644436523</string>
     <string name="app_name">KiboChat</string>
-    <string name="client_token">97da63ec347d10ac62e84a9d92ce2361</string>
-    <string name="host">api.cloudkibo.com</string>
-    <string name="port">443</string>
+    <string name="client_token" translatable="false">97da63ec347d10ac62e84a9d92ce2361</string>
+    <string name="host" translatable="false">api.cloudkibo.com</string>
+    <string name="port" translatable="false">443</string>
 
-    <string name="server_host">192.168.8.103</string> <!-- api.cloudkibo.com -->
-    <string name="server_port">8443</string> <!-- api.cloudkibo.com -->
+    <string name="server_host" translatable="false">192.168.8.103</string> <!-- api.cloudkibo.com -->
+    <string name="server_port" translatable="false">8443</string> <!-- api.cloudkibo.com -->
 
     <string name="type_msg">Type message</string>
 
@@ -16,43 +16,31 @@
     <string name="drawer_close">Close</string>
 
     <string name="or">or</string>
-    <string name="username">Username</string>
-    <string name="password">Password</string>
-    <string name="register">Register</string>
-    <string name="log_in">Log in</string>
-    <string name="forgot_my_pwd">I’ve forgotten my password?</string>
-    <string name="my_chats">My Chats</string>
-    <string name="all_chats">All Chats</string>
-    <string name="search">Search</string>
-    <string name="grp_temp">\@JayL, @damen.miller, @steve.buscemi, @ris.collins, @peterk</string>
-    <string name="to">To:</string>
-    <string name="edit">Edit</string>
-    <string name="new_chat">New Chat</string>
-    <string name="trash">Trash</string>
-    <string name="choose_project">Choose Project</string>
-    <string name="publc">Public</string>
-    <string name="my_notes">My Notes</string>
-    <string name="all_notes">All Notes</string>
-    <string name="fav_contacts">Favorite</string>
-    <string name="all_contacts">All Contacts</string>
-    <string name="my_projects">My Projects</string>
-    <string name="all_projects">All Projects</string>
+    <string name="username" translatable="false">Username</string>
+    <string name="password" translatable="false">Password</string>
+    <string name="register" translatable="false">Register</string>
+    <string name="log_in" translatable="false">Log in</string>
+    <string name="forgot_my_pwd" translatable="false">I’ve forgotten my password?</string>
+    <string name="to" translatable="false">To:</string>
+    <string name="new_chat" translatable="false">New Chat</string>
+    <string name="choose_project" translatable="false">Choose Project</string>
+    <string name="publc" translatable="false">Public</string>
+    <string name="my_notes" translatable="false">My Notes</string>
+    <string name="all_notes" translatable="false">All Notes</string>
+    <string name="fav_contacts" translatable="false">Favorite</string>
+    <string name="all_contacts" translatable="false">All Contacts</string>
+    <string name="my_projects" translatable="false">My Projects</string>
+    <string name="all_projects" translatable="false">All Projects</string>
     <string name="about_txt">KiboChat is a next generation communication technology. It’s intuitive, cost effective, and rich with functionality. It can be used both for internal and external communications. It provides integrated and unified voice, video, and data communication across web.\n\n KiboChat lets you invite your friend with a click of a button into a call. Don’t get tied down to a clumsy keypad and cryptic codes to control and manage your calls.\n\n KiboChat also allows you to invite multiple people to join the Web meeting without installing any complex software. All they need to do is visit a URL and join the meeting.\n\n KiboChat uses VP8 codec, which allows efficient use of bandwidth estimation for better video quality. VP8 adaptable technology allows you have HD quality. It also includes components to conceal pack loss and clean up noisy images.\n\n KiboChat stunning HD audio quality lets you experience the full, glorious range of the human voice. Wideband and Narrowband PSTN codec are supported.\n\n KiboChat lets you share your weekly project status, share your weekly sales slides, collect feedback on the latest design rendering, and makes sharing a screen easy as clicking the “Share Screen” button.\n\n KiboChat makes it simple for you or anyone in your call to instantly share notes, documents, videos, or any other file. File transfer is highly secured. All file transfers are peer to peer with 128 Bit encryption. Current email systems normally limit your attachments to 25MB and multiple copies of your files are left on the mail servers.\n\n Downloading, installing, and updating plugins can be complex, error prone, and annoying. With KiboChat you are able to join the call straight from your browser without any need to download and install client software. Plugins can be difficult to deploy, debug, troubleshoot, test and maintain and may require licensing and integration with complex, expensive technology.\n\n KiboChat connects you to social network services like Facebook, Google, and Microsoft. You can connect and import your friends from these social networks.\n\n KiboChat is based on modern Web technology like Nodejs, Angularjs, Socket.io, WebRTC etc, thus it is highly scalable. Also as most of the communication is Peer to Peer the need for a large and complex server platform is minimized resulting in a very cost effective solution.\n\n KiboChat is highly secured as all communication is 128 Bit encrypted and the base technology uses Peer to Peer communication between two end points. No customer content audio, video, or files are stored on the central server.</string>
-    <string name="credentials">Login Credentials</string>
+    <string name="credentials" translatable="false">Login Credentials</string>
 
     <string name="block">Block</string>
     <string name="add_contact">Add Contact</string>
 
-    <string name="first_name">First Name</string>
-    <string name="last_name">Last Name</string>
-    <string name="email">Email Address</string>
-    <string name="phone">Phone</string>
-    <string name="forgot_password_string">Enter your email address</string>
-    <string name="submit">Submit</string>
-
-    <!-- Remove following two after some days -->
-    <string name="launcher_name">Submit</string>
-    <string name="activity_name">Submit</string>
+    <string name="first_name" translatable="false">First Name</string>
+    <string name="last_name" translatable="false">Last Name</string>
+    <string name="email" translatable="false">Email Address</string>
+    <string name="phone" translatable="false">Phone</string>
 
     <string name="empty_directory">Empty Directory</string>
     <string name="storage_removed">Storage was removed or unmounted.</string>
@@ -60,16 +48,74 @@
     <string name="error_selecting_file">Error selecting File</string>
     <string name="internal_storage">Internal storage</string>
 
-    <string name="facebook_app_id">456637644436523</string>
+    <string name="facebook_app_id" translatable="false">456637644436523</string>
 
     <string name="crash_toast_text">CloudKibo crashed! The report has been sent to developer.</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_message_info">MessageInfo</string>
-
 
     <string name="archived_menu_item">Archived</string>
+
+
+    <string name="side_menu_chat">Chat</string>
+    <string name="side_menu_contacts">Contacts</string>
+    <string name="side_menu_calls_history">Calls History</string>
+    <string name="side_menu_create_group">Create Group</string>
+    <string name="side_menu_about">About KiboChat</string>
+    <string name="side_menu_edit_profile">Edit Profile</string>
+
+    <string name="install_setting_name">Setting your name&#8230;</string>
+    <string name="install_error_setting_name">Some error occurred. Please contact author.</string>
+    <string name="install_setting_contacts">Setting contact list&#8230;</string>
+    <string name="install_count_setting_contacts">Contacts loaded&#8230;</string>
+    <string name="install_complete_setup">Completing Setup</string>
+    <string name="install_note_msg">Display name is not your username or unique id. \n\nIt is just your full name which would be visible to your contacts.</string>
+    <string name="install_display_name">Display Name</string>
+
+    <string name="group_utility_member_removed">Member Successfullly Removed</string>
+    <string name="group_utility_member_role_update">Member role successfully updated</string>
+    <string name="group_utility_member_role_update_failed">Something went wrong! cannot update member role!</string>
+    <string name="group_utility_member_leave">You Left the group successfully</string>
+    <string name="group_utility_member_leave_admin_prompt">Please make someone else admin before you leave the group</string>
+    <string name="group_utility_member_added">Member added successfully</string>
+    <string name="group_utility_member_add">Add Members</string>
+
+    <string name="group_utility_new_group">New Group</string>
+    <string name="group_utility_type_group_name">Type a group name here&#8230;</string>
+    <string name="group_utility_create_group">Create Group</string>
+    <string name="group_utility_group_name">Group Name</string>
+    <string name="group_utility_leave_group">Leave Group</string>
+    <string name="group_utility_group_participants">Participants</string>
+    <string name="group_utility_group_mute">Mute Notifications</string>
+    <string name="group_utility_group_admin">Group Admin</string>
+
+    <string name="common_select_action">Select the action</string>
+    <string name="common_call">Call</string>
+    <string name="common_send_message">Send Message</string>
+    <string name="common_transfer_file">Transfer File</string>
+    <string name="common_message_info">Message Info</string>
+    <string name="common_you">You</string>
+    <string name="common_remove_message">Remove Message</string>
+    <string name="common_remove_message_done">Message removed</string>
+    <string name="common_no_storage">Storage is not available.</string>
+    <string name="common_not_enough_storage">Not enough storage available.</string>
+    <string name="common_select_file">Select a file</string>
+    <string name="common_name">Name</string>
+    <string name="common_invite">Invite</string>
+    <string name="common_type_your_message">Type your message here</string>
+    <string name="common_settings">Settings</string>
+    <string name="common_calling">Calling</string>
+    <string name="common_dialing">Dialing</string>
+
+    <string name="main_activity_contacts_permission_denied">Cannot refresh contacts without permission.</string>
+    <string name="main_activity_file_permission_denied">Cannot load file without permission.</string>
+    <string name="main_activity_file_upload_error">Some error has occurred or Internet not available. Please try later.</string>
+    <string name="main_activity_google_play_services">This device is not supported by Google Play Services.</string>
+
+    <string name="menu_send_image">Send Image</string>
+    <string name="menu_send_document">Send Document</string>
+    <string name="menu_attach">Attach</string>
+    <string name="menu_refresh_contacts">Refresh Contacts</string>
+    <string name="menu_change_group_image">Change Group Image</string>
 
 
 </resources>

@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/pad_chat_item"
-            android:text="Calling"
+            android:text="@string/common_calling"
             android:textAppearance="?android:attr/textAppearanceLarge" />
 
     </LinearLayout>

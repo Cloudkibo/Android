@@ -24,7 +24,7 @@
             android:drawableLeft="@drawable/ic_username"
             android:layout_marginBottom="@dimen/pad_10dp"
             android:layout_marginTop="@dimen/pad_5dp"
-            android:hint="Display Name" >
+            android:hint="@string/install_display_name" >
 
             <requestFocus />
         </EditText>
@@ -44,7 +44,7 @@
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_marginBottom="@dimen/pad_10dp"
             android:layout_marginTop="@dimen/pad_30dp"
-            android:text="Display name is not your username or unique id. \n\nIt is just your full name which would be visible to your contacts."
+            android:text="@string/install_note_msg"
             android:id="@+id/hintText"
             android:layout_gravity="center_horizontal" />
 

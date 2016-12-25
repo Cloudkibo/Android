@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.cloudkibo"
     android:hardwareAccelerated="true"
-    android:versionCode="93"
+    android:versionCode="95"
     android:versionName="1.1"
     android:installLocation="preferExternal">
 
@@ -99,11 +99,6 @@
             android:windowSoftInputMode="stateHidden"></activity>
         <activity
             android:name=".library.Register"
-            android:screenOrientation="portrait"
-            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
-            android:windowSoftInputMode="stateHidden"></activity>
-        <activity
-            android:name=".library.ForgotPassword"
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen"
             android:windowSoftInputMode="stateHidden"></activity>

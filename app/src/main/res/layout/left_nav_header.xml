@@ -42,7 +42,7 @@
             android:id="@+id/textViewEditProfileButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Edit Profile"
+            android:text="@string/side_menu_edit_profile"
             android:textColor="@color/main_color_green"
             android:textSize="@dimen/txt_13sp"
             />

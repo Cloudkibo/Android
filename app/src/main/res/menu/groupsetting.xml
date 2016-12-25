@@ -5,7 +5,7 @@
         android:id="@+id/settingMenu"
         android:icon="@drawable/ic_setting"
         app:showAsAction="always"
-        android:title="Change Group Image"
+        android:title="@string/menu_change_group_image"
         />
 
 </menu>

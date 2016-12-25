@@ -212,15 +212,15 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
 		super.onCreateContextMenu(menu, v, menuinfo);
 
-		menu.setHeaderTitle("Select the Action");
-		menu.add(0, v.getId(), 0, "Message Info");
+		menu.setHeaderTitle(getString(R.string.common_select_action));
+		menu.add(0, v.getId(), 0, getString(R.string.common_message_info));
 	}
 
 	public boolean onContextItemSelected(MenuItem item){
 
 		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 
-		if(item.getTitle() == "Message Info"){
+		if(item.getTitle() == getString(R.string.common_message_info)){
 
 			MessageInfo mInfoFrag = new MessageInfo();
 			Bundle bundle = new Bundle();

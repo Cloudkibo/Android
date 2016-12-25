@@ -112,7 +112,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
             public void onClick(View view) {
                 final CharSequence[] items = getAddtionalMembers();
                 AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                builder.setTitle("Add Members");
+                builder.setTitle(getString(R.string.group_utility_member_add));
                 builder.setItems(items, new DialogInterface.OnClickListener() {
 
                     @Override
@@ -167,11 +167,11 @@ public class GroupSetting extends CustomFragment implements IFragmentName
             public void onClick(View view) {
                 GroupUtility groupUtility = new GroupUtility(getContext());
                 if(isAdmin(group_id) && groupUtility.adminCount(group_id) <= 1){
-                    Toast.makeText(getContext(), "Please make someone else admin before you leave the group: " + groupUtility.adminCount(group_id), Toast.LENGTH_LONG ).show();
+                    Toast.makeText(getContext(), getString(R.string.group_utility_member_leave_admin_prompt) +": " + groupUtility.adminCount(group_id), Toast.LENGTH_LONG ).show();
                 }else {
 //                    Toast.makeText(getContext(), "Left the group: " + groupUtility.adminCount(group_id), Toast.LENGTH_LONG ).show();
                     leaveGroup(group_id);
-                    Toast.makeText(getContext(), "You left the group", Toast.LENGTH_LONG ).show();
+                    Toast.makeText(getContext(), getString(R.string.group_utility_member_leave), Toast.LENGTH_LONG ).show();
                 }
             }
         });

@@ -114,6 +114,7 @@ public class GroupUtility {
                 @Override
                 protected void onPostExecute(JSONObject row) {
                     if(row != null){
+                        // todo remove this developer message
                         sendNotification("Updated message status on server to seen", row.toString());
                     }
                 }
@@ -128,6 +129,7 @@ public class GroupUtility {
             JSONArray persons = data.getJSONArray("personsAdded");
             String admin_phone = data.getString("senderId");
             String group_id = data.getString("groupId");
+            // todo remove this developer message
             sendNotification("New Member Added", payload.toString());
 
             for (int i = 0; i < persons.length() ; i++) {
@@ -150,6 +152,7 @@ public class GroupUtility {
             String admin_phone = data.getString("senderId");
             String group_id = data.getString("groupId");
             String membership_type = data.getString("membership_status");
+            // todo remove this developer message
             sendNotification("A Member was removed from a group.", payload.toString());
 
             db.leaveGroup(group_id, person_phone);
@@ -200,6 +203,7 @@ public class GroupUtility {
     }
 
     // @// TODO: 12/1/16 Sojharo I need to discuss the url of the downloadGroupIcon function
+    // todo @dayem let me know when to discuss
     public void syncGroupIcon(final String auth_token){
 //            JSONObject data = new JSONObject(payload);
         try {
@@ -316,6 +320,7 @@ public class GroupUtility {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+        // todo remove later, good for development
         Toast.makeText(ctx, "Local Database Updated Successfully", Toast.LENGTH_LONG).show();
         new AsyncTask<String, String, JSONObject>() {
 
@@ -342,8 +347,10 @@ public class GroupUtility {
                         MainActivity.mainActivity.updateGroupUIChat();
                     }
                 }else if(row.optString("Error").equals("No Internet")){
+                    // todo good for debug but remove in release
                     sendNotification("No Internet Connection", "Message will be sent as soon as the device gets connected to internet");
                 }else{
+                    // todo good for debug but remove in release
                     sendNotification("Failed to Send Message", "Oops message was not sent due to some reason");
                 }
             }
@@ -385,7 +392,7 @@ public class GroupUtility {
             @Override
             protected void onPostExecute(JSONObject row) {
                 if(row != null){
-                    Toast.makeText(ctx, row.toString() + "Member added successfully" + getMemberData(group_name, group_id, phone), Toast.LENGTH_LONG).show();
+                    Toast.makeText(ctx, row.toString() + ctx.getString(R.string.group_utility_member_added) + getMemberData(group_name, group_id, phone), Toast.LENGTH_LONG).show();
 //                    Toast.makeText(getContext(), "Group Successfully Created On Server", Toast.LENGTH_LONG).show();
                     for(int i = 0; i<phone.length; i++){
                         DatabaseHandler db = new DatabaseHandler(ctx);
@@ -414,11 +421,12 @@ public class GroupUtility {
             protected void onPostExecute(JSONObject row) {
                 if(row != null){
                     if(row.optString("Error").equals("No Internet")){
+                        // todo use Toast for this
                         sendNotification("No Internet Connection", "Server will be update that u left the group with id:" + group_id + " once the internet is restored");
                     }else {
                         db.leaveGroupMemberRemovePending(group_id, member_phone);
                         Toast.makeText(ctx, row.toString(), Toast.LENGTH_LONG).show();
-                        Toast.makeText(ctx, "You Left the group successfully", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ctx, ctx.getString(R.string.group_utility_member_leave), Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -442,12 +450,13 @@ public class GroupUtility {
             protected void onPostExecute(JSONObject row) {
                 if(row != null){
                     if(row.optString("Error").equals("No Internet")){
+                        // todo use Toast for this.
                         sendNotification("No Internet Connection", "Cannot update member role to the server");
                     }else{
-                        Toast.makeText(ctx, "Member Role Successfullly Updated", Toast.LENGTH_LONG).show();
+                        Toast.makeText(ctx, ctx.getString(R.string.group_utility_member_role_update), Toast.LENGTH_LONG).show();
                     }
                 }else{
-                    Toast.makeText(ctx, "Something when wrong! cannot update member role!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ctx, ctx.getString(R.string.group_utility_member_role_update_failed), Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -471,12 +480,14 @@ public class GroupUtility {
             protected void onPostExecute(JSONObject row) {
                 if(row != null){
                     if(row.optString("Error").equals("No Internet")){
+                        // todo remove this developer message
                         sendNotification("No Internet Connection", "Message will be sent as soon as the device gets connected to internet");
                     }else{
                     db.leaveGroupMemberRemovePending(group_id, member_phone);
-                    Toast.makeText(ctx, "Member Successfullly Removed", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ctx, ctx.getString(R.string.group_utility_member_removed), Toast.LENGTH_LONG).show();
                  }
                 }else{
+                    // todo remove this developer message
                     Toast.makeText(ctx, "Member will be reomved from server when internet is restored!", Toast.LENGTH_LONG).show();
                 }
             }
@@ -491,6 +502,7 @@ public class GroupUtility {
             JSONObject data = new JSONObject(payload);
             String member_phone = data.getString("senderId");
             String group_id = data.getString("groupId");
+            // todo remove this developer message
             sendNotification("Member Left", payload.toString());
 
             db.leaveGroup(group_id, member_phone);
@@ -523,6 +535,7 @@ public class GroupUtility {
                        read_time = current_time;
                        db.updateGroupChatStatusReadTime(msg_unique_id, status, user_phone, read_time);
                    }
+                   // todo remove this developer message
                    Toast.makeText(ctx, "Updated Chat Status to: " + status, Toast.LENGTH_LONG).show();
                }
                if(MainActivity.isVisible) {
@@ -534,6 +547,7 @@ public class GroupUtility {
 
     }
 
+    // todo need to discuss with @dayem
     public void loadSpecificGroupChat(final String uniqueid, final String authtoken){
 
                 final HashMap<String, String> userDetail = new DatabaseHandler(ctx.getApplicationContext()).getUserDetails();

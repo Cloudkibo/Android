@@ -43,7 +43,7 @@ public class MessageInfo extends CustomFragment implements IFragmentName {
         status.setText(iStatus);
         date.setText(iDate);
 
-        getActivity().getActionBar().setTitle("Message Info");
+        getActivity().getActionBar().setTitle(getString(R.string.common_message_info));
         return v;
     }
 

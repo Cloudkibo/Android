@@ -5,7 +5,7 @@
         android:id="@+id/settingMenu"
         android:icon="@drawable/ic_setting"
         app:showAsAction="always"
-        android:title="Settings"
+        android:title="@string/common_settings"
         />
 
 </menu>

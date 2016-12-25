@@ -178,9 +178,9 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
         super.onCreateContextMenu(menu, v, menuinfo);
 
-        menu.setHeaderTitle("Select the Action");
-        menu.add(0, v.getId(), 0, "Message Info");
-        menu.add("Remove Message");
+        menu.setHeaderTitle(getString(R.string.common_select_action));
+        menu.add(0, v.getId(), 0, getString(R.string.common_message_info));
+        menu.add(0, v.getId(), 0, getString(R.string.common_remove_message));
     }
 
 
@@ -188,7 +188,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
 
         final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 
-        if(item.getTitle() == "Message Info"){
+        if(item.getTitle() == getString(R.string.common_message_info)){
 
             GroupMessageInfo mInfoFrag = new GroupMessageInfo();
             Bundle bundle = new Bundle();
@@ -204,11 +204,11 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                     .addToBackStack("GroupMessageInfo")
                     .commit();
         }
-        if(item.getTitle() == "Remove Message"){
+        if(item.getTitle() == getString(R.string.common_remove_message)){
             DatabaseHandler db = new DatabaseHandler(getContext());
             db.deleteGroupChatMessage(convList.get(info.position).getUniqueid());
             populateMessages();
-            Toast.makeText(getContext(), "Message Removed", Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(), getString(R.string.common_remove_message_done), Toast.LENGTH_LONG).show();
         }
 
 

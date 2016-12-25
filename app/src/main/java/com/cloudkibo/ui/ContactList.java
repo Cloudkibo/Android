@@ -176,9 +176,9 @@ public class ContactList extends CustomFragment implements IFragmentName
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
 	{
 		super.onCreateContextMenu(menu, v, menuInfo);
-		menu.setHeaderTitle("Select The Action");
-		menu.add(0, v.getId(), 0, "Call");
-		menu.add(0, v.getId(), 0, "Transfer File");
+		menu.setHeaderTitle(getString(R.string.common_select_action));
+		menu.add(0, v.getId(), 0, getString(R.string.common_call));
+		menu.add(0, v.getId(), 0, getString(R.string.common_transfer_file));
 		//menu.add(0, v.getId(), 0, "Remove Conversation");
 		//menu.add(0, v.getId(), 0, "Remove Contact");
 	}
@@ -189,7 +189,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 
-		if(item.getTitle()=="Call")
+		if(item.getTitle()==getString(R.string.common_call))
 		{
 
 			Log.d("CALL", "Call button pressed");
@@ -200,7 +200,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 					contactList.get(info.position).getUserName());
 
 		}
-		else if(item.getTitle()=="Transfer File")
+		else if(item.getTitle()==getString(R.string.common_transfer_file))
 		{
 			MainActivity act1 = (MainActivity)getActivity();
 			act1.sendFileToThisPerson(contactList.get(info.position).getUserName());

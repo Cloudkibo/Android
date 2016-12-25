@@ -134,7 +134,7 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
         super.onCreateContextMenu(menu, v, menuinfo);
 
-        menu.setHeaderTitle("Select the Action");
+        menu.setHeaderTitle(getString(R.string.common_select_action));
         menu.add(0, v.getId(), 0, "Unarchive");
     }
 

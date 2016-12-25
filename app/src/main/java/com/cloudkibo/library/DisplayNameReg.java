@@ -192,7 +192,7 @@ public class DisplayNameReg extends Activity
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                hintText.setText("Setting your name ...");
+                hintText.setText(getString(R.string.install_setting_name));
                 displayName = displayNameText.getText().toString();
             }
 
@@ -231,9 +231,9 @@ public class DisplayNameReg extends Activity
                                 json.getString("date"));
 
                         if(!json.has("display_name")) {
-                            hintText.setText("Some error occurred. Please contact author.");
+                            hintText.setText(getString(R.string.install_error_setting_name));
                         } else {
-                            hintText.setText(hintText.getText() + "\n"+ "Setting contact list...");
+                            hintText.setText(hintText.getText() + "\n"+ getString(R.string.install_setting_contacts));
                             //HashMap<String,String> user = db.getUserDetails();
                             //user.isEmpty();
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
@@ -268,7 +268,7 @@ public class DisplayNameReg extends Activity
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
-                hintText.setText(loadCount + " Contacts loaded...");
+                hintText.setText(loadCount + " "+ getString(R.string.install_count_setting_contacts));
             }
 
             @Override
@@ -366,7 +366,7 @@ public class DisplayNameReg extends Activity
                 if(progress[0] == -1){
                     hintText.setText("Sending Network Request");
                 }else {
-                    hintText.setText(progress[0] + " Contacts Loaded");
+                    hintText.setText(progress[0] + " "+ getString(R.string.install_count_setting_contacts));
                 }
             }
 
@@ -392,10 +392,9 @@ public class DisplayNameReg extends Activity
                         }
 
                     }
-                    hintText.setText("Updating local database");
                     loadNotFoundContacts(contactList1, contactList1Phone);
                     loadFoundContacts(contactList1Available, contactList1PhoneAvailable);
-                    hintText.setText("local database successfully update");
+                    hintText.setText(getString(R.string.install_complete_setup));
 
                 } catch (JSONException e) {
                     e.printStackTrace();
