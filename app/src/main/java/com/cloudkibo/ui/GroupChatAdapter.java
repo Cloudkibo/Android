@@ -17,7 +17,9 @@ import com.cloudkibo.custom.CustomActivity;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.Conversation;
 
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
@@ -77,7 +79,10 @@ public class GroupChatAdapter extends BaseAdapter{
         if(!convList.get(position).getDate().equals("")){
 //            holder.date.setText(convList.get(position).getDate().split(" ")[1]);
             try {
-                holder.date.setText(Utility.convertDateToLocalTimeZoneAndReadable(convList.get(position).getDate()));
+                DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+                String readable_date = Utility.convertDateToLocalTimeZoneAndReadable(convList.get(position).getDate());
+                holder.date.setText(outputFormat.format(inputFormat.parse(readable_date)));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
