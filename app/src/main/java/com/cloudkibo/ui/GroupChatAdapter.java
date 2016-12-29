@@ -66,6 +66,9 @@ public class GroupChatAdapter extends BaseAdapter{
         Holder holder=new Holder();
 
         View rowView;
+       // rowView = inflater.inflate(R.layout.chat_item_contact, null);
+
+
         if(convList.get(position).getType().equals("log")){
             rowView = inflater.inflate(R.layout.chat_item_log, null);
         }
@@ -101,6 +104,7 @@ public class GroupChatAdapter extends BaseAdapter{
             TextView log = (TextView) rowView.findViewById(R.id.log);
             log.setText(convList.get(position).getMsg());
         }
+
 
         rowView.setOnClickListener(new OnClickListener() {
             @Override

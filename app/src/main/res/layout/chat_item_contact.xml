@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llaa"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:gravity="center_horizontal">
+
+    <RelativeLayout
+        android:id="@+id/sent_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginLeft="50dp"
+        >
+
+        <LinearLayout
+            android:id="@+id/v1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/chat_bubble_green"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingRight="25dp"
+            android:paddingTop="@dimen/pad_5dp"
+            android:paddingBottom="@dimen/pad_5dp"
+            android:layout_marginTop="10dp">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <ImageView
+                    android:layout_margin="5dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/avatar"/>
+                <TextView
+
+                    android:id="@+id/phone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Sojharo"
+                    android:textColor="@color/white"
+                    android:paddingLeft="5dp"
+                    android:paddingTop="20dp"
+                    android:textSize="@dimen/txt_14sp"
+                    android:layout_gravity="end"
+                    />
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="right"
+                android:paddingRight="5dp">
+
+                <TextView
+                    android:id="@+id/lblContactDisplayName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12:30 PM"
+                    android:textColor="@color/main_color_gray_dk"
+                    android:textSize="@dimen/txt_13sp"
+                    android:paddingRight="@dimen/pad_5dp"/>
+
+                <TextView
+                    android:id="@+id/lblContactPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="seen"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_13sp"
+                    android:layout_gravity="right"
+                    android:gravity="right"/>
+
+
+            </LinearLayout>
+            <!--<View-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="1dp"-->
+                <!--android:background="#000000" />-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:layout_gravity="center"-->
+                <!--android:padding="5dp"-->
+                <!--&gt;-->
+
+                <!--<TextView-->
+                    <!--android:layout_width="wrap_content"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:text="Message"-->
+                    <!--android:textColor="@color/white"-->
+                    <!--android:textSize="@dimen/txt_13sp"-->
+                    <!--android:paddingRight="@dimen/pad_5dp"/>-->
+
+
+            <!--</LinearLayout>-->
+
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+</LinearLayout>
