@@ -66,10 +66,15 @@ public class GroupChatAdapter extends BaseAdapter{
         Holder holder=new Holder();
 
         View rowView;
-        if (convList.get(position).isSent())
+        if(convList.get(position).getType().equals("log")){
+            rowView = inflater.inflate(R.layout.chat_item_log, null);
+        }
+        else if (convList.get(position).isSent())
             rowView = inflater.inflate(R.layout.chat_item_sent, null);
         else
             rowView = inflater.inflate(R.layout.chat_item_rcv, null);
+
+        if(!convList.get(position).getType().equals("log")){
         holder.message=(TextView) rowView.findViewById(R.id.lbl2);
         holder.contact_phone=(TextView) rowView.findViewById(R.id.phone);
         holder.date = (TextView) rowView.findViewById(R.id.lblContactDisplayName);
@@ -91,6 +96,10 @@ public class GroupChatAdapter extends BaseAdapter{
             holder.contact_phone.setText(inflater.getContext().getString(R.string.common_you));
         }else{
             holder.contact_phone.setText(convList.get(position).getSender_phone());
+        }
+        }else {
+            TextView log = (TextView) rowView.findViewById(R.id.log);
+            log.setText(convList.get(position).getMsg());
         }
 
         rowView.setOnClickListener(new OnClickListener() {
