@@ -702,7 +702,12 @@ public class KiboSyncService extends Service {
                                             uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
                                             uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
 
-                                            db.addGroupMessage(group_unique_id,message,member_phone,display_name,uniqueid, "log");
+//                                            db.addGroupMessage(group_unique_id,message,member_phone,display_name,uniqueid, "log");
+                                            db.addGroupChat(member_phone,display_name, message,
+                                                    date_join, "log",
+                                                    uniqueid,
+                                                    group_unique_id);
+
                                         }
                                     }
                                 }catch (NullPointerException exc){

@@ -457,8 +457,13 @@ public class ChatList extends CustomFragment implements IFragmentName
 			else viewHolder.lbl.setTextColor(getResources().getColor(R.color.main_color_green));
 
 //			TextView lbl2 = (TextView) v.findViewById(R.id.lbl2);
-			DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.ENGLISH);
-			viewHolder.lbl2.setText(c.getDate());
+			DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			DateFormat outputFormat = new SimpleDateFormat("MM/dd/yy");
+			try {
+				viewHolder.lbl2.setText(outputFormat.format(inputFormat.parse(c.getDate())));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
 
 //			TextView lbl3 = (TextView) v.findViewById(R.id.lblContactPhone);
 			if(!c.isGroup()) {

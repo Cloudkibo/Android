@@ -17,7 +17,9 @@ import com.cloudkibo.custom.CustomActivity;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.Conversation;
 
+import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
@@ -64,10 +66,18 @@ public class GroupChatAdapter extends BaseAdapter{
         Holder holder=new Holder();
 
         View rowView;
-        if (convList.get(position).isSent())
+       // rowView = inflater.inflate(R.layout.chat_item_contact, null);
+
+
+        if(convList.get(position).getType().equals("log")){
+            rowView = inflater.inflate(R.layout.chat_item_log, null);
+        }
+        else if (convList.get(position).isSent())
             rowView = inflater.inflate(R.layout.chat_item_sent, null);
         else
             rowView = inflater.inflate(R.layout.chat_item_rcv, null);
+
+        if(!convList.get(position).getType().equals("log")){
         holder.message=(TextView) rowView.findViewById(R.id.lbl2);
         holder.contact_phone=(TextView) rowView.findViewById(R.id.phone);
         holder.date = (TextView) rowView.findViewById(R.id.lblContactDisplayName);
@@ -77,7 +87,10 @@ public class GroupChatAdapter extends BaseAdapter{
         if(!convList.get(position).getDate().equals("")){
 //            holder.date.setText(convList.get(position).getDate().split(" ")[1]);
             try {
-                holder.date.setText(Utility.convertDateToLocalTimeZoneAndReadable(convList.get(position).getDate()));
+                DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+                String readable_date = Utility.convertDateToLocalTimeZoneAndReadable(convList.get(position).getDate());
+                holder.date.setText(outputFormat.format(inputFormat.parse(readable_date)));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -87,6 +100,11 @@ public class GroupChatAdapter extends BaseAdapter{
         }else{
             holder.contact_phone.setText(convList.get(position).getSender_phone());
         }
+        }else {
+            TextView log = (TextView) rowView.findViewById(R.id.log);
+            log.setText(convList.get(position).getMsg());
+        }
+
 
         rowView.setOnClickListener(new OnClickListener() {
             @Override

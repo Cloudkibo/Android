@@ -1232,7 +1232,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         ContentValues values = new ContentValues();
         values.put("_from", from); // FROM
-        values.put(UserChat.USERCHAT_FROM_FULLNAME, from_fullname); // FROM FULL NAME
+        values.put("from_fullname", from_fullname); // FROM FULL NAME
         values.put(UserChat.USERCHAT_MSG, msg); // CHAT MESSAGE
         values.put(UserChat.USERCHAT_DATE, date); // DATE
         values.put("unique_id", uniqueid);
