@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.cloudkibo.R;
+import com.cloudkibo.library.LocaleHelper;
 
 import org.acra.ACRA;
 import org.acra.ReportingInteractionMode;
@@ -31,6 +32,7 @@ public class MyApplication extends Application {
 
         // The following line triggers the initialization of ACRA
         ACRA.init(this);
+        LocaleHelper.onCreate(this);
     }
 }
 

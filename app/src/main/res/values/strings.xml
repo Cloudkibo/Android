@@ -117,5 +117,14 @@
     <string name="menu_refresh_contacts">Refresh Contacts</string>
     <string name="menu_change_group_image">Change Group Image</string>
 
+    <string name="language">Language</string>
+    <string name="lang_english">English</string>
+    <string name="lang_urdu">Urdu</string>
+    <string name="lang_arabic">Arabic</string>
+    <string name="common_default">Default</string>
+    <string name="lang_french">French</string>
+    <string name="lang_spanish">Spanish</string>
+    <string name="lang_german">German</string>
+
 
 </resources>

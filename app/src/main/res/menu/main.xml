@@ -8,4 +8,11 @@
         android:title="@string/archived_menu_item"
         />
 
+	<item
+		android:id="@+id/language"
+		android:icon="@drawable/ic_notes"
+		app:showAsAction="ifRoom"
+		android:title="@string/language"
+		/>
+
 </menu>

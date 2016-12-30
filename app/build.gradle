@@ -23,7 +23,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
         }
         debug {
-  //          signingConfig signingConfigs.config
+            //          signingConfig signingConfigs.config
         }
     }
     dexOptions {
@@ -32,21 +32,21 @@ android {
 }
 
 dependencies {
+    //compile 'com.facebook.android:facebook-android-sdk:4.0.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.google.android.gms:play-services-gcm:9.4.0'
     compile 'com.google.firebase:firebase-messaging:9.4.0'
     compile 'com.github.nkzawa:socket.io-client:0.5.1'
-    compile 'com.android.support:support-v4:23.1.0'
-    compile 'com.google.code.gson:gson:2.2.2'
+    compile 'com.android.support:support-v4:23.4.0'
+    compile 'com.google.code.gson:gson:2.2.4'
     compile 'io.pristine:libjingle:8871@aar'
-    //compile 'com.facebook.android:facebook-android-sdk:4.0.0'
     compile 'com.koushikdutta.ion:ion:2.1.6'
     compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.facebook.android:account-kit-sdk:4.11.0'
     compile 'ch.acra:acra:4.8.5'
     compile 'com.microsoft.azure:notification-hubs-android-sdk:0.4@aar'
     compile 'com.microsoft.azure:azure-notifications-handler:1.0.1@aar'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.android.support:design:23.2.0'
+    compile 'com.android.support:design:23.4.0'
 }
 
 repositories {
@@ -58,5 +58,6 @@ repositories {
         url "http://dl.bintray.com/microsoftazuremobile/SDK"
     }
 }
+
 
 apply plugin: 'com.google.gms.google-services'
