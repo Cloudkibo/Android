@@ -64,6 +64,13 @@
             android:onClick="onClick" />
 
         <Button
+            android:text="@string/lang_german"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonGerman"
+            android:onClick="onClick" />
+
+        <Button
             android:text="@string/common_default"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

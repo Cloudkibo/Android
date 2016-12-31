@@ -53,6 +53,11 @@ public class LocaleChange extends Activity implements View.OnClickListener {
         updateViews();
     }
 
+    public void onGermanClick() {
+        LocaleHelper.setLocale(this, "de");
+        updateViews();
+    }
+
     private void updateViews() {
         // if you want you just call activity to restart itself to redraw all the widgets with the correct locale
         // however, it will cause a bad look and feel for your users
@@ -69,6 +74,7 @@ public class LocaleChange extends Activity implements View.OnClickListener {
         ((TextView) findViewById(R.id.buttonArabic)).setText(resources.getString(R.string.lang_arabic));
         ((TextView) findViewById(R.id.buttonFrench)).setText(resources.getString(R.string.lang_french));
         ((TextView) findViewById(R.id.buttonSpanish)).setText(resources.getString(R.string.lang_spanish));
+        ((TextView) findViewById(R.id.buttonGerman)).setText(resources.getString(R.string.lang_german));
         ((TextView) findViewById(R.id.buttonDefault)).setText(resources.getString(R.string.common_default));
 
     }
@@ -85,6 +91,8 @@ public class LocaleChange extends Activity implements View.OnClickListener {
             onFrenchClick();
         } else if(view.getId() == R.id.buttonSpanish){
             onSpanishClick();
+        } else if(view.getId() == R.id.buttonGerman){
+            onGermanClick();
         } else if(view.getId() == R.id.buttonDefault){
             onDefaultClick();
         }
