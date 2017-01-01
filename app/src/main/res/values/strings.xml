@@ -117,5 +117,9 @@
     <string name="menu_refresh_contacts">Refresh Contacts</string>
     <string name="menu_change_group_image">Change Group Image</string>
 
+    <string name="backup_description">Backup your messages and media to Google Drive. You can restore them when you reinstall KiboChat. Your messages and media will also back up to your phone\'s internal storage. Media and messages you back up are not protected by KiboChat end-to-end encryption while in Google Drive.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 
 </resources>

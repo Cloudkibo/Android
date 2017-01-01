@@ -181,8 +181,10 @@ public class ChatList extends CustomFragment implements IFragmentName
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (menu != null) {
             menu.findItem(R.id.archived).setVisible(false);
+			menu.add("Backup Settings");
         }
         inflater.inflate(R.menu.main, menu);  // Use filter.xml from step 1
+
         getActivity().getActionBar().setSubtitle(null);
     }
 
@@ -199,6 +201,17 @@ public class ChatList extends CustomFragment implements IFragmentName
                     .commit();
             return true;
         }
+        if(item.getTitle().equals("Backup Settings")){
+            Toast.makeText(getContext(), "Opening Backup Settings", Toast.LENGTH_LONG).show();
+            BackupSetting backupSettingFragment = new BackupSetting();
+            Bundle bundle = new Bundle();
+            bundle.putString("authToken", authtoken);
+            backupSettingFragment.setArguments(bundle);
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, backupSettingFragment, "backupSettingFragmentTag").addToBackStack("Backup Setting")
+                    .commit();
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -209,6 +222,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 
         menu.setHeaderTitle(getString(R.string.common_select_action));
         menu.add(0, v.getId(), 0, "Archive");
+
 
     }
 
