@@ -307,9 +307,9 @@ public class GroupUtility {
         return msg_unique_id;
     }
 
-    public String sendGroupMessage(final String group_id, final  String message, final  String auth_token){
+    public String sendGroupMessage(final String group_id, final  String message, final  String auth_token, String type){
         final String unique_id = randomString();
-        db.addGroupMessage(group_id,message, db.getUserDetails().get("phone"),"", unique_id, "chat");
+        db.addGroupMessage(group_id,message, db.getUserDetails().get("phone"),"", unique_id, type);
         try {
             JSONArray group_members = db.getGroupMembers(group_id);
             for (int i = 0; i < group_members.length(); i++)

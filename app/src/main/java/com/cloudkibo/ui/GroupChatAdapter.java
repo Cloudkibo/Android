@@ -12,8 +12,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomActivity;
+import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.CircleTransform;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.Conversation;
 
@@ -68,7 +72,25 @@ public class GroupChatAdapter extends BaseAdapter{
         View rowView;
        // rowView = inflater.inflate(R.layout.chat_item_contact, null);
 
+        if(convList.get(position).getType().equals("contact")){
+            rowView = inflater.inflate(R.layout.chat_item_contact, null);
+            TextView contact_name = (TextView) rowView.findViewById(R.id.contact_name);
+            contact_name.setText(convList.get(position).getMsg().split(":")[0]);
+            ImageView contact_image = (ImageView) rowView.findViewById(R.id.contact_image);
+            DatabaseHandler db = new DatabaseHandler(MainActivity.mainActivity);
+            String image_uri = db.getContactImage(convList.get(position).getMsg().split(":")[1]);
+            Glide
+                    .with(MainActivity.mainActivity)
+                    .load(image_uri)
+                    .thumbnail(0.1f)
+                    .centerCrop()
+                    .transform(new CircleTransform(MainActivity.mainActivity))
+                    .placeholder(R.drawable.avatar)
+                    .into(contact_image);
 
+
+            return  rowView;
+        }
         if(convList.get(position).getType().equals("log")){
             rowView = inflater.inflate(R.layout.chat_item_log, null);
         }

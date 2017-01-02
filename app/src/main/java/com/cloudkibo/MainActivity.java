@@ -45,13 +45,17 @@ import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
@@ -163,6 +167,7 @@ public class MainActivity extends CustomActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         mainActivity = this;
@@ -173,6 +178,8 @@ public class MainActivity extends CustomActivity
         shouldSync = getIntent().getExtras().getBoolean("sync");
        // this.updateChatList();
         //this.updatePartialContactList();
+
+
         setupContainer();
         setupDrawer();
 
@@ -209,6 +216,11 @@ public class MainActivity extends CustomActivity
 //        utility.updateDatabaseWithContactImages(getApplicationContext(),new ArrayList<String>());
 
 
+    }
+
+    public boolean isRTL(Context ctx) {
+        Configuration config = ctx.getResources().getConfiguration();
+        return config.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
     }
 
     int countRetryConnectingSocket = 0;
@@ -428,8 +440,15 @@ public class MainActivity extends CustomActivity
     private void setupDrawer()
     {
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
-                GravityCompat.START);
+        final boolean isRTL  =isRTL(getApplicationContext());
+        if(isRTL){
+            drawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                    Gravity.RIGHT);
+        }else{
+            drawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                    GravityCompat.START);
+        }
+
         drawerToggle = new ActionBarDrawerToggle(this, drawerLayout,
                 R.drawable.ic_drawer, R.string.drawer_open,
                 R.string.drawer_close) {
@@ -443,6 +462,22 @@ public class MainActivity extends CustomActivity
             public void onDrawerOpened(View drawerView)
             {
                 getActionBar().setTitle("KiboChat");
+            }
+            @Override
+            public boolean onOptionsItemSelected(MenuItem item) {
+
+                if(isRTL){
+                if (item != null && item.getItemId() == android.R.id.home) {
+                    if (drawerLayout.isDrawerOpen(Gravity.RIGHT)) {
+                        drawerLayout.closeDrawer(Gravity.RIGHT);
+                    } else {
+                        drawerLayout.openDrawer(Gravity.RIGHT);
+                    }
+                }
+                }else {
+                    super.onOptionsItemSelected(item);
+                }
+                return false;
             }
         };
         drawerLayout.setDrawerListener(drawerToggle);
@@ -463,8 +498,13 @@ public class MainActivity extends CustomActivity
         View header = getLayoutInflater().inflate(R.layout.left_nav_header,
                 null);
         drawerLeft.addHeaderView(header);
-
+        if(isRTL(getApplicationContext())) {
+            DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawerLeft.getLayoutParams();
+            params.gravity = Gravity.END;
+            drawerLeft.setLayoutParams(params);
+        }
         drawerLeft.setAdapter(new LeftNavAdapter(this, getDummyLeftNavItems()));
+
         drawerLeft.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
@@ -474,6 +514,8 @@ public class MainActivity extends CustomActivity
                 launchFragment(pos);
             }
         });
+
+
 
         drawerLayout.openDrawer(drawerLeft);
 
@@ -827,6 +869,14 @@ public class MainActivity extends CustomActivity
                     }
                 }
                 break;
+            case 0123:
+                IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if(myFragment == null) return;
+                if(myFragment.getFragmentName().equals("GroupChatUI")){
+                    final GroupChatUI myGroupChatListFragment = (GroupChatUI) myFragment;
+                    myGroupChatListFragment.onActivityResult(requestCode,  resultCode, data);
+                }
+
         }
     }
 
@@ -1542,6 +1592,7 @@ public class MainActivity extends CustomActivity
                 Toast.makeText(MainActivity.this, notificationMessage, Toast.LENGTH_LONG).show();
             }
         });
+
 
     }
 

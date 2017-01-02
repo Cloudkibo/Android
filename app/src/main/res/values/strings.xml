@@ -117,6 +117,32 @@
     <string name="menu_refresh_contacts">Refresh Contacts</string>
     <string name="menu_change_group_image">Change Group Image</string>
 
+    <string name="backup_description">Backup your messages and media to Google Drive. You can restore them when you reinstall KiboChat. Your messages and media will also back up to your phone\'s internal storage. Media and messages you back up are not protected by KiboChat end-to-end encryption while in Google Drive.</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="last_backup">Last Backup</string>
+    <string name="local_02_00">Local: 02:00</string>
+    <string name="google_drive">Google Drive:</string>
+    <string name="back_up">BACK UP</string>
+    <string name="google_drive_settings">Google Drive Settings</string>
+    <string name="back_up_to_google_drive">Back up to Google Drive</string>
+    <string name="account">Account</string>
+    <string name="none_selected">None Selected</string>
+    <string name="back_up_over">Back up over</string>
+    <string name="wi_fi_only">Wi-Fi only</string>
+    <string name="include_videos">Include videos</string>
+    <string name="backup_settings">Backup Settings</string>
+    <string name="back_up_setting">Backup Settings</string>
+    <string name="cancel">Cancel</string>
+    <string name="never">Never</string>
+    <string name="only_when_i_tap_back">Only when I tap Back up</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="wifi_only">Wi-Fi Only</string>
+    <string name="wifi_cellular">Wi-Fi or Cellular</string>
+    <string name="backup_to_google_drive">Backup to Google Drive</string>
+
     <string name="language">Language</string>
     <string name="lang_english">English</string>
     <string name="lang_urdu">Urdu</string>
@@ -125,6 +151,7 @@
     <string name="lang_french">French</string>
     <string name="lang_spanish">Spanish</string>
     <string name="lang_german">German</string>
+
 
 
 </resources>

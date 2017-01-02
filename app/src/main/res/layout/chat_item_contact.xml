@@ -32,13 +32,14 @@
                 android:padding="5dp">
 
                 <ImageView
+                    android:id="@+id/contact_image"
                     android:layout_margin="5dp"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:src="@drawable/avatar"/>
                 <TextView
 
-                    android:id="@+id/phone"
+                    android:id="@+id/contact_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Sojharo"
