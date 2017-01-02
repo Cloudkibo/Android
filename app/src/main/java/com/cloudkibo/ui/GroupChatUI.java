@@ -1,11 +1,15 @@
 package com.cloudkibo.ui;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -68,6 +72,8 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     private String group_name="";
     private GroupChatAdapter groupAdapter;
     private ArrayList<Conversation> convList = new ArrayList<Conversation>();
+
+    static final int PICK_CONTACT=1;
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
      */
@@ -139,6 +145,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (menu != null) {
             menu.findItem(R.id.archived).setVisible(false);
+            menu.add("Send Contact");
         }
         inflater.inflate(R.menu.groupchat, menu);  // Use filter.xml from step 1
     }
@@ -160,6 +167,11 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                     .commit();
             return true;
         }
+        if(item.getTitle().equals("Send Contact")){
+            Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
+                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+            getActivity().startActivityForResult(contactPickerIntent, 0123);
+        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -167,6 +179,43 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     /* (non-Javadoc)
      * @see com.socialshare.custom.CustomFragment#onClick(android.view.View)
      */
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // check whether the result is ok
+
+        if (resultCode == Activity.RESULT_OK) {
+            // Check for the request code, we might be usign multiple startActivityForReslut
+            switch (requestCode) {
+                case 0123:
+                    Cursor cursor = null;
+                    try {
+                        String phoneNo = null ;
+                        String name = null;
+                        String photo_uri = null;
+                        Uri uri = data.getData();
+                        cursor = getContext().getContentResolver().query(uri, null, null, null, null);
+                        cursor.moveToFirst();
+                        int  phoneIndex =cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
+                        int  nameIndex =cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
+                        int  photoIndex =cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI);
+                        phoneNo = cursor.getString(phoneIndex);
+                        name = cursor.getString(nameIndex);
+                        photo_uri = cursor.getString(photoIndex);
+                        sendContact(name, phoneNo, photo_uri);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    break;
+                default:
+                    Toast.makeText(getContext(), "Some other action was taken", Toast.LENGTH_LONG).show();
+            }
+        } else {
+            Log.e("MainActivity", "Failed to pick contact");
+        }
+
+//        super.onActivityResult(requestCode, resultCode, data);
+    }
 
 
     @Override
@@ -224,7 +273,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         }
         DatabaseHandler db = new DatabaseHandler(getContext());
         GroupUtility groupUtility = new GroupUtility(getContext());
-        String msg_unique_id = groupUtility.sendGroupMessage(group_id, message, authtoken);
+        String msg_unique_id = groupUtility.sendGroupMessage(group_id, message, authtoken, "chat");
         messages.add(message);
         names.add("");
 
@@ -236,6 +285,23 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
 
         groupAdapter.notifyDataSetChanged();
         my_message.setText("");
+    }
+
+    public void sendContact(String display_name, String phone, String contact_image){
+        String message = display_name + ":" + phone;
+        DatabaseHandler db = new DatabaseHandler(getContext());
+        GroupUtility groupUtility = new GroupUtility(getContext());
+        String msg_unique_id = groupUtility.sendGroupMessage(group_id, message, authtoken, "contact");
+        messages.add(message);
+        names.add("");
+
+        try {
+            convList.add(new Conversation(message, db.getUserDetails().get("phone"), true,"", msg_unique_id, db.getGroupMessageStatus(msg_unique_id, db.getUserDetails().get("phone")).getJSONObject(0).getString("status"), "contact").setContact_image(contact_image));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        groupAdapter.notifyDataSetChanged();
     }
 
     public void populateMessages(){

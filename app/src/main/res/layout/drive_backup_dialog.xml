@@ -22,7 +22,7 @@
         android:id="@+id/cancel_drive_backup_dialog"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Cancel"
+        android:text="@string/cancel"
         android:layout_gravity="right"
         android:textColor="@color/main_color_green"
         android:background="@color/white_smoke"

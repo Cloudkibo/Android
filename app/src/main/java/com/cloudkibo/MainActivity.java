@@ -869,6 +869,14 @@ public class MainActivity extends CustomActivity
                     }
                 }
                 break;
+            case 0123:
+                IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if(myFragment == null) return;
+                if(myFragment.getFragmentName().equals("GroupChatUI")){
+                    final GroupChatUI myGroupChatListFragment = (GroupChatUI) myFragment;
+                    myGroupChatListFragment.onActivityResult(requestCode,  resultCode, data);
+                }
+
         }
     }
 

@@ -181,7 +181,7 @@ public class ChatList extends CustomFragment implements IFragmentName
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (menu != null) {
             menu.findItem(R.id.archived).setVisible(false);
-			menu.add("Backup Settings");
+			menu.findItem(R.id.backup_setting);
         }
         inflater.inflate(R.menu.main, menu);  // Use filter.xml from step 1
 
@@ -201,7 +201,7 @@ public class ChatList extends CustomFragment implements IFragmentName
                     .commit();
             return true;
         }
-        if(item.getTitle().equals("Backup Settings")){
+        if(id == R.id.backup_setting){
             Toast.makeText(getContext(), "Opening Backup Settings", Toast.LENGTH_LONG).show();
             BackupSetting backupSettingFragment = new BackupSetting();
             Bundle bundle = new Bundle();

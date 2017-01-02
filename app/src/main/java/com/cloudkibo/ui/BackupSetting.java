@@ -27,16 +27,19 @@ import java.util.List;
 
 public class BackupSetting extends CustomFragment implements IFragmentName{
 
-    final String backup_drive_options[] = {"Never", "Only when I tap Back up", "Daily", "Weekly", "Monthly"};
-    String backup_drive_selected_option = "Never";
-    final String backup_over_options[] = {"Wi-Fi Only", "Wi-Fi or Cellular"};
-    String backup_over_selected_option = "Wi-Fi Only";
+    String backup_drive_options[];
+    String backup_drive_selected_option = "";
+    String backup_over_options[];
+    String backup_over_selected_option = "";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View v = inflater.inflate(R.layout.fragment_backup_setting, container, false);
-
+        backup_drive_selected_option = getString(R.string.never);
+        backup_over_selected_option = getString(R.string.wifi_only);
+        backup_drive_options = new String[]{getString(R.string.never), getString(R.string.only_when_i_tap_back), getString(R.string.daily), getString(R.string.weekly), getString(R.string.monthly)};
+        backup_over_options = new String[]{getString(R.string.wifi_only), getString(R.string.wifi_cellular)};
         updateDefaultValues(v);
 
         LinearLayout drive_backup = (LinearLayout) v.findViewById(R.id.drive_backup);
@@ -120,7 +123,7 @@ public class BackupSetting extends CustomFragment implements IFragmentName{
 
         // custom dialog
         final Dialog dialog = new Dialog(MainActivity.mainActivity);
-        dialog.setTitle("Backup to Google Drive");
+        dialog.setTitle(R.string.backup_to_google_drive);
         dialog.setContentView(R.layout.drive_backup_dialog);
 
         List<String> stringList=new ArrayList<>();  // here is list

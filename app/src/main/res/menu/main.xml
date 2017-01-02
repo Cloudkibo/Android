@@ -7,5 +7,10 @@
         app:showAsAction="always"
         android:title="@string/archived_menu_item"
         />
-
+	<item
+		android:id="@+id/backup_setting"
+		android:icon="@drawable/ic_notes"
+		app:showAsAction="always"
+		android:title="@string/backup_settings"
+		/>
 </menu>

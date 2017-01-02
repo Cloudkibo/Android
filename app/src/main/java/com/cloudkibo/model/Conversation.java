@@ -34,6 +34,8 @@ public class Conversation
 
 	private Boolean onLocal;
 
+	private String contact_image;
+
 	/**
 	 * Instantiates a new conversation.
 	 *
@@ -66,6 +68,15 @@ public class Conversation
 		this.uniqueid = uniqueid;
 		this.status = status;
 		this.type = type;
+	}
+
+	public Conversation setContact_image(String contact_image){
+		this.contact_image = contact_image;
+        return this;
+	}
+
+	public String getContact_image(){
+		return this.contact_image;
 	}
 
 
