@@ -182,6 +182,8 @@ public class ChatList extends CustomFragment implements IFragmentName
         if (menu != null) {
             menu.findItem(R.id.archived).setVisible(false);
 			menu.findItem(R.id.backup_setting);
+			menu.findItem(R.id.language).setVisible(false);
+
         }
         inflater.inflate(R.menu.main, menu);  // Use filter.xml from step 1
 
@@ -212,6 +214,9 @@ public class ChatList extends CustomFragment implements IFragmentName
                     .commit();
             return true;
         }
+        } else if (id == R.id.language){
+			startActivity(new Intent(getActivity().getApplicationContext(), LocaleChange.class));
+		}
 
         return super.onOptionsItemSelected(item);
     }

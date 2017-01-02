@@ -145,7 +145,8 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (menu != null) {
             menu.findItem(R.id.archived).setVisible(false);
-            menu.add("Send Contact");
+            menu.add("Send Contact"); // todo this should be in xml
+            menu.findItem(R.id.language).setVisible(false);
         }
         inflater.inflate(R.menu.groupchat, menu);  // Use filter.xml from step 1
     }

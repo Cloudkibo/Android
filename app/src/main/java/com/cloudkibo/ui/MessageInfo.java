@@ -51,6 +51,7 @@ public class MessageInfo extends CustomFragment implements IFragmentName {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (menu != null) {
             menu.findItem(R.id.archived).setVisible(false);
+            menu.findItem(R.id.language).setVisible(false);
         }
         inflater.inflate(R.menu.newchat, menu);  // Use filter.xml from step 1
     }

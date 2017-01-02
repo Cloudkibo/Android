@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Version Code 95"
+        android:text="Version Code 97"
         android:id="@+id/textView3"
         android:layout_gravity="center_horizontal" />
 

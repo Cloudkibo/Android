@@ -69,4 +69,12 @@
     <string name="storage_removed">ذخیرہ ہٹا دیا یا ان ماؤنٹ گیا تھا.</string>
     <string name="main_activity_google_play_services">اس آلہ میں Google Play سروسز کی کی سہولت نہیں ہے.</string>
     <string name="type_msg">پیغام یہاں لکھیں</string>
+    <string name="language">زبان</string>
+    <string name="lang_english">انگریزی</string>
+    <string name="lang_arabic">عربی</string>
+    <string name="lang_urdu">اردو</string>
+    <string name="common_default">پہلے سے طے شدہ</string>
+    <string name="lang_french">فرانسیسی</string>
+    <string name="lang_spanish">ہسپانوی</string>
+    <string name="lang_german">جرمن</string>
 </resources>
