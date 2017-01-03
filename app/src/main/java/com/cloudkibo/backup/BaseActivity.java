@@ -2,17 +2,18 @@ package com.cloudkibo.backup;
 
         //base class for google drive client
 
-        import android.app.Activity;
-        import android.content.Intent;
-        import android.content.IntentSender.SendIntentException;
-        import android.os.Bundle;
-        import android.util.Log;
-        import android.widget.Toast;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.IntentSender.SendIntentException;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
-        import com.google.android.gms.common.ConnectionResult;
-        import com.google.android.gms.common.GoogleApiAvailability;
-        import com.google.android.gms.common.api.GoogleApiClient;
-        import com.google.android.gms.drive.Drive;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.drive.Drive;
+
 
 /**
  * An abstract activity that handles authorization and connection to the Drive
