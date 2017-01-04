@@ -88,16 +88,19 @@ public class KiboSyncService extends Service {
 
         startWithAddressBook = false;
 
+        // todo check if it is doing anything or not. else remove this
         doUpwardSync();
 
-        new android.os.Handler().postDelayed(
+        // This is commented because we have stopped doing sync of chat from server on install (we won't restore anything from server in future)
+        // server will not store chat and would delete once it is sent to client
+        /*new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
                         Log.i("tag", "This'll run 3000 milliseconds later");
                         loadChatFromServer();
                     }
                 },
-                3000);
+                3000);*/
 
     }
 
@@ -240,6 +243,18 @@ public class KiboSyncService extends Service {
 
             checkStatusOfGroupMessage(data);
 
+            JSONArray sentChatMesssagesForStatus = db.getSentMessagesForSync(db.getUserDetails().get("phone"));
+
+            JSONArray arrayChat = new JSONArray();
+            for (int i=0; i < sentChatMesssagesForStatus.length(); i++) {
+                JSONObject row = sentChatMesssagesForStatus.getJSONObject(i);
+                arrayChat.put(row.getString("uniqueid"));
+            }
+            JSONObject dataChat = new JSONObject();
+            dataChat.put("unique_ids", arrayChat);
+
+            checkStatusOfChatMessage(dataChat);
+
 
         }catch(JSONException e ){
             e.printStackTrace();
@@ -342,6 +357,36 @@ public class KiboSyncService extends Service {
                                     db.updateGroupChatStatusReadTime(msg_unique_id, status, user_phone, row.getString("read_date"));
                                 }
                             }
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.execute();
+    }
+
+    public void checkStatusOfChatMessage(final JSONObject data){
+        new AsyncTask<String, String, JSONArray>() {
+
+            @Override
+            protected JSONArray doInBackground(String... args) {
+                return new UserFunctions().checkStatusOfSentChatMessages(data, authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONArray jsonA) {
+                try {
+
+                    if (jsonA != null) {
+                        for (int i=0; i < jsonA.length(); i++) {
+                            JSONObject row = jsonA.getJSONObject(i);
+                            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                            String uniqueid = row.getString("uniqueid");
+                            String status = row.getString("status");
+                            db.updateChat(status, uniqueid);
                         }
                     }
 
