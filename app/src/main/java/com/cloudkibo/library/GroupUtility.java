@@ -133,7 +133,7 @@ public class GroupUtility {
             sendNotification("New Member Added", payload.toString());
 
             for (int i = 0; i < persons.length() ; i++) {
-                db.addGroupMember(group_id,persons.getString(i).toString(),0,"joined");
+                db.addGroupMember(group_id,persons.getString(i).toString(),"0","joined");
             }
             if(MainActivity.isVisible){
                 MainActivity.mainActivity.updateGroupMembers();
@@ -241,6 +241,9 @@ public class GroupUtility {
             String member_phone = data.getString("senderId");
             String unique_id = data.getString("unique_id");
             String group_id = data.getString("groupId");
+            if(!isGroupMember(group_id)){
+                return;
+            }
             sendNotification(message, message);
 
             db.addGroupMessage(group_id,message,member_phone,member_phone,unique_id, "chat");
@@ -379,7 +382,6 @@ public class GroupUtility {
     public void addMemberOnServer(final String group_name, final String group_id,final String phone[], final String authtoken){
 
 
-
         new AsyncTask<String, String, JSONObject>() {
 
             @Override
@@ -397,6 +399,8 @@ public class GroupUtility {
                     for(int i = 0; i<phone.length; i++){
                         DatabaseHandler db = new DatabaseHandler(ctx);
                         db.leaveGroupServerPending(group_id, phone[i]);
+                        Log.e("Group", group_id + " " + phone[i]);
+                        Toast.makeText(ctx, group_id + " " + phone[i], Toast.LENGTH_LONG).show();
                     }
                 }
             }
@@ -409,6 +413,12 @@ public class GroupUtility {
     public void leaveGroup(final String group_id,final String member_phone, final String authtoken){
         db.leaveGroup(group_id,member_phone);
         db.addGroupMemberRemovePending(group_id, member_phone);
+        final String unique_id = randomString();
+        if(member_phone.equals(db.getUserDetails().get("phone"))){
+            db.addGroupMessage(group_id,"You left the group", member_phone,"", unique_id, "log");
+        }else{
+            db.addGroupMessage(group_id,db.getContactName(member_phone) + " left the group", member_phone,"", unique_id, "log");
+        }
         new AsyncTask<String, String, JSONObject>() {
 
             @Override
@@ -428,6 +438,8 @@ public class GroupUtility {
                         Toast.makeText(ctx, row.toString(), Toast.LENGTH_LONG).show();
                         Toast.makeText(ctx, ctx.getString(R.string.group_utility_member_leave), Toast.LENGTH_LONG).show();
                     }
+                }else{
+                    Toast.makeText(ctx, "Oops something went wrong!", Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -436,6 +448,18 @@ public class GroupUtility {
 
     }
 
+    public void updateAdminStatus(String payload, String authtoken){
+        try {
+            JSONObject body = new JSONObject(payload);
+            String group_id = body.getString("groupId");
+            String phone = body.getString("personUpdated");
+            String isAdmin = body.getString("isAdmin").equals("Yes") ? "1" : "0";
+            db.updateAdminStatus(group_id,phone,isAdmin);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
 
     public void updateMemberRole(final String group_id, final String member_phone, final String makeAdmin, final String authtoken){
         new AsyncTask<String, String, JSONObject>() {
@@ -453,7 +477,7 @@ public class GroupUtility {
                         // todo use Toast for this.
                         sendNotification("No Internet Connection", "Cannot update member role to the server");
                     }else{
-                        Toast.makeText(ctx, ctx.getString(R.string.group_utility_member_role_update), Toast.LENGTH_LONG).show();
+                        Toast.makeText(ctx, ctx.getString(R.string.group_utility_member_role_update) + " " + row.toString(), Toast.LENGTH_LONG).show();
                     }
                 }else{
                     Toast.makeText(ctx, ctx.getString(R.string.group_utility_member_role_update_failed), Toast.LENGTH_LONG).show();
@@ -484,7 +508,10 @@ public class GroupUtility {
                         sendNotification("No Internet Connection", "Message will be sent as soon as the device gets connected to internet");
                     }else{
                     db.leaveGroupMemberRemovePending(group_id, member_phone);
-                    Toast.makeText(ctx, ctx.getString(R.string.group_utility_member_removed), Toast.LENGTH_LONG).show();
+                    Toast.makeText(ctx, ctx.getString(R.string.group_utility_member_removed)  + "Member pending: " + db.isGroupMembersRemovePending(group_id, member_phone), Toast.LENGTH_LONG).show();
+                        if(db.isGroupMembersRemovePending(group_id, member_phone) > 0){
+                            Toast.makeText(ctx, "Error Member still in pending table", Toast.LENGTH_LONG).show();
+                        }
                  }
                 }else{
                     // todo remove this developer message
@@ -603,6 +630,35 @@ public class GroupUtility {
         try {
             JSONObject details = db.getMyDetailsInGroup(group_id);
             if(details.getString("isAdmin").equals("1")){
+                return true;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isAdmin(String group_id, String member_phone){
+        DatabaseHandler db = new DatabaseHandler(ctx);
+        try {
+            JSONObject details = db.getGroupMemberDetail(group_id, member_phone);
+            if(details.getString("isAdmin").equals("1")){
+                Toast.makeText(ctx, details.getString("display_name") + " " + member_phone + " is admin", Toast.LENGTH_LONG).show();
+                return true;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean isGroupMember(String group_id){
+        DatabaseHandler db = new DatabaseHandler(ctx);
+        try {
+            JSONObject details = db.getMyDetailsInGroup(group_id);
+            if(details.length() <= 0){
+                return false;
+            }else {
                 return true;
             }
         } catch (JSONException e) {

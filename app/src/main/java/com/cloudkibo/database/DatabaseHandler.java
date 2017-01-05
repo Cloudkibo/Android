@@ -335,7 +335,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     /*
     * This Method is used to add group member to a group
     * */
-    public void addGroupMember(String group_unique_id, String member_phone, int isAdmin, String membership_status) {
+    public void addGroupMember(String group_unique_id, String member_phone, String isAdmin, String membership_status) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("group_unique_id", group_unique_id); // values : Group Name
@@ -343,7 +343,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("isAdmin", isAdmin);// values : 0 or 1
         values.put("membership_status", membership_status);// values : left or joined
         // Inserting Row
-        db.insert("GROUPMEMBER", null, values);
+        db.replace("GROUPMEMBER", null, values);
         db.close(); // Closing database connection
     }
 
@@ -532,6 +532,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return groups;
     }
 
+    public int isGroupMembersRemovePending(String group_id, String member_phone){
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT group_unique_id, member_phone FROM GROUPMEMBERREMOVEPENDING WHERE group_unique_id='"+ group_id +"' AND member_phone='" + member_phone +"'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        int count = cursor.getCount();
+        cursor.close();
+        db.close();
+        // return user
+        return count;
+    }
+
     public JSONArray getGroupsServerPending() throws JSONException {
         JSONArray groups = new JSONArray();
 
@@ -582,6 +598,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues args = new ContentValues();
         args.put("isAdmin", 1);
+        db.update("GROUPMEMBER",args,"group_unique_id='"+group_unique_id+"' and member_phone='"+member_phone+"'",null);
+        db.close(); // Closing database connection
+    }
+
+    public void updateAdminStatus(String group_unique_id, String member_phone, String isAdmin) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put("isAdmin", isAdmin);
         db.update("GROUPMEMBER",args,"group_unique_id='"+group_unique_id+"' and member_phone='"+member_phone+"'",null);
         db.close(); // Closing database connection
     }
@@ -832,7 +856,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public JSONObject getMyDetailsInGroup(String group_id) throws JSONException {
         String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM GROUPMEMBER, "+ User.TABLE_USER_NAME +"  where group_unique_id='"+ group_id +"'"
-                +" AND phone = member_phone" ;
+                +" AND phone = member_phone AND membership_status != 'left'" ;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // Move to first row

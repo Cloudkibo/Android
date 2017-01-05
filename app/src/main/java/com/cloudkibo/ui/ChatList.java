@@ -181,7 +181,7 @@ public class ChatList extends CustomFragment implements IFragmentName
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (menu != null) {
             menu.findItem(R.id.archived).setVisible(false);
-			menu.findItem(R.id.backup_setting);
+			menu.findItem(R.id.backup_setting).setVisible(false);
 			menu.findItem(R.id.language).setVisible(false);
 
         }
@@ -214,7 +214,7 @@ public class ChatList extends CustomFragment implements IFragmentName
                     .commit();
             return true;
         }
-        } else if (id == R.id.language){
+        else if (id == R.id.language){
 			startActivity(new Intent(getActivity().getApplicationContext(), LocaleChange.class));
 		}
 

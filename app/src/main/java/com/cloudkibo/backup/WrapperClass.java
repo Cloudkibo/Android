@@ -3,6 +3,8 @@ package com.cloudkibo.backup;
 
 import com.cloudkibo.library.ConnectionManager;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -31,6 +33,7 @@ public class WrapperClass extends BaseActivity {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("username", username));
         params.add(new BasicNameValuePair("password", password));
+        String loginURL =  "";
         String authtoken = connection.getTokenFromServer(loginURL, params);
         return authtoken;
     }
@@ -45,9 +48,9 @@ public class WrapperClass extends BaseActivity {
         catch (Exception e){
             e.printStackTrace();
         }
-
-        JSONObject response = connection.sendObjectToServer(googleDriveUrl, params, authtoken);
-        return JSONObject;
+        String googleDriveUrl = "";
+//        JSONObject response = connection.sendObjectToServer(googleDriveUrl, params, authtoken);
+        return null;
     }
 
     //function to upload File
@@ -61,8 +64,9 @@ public class WrapperClass extends BaseActivity {
             e.printStackTrace();
         }
 
-        JSONObject response = connection.sendFileToServer(googleDriveUrl, params, authtoken);
-        return response;
+//        JSONObject response = connection.sendFileToServer(googleDriveUrl, params, authtoken);
+//        return response;
+        return null;
     }
 
     public JSONObject uploadGroupInfo(JSONArray groupinfo, String authtoken){
@@ -75,9 +79,9 @@ public class WrapperClass extends BaseActivity {
             e.printStackTrace();
         }
 
-        JSONObject response = connection.sendObjectToServer(googleDriveUrl, params, authtoken);
-        return response;
-
+//        JSONObject response = connection.sendObjectToServer(googleDriveUrl, params, authtoken);
+//        return response;
+        return null;
     }
 
 

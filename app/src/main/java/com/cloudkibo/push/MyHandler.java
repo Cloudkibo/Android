@@ -47,7 +47,7 @@ public class MyHandler extends NotificationsHandler {
         AccountKit.initialize(ctx.getApplicationContext());
         String nhMessage = bundle.getString("message");
         userDetail = new DatabaseHandler(ctx.getApplicationContext()).getUserDetails();
-        //sendNotification("Test Push Notification", nhMessage); // todo remove this
+        sendNotification("Test Push Notification", nhMessage); // todo remove this
         Utility.sendLogToServer(""+ userDetail.get("phone") +" gets push notification payload : "+ nhMessage);
         JSONObject payload;
         try {
@@ -98,6 +98,11 @@ public class MyHandler extends NotificationsHandler {
                     GroupUtility groupUtility = new GroupUtility(context);
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();
                     groupUtility.updateGroupMessageStatus(payload.toString(), accessToken.getToken());
+                }
+                if(payload.getString("type").equals("group:role_updated")){
+                    GroupUtility groupUtility = new GroupUtility(context);
+                    final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+                    groupUtility.updateAdminStatus(payload.toString(), accessToken.getToken());
                 }
             }
             if(!payload.has("uniqueId")) {

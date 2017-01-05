@@ -356,10 +356,10 @@ public class UserFunctions {
 
     public JSONObject updateMemberRole(String group_id, String member_phone, String makeAdmin, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("group_uniquei_id", group_id));
+        params.add(new BasicNameValuePair("group_unique_id", group_id));
         params.add(new BasicNameValuePair("member_phone", member_phone));
         params.add(new BasicNameValuePair("makeAdmin", makeAdmin));
-        JSONObject response = connection.sendObjectToServer(getSingleGroupChatURL, authtoken, params);
+        JSONObject response = connection.sendObjectToServer(updateMemberRole, authtoken, params);
         return response;
     }
 	

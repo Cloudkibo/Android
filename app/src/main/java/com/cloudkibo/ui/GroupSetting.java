@@ -82,9 +82,6 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         this.view = v;
         this.inflater = inflater;
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
-//        String names[] = getMembers();
-//        Toast.makeText(getContext(), getMembers().length, Toast.LENGTH_LONG).show();
-  //      Toast.makeText(getContext(), getMembers().toString(), Toast.LENGTH_LONG).show();
         setGroupInfo(v);
         loadDisplayImage();
         Bundle args = getArguments();
@@ -118,16 +115,13 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         // TODO Auto-generated method stub
-//                        Toast.makeText(getContext(), phoneList[which], Toast.LENGTH_LONG).show();
                         DatabaseHandler db = new DatabaseHandler(getContext());
                         try {
                             JSONObject group_member = db.getGroupMemberDetail(group_id, phoneList[which]);
                             if(group_member.getString("phone").equals(phoneList[which])){
                                 db.updateGroupMembershipStatus(group_id,phoneList[which], "joined");
-                                Toast.makeText(getContext(), "Member Status Updated", Toast.LENGTH_LONG).show();
                             }else {
-                                db.addGroupMember(group_id,phoneList[which],0,"joined");
-                                Toast.makeText(getContext(), "Member Added", Toast.LENGTH_LONG).show();
+                                db.addGroupMember(group_id,phoneList[which],"0","joined");
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -139,8 +133,6 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                         try {
                             JSONObject info = db.getGroupInfo(group_id);
                             String group_name = info.getString("group_name");
-//                            Toast.makeText(getContext(), "Add member: "+ groupUtility.getMemberData(group_name, group_id, member_phone).toString(), Toast.LENGTH_LONG).show();
-
                             groupUtility.addMemberOnServer(group_name,group_id,member_phone,authtoken);
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -169,9 +161,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                 if(isAdmin(group_id) && groupUtility.adminCount(group_id) <= 1){
                     Toast.makeText(getContext(), getString(R.string.group_utility_member_leave_admin_prompt) +": " + groupUtility.adminCount(group_id), Toast.LENGTH_LONG ).show();
                 }else {
-//                    Toast.makeText(getContext(), "Left the group: " + groupUtility.adminCount(group_id), Toast.LENGTH_LONG ).show();
                     leaveGroup(group_id);
-                    Toast.makeText(getContext(), getString(R.string.group_utility_member_leave), Toast.LENGTH_LONG ).show();
                 }
             }
         });
@@ -240,10 +230,6 @@ public class GroupSetting extends CustomFragment implements IFragmentName
        try {
            participants = new JSONArray();
            participants = db.getGroupMembers(group_id);
-           Toast.makeText(getContext(), "New Contacts: "+ participants, Toast.LENGTH_LONG).show();
-//           participants.put(db.getMyDetailsInGroup(group_id));
-
-//           Toast.makeText(getContext(), "Custom Members "+participants.toString(), Toast.LENGTH_LONG).show();
            names = new String[participants.length()];
            for(int i = 0; i < participants.length(); i++)
            {
@@ -260,7 +246,6 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                CustomParticipantAdapter customParticipantAdapter = new CustomParticipantAdapter(inflater, participants,getContext(), group_id);
                lv.setAdapter(customParticipantAdapter);
                customParticipantAdapter.notifyDataSetChanged();
-//               Toast.makeText(getContext(), "List Updated", Toast.LENGTH_LONG).show();
            }
            return  participants;
        } catch (JSONException e) {
@@ -275,7 +260,6 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         if (args  != null){
             group_id = args.getString("group_id");
         }
-       // Toast.makeText(getContext(), "Group In function", Toast.LENGTH_LONG).show();
 
         DatabaseHandler db = new DatabaseHandler(getContext());
         try {
@@ -324,7 +308,6 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                 contactList[i] = row.getString("display_name");
                 phoneList[i] = row.getString(CloudKiboDatabaseContract.Contacts.CONTACT_PHONE);
             }
-            Toast.makeText(getContext(), "Number of contacts in group are: " + phoneList.length, Toast.LENGTH_LONG).show();
             return contactList;
         } catch (JSONException e) {
             e.printStackTrace();
