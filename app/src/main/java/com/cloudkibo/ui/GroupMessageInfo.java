@@ -183,7 +183,7 @@ public class GroupMessageInfo extends CustomFragment implements IFragmentName {
 
             JSONArray jsonA = db.getMembersNotInGroup(group_id);
 
-            jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
+            jsonA = UserFunctions.sortJSONArrayIgnoreCase(jsonA, "display_name");
 
             contactList = new String[jsonA.length()];
             phoneList  = new String[jsonA.length()];

@@ -4,7 +4,14 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -48,6 +55,7 @@ import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.CircleTransform;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
+import com.cloudkibo.model.ChatItem;
 import com.cloudkibo.model.ContactItem;
 import com.cloudkibo.utils.IFragmentName;
 
@@ -127,17 +135,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 			}
 		});
 
-//		Button btnRefresh = (Button) v.findViewById(R.id.btnRefresh);
-//
-//		btnRefresh.setOnClickListener(new View.OnClickListener() {
-//			@Override
-//			public void onClick(View view) {
-//				MainActivity act1 = (MainActivity) getActivity();
-//
-//				act1.syncContacts();
-//			}
-//		});
-//
+
 //		Utility utility = new Utility();
 //		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
 
@@ -419,7 +417,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 //                    JSONArray jsonA = db.getContacts();
 //                    JSONArray jsonB = db.getContactsOnAddressBook();
 
-                    jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
+                    jsonA = UserFunctions.sortJSONArrayIgnoreCase(jsonA, "display_name");
 
 //
                     ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
@@ -489,8 +487,8 @@ public class ContactList extends CustomFragment implements IFragmentName
 //                    JSONArray jsonA = db.getContacts();
 //                    JSONArray jsonB = db.getContactsOnAddressBook();
 
-					jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
-                    jsonB = UserFunctions.sortJSONArray(jsonB, "display_name");
+					jsonA = UserFunctions.sortJSONArrayIgnoreCase(jsonA, "display_name");
+                    jsonB = UserFunctions.sortJSONArrayIgnoreCase(jsonB, "display_name");
 //
 					String my_btmp;
 					//This loop adds contacts to the display list which are on cloudkibo
@@ -534,6 +532,9 @@ public class ContactList extends CustomFragment implements IFragmentName
 						).setProfile(my_btmp));
 						//contact_phone.add(row.getString("phone"));
 					}
+
+
+
 					return contactList1;
 				} catch (JSONException e) {
 

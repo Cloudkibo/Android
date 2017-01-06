@@ -213,8 +213,7 @@ public class ChatList extends CustomFragment implements IFragmentName
                     .replace(R.id.content_frame, backupSettingFragment, "backupSettingFragmentTag").addToBackStack("Backup Setting")
                     .commit();
             return true;
-        }
-        else if (id == R.id.language){
+        } else if (id == R.id.language){
 			startActivity(new Intent(getActivity().getApplicationContext(), LocaleChange.class));
 		}
 

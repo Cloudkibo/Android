@@ -228,7 +228,7 @@ public class CreateGroup extends CustomFragment implements IFragmentName
             ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 
 
-            jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
+            jsonA = UserFunctions.sortJSONArrayIgnoreCase(jsonA, "display_name");
 //
             String my_btmp;
             //This loop adds contacts to the display list which are on cloudkibo

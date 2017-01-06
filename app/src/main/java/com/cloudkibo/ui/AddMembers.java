@@ -192,7 +192,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
 
             JSONArray jsonA = db.getContacts();
 
-            jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
+            jsonA = UserFunctions.sortJSONArrayIgnoreCase(jsonA, "display_name");
 
             contactList = new String[jsonA.length()];
             phoneList  = new String[jsonA.length()];
@@ -216,7 +216,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
         DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
         try {
             JSONArray jsonA = db.getContacts();
-            jsonA = UserFunctions.sortJSONArray(jsonA, "display_name");
+            jsonA = UserFunctions.sortJSONArrayIgnoreCase(jsonA, "display_name");
             phoneList  = new String[jsonA.length()];
             //This loop adds contacts to the display list which are on cloudkibo
             for (int i=0; i < jsonA.length(); i++) {

@@ -53,6 +53,7 @@ public class UserFunctions {
     private static String sendChatStatusURL =       baseURL + "/api/userchat/updateStatus";
     private static String getPartialChatURL =       baseURL + "/api/userchat/partialchatsync";
     private static String getSingleChatURL =        baseURL + "/api/userchat/getsinglechat";
+    public static String checkSentChatStatus =          baseURL + "/api/userchat/checkStatus";
     private static String getSingleGroupChatURL =   baseURL + "/api/groupchat/fetchSingleChat";
     private static String sendLogURL =              baseURL + "/api/users/log";
     private static String createGroupURL =          baseURL + "/api/groupmessaging/";
@@ -260,6 +261,10 @@ public class UserFunctions {
 
     public JSONArray checkStatusOfGroupMessages(JSONObject data, String authtoken){
         return connection.sendJSONObjectToServerReturnArray(checkGroupChatStatus, authtoken, data);
+    }
+
+    public JSONArray checkStatusOfSentChatMessages(JSONObject data, String authtoken){
+        return connection.sendJSONObjectToServerReturnArray(checkSentChatStatus, authtoken, data);
     }
 
     public JSONObject sendChatMessageStatusToServer(JSONObject data, String authtoken) {
@@ -494,8 +499,48 @@ public class UserFunctions {
         }
 
         return sortedJsonArray;
+    }
 
+    public static JSONArray sortJSONArrayIgnoreCase(JSONArray jsonArr, String key) {
 
+        JSONArray sortedJsonArray = new JSONArray();
+        final String myKey = key;
+
+        try{
+            List<JSONObject> jsonValues = new ArrayList<JSONObject>();
+            for (int i = 0; i < jsonArr.length(); i++) {
+                jsonValues.add(jsonArr.getJSONObject(i));
+            }
+            Collections.sort(jsonValues, new Comparator<JSONObject>() {
+                //You can change "Name" with "ID" if you want to sort by ID
+                private final String KEY_NAME = myKey;
+
+                @Override
+                public int compare(JSONObject a, JSONObject b) {
+                    String valA = new String();
+                    String valB = new String();
+
+                    try {
+                        valA = (String) a.get(KEY_NAME);
+                        valB = (String) b.get(KEY_NAME);
+                    } catch (JSONException e) {
+                        //do something
+                    }
+
+                    return valA.compareToIgnoreCase(valB);
+                    //if you want to change the sort order, simply use the following:
+                    //return -valA.compareTo(valB);
+                }
+            });
+
+            for (int i = 0; i < jsonArr.length(); i++) {
+                sortedJsonArray.put(jsonValues.get(i));
+            }
+        } catch (JSONException ex ){
+            ex.printStackTrace();
+        }
+
+        return sortedJsonArray;
     }
 
 }
