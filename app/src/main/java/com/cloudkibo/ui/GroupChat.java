@@ -143,6 +143,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				| InputType.TYPE_TEXT_FLAG_MULTI_LINE);
 
 		setTouchNClick(v.findViewById(R.id.btnSend));
+		Utility.getLastSeenStatus(contactPhone, authtoken, getContext());
 
 		return v;
 	}
@@ -154,6 +155,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			menu.findItem(R.id.language).setVisible(false);
 		}
 		inflater.inflate(R.menu.chat, menu);  // Use filter.xml from step 1
+		getActivity().getActionBar().setSubtitle("Last seen on: ");
+
 	}
 
 	@Override

@@ -116,12 +116,15 @@ public class GroupUtility {
                     if(row != null){
                         // todo remove this developer message
                         sendNotification("Updated message status on server to seen", row.toString());
+                        db.updateGroupChatStatus(unique_id, "seen");
                     }
                 }
 
             }.execute();
 
-        }
+    }
+
+
 
     public void updateGroupMembers(final String payload, final String auth_token){
         try {

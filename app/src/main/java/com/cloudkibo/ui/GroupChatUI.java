@@ -333,11 +333,24 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                     from = display_name;
                 }
 
-                JSONArray msgStatus = db.getGroupMessageStatus(unique_id, db.getUserDetails().get("phone"));
+                JSONArray msgStatus = db.getGroupMessageStatusSeen(unique_id);
                 String status = "";
-                if(msgStatus.length() != 0){
-                    status = msgStatus.getJSONObject(0).getString("status");
+//                if(msgStatus.length() != 0){
+//                    status = msgStatus.getJSONObject(0).getString("status");
+//                }
+
+                if(msgStatus.length() >= db.getGroupMembers(group_id).length() - 1){
+                    status = "seen";
                 }
+                else if(db.getGroupMessageStatusDelivered(unique_id).length() >= db.getGroupMembers(group_id).length() - 1){
+                    status = "delivered";
+                }
+                else{
+                    status = "sent";
+//                    String temp = db.getGroupMessageStatus(unique_id, db.getUserDetails().get("phone")).getJSONObject(0).getString("status");
+//                    Toast.makeText(getContext(), temp, Toast.LENGTH_LONG).show();
+                }
+
                 convList.add(new Conversation(message, from, isSent, date, unique_id, status, type));
 
             }

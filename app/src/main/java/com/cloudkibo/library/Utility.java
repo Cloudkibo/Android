@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.cloudkibo.MainActivity;
+import com.cloudkibo.R;
 import com.cloudkibo.database.DatabaseHandler;
 
 import org.json.JSONException;
@@ -185,6 +186,26 @@ public class Utility {
         }
         return name;
 
+    }
+
+    public static void getLastSeenStatus(final String phone, final String authtoken, final Context ctx){
+
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunctions = new UserFunctions();
+                return userFunctions.getUserStatus(phone, authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                if(row != null){
+                    Toast.makeText(ctx, row.toString() + " Last Seen Status", Toast.LENGTH_LONG).show();
+                    }
+            }
+
+        }.execute();
     }
 
 }

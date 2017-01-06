@@ -68,7 +68,7 @@ public class UserFunctions {
     public static String downloadIcon =          baseURL + "/api/groupmessaging/downloadIcon";
     public static String checkGroupChatStatus =          baseURL + "/api/groupchatstatus/checkStatus";
     public static String updateMemberRole =          baseURL + "/api/groupmessaginguser/updateRole";
-    
+    public static String lastSeenStatus =          baseURL + "/api/user/getUserInfo";
     
     
     
@@ -424,8 +424,15 @@ public class UserFunctions {
 		JSONObject response = connection.sendObjectToServer(getChatURL, authtoken, params);
 		return response;
 	}
-	
-	public JSONObject saveContact(String username, String authtoken) {
+
+    public JSONObject getUserStatus(String phone, String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("phone", phone));
+        JSONObject response = connection.sendObjectToServer(lastSeenStatus, authtoken, params);
+        return response;
+    }
+
+    public JSONObject saveContact(String username, String authtoken) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("searchusername", username));
 		JSONObject response = connection.sendObjectToServer(saveContactURL, authtoken, params);
