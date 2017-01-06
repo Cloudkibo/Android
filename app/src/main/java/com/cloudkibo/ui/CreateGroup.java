@@ -201,10 +201,10 @@ public class CreateGroup extends CustomFragment implements IFragmentName
     public void addMembers(ArrayList<String> phones){
 
         for (int i = 0; i< phones.size(); i++){
-            db.addGroupMember(group_id,phones.get(i),0,"joined");
+            db.addGroupMember(group_id,phones.get(i),"0","joined");
             Toast.makeText(getContext(), phones.get(i) + "Added", Toast.LENGTH_SHORT).show();
         }
-        db.addGroupMember(group_id,db.getUserDetails().get("phone"),1,"joined");
+        db.addGroupMember(group_id,db.getUserDetails().get("phone"),"1","joined");
         Toast.makeText(getContext(),db.getUserDetails().get("phone") + " added as admin", Toast.LENGTH_SHORT).show();
     }
 

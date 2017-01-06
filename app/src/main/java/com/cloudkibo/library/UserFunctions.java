@@ -69,7 +69,7 @@ public class UserFunctions {
     public static String downloadIcon =          baseURL + "/api/groupmessaging/downloadIcon";
     public static String checkGroupChatStatus =          baseURL + "/api/groupchatstatus/checkStatus";
     public static String updateMemberRole =          baseURL + "/api/groupmessaginguser/updateRole";
-    
+    public static String lastSeenStatus =          baseURL + "/api/user/getUserInfo";
     
     
     
@@ -361,10 +361,10 @@ public class UserFunctions {
 
     public JSONObject updateMemberRole(String group_id, String member_phone, String makeAdmin, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("group_uniquei_id", group_id));
+        params.add(new BasicNameValuePair("group_unique_id", group_id));
         params.add(new BasicNameValuePair("member_phone", member_phone));
         params.add(new BasicNameValuePair("makeAdmin", makeAdmin));
-        JSONObject response = connection.sendObjectToServer(getSingleGroupChatURL, authtoken, params);
+        JSONObject response = connection.sendObjectToServer(updateMemberRole, authtoken, params);
         return response;
     }
 	
@@ -429,8 +429,15 @@ public class UserFunctions {
 		JSONObject response = connection.sendObjectToServer(getChatURL, authtoken, params);
 		return response;
 	}
-	
-	public JSONObject saveContact(String username, String authtoken) {
+
+    public JSONObject getUserStatus(String phone, String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("phone", phone));
+        JSONObject response = connection.sendObjectToServer(lastSeenStatus, authtoken, params);
+        return response;
+    }
+
+    public JSONObject saveContact(String username, String authtoken) {
 		List<NameValuePair> params = new ArrayList<NameValuePair>();
 		params.add(new BasicNameValuePair("searchusername", username));
 		JSONObject response = connection.sendObjectToServer(saveContactURL, authtoken, params);

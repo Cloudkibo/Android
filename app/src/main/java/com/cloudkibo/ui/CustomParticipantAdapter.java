@@ -67,7 +67,6 @@ public class CustomParticipantAdapter extends BaseAdapter{
         holder.isAdmin=(TextView) rowView.findViewById(R.id.isAdmin);
 //        holder.tv.setText(result[position]);
         try {
-//            Toast.makeText(context, members.toString(), Toast.LENGTH_LONG ).show();
             DatabaseHandler db = new DatabaseHandler(context);
             if(!members.getJSONObject(position).has("display_name")){
                 if(members.getJSONObject(position).getString("phone").toString().equals(db.getUserDetails().get("phone"))){
@@ -91,7 +90,6 @@ public class CustomParticipantAdapter extends BaseAdapter{
             @Override
             public void onClick(View v) {
                 // TODO Auto-generated method stub
-                //Toast.makeText(context, "You Clicked "+result[position], Toast.LENGTH_LONG).show();
                 GroupUtility groupUtility = new GroupUtility(context);
                 if(!groupUtility.isAdmin(group_id)){
                     return;
@@ -111,20 +109,19 @@ public class CustomParticipantAdapter extends BaseAdapter{
                         final AccessToken accessToken = AccountKit.getCurrentAccessToken();
                         try {
                             if(which == 0) {
-                                // Toast.makeText(context,"I was clicked",Toast.LENGTH_LONG).show();
                                 db.makeGroupAdmin(group_id, members.getJSONObject(position).getString("phone"));
                                 groupUtility.updateMemberRole(group_id, members.getJSONObject(position).getString("phone"),"Yes",accessToken.getToken());
-                                // Toast.makeText(context,db.getGroupAdmins(group_id).toString(),Toast.LENGTH_LONG).show();
                                 updateData(db);
                             } else if (which == 1){
                                   db.demoteGroupAdmin(group_id,members.getJSONObject(position).getString("phone"));
                                   groupUtility.updateMemberRole(group_id, members.getJSONObject(position).getString("phone"),"No",accessToken.getToken());
                                   updateData(db);
                             } else if (which == 2) {
-                                db.leaveGroup(group_id, members.getJSONObject(position).getString("phone"));
-
+                                if(members.getJSONObject(position).getString("isAdmin").equals("1") && groupUtility.adminCount(group_id) <= 1){
+                                    Toast.makeText(context, context.getString(R.string.group_utility_member_leave_admin_prompt) +": " + groupUtility.adminCount(group_id), Toast.LENGTH_LONG ).show();
+                                }else{
                                 groupUtility.removeMember(group_id, members.getJSONObject(position).getString("phone"), accessToken.getToken());
-                                updateData(db);
+                                updateData(db);}
                             }
 
                         } catch (JSONException e) {

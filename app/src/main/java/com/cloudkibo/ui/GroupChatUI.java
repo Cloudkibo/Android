@@ -93,10 +93,14 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         if (args  != null){
             group_id = args.getString("group_id");
             group_name = args.getString("group_name");
-            Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
         }
 
         final EditText my_message = (EditText) v.findViewById(R.id.txt);
+        GroupUtility groupUtility = new GroupUtility(getContext());
+        if(!groupUtility.isGroupMember(group_id)){
+            my_message.setEnabled(false);
+            my_message.setHint("Chat Disabled");
+        }
         lv=(ListView) v.findViewById(R.id.list);
         populateMessages();
         groupAdapter = new GroupChatAdapter(inflater, messages,names, convList);
@@ -209,7 +213,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                     }
                     break;
                 default:
-                    Toast.makeText(getContext(), "Some other action was taken", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "Could not get the contact you selected", Toast.LENGTH_LONG).show();
             }
         } else {
             Log.e("MainActivity", "Failed to pick contact");
@@ -258,7 +262,6 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             DatabaseHandler db = new DatabaseHandler(getContext());
             db.deleteGroupChatMessage(convList.get(info.position).getUniqueid());
             populateMessages();
-            Toast.makeText(getContext(), getString(R.string.common_remove_message_done), Toast.LENGTH_LONG).show();
         }
 
 
@@ -312,7 +315,6 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         convList.clear();
         try {
             JSONArray msgs = db.getGroupMessages(group_id);
-            Toast.makeText(getContext(), "In Messages: " + msgs.length(), Toast.LENGTH_LONG).show();
             for(int i = 0; i < msgs.length(); i++){
                 messages.add(msgs.getJSONObject(i).get("msg").toString());
                 names.add(msgs.getJSONObject(i).get("from_fullname").toString());
@@ -331,11 +333,24 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                     from = display_name;
                 }
 
-                JSONArray msgStatus = db.getGroupMessageStatus(unique_id, db.getUserDetails().get("phone"));
+                JSONArray msgStatus = db.getGroupMessageStatusSeen(unique_id);
                 String status = "";
-                if(msgStatus.length() != 0){
-                    status = msgStatus.getJSONObject(0).getString("status");
+//                if(msgStatus.length() != 0){
+//                    status = msgStatus.getJSONObject(0).getString("status");
+//                }
+
+                if(msgStatus.length() >= db.getGroupMembers(group_id).length() - 1){
+                    status = "seen";
                 }
+                else if(db.getGroupMessageStatusDelivered(unique_id).length() >= db.getGroupMembers(group_id).length() - 1){
+                    status = "delivered";
+                }
+                else{
+                    status = "sent";
+//                    String temp = db.getGroupMessageStatus(unique_id, db.getUserDetails().get("phone")).getJSONObject(0).getString("status");
+//                    Toast.makeText(getContext(), temp, Toast.LENGTH_LONG).show();
+                }
+
                 convList.add(new Conversation(message, from, isSent, date, unique_id, status, type));
 
             }
@@ -362,11 +377,6 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         try {
             JSONArray participants = new JSONArray();
             participants = db.getGroupMembers(group_id);
-            Toast.makeText(getContext(), "New Contacts: "+ participants, Toast.LENGTH_LONG).show();
-//           participants.put(db.getMyDetailsInGroup(group_id));
-
-//           Toast.makeText(getContext(), "Custom Members "+participants.toString(), Toast.LENGTH_LONG).show();
-
             for(int i = 0; i < participants.length(); i++)
             {
 
