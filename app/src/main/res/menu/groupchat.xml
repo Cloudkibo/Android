@@ -8,4 +8,11 @@
         android:title="@string/common_settings"
         />
 
+    <item
+        android:id="@+id/sendContactMenu"
+        android:icon="@drawable/ic_username"
+        app:showAsAction="ifRoom"
+        android:title="@string/menu_send_contact"
+        />
+
 </menu>

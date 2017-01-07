@@ -96,6 +96,7 @@ import com.cloudkibo.file.filechooser.utils.Base64;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -162,6 +163,9 @@ public class MainActivity extends CustomActivity
     Boolean shouldSync;
     private static final int PERMISSIONS_REQUEST_READ_CONTACTS = 100;
     final Map<String, String> photo_uri = new HashMap<>();
+
+    //private static final int PLACE_PICKER_REQUEST = 1200;
+    //private GoogleApiClient mClient;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -655,6 +659,17 @@ public class MainActivity extends CustomActivity
         startActivityForResult(i, 5123);
     }
 
+    public void createContact (String phone, String name) {
+        phoneOfContactToAdd = phone;
+        Intent i = new Intent(Intent.ACTION_INSERT);
+        i.setType(ContactsContract.Contacts.CONTENT_TYPE);
+        i.putExtra(ContactsContract.Intents.Insert.PHONE, phone);
+        i.putExtra(ContactsContract.Intents.Insert.NAME, name);
+        if (Integer.valueOf(Build.VERSION.SDK) > 14)
+            i.putExtra("finishActivityOnSaveCompleted", true); // Fix for 4.0.3 +
+        startActivityForResult(i, 5123);
+    }
+
     String icon_upload_group_id = "";
     public void uploadIcon(String group_id){
         icon_upload_group_id = group_id;
@@ -876,6 +891,23 @@ public class MainActivity extends CustomActivity
                     final GroupChatUI myGroupChatListFragment = (GroupChatUI) myFragment;
                     myGroupChatListFragment.onActivityResult(requestCode,  resultCode, data);
                 }
+                break;
+            case 129:
+                IFragmentName myFragment1 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if(myFragment1 == null) return;
+                if(myFragment1.getFragmentName().equals("GroupChat")){
+                    final GroupChat myGroupChatListFragment = (GroupChat) myFragment1;
+                    myGroupChatListFragment.onActivityResult(requestCode,  resultCode, data);
+                }
+                break;
+            case 141:
+                IFragmentName myFragment2 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if(myFragment2 == null) return;
+                if(myFragment2.getFragmentName().equals("GroupChat")){
+                    final GroupChat myGroupChatListFragment = (GroupChat) myFragment2;
+                    myGroupChatListFragment.onActivityResult(requestCode,  resultCode, data);
+                }
+                break;
 
         }
     }

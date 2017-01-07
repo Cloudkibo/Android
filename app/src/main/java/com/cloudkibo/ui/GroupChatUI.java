@@ -149,8 +149,8 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (menu != null) {
             menu.findItem(R.id.archived).setVisible(false);
-            menu.add("Send Contact"); // todo this should be in xml
             menu.findItem(R.id.language).setVisible(false);
+            menu.findItem(R.id.backup_setting).setVisible(false);
         }
         inflater.inflate(R.menu.groupchat, menu);  // Use filter.xml from step 1
     }
@@ -172,7 +172,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                     .commit();
             return true;
         }
-        if(item.getTitle().equals("Send Contact")){
+        if(id == R.id.sendContactMenu){
             Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
                     ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
             getActivity().startActivityForResult(contactPickerIntent, 0123);
@@ -379,7 +379,6 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             participants = db.getGroupMembers(group_id);
             for(int i = 0; i < participants.length(); i++)
             {
-
                 if(!participants.getJSONObject(i).has("display_name")){
                     if(participants.getJSONObject(i).getString("phone").toString().equals(db.getUserDetails().get("phone"))){
                         members = members + db.getUserDetails().get("display_name") + ",";

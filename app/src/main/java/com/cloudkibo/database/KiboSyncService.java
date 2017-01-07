@@ -88,8 +88,9 @@ public class KiboSyncService extends Service {
 
         startWithAddressBook = false;
 
-        // todo check if it is doing anything or not. else remove this
-        doUpwardSync();
+
+        //doUpwardSync();
+        mListener.contactsLoaded();
 
         // This is commented because we have stopped doing sync of chat from server on install (we won't restore anything from server in future)
         // server will not store chat and would delete once it is sent to client

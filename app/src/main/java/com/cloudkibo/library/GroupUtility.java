@@ -244,12 +244,13 @@ public class GroupUtility {
             String member_phone = data.getString("senderId");
             String unique_id = data.getString("unique_id");
             String group_id = data.getString("groupId");
+            String msg_type = data.getString("msg_type");
             if(!isGroupMember(group_id)){
                 return;
             }
             sendNotification(message, message);
 
-            db.addGroupMessage(group_id,message,member_phone,member_phone,unique_id, "chat");
+            db.addGroupMessage(group_id,message,member_phone,member_phone,unique_id, msg_type);
             if(MainActivity.isVisible){
                 updateMessageStatusToSeen(unique_id, auth_token);
                 MainActivity.mainActivity.updateGroupUIChat();
@@ -313,7 +314,7 @@ public class GroupUtility {
         return msg_unique_id;
     }
 
-    public String sendGroupMessage(final String group_id, final  String message, final  String auth_token, String type){
+    public String sendGroupMessage(final String group_id, final  String message, final  String auth_token, final String type){
         final String unique_id = randomString();
         db.addGroupMessage(group_id,message, db.getUserDetails().get("phone"),"", unique_id, type);
         try {
@@ -332,7 +333,7 @@ public class GroupUtility {
 
             @Override
             protected JSONObject doInBackground(String... args) {
-                return user.sendGroupChat(group_id,db.getUserDetails().get("phone"),"",message,db.getUserDetails().get("display_name"),unique_id, auth_token);
+                return user.sendGroupChat(group_id,db.getUserDetails().get("phone"),type,message,db.getUserDetails().get("display_name"),unique_id, auth_token);
             }
 
             @Override

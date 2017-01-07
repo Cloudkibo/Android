@@ -8,11 +8,41 @@
         android:title="@string/common_call"
         />
 
+<!--
     <item
         android:id="@+id/attachMenu"
         android:icon="@drawable/ic_add"
         app:showAsAction="ifRoom"
         android:title="@string/menu_attach"
+        />
+-->
+
+    <item
+        android:id="@+id/sendImage"
+        android:icon="@drawable/ic_camera"
+        app:showAsAction="always"
+        android:title="@string/menu_send_image"
+        />
+
+    <item
+        android:id="@+id/sendDoc"
+        android:icon="@drawable/ic_notes"
+        app:showAsAction="ifRoom"
+        android:title="@string/menu_send_document"
+        />
+
+    <item
+        android:id="@+id/sendContact"
+        android:icon="@drawable/ic_username"
+        app:showAsAction="ifRoom"
+        android:title="@string/menu_send_contact"
+        />
+
+    <item
+        android:id="@+id/sendLocation"
+        android:icon="@android:drawable/ic_dialog_map"
+        app:showAsAction="ifRoom"
+        android:title="@string/menu_send_location"
         />
 
 </menu>

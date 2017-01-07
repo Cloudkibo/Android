@@ -113,6 +113,8 @@
 
     <string name="menu_send_image">Send Image</string>
     <string name="menu_send_document">Send Document</string>
+    <string name="menu_send_contact">Send Contact</string>
+    <string name="menu_send_location">Send Location</string>
     <string name="menu_attach">Attach</string>
     <string name="menu_refresh_contacts">Refresh Contacts</string>
     <string name="menu_change_group_image">Change Group Image</string>

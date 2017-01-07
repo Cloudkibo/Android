@@ -188,6 +188,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         if (menu != null) {
             menu.findItem(R.id.archived).setVisible(false);
             menu.findItem(R.id.language).setVisible(false);
+            menu.findItem(R.id.backup_setting).setVisible(false);
         }
         inflater.inflate(R.menu.groupsetting, menu);  // Use filter.xml from step 1
     }
