@@ -12,7 +12,10 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.drive.Drive;
+import com.google.android.gms.drive.DriveFolder;
+import com.google.android.gms.drive.MetadataChangeSet;
 
 
 /**
@@ -62,6 +65,48 @@ public abstract class BaseActivity extends Activity implements
      * {@code ConnectionCallbacks} and {@code OnConnectionFailedListener} on the
      * activities itself.
      */
+
+    ResultCallback<DriveFolder.DriveFolderResult> folderCreatedCallback = new
+            ResultCallback<DriveFolder.DriveFolderResult>() {
+                @Override
+                public void onResult(DriveFolder.DriveFolderResult result) {
+                    if (!result.getStatus().isSuccess()) {
+                        showMessage("Error while trying to create the folder");
+                        return;
+                    }
+                    showMessage("Created a folder: " + result.getDriveFolder().getDriveId());
+                }
+            };
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(Drive.API)
+                .addScope(Drive.SCOPE_FILE)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+
+        mGoogleApiClient.connect();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(this)
+                    .addApi(Drive.API)
+                    .addScope(Drive.SCOPE_FILE)
+                    .addScope(Drive.SCOPE_APPFOLDER) // required for App Folder sample
+                    .addConnectionCallbacks(this)
+                    .addOnConnectionFailedListener(this)
+                    .build();
+        }
+        mGoogleApiClient.connect();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -80,10 +125,12 @@ public abstract class BaseActivity extends Activity implements
     /**
      * Handles resolution callbacks.
      */
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode,
                                     Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+//        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_CODE_RESOLUTION && resultCode == RESULT_OK) {
             mGoogleApiClient.connect();
         }
@@ -107,6 +154,11 @@ public abstract class BaseActivity extends Activity implements
     @Override
     public void onConnected(Bundle connectionHint) {
         Log.i(TAG, "GoogleApiClient connected");
+        Toast.makeText(getApplicationContext(), "Connected to google drive", Toast.LENGTH_LONG).show();
+        MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                .setTitle("KiboChat Demo Folder").build();
+        Drive.DriveApi.getRootFolder(getGoogleApiClient()).createFolder(
+                getGoogleApiClient(), changeSet).setResultCallback(folderCreatedCallback);
     }
 
     /**
