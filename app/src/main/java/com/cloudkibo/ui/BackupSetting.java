@@ -2,6 +2,7 @@ package com.cloudkibo.ui;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
+import com.cloudkibo.backup.CreateFolderActivity;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.utils.IFragmentName;
 
@@ -55,6 +57,14 @@ public class BackupSetting extends CustomFragment implements IFragmentName{
             @Override
             public void onClick(View view) {
                 showBackupOverDialog(v);
+            }
+        });
+        Button backup_button = (Button) v.findViewById(R.id.backup_button);
+        backup_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getActivity(), CreateFolderActivity.class);
+                startActivity(intent);
             }
         });
         return v;
