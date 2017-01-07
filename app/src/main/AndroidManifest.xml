@@ -84,6 +84,16 @@
                     android:scheme="http" />
             </intent-filter>
         </activity>
+        <!--<activity-->
+            <!--android:name="com.cloudkibo.backup.BaseActivity"-->
+            <!--android:configChanges="orientation|screenSize"-->
+            <!--android:screenOrientation="fullUser"-->
+            <!--android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" />-->
+        <activity
+            android:name="com.cloudkibo.backup.CreateFolderActivity"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="fullUser"
+            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" />
         <activity
             android:name=".webrtc.conference.VideoCallView"
             android:configChanges="orientation|screenSize"
@@ -107,7 +117,6 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"
             android:alwaysRetainTaskState="true"
@@ -135,7 +144,6 @@
         <activity
             android:name=".NewChat"
             android:label="@string/new_chat"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
