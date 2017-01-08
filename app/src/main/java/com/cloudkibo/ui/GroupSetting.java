@@ -201,7 +201,6 @@ public class GroupSetting extends CustomFragment implements IFragmentName
             act1.uploadIcon(group_id);
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 

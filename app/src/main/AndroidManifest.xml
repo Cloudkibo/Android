@@ -4,7 +4,7 @@
     package="com.cloudkibo"
     android:hardwareAccelerated="true"
     android:installLocation="preferExternal"
-    android:versionCode="98"
+    android:versionCode="99"
     android:versionName="1.1">
 
     <uses-sdk
@@ -210,6 +210,10 @@
             android:exported="false" />
         <service
             android:name=".database.ContactService"
+            android:exported="false" />
+        <service
+            android:name=".backup.JobSchedulerService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false" />
         <service
             android:name=".webrtc.conference.FileTransferService"

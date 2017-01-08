@@ -210,11 +210,15 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		}*/
 		if(id == R.id.sendImage){
 			// todo add logic here
+			MainActivity act3 = (MainActivity)getActivity();
+			act3.uploadChatAttachment("image");
 
 			return true;
 		}
 		if(id == R.id.sendDoc){
 			// todo add logic here
+			MainActivity act2 = (MainActivity)getActivity();
+			act2.uploadChatAttachment("document");
 
 			return true;
 		}

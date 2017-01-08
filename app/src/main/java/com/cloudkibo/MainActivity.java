@@ -11,6 +11,8 @@ import java.util.Map;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -61,6 +63,7 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
+import com.cloudkibo.backup.JobSchedulerService;
 import com.cloudkibo.custom.CustomActivity;
 import com.cloudkibo.database.BoundKiboSyncListener;
 import com.cloudkibo.database.ContactService;
@@ -773,7 +776,7 @@ public class MainActivity extends CustomActivity
                                     Integer.parseInt(com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath).getString("size"))
                             )) {
                                 // todo save the file in external storage
-                                Toast.makeText(getApplicationContext(), "Under construction. Working on downloading part", Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(), "External storage not found", Toast.LENGTH_LONG).show();
                             } else {
                                 Toast.makeText(getApplicationContext(), getString(R.string.common_not_enough_storage), Toast.LENGTH_LONG).show();
                             }

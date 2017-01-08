@@ -1,6 +1,9 @@
 package com.cloudkibo.ui;
 
 import android.app.Dialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +23,7 @@ import android.widget.TextView;
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.backup.CreateFolderActivity;
+import com.cloudkibo.backup.JobSchedulerService;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.utils.IFragmentName;
 
@@ -33,6 +37,12 @@ public class BackupSetting extends CustomFragment implements IFragmentName{
     String backup_drive_selected_option = "";
     String backup_over_options[];
     String backup_over_selected_option = "";
+
+    final static int MINUTELY = 60 * 1000;
+    final static int HOURLY = 60 * MINUTELY;
+    final static int DAILY = 24 * HOURLY;
+    final static int WEEKLY = 7 * DAILY;
+    final static int MONTHLY = 4 * WEEKLY;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -82,6 +92,42 @@ public class BackupSetting extends CustomFragment implements IFragmentName{
         prefs.edit().putString("com.cloudkibo.drive_backup_text", backup_drive_selected_option).apply();
         prefs.edit().putString("com.cloudkibo.drive_over_text", backup_over_selected_option).apply();
 
+    }
+
+    private static int kJobId = 0;
+    public void startJobService(String period){
+        ComponentName mServiceComponent = new ComponentName(getActivity().getApplicationContext(), JobSchedulerService.class);
+        JobInfo.Builder builder = new JobInfo.Builder(kJobId++, mServiceComponent);
+        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED); // todo change according to selected value - require unmetered network
+        builder.setPeriodic(MINUTELY); // todo need to change this.. for testing purpose it is minutely, we would uncomment the following code and comment this line
+//        if (period.equals(backup_drive_options[2])) {
+//            builder.setPeriodic(DAILY);
+//        } else if (period.equals(backup_drive_options[3])) {
+//            builder.setPeriodic(WEEKLY);
+//        } else if (period.equals(backup_drive_options[4])) {
+//            builder.setPeriodic(MONTHLY);
+//        }
+        builder.setRequiresDeviceIdle(true); // device should be idle
+        builder.setRequiresCharging(false); // we don't care if the device is charging or not
+        JobScheduler jobScheduler = (JobScheduler) getActivity().getApplicationContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(builder.build());
+    }
+
+    public void startJobServiceForOneTimeOnly(){
+        ComponentName mServiceComponent = new ComponentName(getActivity().getApplicationContext(), JobSchedulerService.class);
+        JobInfo.Builder builder = new JobInfo.Builder(kJobId++, mServiceComponent);
+        builder.setMinimumLatency(5 * 1000); // wait at least
+        builder.setOverrideDeadline(50 * 1000); // maximum delay
+        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED); // todo change according to selected value - require unmetered network
+        builder.setRequiresDeviceIdle(true); // device should be idle
+        builder.setRequiresCharging(false); // we don't care if the device is charging or not
+        JobScheduler jobScheduler = (JobScheduler) getActivity().getApplicationContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(builder.build());
+    }
+
+    public void cancelJobs(View v) {
+        JobScheduler tm = (JobScheduler) getActivity().getApplicationContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        tm.cancel(kJobId);
     }
 
     private void showBackupOverDialog(final View v) {
@@ -158,8 +204,20 @@ public class BackupSetting extends CustomFragment implements IFragmentName{
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 // checkedId is the RadioButton selected
                 RadioButton radioButton = (RadioButton) rg.findViewById(checkedId);
-                backup_drive_selected_option = radioButton.getText().toString();
-                updateDefaultValues(v);
+                if(!backup_drive_selected_option.equals(radioButton.getText().toString())) {
+                    String newOption = radioButton.getText().toString();
+                    if (newOption.equals(backup_drive_options[0])){
+                            if(!backup_drive_selected_option.equals(backup_drive_options[1]))
+                                cancelJobs(v);
+                    } else if (newOption.equals(backup_drive_options[1])){
+                        if(!backup_drive_selected_option.equals(backup_drive_options[0]))
+                            cancelJobs(v);
+                    } else {
+                        startJobService(newOption);
+                    }
+                    backup_drive_selected_option = newOption;
+                    updateDefaultValues(v);
+                }
                 dialog.cancel();
             }
         });
