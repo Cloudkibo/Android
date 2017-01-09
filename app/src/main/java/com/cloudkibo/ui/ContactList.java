@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -27,6 +29,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.Telephony;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -41,7 +45,9 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -69,12 +75,15 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 	/** The Note list. */
 	public static ArrayList<ContactItem> contactList;
+	public static ArrayList<ContactItem> backupList = new ArrayList<ContactItem>();
 	//private AccountManager mAccountManager;
 	private String authtoken;
 	private ContactAdapter contactAdapter;
 	//private ArrayList<String> contact_phone = new ArrayList<String>();
 	UserFunctions userFunction;
 	ContactList  reference = this;
+    EditText editsearch;
+    LinearLayout search_view;
 
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -85,7 +94,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 	{
 		//mAccountManager = AccountManager.get(getActivity());
 
-		View v = inflater.inflate(R.layout.note, null);
+		final View v = inflater.inflate(R.layout.note, null);
 		setHasOptionsMenu(true);
 
 		userFunction = new UserFunctions();
@@ -139,7 +148,39 @@ public class ContactList extends CustomFragment implements IFragmentName
 //		Utility utility = new Utility();
 //		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
 
+        editsearch = (EditText) v.findViewById(R.id.contact_search);
 
+        editsearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                String text = editsearch.getText().toString().toLowerCase(Locale.getDefault());
+                contactAdapter.filter(text);
+
+            }
+        });
+
+        search_view = (LinearLayout) v.findViewById(R.id.search_view);
+        search_view.setVisibility(View.GONE);
+        ImageView close_search = (ImageView) v.findViewById(R.id.close_search);
+        close_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                search_view = (LinearLayout) v.findViewById(R.id.search_view);
+                search_view.setVisibility(View.GONE);
+				contactAdapter.filter("");
+            }
+        });
 
 		return v;
 	}
@@ -168,6 +209,10 @@ public class ContactList extends CustomFragment implements IFragmentName
 			act1.createContact();
 			return true;
 		}
+        if(id == R.id.search_contacts){
+            search_view.setVisibility(View.VISIBLE);
+            return true;
+        }
 
 		return super.onOptionsItemSelected(item);
 	}
@@ -720,6 +765,38 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 
 			return v;
+		}
+
+		// Filter Class
+		public void filter(String charText) {
+			charText = charText.toLowerCase(Locale.getDefault());
+            backupList.addAll(contactList);
+			contactList.clear();
+			if (charText.length() == 0) {
+				contactList.addAll(backupList);
+			} else {
+				for (ContactItem contactItem : backupList) {
+					if (contactItem.getUserName().toLowerCase(Locale.getDefault())
+							.startsWith(charText)) {
+						contactList.add(contactItem);
+					}
+				}
+			}
+			Set<ContactItem> duplicate = new HashSet<ContactItem>(contactList);
+			contactList.clear();
+			contactList.addAll(new ArrayList<ContactItem>(duplicate));
+
+			// Sorting
+			Collections.sort(contactList, new Comparator<ContactItem>() {
+				@Override
+				public int compare(ContactItem c2, ContactItem c1)
+				{
+
+					return  c2.getUserName().compareTo(c1.getUserName());
+				}
+			});
+
+			notifyDataSetChanged();
 		}
 
 		public void sendChat(View v, ContactItem c){
