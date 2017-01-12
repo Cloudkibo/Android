@@ -7,6 +7,13 @@
         app:showAsAction="always"
         android:title="@string/archived_menu_item"
         />
+
+	<item android:id="@+id/search_chats"
+		android:title="Search Chats"
+		android:icon="@drawable/ic_search"
+		android:orderInCategory="100"
+		app:showAsAction="always" />
+
 	<item
 		android:id="@+id/backup_setting"
 		android:icon="@drawable/ic_notes"

@@ -1379,11 +1379,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
-        String updateQuery = "UPDATE GROUPINFO" +
+        String updateQuery = "UPDATE GROUPCHAT" +
+                " SET isArchived="+ 1 +" WHERE group_unique_id='"+unique_id+"'";
+        String updateQuery1 = "UPDATE GROUPINFO" +
                 " SET isArchived="+ 1 +" WHERE unique_id='"+unique_id+"'";
 
         try {
+            db.execSQL(updateQuery1);
             db.execSQL(updateQuery);
+
         } catch (Exception e){
             e.printStackTrace();
         }
@@ -1413,8 +1417,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String updateQuery = "UPDATE GROUPINFO" +
                 " SET isArchived="+ 0 +" WHERE unique_id='"+unique_id+"'";
+        String updateQuery1 = "UPDATE GROUPCHAT" +
+                " SET isArchived="+ 0 +" WHERE group_unique_id='"+unique_id+"'";
 
         try {
+            db.execSQL(updateQuery1);
             db.execSQL(updateQuery);
         } catch (Exception e){
             e.printStackTrace();

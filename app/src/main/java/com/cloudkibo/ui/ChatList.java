@@ -15,8 +15,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Random;
+import java.util.Set;
 import java.util.TimeZone;
 import java.util.UUID;
 
@@ -31,6 +33,8 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.CalendarContract;
 import android.provider.ContactsContract;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -44,7 +48,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -83,7 +89,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 	/** The Chat list. */
 	public static ArrayList<ChatItem> chatList;
-
+    public static ArrayList<ChatItem> backupList = new ArrayList<ChatItem>();
 	private ChatAdapter adp;
 
 	private String authtoken;
@@ -91,6 +97,9 @@ public class ChatList extends CustomFragment implements IFragmentName
 	private ArrayList<String> contact_phone = new ArrayList<String>();
     DatabaseHandler db;
 	JSONArray groups;
+
+    EditText editsearch;
+    LinearLayout search_view;
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
@@ -98,7 +107,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState)
 	{
-		View v = inflater.inflate(R.layout.chat_list, null);
+		final View v = inflater.inflate(R.layout.chat_list, null);
 		setHasOptionsMenu(true);
 
 		authtoken = getActivity().getIntent().getExtras().getString("authtoken");
@@ -162,6 +171,42 @@ public class ChatList extends CustomFragment implements IFragmentName
 //		Utility utility = new Utility();
 //		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
         loadChatList();
+
+
+
+        editsearch = (EditText) v.findViewById(R.id.chat_search);
+
+        editsearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                String text = editsearch.getText().toString().toLowerCase(Locale.getDefault());
+                adp.filter(text);
+
+            }
+        });
+
+        search_view = (LinearLayout) v.findViewById(R.id.search_view);
+        search_view.setVisibility(View.GONE);
+        ImageView close_search = (ImageView) v.findViewById(R.id.close_search);
+        close_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                search_view = (LinearLayout) v.findViewById(R.id.search_view);
+                search_view.setVisibility(View.GONE);
+            }
+        });
+
 		return v;
 	}
 
@@ -183,6 +228,7 @@ public class ChatList extends CustomFragment implements IFragmentName
             menu.findItem(R.id.archived).setVisible(false);
 			menu.findItem(R.id.backup_setting).setVisible(false);
 			menu.findItem(R.id.language).setVisible(false);
+            menu.findItem(R.id.search_chats).setVisible(false);
 
         }
         inflater.inflate(R.menu.main, menu);  // Use filter.xml from step 1
@@ -201,6 +247,10 @@ public class ChatList extends CustomFragment implements IFragmentName
             getFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, archivedChatFragment, "archivedChatFragmentTag").addToBackStack("Archived")
                     .commit();
+            return true;
+        }
+        if(id == R.id.search_chats){
+            search_view.setVisibility(View.VISIBLE);
             return true;
         }
         if(id == R.id.backup_setting){
@@ -541,6 +591,27 @@ public class ChatList extends CustomFragment implements IFragmentName
 //			ImageView img3 = (ImageView) v.findViewById(R.id.online);
 			viewHolder.img3.setVisibility(c.isOnline() ? View.VISIBLE : View.INVISIBLE);
 			return v;
+		}
+
+		// Filter Class
+		public void filter(String charText) {
+			charText = charText.toLowerCase(Locale.getDefault());
+			backupList.addAll(chatList);
+            chatList.clear();
+			if (charText.length() == 0) {
+                chatList.addAll(backupList);
+			} else {
+				for (ChatItem chatItem : backupList) {
+					if (chatItem.getName().toLowerCase(Locale.getDefault())
+							.startsWith(charText) && !chatList.contains(chatItem)) {
+                        chatList.add(chatItem);
+					}
+				}
+			}
+//			Set<ChatItem> duplicate = new HashSet<ChatItem>(chatList);
+//            chatList.clear();
+//            chatList.addAll(new ArrayList<ChatItem>(duplicate));
+			notifyDataSetChanged();
 		}
 
 	}
