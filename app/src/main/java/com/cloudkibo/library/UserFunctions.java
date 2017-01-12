@@ -320,7 +320,7 @@ public class UserFunctions {
 
     public JSONObject leaveGroup(String group_id, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("group_unique_id ", group_id));
+        params.add(new BasicNameValuePair("group_unique_id", group_id));
         Log.d(TAG, "leaveGroup: THis is the group id send to server " + group_id);
         JSONObject response = connection.sendObjectToServer(leaveGroup, authtoken, params);
         return response;
