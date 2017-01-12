@@ -52,7 +52,7 @@ public class ConnectionManager {
     static JSONObject jObj = null;
     static JSONArray jArr = null;
     static String json = "";
-    
+    private static final String TAG = "ConnectionManager";
     
     
 	/////////////////////////////////////////////////////////////////////
@@ -316,7 +316,7 @@ public class ConnectionManager {
             httpPost.setEntity(new UrlEncodedFormEntity(params, HTTP.UTF_8));
 
             HttpResponse httpResponse = httpClient.execute(httpPost);
-
+            Log.e(TAG, "sendObjectToServer: This is the value of server answer" + httpResponse.toString() );
             if(httpResponse.getStatusLine().getStatusCode() == 401){
                 return null;
             }
