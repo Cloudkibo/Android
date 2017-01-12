@@ -89,7 +89,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 	/** The Chat list. */
 	public static ArrayList<ChatItem> chatList;
-    public static ArrayList<ChatItem> backupList = new ArrayList<ChatItem>();
+    public ArrayList<ChatItem> backupList = new ArrayList<ChatItem>();
 	private ChatAdapter adp;
 
 	private String authtoken;
