@@ -1,5 +1,6 @@
 package com.cloudkibo.library;
 
+import android.app.ActionBar;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +8,7 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
+import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -188,8 +190,8 @@ public class Utility {
 
     }
 
-    public static void getLastSeenStatus(final String phone, final String authtoken, final Context ctx){
-
+    public static void getLastSeenStatus(final String phone, final String authtoken, final ActionBar actbar){
+        Log.e("Last Seen on", "In last seen");
         new AsyncTask<String, String, JSONObject>() {
 
             @Override
@@ -200,9 +202,24 @@ public class Utility {
 
             @Override
             protected void onPostExecute(JSONObject row) {
+                Log.e("Last Seen on", "post executed");
                 if(row != null){
-                    Toast.makeText(ctx, row.toString() + " Last Seen Status", Toast.LENGTH_LONG).show();
+                    Log.e("Last Seen on", "Fetched data");
+
+
+
+                    try {
+                        actbar.setSubtitle(Html.fromHtml("<font color='#ffffff'>"+"Last Seen on " + convertDateToLocalTimeZoneAndReadable(row.getString("last_seen"))+"</font>"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
+                    Log.e("Last Seen on", "Inside TRY Statement");
+
+
+                }
+                Log.e("Last Seen on", "leaving post executed");
             }
 
         }.execute();

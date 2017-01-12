@@ -69,7 +69,7 @@ public class UserFunctions {
     public static String downloadIcon =          baseURL + "/api/groupmessaging/downloadIcon";
     public static String checkGroupChatStatus =          baseURL + "/api/groupchatstatus/checkStatus";
     public static String updateMemberRole =          baseURL + "/api/groupmessaginguser/updateRole";
-    public static String lastSeenStatus =          baseURL + "/api/user/getUserInfo";
+    public static String lastSeenStatus =          baseURL + "/api/users/getUserInfo";
     
     
     
