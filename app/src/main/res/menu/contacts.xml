@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/search_contacts"
+        android:title="Search Contacts"
+        android:icon="@drawable/ic_search"
+        android:orderInCategory="100"
+        app:showAsAction="always" />
     <item
         android:id="@+id/refreshContacts"
         android:icon="@drawable/refresh"
@@ -14,5 +20,6 @@
         app:showAsAction="ifRoom"
         android:title="@string/add_contact"
         />
+
 
 </menu>

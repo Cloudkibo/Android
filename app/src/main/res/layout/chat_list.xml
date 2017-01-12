@@ -10,6 +10,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" >
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/search_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/chat_search"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:hint="Search Chats"
+                android:layout_weight="1"/>
+
+            <ImageView
+                android:id="@+id/close_search"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_close_clear_cancel"
+                android:layout_gravity="center_vertical"/>
+
+
+        </LinearLayout>
+
         <ListView
             android:id="@+id/list"
             android:layout_width="match_parent"
@@ -18,7 +46,7 @@
             android:dividerHeight="1dp"
             tools:listitem="@layout/chat_item" >
         </ListView>
-
+        </LinearLayout>
         <LinearLayout
             android:id="@+id/llQ"
             android:layout_width="wrap_content"
