@@ -4,7 +4,7 @@
     package="com.cloudkibo"
     android:hardwareAccelerated="true"
     android:installLocation="preferExternal"
-    android:versionCode="99"
+    android:versionCode="100"
     android:versionName="1.1">
 
     <uses-sdk
@@ -274,6 +274,7 @@
         <!-- Ends Facebook Account Kit -->
 
         <activity android:name=".ui.LocaleChange"></activity>
+
     </application>
 
 </manifest>

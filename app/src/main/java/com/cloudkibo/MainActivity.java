@@ -223,6 +223,8 @@ public class MainActivity extends CustomActivity
 //        utility.updateDatabaseWithContactImages(getApplicationContext(),new ArrayList<String>());
 
 
+
+
     }
 
     public boolean isRTL(Context ctx) {

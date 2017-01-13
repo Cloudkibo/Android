@@ -1,14 +1,24 @@
 apply plugin: 'com.android.application'
 
+// Create a variable called keystorePropertiesFile, and initialize it to your
+// keystore.properties file, in the rootProject folder.
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+
+// Initialize a new Properties() object called keystoreProperties.
+def keystoreProperties = new Properties()
+
+// Load your keystore.properties file into the keystoreProperties object.
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
-    //signingConfigs {
-    //    config {
-    //        keyAlias 'androiddebugkey'
-    //        keyPassword 'android'
-    //        //storeFile file('C:/Users/sojharo/.android/debug.keystore')
-    //        storePassword 'android'
-    //    }
-    //}
+    signingConfigs {
+        debug {
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
+        }
+    }
     compileSdkVersion 23
     buildToolsVersion "23.0.3"
     useLibrary 'org.apache.http.legacy'
@@ -24,6 +34,7 @@ android {
         }
         debug {
             //          signingConfig signingConfigs.config
+            signingConfig signingConfigs.debug
         }
     }
     dexOptions {
@@ -45,7 +56,6 @@ dependencies {
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'io.pristine:libjingle:8871@aar'
     compile 'com.koushikdutta.ion:ion:2.1.6'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
     compile 'com.facebook.android:account-kit-sdk:4.11.0'
     compile 'ch.acra:acra:4.8.5'
     compile 'com.microsoft.azure:notification-hubs-android-sdk:0.4@aar'
