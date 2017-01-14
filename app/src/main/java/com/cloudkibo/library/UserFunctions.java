@@ -15,6 +15,7 @@ import com.cloudkibo.database.DatabaseHandler;
 
 
 import android.content.Context;
+import android.util.Log;
 
 
 public class UserFunctions {
@@ -27,6 +28,7 @@ public class UserFunctions {
     private ConnectionManager connection;
 
     private static String baseURL = "https://api.cloudkibo.com";
+    private static final String TAG = "UserFunctions";
 
     //URL of the NODEJS API
     private static String loginURL =                baseURL + "/auth/local";
@@ -318,7 +320,8 @@ public class UserFunctions {
 
     public JSONObject leaveGroup(String group_id, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
-        params.add(new BasicNameValuePair("group_unique_id ", group_id));
+        params.add(new BasicNameValuePair("group_unique_id", group_id));
+        Log.d(TAG, "leaveGroup: THis is the group id send to server " + group_id);
         JSONObject response = connection.sendObjectToServer(leaveGroup, authtoken, params);
         return response;
     }
