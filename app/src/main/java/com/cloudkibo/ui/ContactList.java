@@ -75,7 +75,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 	/** The Note list. */
 	public static ArrayList<ContactItem> contactList;
-	public static ArrayList<ContactItem> backupList = new ArrayList<ContactItem>();
+	public ArrayList<ContactItem> backupList = new ArrayList<ContactItem>();
 	//private AccountManager mAccountManager;
 	private String authtoken;
 	private ContactAdapter contactAdapter;

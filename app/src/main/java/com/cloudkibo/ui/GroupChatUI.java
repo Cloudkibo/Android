@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Html;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -138,7 +139,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         });
         registerForContextMenu(lv);
 
-        getActivity().getActionBar().setSubtitle(getMembersName(group_id));
+        getActivity().getActionBar().setSubtitle(Html.fromHtml("<font color='#ffffff'>"+getMembersName(group_id)+"</font>"));
 
         return v;
     }
