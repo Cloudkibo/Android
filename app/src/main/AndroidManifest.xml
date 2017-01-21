@@ -152,6 +152,9 @@
             android:name=".ui.ResultActivity"
             android:label="@string/app_name" />
         <activity
+            android:name=".ui.BackSettingActivity"
+            android:label="@string/app_name" />
+        <activity
             android:name=".file.filechooser.FileChooserActivity"
             android:enabled="@bool/use_activity"
             android:exported="true"
