@@ -255,13 +255,14 @@ public class ChatList extends CustomFragment implements IFragmentName
         }
         if(id == R.id.backup_setting){
             Toast.makeText(getContext(), "Opening Backup Settings", Toast.LENGTH_LONG).show();
-            BackupSetting backupSettingFragment = new BackupSetting();
-            Bundle bundle = new Bundle();
-            bundle.putString("authToken", authtoken);
-            backupSettingFragment.setArguments(bundle);
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, backupSettingFragment, "backupSettingFragmentTag").addToBackStack("Backup Setting")
-                    .commit();
+//            BackupSetting backupSettingFragment = new BackupSetting();
+//            Bundle bundle = new Bundle();
+//            bundle.putString("authToken", authtoken);
+//            backupSettingFragment.setArguments(bundle);
+//            getFragmentManager().beginTransaction()
+//                    .replace(R.id.content_frame, backupSettingFragment, "backupSettingFragmentTag").addToBackStack("Backup Setting")
+//                    .commit();
+			startActivity(new Intent(getActivity().getApplicationContext(), BackSettingActivity.class));
             return true;
         } else if (id == R.id.language){
 			startActivity(new Intent(getActivity().getApplicationContext(), LocaleChange.class));
