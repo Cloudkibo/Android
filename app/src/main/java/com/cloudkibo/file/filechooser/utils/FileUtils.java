@@ -158,6 +158,7 @@ public class FileUtils {
      * @return The MIME type for the give Uri.
      */
     public static String getMimeType(Context context, Uri uri) {
+        Log.d(TAG, "getMimeType: value of uri" + uri);
         File file = new File(getPath(context, uri));
         return getMimeType(file);
     }

@@ -276,6 +276,37 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return filesInfo;
     }
 
+    public JSONArray getAllFiles() throws JSONException {
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT uniqueid, file_name, file_size, file_type, file_ext, path FROM FILESINFO";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("uniqueid", cursor.getString(0));
+                contact.put("file_name", cursor.getString(1));
+                contact.put("file_size", cursor.getString(2));
+                contact.put("file_type", cursor.getString(3));
+                contact.put("file_ext", cursor.getString(4));
+                contact.put("path", cursor.getString(5));
+                groups.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return groups;
+    }
+
 
     public void addContactImage(String phone, String image_uri){
         SQLiteDatabase db = this.getWritableDatabase();

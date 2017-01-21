@@ -139,7 +139,7 @@ public class BackSettingActivity extends Activity implements
     public void startJobService(String period){
         ComponentName mServiceComponent = new ComponentName(getApplicationContext(), JobSchedulerService.class);
         JobInfo.Builder builder = new JobInfo.Builder(kJobId++, mServiceComponent);
-        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED); // todo change according to selected value - require unmetered network
+        //builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED); // todo change according to selected value - require unmetered network
         builder.setPeriodic(MINUTELY); // todo need to change this.. for testing purpose it is minutely, we would uncomment the following code and comment this line
 //        if (period.equals(backup_drive_options[2])) {
 //            builder.setPeriodic(DAILY);
@@ -148,7 +148,7 @@ public class BackSettingActivity extends Activity implements
 //        } else if (period.equals(backup_drive_options[4])) {
 //            builder.setPeriodic(MONTHLY);
 //        }
-        builder.setRequiresDeviceIdle(true); // device should be idle
+        //builder.setRequiresDeviceIdle(true); // device should be idle
         builder.setRequiresCharging(false); // we don't care if the device is charging or not
         JobScheduler jobScheduler = (JobScheduler) getApplicationContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(builder.build());
@@ -160,7 +160,7 @@ public class BackSettingActivity extends Activity implements
         builder.setMinimumLatency(5 * 1000); // wait at least
         builder.setOverrideDeadline(50 * 1000); // maximum delay
         builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED); // todo change according to selected value - require unmetered network
-        builder.setRequiresDeviceIdle(true); // device should be idle
+        //builder.setRequiresDeviceIdle(true); // device should be idle
         builder.setRequiresCharging(false); // we don't care if the device is charging or not
         JobScheduler jobScheduler = (JobScheduler) getApplicationContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(builder.build());
@@ -245,7 +245,7 @@ public class BackSettingActivity extends Activity implements
     private void showGoogleDriveDialog() {
 
         // custom dialog
-        final Dialog dialog = new Dialog(MainActivity.mainActivity);
+        final Dialog dialog = new Dialog(this);
         dialog.setTitle(R.string.backup_to_google_drive);
         dialog.setContentView(R.layout.drive_backup_dialog);
 

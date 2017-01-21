@@ -1,11 +1,7 @@
 <component name="libraryTable">
   <library name="org.apache.http.legacy-android-23">
     <CLASSES>
-<<<<<<< HEAD
-      <root url="jar://$USER_HOME$/Library/Android/sdk/platforms/android-23/optional/org.apache.http.legacy.jar!/" />
-=======
       <root url="jar://$USER_HOME$/Android/Sdk/platforms/android-23/optional/org.apache.http.legacy.jar!/" />
->>>>>>> ba04e481cfc844cf68e430b5d072dd526abf4397
     </CLASSES>
     <JAVADOC />
     <SOURCES />
