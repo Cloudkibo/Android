@@ -59,8 +59,6 @@ public class JobSchedulerService extends JobService implements
         final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.bell);
         mp.start();
 
-
-
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addApi(Drive.API)
@@ -71,11 +69,7 @@ public class JobSchedulerService extends JobService implements
                     .build();
         }
         mGoogleApiClient.connect();
-
-
-
-
-
+      
         return false;
     }
 

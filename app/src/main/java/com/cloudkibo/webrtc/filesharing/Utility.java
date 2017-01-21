@@ -45,7 +45,7 @@ public class Utility {
 				String folderName = FOLDER_NAME;
 				//convert array of bytes into file
 			    FileOutputStream fileOuputStream = 
-		                  new FileOutputStream(FileUtils.getDownloadStorageDir(folderName)+"/"+fileName);
+		                  new FileOutputStream(FileUtils.getExternalStoragePublicDirForDownloads(folderName)+"/"+fileName);
 			    fileOuputStream.write(bytes);
 			    fileOuputStream.close();
 			    

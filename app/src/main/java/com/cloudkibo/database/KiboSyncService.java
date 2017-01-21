@@ -904,35 +904,24 @@ public class KiboSyncService extends Service {
 
     }
 
-    // todo need to remove this... i am already doing the sync of my groups and members inside the group above.
-    private void syncAllGroups(){
-        GroupUtility groupUtility  = new GroupUtility(getApplicationContext());
-        groupUtility.syncAllGroups(authtoken);
-    }
 
     private void loadPartialChatFromServer() {
 
-        new AsyncTask<String, String, JSONArray>() {
+        new AsyncTask<String, String, JSONObject>() {
 
             @Override
-            protected JSONArray doInBackground(String... args) {
+            protected JSONObject doInBackground(String... args) {
                 DatabaseHandler db = new DatabaseHandler(
                         getApplicationContext());
-                UserFunctions userFunction = new UserFunctions();
-                JSONArray json = new JSONArray();
-                try {
-                    json = userFunction.getPartialChatList(db.getUserDetails().get("phone"), authtoken).getJSONArray("msg");
-                } catch(JSONException e){
-                    e.printStackTrace();
-                }
-                return json;
+                return (new UserFunctions()).getPartialChatList(db.getUserDetails().get("phone"), authtoken);
             }
 
             @Override
-            protected void onPostExecute(JSONArray jsonA) {
+            protected void onPostExecute(JSONObject jsonO) {
                 try {
 
-                    if (jsonA != null) {
+                    if (jsonO != null) {
+                        JSONArray jsonA = jsonO.getJSONArray("msg");
 
                         if(jsonA.length() > 0) {
                             DatabaseHandler db = new DatabaseHandler(
