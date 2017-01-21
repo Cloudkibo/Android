@@ -133,7 +133,8 @@ public class GroupUtility {
             String admin_phone = data.getString("senderId");
             String group_id = data.getString("groupId");
             // todo remove this developer message
-            sendNotification("New Member Added", payload.toString());
+            if(!db.isMute(group_id))
+                sendNotification("New Member Added", payload.toString());
 
             for (int i = 0; i < persons.length() ; i++) {
                 db.addGroupMember(group_id,persons.getString(i).toString(),"0","joined");
@@ -156,7 +157,8 @@ public class GroupUtility {
             String group_id = data.getString("groupId");
             String membership_type = data.getString("membership_status");
             // todo remove this developer message
-            sendNotification("A Member was removed from a group.", payload.toString());
+            if(!db.isMute(group_id))
+                sendNotification("A Member was removed from a group.", payload.toString());
 
             db.leaveGroup(group_id, person_phone);
             if(MainActivity.isVisible){
@@ -248,7 +250,8 @@ public class GroupUtility {
             if(!isGroupMember(group_id)){
                 return;
             }
-            sendNotification(message, message);
+            if(!db.isMute(group_id))
+                sendNotification(message, message);
 
             db.addGroupMessage(group_id,message,member_phone,member_phone,unique_id, msg_type);
             if(MainActivity.isVisible){
@@ -514,7 +517,8 @@ public class GroupUtility {
             String member_phone = data.getString("senderId");
             String group_id = data.getString("groupId");
             // todo remove this developer message
-            sendNotification("Member Left", payload.toString());
+            if(!db.isMute(group_id))
+                sendNotification("Member Left", payload.toString());
 
             db.leaveGroup(group_id, member_phone);
             if(MainActivity.isVisible){
