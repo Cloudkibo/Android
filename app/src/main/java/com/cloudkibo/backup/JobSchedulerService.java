@@ -26,6 +26,7 @@ public class JobSchedulerService extends JobService {
 
         final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.bell);
         mp.start();
+
         return false;
     }
 

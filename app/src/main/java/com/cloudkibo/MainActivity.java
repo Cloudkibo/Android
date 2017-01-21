@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,8 +12,6 @@ import java.util.Map;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -28,8 +27,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Dialog;
-import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -53,17 +50,13 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-import com.cloudkibo.backup.JobSchedulerService;
 import com.cloudkibo.custom.CustomActivity;
 import com.cloudkibo.database.BoundKiboSyncListener;
 import com.cloudkibo.database.ContactService;
@@ -87,7 +80,6 @@ import com.cloudkibo.ui.AddMembers;
 import com.cloudkibo.ui.CallHistory;
 import com.cloudkibo.ui.ChatList;
 import com.cloudkibo.ui.ContactList;
-import com.cloudkibo.ui.CreateGroup;
 import com.cloudkibo.ui.GroupChat;
 import com.cloudkibo.ui.GroupChatUI;
 import com.cloudkibo.ui.GroupSetting;
@@ -99,7 +91,6 @@ import com.cloudkibo.file.filechooser.utils.Base64;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -685,7 +676,6 @@ public class MainActivity extends CustomActivity
             uploadIconChooser();
         }
     }
-
     private void uploadIconChooser(){
         Intent getContentIntent = FileUtils.createGetContentIntentForImage();
 
@@ -703,7 +693,6 @@ public class MainActivity extends CustomActivity
             uploadChatAttachmentFileChooser();
         }
     }
-
     private void uploadChatAttachmentFileChooser(){
         Intent getContentIntent = FileUtils.createGetContentIntentForImage();
         if(attachmentType.equals("document")) getContentIntent = FileUtils.createGetContentIntentForDocument();
@@ -772,22 +761,46 @@ public class MainActivity extends CustomActivity
                     final Uri uri = data.getData();
                     final String selectedFilePath = FileUtils.getPath(getApplicationContext(), uri);
                     String fileType = attachmentType;
-                    if(FileUtils.isExternalStorageWritable()){
-                        try {
-                            if (com.cloudkibo.webrtc.filesharing.Utility.isFreeSpaceAvailableForFileSize(
-                                    Integer.parseInt(com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath).getString("size"))
-                            )) {
-                                // todo save the file in external storage
-                                Toast.makeText(getApplicationContext(), "External storage not found", Toast.LENGTH_LONG).show();
-                            } else {
-                                Toast.makeText(getApplicationContext(), getString(R.string.common_not_enough_storage), Toast.LENGTH_LONG).show();
+                    if(selectedFilePath != null) {
+                        if (FileUtils.isExternalStorageWritable()) {
+                            try {
+                                if (com.cloudkibo.webrtc.filesharing.Utility.isFreeSpaceAvailableForFileSize(
+                                        Integer.parseInt(com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
+                                                .getString("size"))
+                                )) {
+                                    String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+                                    uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+                                    uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+
+                                    DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                                    db.createFilesInfo(uniqueid,
+                                            com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
+                                                    .getString("name"),
+                                            com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
+                                                    .getString("size"),
+                                            fileType,
+                                            com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
+                                                    .getString("filetype"), selectedFilePath);
+
+                                    IFragmentName myFragment1 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                                    if (myFragment1 == null) return;
+                                    if (myFragment1.getFragmentName().equals("GroupChat")) {
+                                        final GroupChat myGroupChatListFragment = (GroupChat) myFragment1;
+                                        myGroupChatListFragment.sendFileAttachment(uniqueid, fileType);
+                                    }
+
+                                } else {
+                                    Toast.makeText(getApplicationContext(), getString(R.string.common_not_enough_storage), Toast.LENGTH_LONG).show();
+                                }
+                            } catch (JSONException e) {
+                                Toast.makeText(getApplicationContext(), "Unexpected Error occurred.", Toast.LENGTH_LONG).show();
+                                e.printStackTrace();
                             }
-                        } catch(JSONException e){
-                            Toast.makeText(getApplicationContext(), "Unexpected Error occurred.", Toast.LENGTH_LONG).show();
-                            e.printStackTrace();
+                        } else {
+                            Toast.makeText(getApplicationContext(), getString(R.string.common_no_storage), Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        Toast.makeText(getApplicationContext(), getString(R.string.common_no_storage), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.error_selecting_file), Toast.LENGTH_LONG).show();
                     }
                     /*Ion.with(getApplicationContext())
                             .load("https://api.cloudkibo.com/api/groupmessaging/uploadIcon")
@@ -910,6 +923,14 @@ public class MainActivity extends CustomActivity
                 if(myFragment2 == null) return;
                 if(myFragment2.getFragmentName().equals("GroupChat")){
                     final GroupChat myGroupChatListFragment = (GroupChat) myFragment2;
+                    myGroupChatListFragment.onActivityResult(requestCode,  resultCode, data);
+                }
+                break;
+            case 152:
+                IFragmentName myFragment3 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if(myFragment3 == null) return;
+                if(myFragment3.getFragmentName().equals("GroupChat")){
+                    final GroupChat myGroupChatListFragment = (GroupChat) myFragment3;
                     myGroupChatListFragment.onActivityResult(requestCode,  resultCode, data);
                 }
                 break;
@@ -1289,8 +1310,6 @@ public class MainActivity extends CustomActivity
                         public void run() {
 
                             try {
-                                GroupUtility groupUtility = new GroupUtility(getApplicationContext());
-                                groupUtility.sendNotification("Single message", body.getString("msg"));
                                 myGroupChatFragment.receiveMessage(body.getString("msg"), body.getString("uniqueid"), body.getString("from"), body.getString("date_server_received"), body.getString("type"));
                                 Utility.sendLogToServer(""+ body.getString("to") +" is now going to show the message on the UI in chat window");
                             } catch(JSONException e){
@@ -1317,18 +1336,7 @@ public class MainActivity extends CustomActivity
                         senderName = body.getString("from");
                     }
 
-                    Notification n = new Notification.Builder(getApplicationContext())
-                            .setContentTitle(senderName)
-                            .setContentText(subMsg)
-                            .setSmallIcon(R.drawable.icon)
-                            .setContentIntent(pIntent)
-                            .setAutoCancel(true)
-                            .build();
-
-                    NotificationManager notificationManager =
-                            (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-                    notificationManager.notify(0, n);
+                    (new GroupUtility(getApplicationContext())).sendNotification(senderName, subMsg);
 
                     Utility.sendLogToServer(""+ body.getString("to") +" is going to show notification and chime for message because user is on other chat screen in app");
 
@@ -1360,18 +1368,7 @@ public class MainActivity extends CustomActivity
                     senderName = body.getString("from");
                 }
 
-                Notification n = new Notification.Builder(getApplicationContext())
-                        .setContentTitle(senderName)
-                        .setContentText(subMsg)
-                        .setSmallIcon(R.drawable.icon)
-                        .setContentIntent(pIntent)
-                        .setAutoCancel(true)
-                        .build();
-
-                NotificationManager notificationManager =
-                        (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-                notificationManager.notify(0, n);
+                (new GroupUtility(getApplicationContext())).sendNotification(senderName, subMsg);
 
                 Utility.sendLogToServer(""+ body.getString("to") +" is going to show notification and chime for message because user is on conversations list screen in app");
 

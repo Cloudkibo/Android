@@ -36,6 +36,8 @@ public class Conversation
 
 	private String contact_image;
 
+	private String file_uri;
+
 	/**
 	 * Instantiates a new conversation.
 	 *
@@ -60,6 +62,7 @@ public class Conversation
 		this.type = type;
 	}
 
+	// for group chat
 	public Conversation(String msg, String sender_phone, boolean isSent, String date, String uniqueid, String status, String type){
 		this.msg = msg;
 		this.sender_phone = sender_phone;
@@ -202,5 +205,14 @@ public class Conversation
 
 	public void setOnLocal(Boolean onLocal) {
 		this.onLocal = onLocal;
+	}
+
+	public String getFile_uri() {
+		return file_uri;
+	}
+
+	public Conversation setFile_uri(String file_uri){
+		this.file_uri = file_uri;
+		return this;
 	}
 }

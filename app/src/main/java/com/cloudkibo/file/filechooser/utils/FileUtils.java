@@ -606,7 +606,7 @@ public class FileUtils {
         return false;
     }
 
-    public static File getDownloadStorageDir(String foldername) {
+    public static File getExternalStoragePublicDirForDownloads(String foldername) {
         // Get the directory for the user's public pictures directory.
         File file = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOWNLOADS), foldername);
@@ -616,7 +616,37 @@ public class FileUtils {
         return file;
     }
 
-    public static boolean isFreeSpaceAvailableForFileSize(String foldername, int fileSize){
+    public static File getExternalStoragePublicDirForImages(String foldername) {
+        // Get the directory for the user's public pictures directory.
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_PICTURES), foldername);
+        if (!file.mkdirs()) {
+            Log.e("FILESTORAGE", "Directory not created");
+        }
+        return file;
+    }
+
+    public static File getExternalStoragePublicDirForDocuments(String foldername) {
+        // Get the directory for the user's public pictures directory.
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_DOCUMENTS), foldername);
+        if (!file.mkdirs()) {
+            Log.e("FILESTORAGE", "Directory not created");
+        }
+        return file;
+    }
+
+    public static File getExternalStoragePublicDirForVideos(String foldername) {
+        // Get the directory for the user's public pictures directory.
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_MOVIES), foldername);
+        if (!file.mkdirs()) {
+            Log.e("FILESTORAGE", "Directory not created");
+        }
+        return file;
+    }
+
+    public static boolean isFreeSpaceAvailableForFileSize(String foldername, int fileSize) {
         File file = new File(Environment.getExternalStoragePublicDirectory(
                 Environment.DIRECTORY_DOWNLOADS), foldername);
         if (!file.mkdirs()) {

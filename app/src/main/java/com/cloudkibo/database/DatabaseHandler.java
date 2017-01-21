@@ -27,7 +27,7 @@ import com.cloudkibo.library.Utility;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 20;
+    private static final int DATABASE_VERSION = 21;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -190,6 +190,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + ")";
         db.execSQL(CREATE_GROUP_MUTE_SETTINGS);
 
+        String CREATE_FILES_INFO = "CREATE TABLE FILESINFO ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "uniqueid TEXT, "
+                + "file_name TEXT, "
+                + "file_size TEXT, "
+                + "file_type TEXT, "
+                + "file_ext TEXT, "
+                + "path TEXT "
+                + ")";
+        db.execSQL(CREATE_FILES_INFO);
+
     }
 
 
@@ -218,9 +229,51 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS GROUPSERVERPENDING");
         db.execSQL("DROP TABLE IF EXISTS GROUPMEMBERREMOVEPENDING");
         db.execSQL("DROP TABLE IF EXISTS MUTESETTING");
+        db.execSQL("DROP TABLE IF EXISTS FILESINFO");
 
         // Create tables again
         onCreate(db);
+    }
+
+    public void createFilesInfo(String unique_id, String file_name, String file_size, String file_type, String file_ext, String path) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("uniqueid", unique_id);
+        values.put("file_name", file_name);
+        values.put("file_size", file_size);
+        values.put("file_type", file_type);
+        values.put("file_ext", file_ext);
+        values.put("path", path);
+        // Inserting Row
+        db.insert("FILESINFO", null, values);
+
+        db.close(); // Closing database connection
+
+    }
+
+    public JSONObject getFilesInfo(String unique_id) {
+        JSONObject filesInfo = new JSONObject();
+        String selectQuery = "SELECT uniqueid, file_name, file_size, file_type, file_ext, path FROM FILESINFO WHERE uniqueid='"+ unique_id +"'";
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            // Move to first row
+            cursor.moveToFirst();
+            if (cursor.getCount() > 0) {
+                filesInfo.put("uniqueid", cursor.getString(0));
+                filesInfo.put("file_name", cursor.getString(1));
+                filesInfo.put("file_size", cursor.getString(2));
+                filesInfo.put("file_type", cursor.getString(3));
+                filesInfo.put("file_ext", cursor.getString(4));
+                filesInfo.put("path", cursor.getString(5));
+            }
+            cursor.close();
+            db.close();
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return filesInfo;
     }
 
 

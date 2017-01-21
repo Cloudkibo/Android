@@ -265,26 +265,6 @@ public class GroupUtility {
 
     }
 
-    public void syncAllGroups(final String auth_token){
-
-        new AsyncTask<String, String, JSONObject>() {
-
-            @Override
-            protected JSONObject doInBackground(String... args) {
-                return user.getAllGroupInfo(auth_token);
-            }
-
-            @Override
-            protected void onPostExecute(JSONObject row) {
-                if(row != null){
-                    sendNotification("All Groups Synced", row.toString());
-                }
-            }
-
-        }.execute();
-
-    }
-
 
     public String syncGroupMessage(final String group_id, final String message, final String msg_unique_id, final  String auth_token){
         new AsyncTask<String, String, JSONObject>() {

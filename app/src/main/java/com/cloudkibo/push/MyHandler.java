@@ -47,7 +47,7 @@ public class MyHandler extends NotificationsHandler {
         AccountKit.initialize(ctx.getApplicationContext());
         String nhMessage = bundle.getString("message");
         userDetail = new DatabaseHandler(ctx.getApplicationContext()).getUserDetails();
-        sendNotification("Test Push Notification", nhMessage); // todo remove this
+        //sendNotification("Test Push Notification", nhMessage); // todo remove this
         Utility.sendLogToServer(""+ userDetail.get("phone") +" gets push notification payload : "+ nhMessage);
         JSONObject payload;
         try {
@@ -126,22 +126,9 @@ public class MyHandler extends NotificationsHandler {
                     }
                     return ;
                 } else if(payload.getString("type").equals("chat")) {
-                    if (MainActivity.isVisible) {
-                        loadSpecificChatFromServer(payload.getString("uniqueId"));
-                        //MainActivity.mainActivity.ToastNotify(nhMessage);
-                        MainActivity.mainActivity.ToastNotify2("got push notification for chat single message."
-                                + nhMessage);
-                    } else {
-                        String displayName = "";
-                        DatabaseHandler db = new DatabaseHandler(context);
-                        JSONArray contactInAddressBook = db.getSpecificContact(payload.getString("senderId"));
-                        if(contactInAddressBook.length() > 0) {
-                            displayName = contactInAddressBook.getJSONObject(0).getString("display_name");
-                        } else {
-                            displayName = payload.getString("senderId");
-                        }
-                        loadSpecificChatFromServer(payload.getString("uniqueId"));
-                    }
+
+                    loadSpecificChatFromServer(payload.getString("uniqueId"));
+
                 }
 
 
@@ -233,7 +220,7 @@ public class MyHandler extends NotificationsHandler {
                                 ctx.getApplicationContext());
 
                         Log.i("MyHandler", row.toString());
-                        sendNotification("Single Chat Received", row.toString());
+                        //sendNotification("Single Chat Received", row.toString());
                         row = row.getJSONArray("msg").getJSONObject(0);
 
                         db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
@@ -247,6 +234,16 @@ public class MyHandler extends NotificationsHandler {
 
                         if (MainActivity.isVisible) {
                             MainActivity.mainActivity.handleIncomingChatMessage("im", row);
+                        } else {
+                            String displayName = "";
+                            db = new DatabaseHandler(ctx.getApplicationContext());
+                            JSONArray contactInAddressBook = db.getSpecificContact(row.getString("from"));
+                            if(contactInAddressBook.length() > 0) {
+                                displayName = contactInAddressBook.getJSONObject(0).getString("display_name");
+                            } else {
+                                displayName = row.getString("from");
+                            }
+                            sendNotification(displayName, row.getString("msg"));
                         }
 
                     } else {
@@ -302,6 +299,8 @@ public class MyHandler extends NotificationsHandler {
                             // todo @dayem please update the UI for incoming group chat when UI logic is done
                             ///MainActivity.mainActivity.handleIncomingChatMessage("im", row);
                             MainActivity.mainActivity.updateGroupUIChat();
+                        } else {
+
                         }
 
                     } else {
