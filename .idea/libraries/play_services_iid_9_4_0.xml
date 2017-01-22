@@ -1,8 +1,13 @@
 <component name="libraryTable">
   <library name="play-services-iid-9.4.0">
     <CLASSES>
+<<<<<<< HEAD
       <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-iid/9.4.0/jars/classes.jar!/" />
       <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-iid/9.4.0/res" />
+=======
+      <root url="file://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-iid/9.4.0/res" />
+      <root url="jar://$PROJECT_DIR$/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-iid/9.4.0/jars/classes.jar!/" />
+>>>>>>> 074dae126760ac70cc0487c44b9c2e64f3108c81
     </CLASSES>
     <JAVADOC />
     <SOURCES />
