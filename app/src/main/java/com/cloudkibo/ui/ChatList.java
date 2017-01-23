@@ -97,7 +97,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 	private ArrayList<String> contact_phone = new ArrayList<String>();
     DatabaseHandler db;
 	JSONArray groups;
-
+    int totalCount = 0;
     EditText editsearch;
     LinearLayout search_view;
 	/* (non-Javadoc)
@@ -192,7 +192,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 
                 String text = editsearch.getText().toString().toLowerCase(Locale.getDefault());
                 adp.filter(text);
-
+//
             }
         });
 
@@ -351,7 +351,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 
                     //groups = UserFunctions.sortJSONArray(groups, "group_name");
                     //chats = UserFunctions.sortJSONArray(chats, "display_name");
-
+                    totalCount = 0;
+                    totalCount = totalCount + chats.length();
                     for (int i=0; i < chats.length(); i++) {
                         JSONObject row = chats.getJSONObject(i);
                         String image = row.optString("image_uri");
@@ -367,7 +368,7 @@ public class ChatList extends CustomFragment implements IFragmentName
                         //}
                         contact_phone.add(row.getString("contact_phone"));
                     }
-
+                    totalCount = totalCount + groups.length();
                     for (int i=0; i < groups.length(); i++) {
                         JSONObject row = groups.getJSONObject(i);
 
@@ -411,7 +412,7 @@ public class ChatList extends CustomFragment implements IFragmentName
                 chatList = new ArrayList<ChatItem>(chatList1);
                 //this.chatList.addAll(chatList);
                 //this.chatList.addAll(chatList);
-//				Toast.makeText(getContext(), "Total Groups: " + groups.length(), Toast.LENGTH_LONG).show();
+//				Toast.makeText(getContext(), "Total chatItems: " + totalCount, Toast.LENGTH_LONG).show();
                 if(adp != null)
                     adp.notifyDataSetChanged();
             }

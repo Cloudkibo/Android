@@ -95,8 +95,10 @@ public class CallHistory extends CustomFragment implements IFragmentName
             menu.findItem(R.id.archived).setVisible(false);
             menu.findItem(R.id.language).setVisible(false);
             menu.findItem(R.id.backup_setting).setVisible(false);
+            menu.findItem(R.id.search_chats).setVisible(false);
         }
         inflater.inflate(R.menu.newchat, menu);  // Use filter.xml from step 1
+        getActivity().getActionBar().setSubtitle(null);
     }
 
     @Override
