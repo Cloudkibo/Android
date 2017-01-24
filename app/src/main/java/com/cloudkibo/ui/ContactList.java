@@ -85,6 +85,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 	ContactList  reference = this;
     EditText editsearch;
     LinearLayout search_view;
+    public static int totalCount = 0;
 
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -163,7 +164,8 @@ public class ContactList extends CustomFragment implements IFragmentName
 
                 String text = editsearch.getText().toString().toLowerCase(Locale.getDefault());
                 contactAdapter.filter(text);
-
+                Log.e("Lenght Test", "BackupList: " + backupList.size());
+                Log.e("Lenght Test", "ContactList: " + contactList.size());
             }
         });
 
@@ -178,6 +180,9 @@ public class ContactList extends CustomFragment implements IFragmentName
 				contactAdapter.filter("");
             }
         });
+
+		Log.e("Lenght Test", "BackupList: " + backupList.size());
+        Log.e("Lenght Test", "ContactList: " + contactList.size());
 
 		return v;
 	}
@@ -334,6 +339,8 @@ public class ContactList extends CustomFragment implements IFragmentName
 					//loadNewContacts(contactList1);
 					contactList.clear();
 					contactList.addAll(contactList1);
+                    totalCount = 0;
+                    totalCount = contactList.size();
 					contactAdapter.notifyDataSetChanged();
 				}
 			}
@@ -497,7 +504,9 @@ public class ContactList extends CustomFragment implements IFragmentName
 		// Filter Class
 		public void filter(String charText) {
 			charText = charText.toLowerCase(Locale.getDefault());
-            backupList.addAll(contactList);
+            if(backupList.size() < totalCount) {
+                backupList.addAll(contactList);
+            }
 			contactList.clear();
 			if (charText.length() == 0) {
 				contactList.addAll(backupList);
