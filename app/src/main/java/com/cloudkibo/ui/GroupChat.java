@@ -12,6 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -174,6 +175,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		inflater.inflate(R.menu.chat, menu);  // Use filter.xml from step 1
 //		getActivity().getActionBar().setSubtitle("Last seen on: ");
 		Utility.getLastSeenStatus(contactPhone, authtoken, getActivity().getActionBar());
+		ActionBar actionBar = getActivity().getActionBar();
+		actionBar.setDisplayShowCustomEnabled(false);
 
 	}
 

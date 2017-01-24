@@ -1,5 +1,6 @@
 package com.cloudkibo.ui;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -155,6 +156,8 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         }
         inflater.inflate(R.menu.groupchat, menu);  // Use filter.xml from step 1
         getActivity().getActionBar().setSubtitle(null);
+        ActionBar actionBar = getActivity().getActionBar();
+        actionBar.setDisplayShowCustomEnabled(false);
     }
 
 

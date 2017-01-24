@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.UUID;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -234,6 +235,19 @@ public class ChatList extends CustomFragment implements IFragmentName
         inflater.inflate(R.menu.main, menu);  // Use filter.xml from step 1
 
         getActivity().getActionBar().setSubtitle(null);
+		ActionBar actionBar = getActivity().getActionBar();
+		actionBar.setDisplayShowCustomEnabled(true);
+
+		LayoutInflater inflator = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View v = inflator.inflate(R.layout.custom_imageview, null);
+        ImageView search_button = (ImageView) v.findViewById(R.id.imageView4);
+        search_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                search_view.setVisibility(View.VISIBLE);
+            }
+        });
+		actionBar.setCustomView(v);
     }
 
     @Override

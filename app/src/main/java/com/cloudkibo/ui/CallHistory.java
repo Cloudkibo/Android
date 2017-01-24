@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
@@ -99,6 +100,8 @@ public class CallHistory extends CustomFragment implements IFragmentName
         }
         inflater.inflate(R.menu.newchat, menu);  // Use filter.xml from step 1
         getActivity().getActionBar().setSubtitle(null);
+        ActionBar actionBar = getActivity().getActionBar();
+        actionBar.setDisplayShowCustomEnabled(false);
     }
 
     @Override
