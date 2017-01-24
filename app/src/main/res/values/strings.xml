@@ -59,6 +59,7 @@
     <string name="side_menu_chat">Chat</string>
     <string name="side_menu_contacts">Contacts</string>
     <string name="side_menu_calls_history">Calls History</string>
+    <string name="side_menu_contacts_invite">Invite Contacts</string>
     <string name="side_menu_create_group">Create Group</string>
     <string name="side_menu_about">About KiboChat</string>
     <string name="side_menu_edit_profile">Edit Profile</string>
@@ -113,6 +114,7 @@
 
     <string name="menu_send_image">Send Image</string>
     <string name="menu_send_document">Send Document</string>
+    <string name="menu_send_audio">Send Audio</string>
     <string name="menu_send_contact">Send Contact</string>
     <string name="menu_send_location">Send Location</string>
     <string name="menu_attach">Attach</string>

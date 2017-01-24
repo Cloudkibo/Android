@@ -12,17 +12,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.ActionBar;
+import android.app.ActionBar
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
@@ -201,15 +204,11 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				@Override
 				public void onClick(DialogInterface dialog, int item) {
 					if (options[item].equals("Take Photo")) {
-						String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
-						uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
-						uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
-						Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-						File folder= getExternalStoragePublicDirForImages(getString(R.string.app_name));
-						File f = new File(folder, uniqueid +".jpg");
-						tempCameraCaptureHolderString = f.getPath();
-						intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-						getActivity().startActivityForResult(intent, 152);
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getActivity().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+							getActivity().requestPermissions(new String[]{Manifest.permission.CAMERA}, 103);
+						} else {
+							uploadImageFromCamera();
+						}
 					} else if (options[item].equals("Choose from Gallery")) {
 						MainActivity act3 = (MainActivity)getActivity();
 						act3.uploadChatAttachment("image");
@@ -225,6 +224,12 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		if(id == R.id.sendDoc){
 			MainActivity act2 = (MainActivity)getActivity();
 			act2.uploadChatAttachment("document");
+
+			return true;
+		}
+		if(id == R.id.sendAudio){
+			MainActivity act2 = (MainActivity)getActivity();
+			act2.uploadChatAttachment("audio");
 
 			return true;
 		}
@@ -316,6 +321,18 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		}
 
 //        super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	public void uploadImageFromCamera(){
+		String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+		uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+		uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+		Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+		File folder= getExternalStoragePublicDirForImages(getString(R.string.app_name));
+		File f = new File(folder, uniqueid +".jpg");
+		tempCameraCaptureHolderString = f.getPath();
+		intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+		getActivity().startActivityForResult(intent, 152);
 	}
 
 	/* (non-Javadoc)
@@ -657,7 +674,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							true, true, row.getString("status"), row.getString("uniqueid"),
 							row.has("type") ? row.getString("type") : "");
 					if(row.has("type")){
-						if(row.getString("type").equals("image")){
+						if(row.getString("type").equals("image") || row.getString("type").equals("document")
+								|| row.getString("type").equals("audio")){
 							conversation.setFile_uri(db.getFilesInfo(row.getString("uniqueid")).getString("path"));
 						}
 					}
@@ -668,7 +686,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							false, true, row.getString("status"), row.getString("uniqueid"),
 							row.has("type") ? row.getString("type") : "");
 					if(row.has("type")){
-						if(row.getString("type").equals("image")){
+						if(row.getString("type").equals("image") || row.getString("type").equals("document")
+								|| row.getString("type").equals("audio")){
 							conversation.setFile_uri(db.getFilesInfo(row.getString("uniqueid")).getString("path"));
 						}
 					}
@@ -782,11 +801,11 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			if(c.getType().equals("location")){
 				v = LayoutInflater.from(getActivity()).inflate(
-						R.layout.chat_image_me, null);
+						R.layout.chat_item_image, null);
 				String name = user.get("display_name");
 				if (!c.isSent()) {
 					v = LayoutInflater.from(getActivity()).inflate(
-							R.layout.chat_image_sender, null);
+							R.layout.chat_item_image_received, null);
 					name = contactName;
 				}
 				final String latitude = c.getMsg().split(":")[0];
@@ -819,11 +838,11 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			if(c.getType().equals("image")){
 				v = LayoutInflater.from(getActivity()).inflate(
-						R.layout.chat_image_me, null);
+						R.layout.chat_item_image, null);
 				String name = user.get("display_name");
 				if (!c.isSent()) {
 					v = LayoutInflater.from(getActivity()).inflate(
-							R.layout.chat_image_sender, null);
+							R.layout.chat_item_image_received, null);
 					name = contactName;
 				}
 				ImageView container_image = (ImageView) v.findViewById(R.id.row_stamp);
@@ -871,6 +890,34 @@ public class GroupChat extends CustomFragment implements IFragmentName
 						Intent intent = new Intent();
 						intent.setAction(Intent.ACTION_VIEW);
 						intent.setDataAndType(Uri.parse("file://" + uri), "application/*");
+						startActivity(intent);
+					}
+				});
+
+				return  v;
+			}
+
+			if(c.getType().equals("audio")){
+				v = LayoutInflater.from(getActivity()).inflate(
+						R.layout.chat_item_audio, null);
+				String name = user.get("display_name");
+				if (!c.isSent()) {
+					v = LayoutInflater.from(getActivity()).inflate(
+							R.layout.chat_item_audio_received, null);
+					name = contactName;
+				}
+
+				TextView msgView = (TextView) v.findViewById(R.id.file_name);
+				msgView.setText(c.getFile_type());
+
+				LinearLayout audioFileItem = (LinearLayout) v.findViewById(R.id.fileItem);
+				final String uri = c.getFile_uri();
+				audioFileItem.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						Intent intent = new Intent();
+						intent.setAction(Intent.ACTION_VIEW);
+						intent.setDataAndType(Uri.parse("file://" + uri), "audio/*");
 						startActivity(intent);
 					}
 				});

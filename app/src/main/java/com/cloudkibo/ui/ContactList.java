@@ -122,10 +122,6 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 				final String tempContactId = contactList.get(pos).getUserId();
 
-				//Intent chatIntent = new Intent(getActivity().getApplicationContext(), ChatList.class);
-				//chatIntent.putExtra("contactUserNameToChat", contactList.get(pos).getUserName());
-				//startActivity(chatIntent);
-
 				contactList.get(pos).setUnReadMessage(false);
 				contactAdapter.notifyDataSetChanged();
 
@@ -240,8 +236,6 @@ public class ContactList extends CustomFragment implements IFragmentName
 		menu.setHeaderTitle(getString(R.string.common_select_action));
 		menu.add(0, v.getId(), 0, getString(R.string.common_call));
 		menu.add(0, v.getId(), 0, getString(R.string.common_transfer_file));
-		//menu.add(0, v.getId(), 0, "Remove Conversation");
-		//menu.add(0, v.getId(), 0, "Remove Contact");
 	}
 
 	@Override
@@ -266,188 +260,12 @@ public class ContactList extends CustomFragment implements IFragmentName
 			MainActivity act1 = (MainActivity)getActivity();
 			act1.sendFileToThisPerson(contactList.get(info.position).getUserName());
 		}
-		else if(item.getTitle() == "Remove Conversation"){
-			new AsyncTask<String, String, Boolean>() {
-
-				@Override
-				protected Boolean doInBackground(String... args) {
-
-					ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-					NetworkInfo netInfo = cm.getActiveNetworkInfo();
-					if (netInfo != null && netInfo.isConnected()) {
-						try {
-							URL url = new URL("http://www.google.com");
-							HttpURLConnection urlc = (HttpURLConnection) url
-									.openConnection();
-							urlc.setConnectTimeout(3000);
-							urlc.connect();
-							if (urlc.getResponseCode() == 200) {
-								return true;
-							}
-						} catch (MalformedURLException e1) {
-							e1.printStackTrace();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-					return false;
-
-				}
-
-				@Override
-				protected void onPostExecute(Boolean th) {
-
-					if (th == true) {
-
-						new AsyncTask<String, String, JSONObject>() {
-
-							@Override
-							protected JSONObject doInBackground(String... args) {
-								JSONObject result = null;
-
-								MainActivity act1 = (MainActivity)getActivity();
-
-								result = userFunction.removeChat(act1.getUserId(), contactList.get(info.position).getUserName(), authtoken);
-
-								return result;
-
-							}
-
-							@Override
-							protected void onPostExecute(JSONObject json) {
-
-								try {
-
-									if(json != null){
-
-										if(json.getString("status").equals("success")){
-
-											DatabaseHandler db = new DatabaseHandler(
-													getActivity().getApplicationContext());
-
-											MainActivity act1 = (MainActivity)getActivity();
-
-											db.resetSpecificChat(act1.getUserName(), contactList.get(info.position).getUserName());
-
-										}
-
-
-									}
-
-								} catch (JSONException e) {
-									e.printStackTrace();
-								}
-
-							}
-
-						}.execute();
-
-					} else {
-						Toast.makeText(getActivity().getApplicationContext(),
-								"Could not connect to Internet", Toast.LENGTH_SHORT)
-								.show();
-					}
-				}
-
-			}.execute();
-		}
-		else if (item.getTitle() == "Remove Contact"){
-			new AsyncTask<String, String, Boolean>() {
-
-				@Override
-				protected Boolean doInBackground(String... args) {
-
-					ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-					NetworkInfo netInfo = cm.getActiveNetworkInfo();
-					if (netInfo != null && netInfo.isConnected()) {
-						try {
-							URL url = new URL("http://www.google.com");
-							HttpURLConnection urlc = (HttpURLConnection) url
-									.openConnection();
-							urlc.setConnectTimeout(3000);
-							urlc.connect();
-							if (urlc.getResponseCode() == 200) {
-								return true;
-							}
-						} catch (MalformedURLException e1) {
-							e1.printStackTrace();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
-					}
-					return false;
-
-				}
-
-				@Override
-				protected void onPostExecute(Boolean th) {
-
-					if (th == true) {
-
-						new AsyncTask<String, String, JSONObject>() {
-
-							@Override
-							protected JSONObject doInBackground(String... args) {
-								JSONObject result = null;
-
-								MainActivity act1 = (MainActivity)getActivity();
-
-								result = userFunction.removeContact(act1.getUserId(), contactList.get(info.position).getUserName(), authtoken);
-
-								return result;
-
-							}
-
-							@Override
-							protected void onPostExecute(JSONObject json) {
-
-								try {
-
-									if(json != null){
-
-										if(json.getString("status").equals("success")){
-
-											DatabaseHandler db = new DatabaseHandler(
-													getActivity().getApplicationContext());
-
-											MainActivity act1 = (MainActivity)getActivity();
-
-											db.resetSpecificContact(act1.getUserName(), contactList.get(info.position).getUserName());
-
-											db.resetSpecificChat(act1.getUserName(), contactList.get(info.position).getUserName());
-
-											loadContactList();
-
-										}
-
-
-									}
-
-								} catch (JSONException e) {
-									e.printStackTrace();
-								}
-
-							}
-
-						}.execute();
-
-					} else {
-						Toast.makeText(getActivity().getApplicationContext(),
-								"Could not connect to Internet", Toast.LENGTH_SHORT)
-								.show();
-					}
-				}
-
-			}.execute();
-		}
 		else
 		{
 			return false;
 		}
 		return true;
 	}
-
-
 
 
 	/* (non-Javadoc)
@@ -458,71 +276,6 @@ public class ContactList extends CustomFragment implements IFragmentName
 	{
 		super.onClick(v);
 	}
-
-    public void loadPartialContactList()
-    {
-
-        ArrayList<ContactItem> noteList = new ArrayList<ContactItem>();
-        contactList = new ArrayList<ContactItem>(noteList);
-        final DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-        //contact_phone.clear();
-
-        new AsyncTask<String, String, ArrayList<ContactItem>>() {
-
-            @Override
-            protected ArrayList<ContactItem> doInBackground(String... args) {
-
-                try {
-                    JSONArray jsonA = db.getContactsWithImages();
-
-
-//                    JSONArray jsonA = db.getContacts();
-//                    JSONArray jsonB = db.getContactsOnAddressBook();
-
-                    jsonA = UserFunctions.sortJSONArrayIgnoreCase(jsonA, "display_name");
-
-//
-                    ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
-                    String my_btmp;
-                    //This loop adds contacts to the display list which are on cloudkibo
-
-                    for (int i=0; i < jsonA.length(); i++) {
-                        JSONObject row = jsonA.getJSONObject(i);
-                        my_btmp = row.optString("image_uri");
-
-                        contactList1.add(new ContactItem(row.getString("_id"),
-                                row.getString("display_name"),
-                                "", // first name
-                                row.getString("on_cloudkibo"),
-                                row.getString("phone"),
-                                01,
-                                false, "",
-                                row.getString("status"),
-                                row.getString("detailsshared"),
-                                false
-                        ).setProfile(my_btmp));
-                    //    contact_phone.add(row.getString("phone"));
-                    }
-
-                    return contactList1;
-                } catch (JSONException e) {
-
-                    e.printStackTrace();
-
-                }
-
-
-                return null;
-            }
-
-            @Override
-            protected void onPostExecute(ArrayList<ContactItem> contactList1) {
-
-            }
-
-        }.execute();
-
-    }
 
 	public void loadContactList()
 	{
@@ -540,17 +293,11 @@ public class ContactList extends CustomFragment implements IFragmentName
 
 				try {
 					JSONArray jsonA = db.getContactsWithImages();
-                    JSONArray jsonB = db.getContactsOnAddressBookWithImages();
 					ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 
 					Utility.sendLogToServer("In Contact List page: the size of contacts on cloudkibo "+ jsonA.length());
-					Utility.sendLogToServer("In Contact List page: the size of contacts on address book "+ jsonB.length());
-
-//                    JSONArray jsonA = db.getContacts();
-//                    JSONArray jsonB = db.getContactsOnAddressBook();
 
 					jsonA = UserFunctions.sortJSONArrayIgnoreCase(jsonA, "display_name");
-                    jsonB = UserFunctions.sortJSONArrayIgnoreCase(jsonB, "display_name");
 //
 					String my_btmp;
 					//This loop adds contacts to the display list which are on cloudkibo
@@ -573,42 +320,13 @@ public class ContactList extends CustomFragment implements IFragmentName
 					//	contact_phone.add(row.getString("phone"));
 					}
 
-//                    SystemClock.sleep(200);
-//                    contactList1.clear();
-
-//			//This Loop Adds Contacts to the display list which are not on cloudkibo
-					for (int i=0; i < jsonB.length(); i++) {
-						JSONObject row = jsonB.getJSONObject(i);
-						my_btmp = row.optString("image_uri");
-
-						contactList1.add(new ContactItem(row.getString("_id"),
-								row.getString("display_name"),
-								"", // first name
-								row.getString("on_cloudkibo"),
-								row.getString("phone"),
-								01,
-								false, "",
-								row.getString("status"),
-								row.getString("detailsshared"),
-								false
-						).setProfile(my_btmp));
-						//contact_phone.add(row.getString("phone"));
-					}
-
-
-
 					return contactList1;
 				} catch (JSONException e) {
-
 					e.printStackTrace();
-
 				}
-
 
 				return null;
 			}
-
-
 
 			@Override
 			protected void onPostExecute(ArrayList<ContactItem> contactList1) {
@@ -681,14 +399,6 @@ public class ContactList extends CustomFragment implements IFragmentName
 		{
 			return arg0;
 		}
-
-
-		public class Holder
-		{
-			ImageView profile;
-
-		}
-
 
 
 		/* (non-Javadoc)
@@ -803,7 +513,9 @@ public class ContactList extends CustomFragment implements IFragmentName
 			contactList.clear();
 			contactList.addAll(new ArrayList<ContactItem>(duplicate));
 
-			// Sorting
+			// Sorting NOTE: this is commented by sojharo as it is causing irregular list - we don't sort
+			// on basis of contact's username first. We sort on basis of who is on cloudkibo and who is not
+			// first and then two lists are partially sorted according to alphabet
 			Collections.sort(contactList, new Comparator<ContactItem>() {
 				@Override
 				public int compare(ContactItem c2, ContactItem c1)
