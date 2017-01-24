@@ -80,6 +80,7 @@ import com.cloudkibo.ui.AddMembers;
 import com.cloudkibo.ui.CallHistory;
 import com.cloudkibo.ui.ChatList;
 import com.cloudkibo.ui.ContactList;
+import com.cloudkibo.ui.ContactListPending;
 import com.cloudkibo.ui.GroupChat;
 import com.cloudkibo.ui.GroupChatUI;
 import com.cloudkibo.ui.GroupSetting;
@@ -213,9 +214,6 @@ public class MainActivity extends CustomActivity
 //        Utility utility = new Utility();
 //        utility.updateDatabaseWithContactImages(getApplicationContext(),new ArrayList<String>());
 
-
-
-
     }
 
     public boolean isRTL(Context ctx) {
@@ -318,6 +316,17 @@ public class MainActivity extends CustomActivity
                 uploadIconChooser();
             } else {
                 ToastNotify2(getString(R.string.main_activity_file_permission_denied));
+            }
+        } else if (requestCode == 103) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                IFragmentName myFragment3 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if(myFragment3 == null) return;
+                if(myFragment3.getFragmentName().equals("GroupChat")){
+                    final GroupChat myGroupChatListFragment = (GroupChat) myFragment3;
+                    myGroupChatListFragment.uploadImageFromCamera();
+                }
+            } else {
+                //ToastNotify2(getString(R.string.main_activity_file_permission_denied));
             }
         }
     }
@@ -534,7 +543,7 @@ public class MainActivity extends CustomActivity
         al.add(new Data(getString(R.string.side_menu_chat), null, R.drawable.ic_chat));
         al.add(new Data(getString(R.string.side_menu_contacts), null, R.drawable.ic_notes));
         al.add(new Data(getString(R.string.side_menu_calls_history), null, android.R.drawable.sym_action_call));
-//        al.add(new Data("Invite", null, R.drawable.ic_notes));
+        al.add(new Data("Invite", null, R.drawable.ic_notes));
         al.add(new Data(getString(R.string.side_menu_create_group), null, R.drawable.ic_about));
         //al.add(new Data("Add Requests", null, R.drawable.ic_projects));
         //al.add(new Data("Conference", null, R.drawable.group1));
@@ -569,6 +578,10 @@ public class MainActivity extends CustomActivity
             f = new CallHistory();
         }
         else if(pos == 4){
+            title = getString(R.string.side_menu_contacts_invite);
+            f = new ContactListPending();
+        }
+        else if(pos == 5){
             title = getString(R.string.side_menu_create_group);
             f = new AddMembers();
         }
@@ -618,7 +631,7 @@ public class MainActivity extends CustomActivity
 
             alertD.show();
         }
-        else if (pos == 5)
+        else if (pos == 6)
         {
             title = getString(R.string.side_menu_about);
             f = new AboutChat();
@@ -696,6 +709,7 @@ public class MainActivity extends CustomActivity
     private void uploadChatAttachmentFileChooser(){
         Intent getContentIntent = FileUtils.createGetContentIntentForImage();
         if(attachmentType.equals("document")) getContentIntent = FileUtils.createGetContentIntentForDocument();
+        if(attachmentType.equals("audio")) getContentIntent = FileUtils.createGetContentIntentForAudio();
 
         Intent intent = Intent.createChooser(getContentIntent, "Select file");
         startActivityForResult(intent, 112);
@@ -1245,23 +1259,6 @@ public class MainActivity extends CustomActivity
         }
     }
 
-    public void updatePartialContactList() {
-        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-
-        if(myFragment == null) return;
-        if(myFragment.getFragmentName().equals("ContactList"))
-        {
-            final ContactList myChatListFragment = (ContactList) myFragment;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    myChatListFragment.loadPartialContactList();
-                }
-            });
-
-        }
-    }
-
     public void updateGroupUIChat() {
         IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 
@@ -1511,6 +1508,16 @@ public class MainActivity extends CustomActivity
                     if(myFragment.getFragmentName().equals("ContactList"))
                     {
                         final ContactList myContactListFragment = (ContactList) myFragment;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                myContactListFragment.loadContactList(); //here you call the method of your current Fragment.
+                            }
+                        });
+                    }
+                    if(myFragment.getFragmentName().equals("ContactListPending"))
+                    {
+                        final ContactListPending myContactListFragment = (ContactListPending) myFragment;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

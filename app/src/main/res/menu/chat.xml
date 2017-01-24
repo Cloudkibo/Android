@@ -32,6 +32,13 @@
         />
 
     <item
+        android:id="@+id/sendAudio"
+        android:icon="@android:drawable/presence_audio_online"
+        app:showAsAction="ifRoom"
+        android:title="@string/menu_send_audio"
+        />
+
+    <item
         android:id="@+id/sendContact"
         android:icon="@drawable/ic_username"
         app:showAsAction="ifRoom"

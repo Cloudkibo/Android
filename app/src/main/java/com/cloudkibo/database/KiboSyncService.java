@@ -303,6 +303,7 @@ public class KiboSyncService extends Service {
                     message.put("date", Utility.getCurrentTimeInISO());
                     message.put("uniqueid", uniqueid);
                     message.put("type", "chat"); // todo make it dynamic
+                    message.put("file_type", ""); // todo make it dynamic
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
