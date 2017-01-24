@@ -12,7 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.ActionBar
+import android.app.ActionBar;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -405,7 +405,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			convList.add(new Conversation(messageString,
 					Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()),
-					true, true, "pending", uniqueid, "chat"));
+					true, true, "pending", uniqueid, "chat", ""));
 			adp.notifyDataSetChanged();
 
 			sendMessageUsingAPI(messageString, uniqueid, "chat");
@@ -424,12 +424,12 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			JSONObject fileInfo = db.getFilesInfo(uniqueid);
 
 			db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
-					fileInfo.getString("file_name"), Utility.getCurrentTimeInISO(), "pending", uniqueid, fileType,
-					fileInfo.getString("file_ext"));
+					fileInfo.getString("file_name"), Utility.getCurrentTimeInISO(), "pending", uniqueid, "file",
+					fileType);
 
 			convList.add(new Conversation(fileInfo.getString("file_name"),
 					Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()),
-					true, true, "pending", uniqueid, fileType).setFile_uri(fileInfo.getString("path")));
+					true, true, "pending", uniqueid, "file", fileType).setFile_uri(fileInfo.getString("path")));
 			adp.notifyDataSetChanged();
 
 			//sendMessageUsingAPI(imageInfo.getString("file_name"), uniqueid, fileType);
@@ -456,7 +456,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			convList.add(new Conversation(messageString,
 					Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()),
-					true, true, "pending", uniqueid, "contact").setContact_image(contact_image));
+					true, true, "pending", uniqueid, "contact", "").setContact_image(contact_image));
 			adp.notifyDataSetChanged();
 
 			sendMessageUsingAPI(messageString, uniqueid, "contact");
@@ -483,7 +483,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			convList.add(new Conversation(messageString,
 					Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()),
-					true, true, "pending", uniqueid, "location"));
+					true, true, "pending", uniqueid, "location", ""));
 			adp.notifyDataSetChanged();
 
 			sendMessageUsingAPI(messageString, uniqueid, "location");
@@ -494,14 +494,14 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		}
 	}
 
-	public void receiveMessage(String msg, String uniqueid, String from, String date, String type) {
+	public void receiveMessage(String msg, String uniqueid, String from, String date, String type, String file_type) {
 
 		try {
 
 			final MediaPlayer mp = MediaPlayer.create(getActivity().getApplicationContext(), R.raw.bell);
 			mp.start();
-			// todo see if this really needs the uniqueid and status
-			convList.add(new Conversation(msg, Utility.convertDateToLocalTimeZoneAndReadable(date), false, true, "seen", uniqueid, type));
+
+			convList.add(new Conversation(msg, Utility.convertDateToLocalTimeZoneAndReadable(date), false, true, "seen", uniqueid, type, file_type));
 
 			adp.notifyDataSetChanged();
 
@@ -672,10 +672,10 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							row.getString("msg"),
 							Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
 							true, true, row.getString("status"), row.getString("uniqueid"),
-							row.has("type") ? row.getString("type") : "");
+							row.has("type") ? row.getString("type") : "",
+							row.has("file_type") ? row.getString("file_type") : "");
 					if(row.has("type")){
-						if(row.getString("type").equals("image") || row.getString("type").equals("document")
-								|| row.getString("type").equals("audio")){
+						if(row.getString("type").equals("file")){
 							conversation.setFile_uri(db.getFilesInfo(row.getString("uniqueid")).getString("path"));
 						}
 					}
@@ -684,10 +684,10 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							row.getString("msg"),
 							Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
 							false, true, row.getString("status"), row.getString("uniqueid"),
-							row.has("type") ? row.getString("type") : "");
+							row.has("type") ? row.getString("type") : "",
+							row.has("file_type") ? row.getString("file_type") : "");
 					if(row.has("type")){
-						if(row.getString("type").equals("image") || row.getString("type").equals("document")
-								|| row.getString("type").equals("audio")){
+						if(row.getString("type").equals("file")){
 							conversation.setFile_uri(db.getFilesInfo(row.getString("uniqueid")).getString("path"));
 						}
 					}
@@ -836,7 +836,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				return  v;
 			}
 
-			if(c.getType().equals("image")){
+			if(c.getFile_type().equals("image")){
 				v = LayoutInflater.from(getActivity()).inflate(
 						R.layout.chat_item_image, null);
 				String name = user.get("display_name");
@@ -869,7 +869,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				return  v;
 			}
 
-			if(c.getType().equals("document")){
+			if(c.getFile_type().equals("document")){
 				v = LayoutInflater.from(getActivity()).inflate(
 						R.layout.chat_item_file, null);
 				String name = user.get("display_name");
@@ -897,7 +897,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				return  v;
 			}
 
-			if(c.getType().equals("audio")){
+			if(c.getFile_type().equals("audio")){
 				v = LayoutInflater.from(getActivity()).inflate(
 						R.layout.chat_item_audio, null);
 				String name = user.get("display_name");

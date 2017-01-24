@@ -47,7 +47,7 @@ public class Conversation
 	 * @param isSuccess the is success
 	 */
 	public Conversation(String msg, String date, boolean isSent,
-			boolean isSuccess, String status, String uniqueid, String type)
+			boolean isSuccess, String status, String uniqueid, String type, String file_type)
 	{
 		this.msg = msg;
 		this.isSent = isSent;
@@ -60,6 +60,7 @@ public class Conversation
 		this.status = status;
 		this.uniqueid = uniqueid;
 		this.type = type;
+		this.file_type = file_type;
 	}
 
 	// for group chat

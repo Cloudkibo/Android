@@ -125,7 +125,9 @@ public class MyHandler extends NotificationsHandler {
                         e.printStackTrace();
                     }
                     return ;
-                } else if(payload.getString("type").equals("chat")) {
+                } else if(payload.getString("type").equals("chat") || payload.getString("type").equals("contact")
+                        || payload.getString("type").equals("location")) {
+                    // todo work on this for files: image, document, audio and video
 
                     loadSpecificChatFromServer(payload.getString("uniqueId"));
 

@@ -1870,7 +1870,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public JSONArray getSpecificChat(String uniqueid) throws JSONException {
         JSONArray chats = new JSONArray();
-        String selectQuery = "SELECT id, toperson, fromperson, fromFullName, msg, _id, date, contact_phone, status, type, file_type, uniqueid FROM " + UserChat.TABLE_USERCHAT +" where uniqueid='"+ uniqueid +"'";
+        String selectQuery = "SELECT id, toperson FROM " + UserChat.TABLE_USERCHAT +" where uniqueid='"+ uniqueid +"'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -1882,16 +1882,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
                 JSONObject contact = new JSONObject();
                 contact.put(UserChat.USERCHAT_TO, cursor.getString(1));
-                contact.put(UserChat.USERCHAT_FROM, cursor.getString(2));
-                contact.put(UserChat.USERCHAT_FROM_FULLNAME, cursor.getString(3));
-                contact.put(UserChat.USERCHAT_MSG, cursor.getString(4));
-                contact.put(UserChat.USERCHAT_UID, cursor.getString(5));
-                contact.put(UserChat.USERCHAT_DATE, cursor.getString(6));
-                contact.put("contact_phone", cursor.getString(7));
-                contact.put("status", cursor.getString(8));
-                contact.put("type", cursor.getString(9));
-                contact.put("file_type", cursor.getString(10));
-                contact.put("uniqueid", cursor.getString(11));
 
                 chats.put(contact);
 

@@ -1307,7 +1307,8 @@ public class MainActivity extends CustomActivity
                         public void run() {
 
                             try {
-                                myGroupChatFragment.receiveMessage(body.getString("msg"), body.getString("uniqueid"), body.getString("from"), body.getString("date_server_received"), body.getString("type"));
+                                myGroupChatFragment.receiveMessage(body.getString("msg"), body.getString("uniqueid"), body.getString("from"), body.getString("date_server_received"), body.getString("type"),
+                                        body.has("file_type") ? body.getString("file_type") : "");
                                 Utility.sendLogToServer(""+ body.getString("to") +" is now going to show the message on the UI in chat window");
                             } catch(JSONException e){
                                 e.printStackTrace();
