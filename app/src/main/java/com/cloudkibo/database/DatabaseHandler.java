@@ -1906,6 +1906,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public JSONArray getPendingChat() throws JSONException {
         JSONArray chats = new JSONArray();
+      
         String selectQuery = "SELECT  id, toperson, fromperson, fromFullName, msg, date, contact_phone, status, type, file_type, uniqueid FROM " + UserChat.TABLE_USERCHAT +" WHERE status='pending'";
 
         SQLiteDatabase db = this.getReadableDatabase();
@@ -1917,6 +1918,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             while (cursor.isAfterLast() != true) {
 
                 JSONObject contact = new JSONObject();
+
                 contact.put(UserChat.USERCHAT_TO, cursor.getString(1));
                 contact.put(UserChat.USERCHAT_FROM, cursor.getString(2));
                 contact.put(UserChat.USERCHAT_FROM_FULLNAME, cursor.getString(3));
@@ -1927,7 +1929,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 contact.put("type", cursor.getString(8));
                 contact.put("file_type", cursor.getString(9));
                 contact.put("uniqueid", cursor.getString(10));
-
 
                 chats.put(contact);
 

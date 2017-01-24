@@ -912,6 +912,7 @@ public class KiboSyncService extends Service {
 
             @Override
             protected JSONObject doInBackground(String... args) {
+                Log.e("Load", "Requesting Server for partial chatlist");
                 DatabaseHandler db = new DatabaseHandler(
                         getApplicationContext());
                 return (new UserFunctions()).getPartialChatList(db.getUserDetails().get("phone"), authtoken);
@@ -920,7 +921,7 @@ public class KiboSyncService extends Service {
             @Override
             protected void onPostExecute(JSONObject jsonO) {
                 try {
-
+                    Log.e("Load", "ChatList Fetched");
                     if (jsonO != null) {
                         JSONArray jsonA = jsonO.getJSONArray("msg");
 
