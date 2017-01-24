@@ -98,7 +98,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 	private ArrayList<String> contact_phone = new ArrayList<String>();
     DatabaseHandler db;
 	JSONArray groups;
-    int totalCount = 0;
+    public static int totalCount = 0;
     EditText editsearch;
     LinearLayout search_view;
 	/* (non-Javadoc)
@@ -193,7 +193,9 @@ public class ChatList extends CustomFragment implements IFragmentName
 
                 String text = editsearch.getText().toString().toLowerCase(Locale.getDefault());
                 adp.filter(text);
-//
+				Log.e("Lenght Test", "BackupChatList: " + backupList.size());
+				Log.e("Lenght Test", "ChatList: " + chatList.size());
+
             }
         });
 
@@ -207,6 +209,9 @@ public class ChatList extends CustomFragment implements IFragmentName
                 search_view.setVisibility(View.GONE);
             }
         });
+
+		Log.e("Lenght Test", "BackupChatList: " + backupList.size());
+		Log.e("Lenght Test", "ChatList: " + chatList.size());
 
 		return v;
 	}
@@ -611,8 +616,11 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 		// Filter Class
 		public void filter(String charText) {
+            Log.e("Lenght Test", "In filter");
 			charText = charText.toLowerCase(Locale.getDefault());
-			backupList.addAll(chatList);
+            if(backupList.size() < totalCount) {
+                backupList.addAll(chatList);
+            }
             chatList.clear();
 			if (charText.length() == 0) {
                 chatList.addAll(backupList);

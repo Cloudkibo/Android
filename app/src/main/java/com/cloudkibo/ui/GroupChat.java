@@ -12,7 +12,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import android.app.ActionBar
+import android.app.ActionBar;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
