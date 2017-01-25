@@ -690,6 +690,19 @@ public class GroupUtility {
         uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
         return uniqueid;
     }
+
+    public boolean isMember(String group_id){
+        try {
+            JSONObject details = db.getMyDetailsInGroup(group_id);
+            Toast.makeText(ctx, "Details Size: " + details.length(), Toast.LENGTH_LONG).show();
+            if(details.length() > 0){
+                return true;
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return  false;
+    }
 }
 
 

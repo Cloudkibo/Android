@@ -66,6 +66,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
     JSONArray participants;
     LayoutInflater inflater;
     ImageButton btnSelectIcon;
+    Button leave_group;
     View view;
 
     /* (non-Javadoc)
@@ -88,8 +89,12 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         if (args  != null){
             group_id = args.getString("group_id");
         }
-        Button leave_group = (Button) footer.findViewById(R.id.leave_group);
+        leave_group = (Button) footer.findViewById(R.id.leave_group);
   //      btnSelectIcon = (ImageButton) v.findViewById(R.id.selectIconBtn);
+        GroupUtility groupUtility = new GroupUtility(getContext());
+        if(!groupUtility.isMember(group_id)){
+            leave_group.setVisibility(View.INVISIBLE);
+        }
         Switch muteSwitch = (Switch) v.findViewById(R.id.switch1);
         try{
         muteSwitch.setChecked(new DatabaseHandler(getActivity().getApplicationContext()).isMute(group_id));
@@ -246,6 +251,10 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                CustomParticipantAdapter customParticipantAdapter = new CustomParticipantAdapter(inflater, participants,getContext(), group_id);
                lv.setAdapter(customParticipantAdapter);
                customParticipantAdapter.notifyDataSetChanged();
+           }
+           GroupUtility groupUtility = new GroupUtility(getContext());
+           if(!groupUtility.isMember(group_id)){
+               leave_group.setVisibility(View.INVISIBLE);
            }
            return  participants;
        } catch (JSONException e) {
