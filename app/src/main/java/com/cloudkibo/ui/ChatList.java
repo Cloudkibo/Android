@@ -90,30 +90,30 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 	/** The Chat list. */
 	public static ArrayList<ChatItem> chatList;
-    public ArrayList<ChatItem> backupList = new ArrayList<ChatItem>();
+	public ArrayList<ChatItem> backupList = new ArrayList<ChatItem>();
 	private ChatAdapter adp;
 
 	private String authtoken;
 	private ChatList reference = this;
 	private ArrayList<String> contact_phone = new ArrayList<String>();
-    DatabaseHandler db;
+	DatabaseHandler db;
 	JSONArray groups;
-    int totalCount = 0;
-    EditText editsearch;
-    LinearLayout search_view;
+	public static int totalCount = 0;
+	EditText editsearch;
+	LinearLayout search_view;
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState)
+							 Bundle savedInstanceState)
 	{
 		final View v = inflater.inflate(R.layout.chat_list, null);
 		setHasOptionsMenu(true);
 
 		authtoken = getActivity().getIntent().getExtras().getString("authtoken");
-        db = new DatabaseHandler(getContext());
-        if(chatList == null){
+		db = new DatabaseHandler(getContext());
+		if(chatList == null){
 			chatList =  new ArrayList<ChatItem>();
 		}
 		loadChatList();
@@ -124,9 +124,9 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 
 
-        list.setOnItemClickListener(new OnItemClickListener() {
+		list.setOnItemClickListener(new OnItemClickListener() {
 
-            @Override
+			@Override
 			public void onItemClick(AdapterView<?> adapter, View v, int pos,long arg3)
 			{
 				Bundle bundle = new Bundle();
@@ -152,61 +152,66 @@ public class ChatList extends CustomFragment implements IFragmentName
 					bundle.putString("authtoken", authtoken);
 					groupChatFragment.setArguments(bundle);
 					getFragmentManager().beginTransaction()
-						.replace(R.id.content_frame, groupChatFragment, "groupChatFragmentTag")
-						.addToBackStack(chatList.get(pos).getName()).commit();
-			    }
+							.replace(R.id.content_frame, groupChatFragment, "groupChatFragmentTag")
+							.addToBackStack(chatList.get(pos).getName()).commit();
+				}
 			}
 		});
 
-        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                return false;
-            }
-        });
-        registerForContextMenu(list);
+		list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+			@Override
+			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+				return false;
+			}
+		});
+		registerForContextMenu(list);
 
 		adp.notifyDataSetChanged();
 
 		setTouchNClick(v.findViewById(R.id.btnNewChat));
 //		Utility utility = new Utility();
 //		utility.updateDatabaseWithContactImages(getContext(),contact_phone);
-        loadChatList();
+		loadChatList();
 
 
 
-        editsearch = (EditText) v.findViewById(R.id.chat_search);
+		editsearch = (EditText) v.findViewById(R.id.chat_search);
 
-        editsearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+		editsearch.addTextChangedListener(new TextWatcher() {
+			@Override
+			public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
+			}
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+			@Override
+			public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-            }
+			}
 
-            @Override
-            public void afterTextChanged(Editable editable) {
+			@Override
+			public void afterTextChanged(Editable editable) {
 
-                String text = editsearch.getText().toString().toLowerCase(Locale.getDefault());
-                adp.filter(text);
-//
-            }
-        });
+				String text = editsearch.getText().toString().toLowerCase(Locale.getDefault());
+				adp.filter(text);
+				Log.e("Lenght Test", "BackupChatList: " + backupList.size());
+				Log.e("Lenght Test", "ChatList: " + chatList.size());
 
-        search_view = (LinearLayout) v.findViewById(R.id.search_view);
-        search_view.setVisibility(View.GONE);
-        ImageView close_search = (ImageView) v.findViewById(R.id.close_search);
-        close_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                search_view = (LinearLayout) v.findViewById(R.id.search_view);
-                search_view.setVisibility(View.GONE);
-            }
-        });
+			}
+		});
+
+		search_view = (LinearLayout) v.findViewById(R.id.search_view);
+		search_view.setVisibility(View.GONE);
+		ImageView close_search = (ImageView) v.findViewById(R.id.close_search);
+		close_search.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				search_view = (LinearLayout) v.findViewById(R.id.search_view);
+				search_view.setVisibility(View.GONE);
+			}
+		});
+
+		Log.e("Lenght Test", "BackupChatList: " + backupList.size());
+		Log.e("Lenght Test", "ChatList: " + chatList.size());
 
 		return v;
 	}
@@ -223,52 +228,52 @@ public class ChatList extends CustomFragment implements IFragmentName
 		}
 	}
 
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if (menu != null) {
-            menu.findItem(R.id.archived).setVisible(false);
+	@Override
+	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+		if (menu != null) {
+			menu.findItem(R.id.archived).setVisible(false);
 			menu.findItem(R.id.backup_setting).setVisible(false);
 			menu.findItem(R.id.language).setVisible(false);
-            menu.findItem(R.id.search_chats).setVisible(false);
+			menu.findItem(R.id.search_chats).setVisible(false);
 
-        }
-        inflater.inflate(R.menu.main, menu);  // Use filter.xml from step 1
+		}
+		inflater.inflate(R.menu.main, menu);  // Use filter.xml from step 1
 
-        getActivity().getActionBar().setSubtitle(null);
+		getActivity().getActionBar().setSubtitle(null);
 		ActionBar actionBar = getActivity().getActionBar();
 		actionBar.setDisplayShowCustomEnabled(true);
 
 		LayoutInflater inflator = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflator.inflate(R.layout.custom_imageview, null);
-        ImageView search_button = (ImageView) v.findViewById(R.id.imageView4);
-        search_button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                search_view.setVisibility(View.VISIBLE);
-            }
-        });
+		ImageView search_button = (ImageView) v.findViewById(R.id.imageView4);
+		search_button.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				search_view.setVisibility(View.VISIBLE);
+			}
+		});
 		actionBar.setCustomView(v);
-    }
+	}
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if(id == R.id.archived){
-            ArchivedChat archivedChatFragment = new ArchivedChat();
-            Bundle bundle = new Bundle();
-            bundle.putString("authToken", authtoken);
-            archivedChatFragment.setArguments(bundle);
-            getFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, archivedChatFragment, "archivedChatFragmentTag").addToBackStack("Archived")
-                    .commit();
-            return true;
-        }
-        if(id == R.id.search_chats){
-            search_view.setVisibility(View.VISIBLE);
-            return true;
-        }
-        if(id == R.id.backup_setting){
-            Toast.makeText(getContext(), "Opening Backup Settings", Toast.LENGTH_LONG).show();
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		int id = item.getItemId();
+		if(id == R.id.archived){
+			ArchivedChat archivedChatFragment = new ArchivedChat();
+			Bundle bundle = new Bundle();
+			bundle.putString("authToken", authtoken);
+			archivedChatFragment.setArguments(bundle);
+			getFragmentManager().beginTransaction()
+					.replace(R.id.content_frame, archivedChatFragment, "archivedChatFragmentTag").addToBackStack("Archived")
+					.commit();
+			return true;
+		}
+		if(id == R.id.search_chats){
+			search_view.setVisibility(View.VISIBLE);
+			return true;
+		}
+		if(id == R.id.backup_setting){
+			Toast.makeText(getContext(), "Opening Backup Settings", Toast.LENGTH_LONG).show();
 //            BackupSetting backupSettingFragment = new BackupSetting();
 //            Bundle bundle = new Bundle();
 //            bundle.putString("authToken", authtoken);
@@ -277,28 +282,28 @@ public class ChatList extends CustomFragment implements IFragmentName
 //                    .replace(R.id.content_frame, backupSettingFragment, "backupSettingFragmentTag").addToBackStack("Backup Setting")
 //                    .commit();
 			startActivity(new Intent(getActivity().getApplicationContext(), BackSettingActivity.class));
-            return true;
-        } else if (id == R.id.language){
+			return true;
+		} else if (id == R.id.language){
 			startActivity(new Intent(getActivity().getApplicationContext(), LocaleChange.class));
 		}
 
-        return super.onOptionsItemSelected(item);
-    }
+		return super.onOptionsItemSelected(item);
+	}
 
 	@Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
-        super.onCreateContextMenu(menu, v, menuinfo);
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
+		super.onCreateContextMenu(menu, v, menuinfo);
 
-        menu.setHeaderTitle(getString(R.string.common_select_action));
-        menu.add(0, v.getId(), 0, "Archive");
+		menu.setHeaderTitle(getString(R.string.common_select_action));
+		menu.add(0, v.getId(), 0, "Archive");
 
 
-    }
+	}
 
-    public boolean onContextItemSelected(MenuItem item){
+	public boolean onContextItemSelected(MenuItem item){
 
-        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-        Bundle bundle = new Bundle();
+		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+		Bundle bundle = new Bundle();
 		try {
 			if (item.getTitle() == "Archive") {
 
@@ -329,8 +334,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 
 
-        return true;
-    }
+		return true;
+	}
 //
 //	@Override
 //	public void onResume(){
@@ -343,66 +348,66 @@ public class ChatList extends CustomFragment implements IFragmentName
 	public void loadChatList()
 	{
 
-        final ArrayList<ChatItem> chatList1 = new ArrayList<ChatItem>();
+		final ArrayList<ChatItem> chatList1 = new ArrayList<ChatItem>();
 
-        new AsyncTask<String, String, ArrayList<ChatItem>>() {
+		new AsyncTask<String, String, ArrayList<ChatItem>>() {
 
-            @Override
-            protected ArrayList<ChatItem> doInBackground(String... args) {
+			@Override
+			protected ArrayList<ChatItem> doInBackground(String... args) {
 
 
-                try{
-                    contact_phone.clear();
+				try{
+					contact_phone.clear();
 					JSONArray chats = new JSONArray();
 					if(chatList == null){
-						 chats = db.getChatList();
+						chats = db.getChatList();
 					}else {
 						chats = db.getChatListWithImages();
 					}
 //					JSONArray chats = db.getChatList();
 //			JSONArray groups = db.getAllGroups();
-                    groups = db.getGroupChatList();//db.getMyGroups(db.getUserDetails().get("phone"));
+					groups = db.getGroupChatList();//db.getMyGroups(db.getUserDetails().get("phone"));
 
-                    //groups = UserFunctions.sortJSONArray(groups, "group_name");
-                    //chats = UserFunctions.sortJSONArray(chats, "display_name");
-                    totalCount = 0;
-                    totalCount = totalCount + chats.length();
-                    for (int i=0; i < chats.length(); i++) {
-                        JSONObject row = chats.getJSONObject(i);
-                        String image = row.optString("image_uri");
-                        //if(row.getInt("isArchived") ==  0) {
-                        chatList1.add(new ChatItem(
-                                row.getString("display_name"),
-                                row.getString("contact_phone"),
-                                row.getString("msg"),
-                                Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
-                                R.drawable.user1, false,
-                                false, Integer.parseInt(row.getString("pendingMsgs")), "").setProfileImage(image));
-
-                        //}
-                        contact_phone.add(row.getString("contact_phone"));
-                    }
-                    totalCount = totalCount + groups.length();
-                    for (int i=0; i < groups.length(); i++) {
-                        JSONObject row = groups.getJSONObject(i);
-
-                        //if (row.getInt("isArchived") == 0) {
-                        chatList1.add(new ChatItem(
-                                row.getString("group_name"),
-                                row.getString("unique_id"),
+					//groups = UserFunctions.sortJSONArray(groups, "group_name");
+					//chats = UserFunctions.sortJSONArray(chats, "display_name");
+					totalCount = 0;
+					totalCount = totalCount + chats.length();
+					for (int i=0; i < chats.length(); i++) {
+						JSONObject row = chats.getJSONObject(i);
+						String image = row.optString("image_uri");
+						//if(row.getInt("isArchived") ==  0) {
+						chatList1.add(new ChatItem(
+								row.getString("display_name"),
+								row.getString("contact_phone"),
 								row.getString("msg"),
-                                Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date_creation")),
-                                R.drawable.user1, false,
-                                true, 0, row.getString("last_sender")).setProfileImage(null));
+								Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
+								R.drawable.user1, false,
+								false, Integer.parseInt(row.getString("pendingMsgs")), "").setProfileImage(image));
+
+						//}
+						contact_phone.add(row.getString("contact_phone"));
+					}
+					totalCount = totalCount + groups.length();
+					for (int i=0; i < groups.length(); i++) {
+						JSONObject row = groups.getJSONObject(i);
+
+						//if (row.getInt("isArchived") == 0) {
+						chatList1.add(new ChatItem(
+								row.getString("group_name"),
+								row.getString("unique_id"),
+								row.getString("msg"),
+								Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date_creation")),
+								R.drawable.user1, false,
+								true, 0, row.getString("last_sender")).setProfileImage(null));
 
 
-                    }
+					}
 
-                } catch(JSONException e){
-                    e.printStackTrace();
-                } catch (ParseException e){
-                    e.printStackTrace();
-                }
+				} catch(JSONException e){
+					e.printStackTrace();
+				} catch (ParseException e){
+					e.printStackTrace();
+				}
 
 				Collections.sort(chatList1, new Comparator<ChatItem>() {
 					public int compare(ChatItem o1, ChatItem o2) {
@@ -419,18 +424,18 @@ public class ChatList extends CustomFragment implements IFragmentName
 					}
 				});
 
-                return chatList1;
-            }
-            @Override
-            protected void onPostExecute(ArrayList<ChatItem> chatList1) {
-                chatList = new ArrayList<ChatItem>(chatList1);
-                //this.chatList.addAll(chatList);
-                //this.chatList.addAll(chatList);
+				return chatList1;
+			}
+			@Override
+			protected void onPostExecute(ArrayList<ChatItem> chatList1) {
+				chatList = new ArrayList<ChatItem>(chatList1);
+				//this.chatList.addAll(chatList);
+				//this.chatList.addAll(chatList);
 //				Toast.makeText(getContext(), "Total chatItems: " + totalCount, Toast.LENGTH_LONG).show();
-                if(adp != null)
-                    adp.notifyDataSetChanged();
-            }
-        }.execute();
+				if(adp != null)
+					adp.notifyDataSetChanged();
+			}
+		}.execute();
 
 	}
 
@@ -588,15 +593,15 @@ public class ChatList extends CustomFragment implements IFragmentName
 				//viewHolder.profile.setImageResource(R.drawable.avatar);
 //
 
-                Glide
-                        .with(reference)
-                        .load(getActivity().getApplicationContext().getFilesDir()+"/"+c.getTitle())
-                        .signature(new StringSignature(UUID.randomUUID().toString()))
-                        .thumbnail(0.1f)
-                        .centerCrop()
-                        .transform(new CircleTransform(getContext()))
-                        .placeholder(R.drawable.avatar)
-                        .into(viewHolder.profile);
+				Glide
+						.with(reference)
+						.load(getActivity().getApplicationContext().getFilesDir()+"/"+c.getTitle())
+						.signature(new StringSignature(UUID.randomUUID().toString()))
+						.thumbnail(0.1f)
+						.centerCrop()
+						.transform(new CircleTransform(getContext()))
+						.placeholder(R.drawable.avatar)
+						.into(viewHolder.profile);
 			}
 
 
@@ -611,16 +616,19 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 		// Filter Class
 		public void filter(String charText) {
+			Log.e("Lenght Test", "In filter");
 			charText = charText.toLowerCase(Locale.getDefault());
-			backupList.addAll(chatList);
-            chatList.clear();
+			if(backupList.size() < totalCount) {
+				backupList.addAll(chatList);
+			}
+			chatList.clear();
 			if (charText.length() == 0) {
-                chatList.addAll(backupList);
+				chatList.addAll(backupList);
 			} else {
 				for (ChatItem chatItem : backupList) {
 					if (chatItem.getName().toLowerCase(Locale.getDefault())
 							.startsWith(charText) && !chatList.contains(chatItem)) {
-                        chatList.add(chatItem);
+						chatList.add(chatItem);
 					}
 				}
 			}
@@ -632,10 +640,10 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 	}
 
-	 public String getFragmentName()
-     {
-       return "ChatList";
-     }
+	public String getFragmentName()
+	{
+		return "ChatList";
+	}
 
 	public String getFragmentContactPhone()
 	{

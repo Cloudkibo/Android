@@ -83,6 +83,7 @@ public class ContactListPending extends CustomFragment implements IFragmentName
     ContactListPending reference = this;
     EditText editsearch;
     LinearLayout search_view;
+    public static int totalCount = 0;
 
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -261,6 +262,8 @@ public class ContactListPending extends CustomFragment implements IFragmentName
                     //loadNewContacts(contactList1);
                     contactList.clear();
                     contactList.addAll(contactList1);
+                    totalCount = 0;
+                    totalCount = contactList.size();
                     contactAdapter.notifyDataSetChanged();
                 }
             }
@@ -432,7 +435,9 @@ public class ContactListPending extends CustomFragment implements IFragmentName
         // Filter Class
         public void filter(String charText) {
             charText = charText.toLowerCase(Locale.getDefault());
-            backupList.addAll(contactList);
+            if(backupList.size() < totalCount) {
+                backupList.addAll(contactList);
+            }
             contactList.clear();
             if (charText.length() == 0) {
                 contactList.addAll(backupList);
