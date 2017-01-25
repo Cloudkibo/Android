@@ -155,7 +155,6 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             menu.findItem(R.id.backup_setting).setVisible(false);
         }
         inflater.inflate(R.menu.groupchat, menu);  // Use filter.xml from step 1
-        getActivity().getActionBar().setSubtitle(null);
         ActionBar actionBar = getActivity().getActionBar();
         actionBar.setDisplayShowCustomEnabled(false);
     }
