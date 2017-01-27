@@ -349,10 +349,13 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                 else if(db.getGroupMessageStatusDelivered(unique_id).length() >= db.getGroupMembers(group_id).length() - 1){
                     status = "delivered";
                 }
-                else{
-                    status = "sent";
+                else if(db.getGroupMessageStatusPending(unique_id).length() >= db.getGroupMembers(group_id).length() - 1){
+                    status = "pending";
 //                    String temp = db.getGroupMessageStatus(unique_id, db.getUserDetails().get("phone")).getJSONObject(0).getString("status");
 //                    Toast.makeText(getContext(), temp, Toast.LENGTH_LONG).show();
+                }
+                else {
+                    status = "sent";
                 }
 
                 convList.add(new Conversation(message, from, isSent, date, unique_id, status, type));
