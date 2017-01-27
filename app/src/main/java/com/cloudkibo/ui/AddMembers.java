@@ -103,29 +103,35 @@ public class AddMembers extends CustomFragment implements IFragmentName
         create_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                group_id = randomString(10);
-                Toast.makeText(getContext(), "Group Name: " + group_name.getText().toString(), Toast.LENGTH_LONG).show();
-                db.createGroup(group_id, group_name.getText().toString(), 0);
+                if(group_name.getText().toString().equals("")){
+                    String tmp = group_name.getText().toString();
+                    Toast.makeText(getContext(), "Please insert group name before proceeding", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    group_id = randomString(10);
+                    Toast.makeText(getContext(), "Group Name: " + group_name.getText().toString(), Toast.LENGTH_LONG).show();
+                    db.createGroup(group_id, group_name.getText().toString(), 0);
 
-                String message = "You created group "+ group_name.getText().toString();
-                String member_name = db.getUserDetails().get("display_name");
-                String member_phone = db.getUserDetails().get("phone");
-                String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
-                uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
-                uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
-                Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
-                db.addGroupMessage(group_id,message,member_phone,member_name,uniqueid, "log");
+                    String message = "You created group " + group_name.getText().toString();
+                    String member_name = db.getUserDetails().get("display_name");
+                    String member_phone = db.getUserDetails().get("phone");
+                    String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+                    uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+                    uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+                    Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+                    db.addGroupMessage(group_id, message, member_phone, member_name, uniqueid, "log");
 
 //                addMembers(selected_contacts);
-                CreateGroup nextFrag= new CreateGroup();
-                Bundle args = new Bundle();
-                args.putString("group_id", group_id);
-                args.putString("group_name", group_name.getText().toString());
-                nextFrag.setArguments(args);
-                temp.getFragmentManager().beginTransaction()
-                        .replace(R.id.content_frame, nextFrag,null)
-                        .addToBackStack(null)
-                        .commit();
+                    CreateGroup nextFrag = new CreateGroup();
+                    Bundle args = new Bundle();
+                    args.putString("group_id", group_id);
+                    args.putString("group_name", group_name.getText().toString());
+                    nextFrag.setArguments(args);
+                    temp.getFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, nextFrag, null)
+                            .addToBackStack(null)
+                            .commit();
+                }
             }
         });
 

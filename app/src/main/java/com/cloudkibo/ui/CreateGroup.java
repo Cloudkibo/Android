@@ -90,6 +90,7 @@ public class CreateGroup extends CustomFragment implements IFragmentName
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         if(contactList == null){
             contactList = new ArrayList<ContactItem>();
+
         }
         Bundle args = getArguments();
 
@@ -97,6 +98,9 @@ public class CreateGroup extends CustomFragment implements IFragmentName
             group_id = args.getString("group_id");
             group_name = args.getString("group_name");
             Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
+            db.addGroupMember(group_id,db.getUserDetails().get("phone"),"1","joined");
+            Toast.makeText(getContext(),db.getUserDetails().get("phone") + " added as admin", Toast.LENGTH_SHORT).show();
+
         }
 
         adapter = new HorizontalViewAdapter(innerLay);
@@ -210,8 +214,6 @@ public class CreateGroup extends CustomFragment implements IFragmentName
             db.addGroupMember(group_id,phones.get(i),"0","joined");
             Toast.makeText(getContext(), phones.get(i) + "Added", Toast.LENGTH_SHORT).show();
         }
-        db.addGroupMember(group_id,db.getUserDetails().get("phone"),"1","joined");
-        Toast.makeText(getContext(),db.getUserDetails().get("phone") + " added as admin", Toast.LENGTH_SHORT).show();
     }
 
     String randomString(final int length) {
