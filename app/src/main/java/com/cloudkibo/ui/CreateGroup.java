@@ -73,6 +73,7 @@ public class CreateGroup extends CustomFragment implements IFragmentName
     HorizontalViewAdapter adapter;
     String group_id;
     String group_name;
+    String unique_id;
     Context context = getContext();
 
     /* (non-Javadoc)
@@ -97,9 +98,8 @@ public class CreateGroup extends CustomFragment implements IFragmentName
         if (args  != null){
             group_id = args.getString("group_id");
             group_name = args.getString("group_name");
+            unique_id = args.getString("unique_id");
             Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
-            db.addGroupMember(group_id,db.getUserDetails().get("phone"),"1","joined");
-            Toast.makeText(getContext(),db.getUserDetails().get("phone") + " added as admin", Toast.LENGTH_SHORT).show();
 
         }
 
@@ -120,17 +120,27 @@ public class CreateGroup extends CustomFragment implements IFragmentName
                 //String group_id = randomString(10);
                 //Toast.makeText(getContext(), "Group Name: " + group_name.getText().toString(), Toast.LENGTH_LONG).show();
                 //db.createGroup(group_id, group_name.getText().toString(), 0);
-                addMembers(adapter.getPhones());
-                createGroupOnServer(group_name, group_id, adapter.getPhones(), authtoken);
-                GroupChatUI nextFrag= new GroupChatUI();
-                Bundle args = new Bundle();
-                args.putString("group_id", group_id);
-                args.putString("group_name", group_name);
-                nextFrag.setArguments(args);
-                temp.getFragmentManager().beginTransaction()
-                        .replace(R.id.content_frame, nextFrag,null)
-                        .addToBackStack(group_name)
-                        .commit();
+                if(adapter.getPhones().isEmpty()){
+                    Toast.makeText(getContext(), "Please select members", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    String member_name = db.getUserDetails().get("display_name");
+                    String member_phone = db.getUserDetails().get("phone");
+                    String message = "You created group " + group_name;
+                    db.createGroup(group_id, group_name, 0);
+                    db.addGroupMessage(group_id, message, member_phone, member_name, unique_id, "log");
+                    addMembers(adapter.getPhones());
+                    createGroupOnServer(group_name, group_id, adapter.getPhones(), authtoken);
+                    GroupChatUI nextFrag = new GroupChatUI();
+                    Bundle args = new Bundle();
+                    args.putString("group_id", group_id);
+                    args.putString("group_name", group_name);
+                    nextFrag.setArguments(args);
+                    temp.getFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, nextFrag, null)
+                            .addToBackStack(group_name)
+                            .commit();
+                }
             }
         });
 
@@ -214,6 +224,8 @@ public class CreateGroup extends CustomFragment implements IFragmentName
             db.addGroupMember(group_id,phones.get(i),"0","joined");
             Toast.makeText(getContext(), phones.get(i) + "Added", Toast.LENGTH_SHORT).show();
         }
+        db.addGroupMember(group_id,db.getUserDetails().get("phone"),"1","joined");
+        Toast.makeText(getContext(),db.getUserDetails().get("phone") + " added as admin", Toast.LENGTH_SHORT).show();
     }
 
     String randomString(final int length) {
