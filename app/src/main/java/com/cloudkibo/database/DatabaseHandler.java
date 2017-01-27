@@ -1619,7 +1619,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             user.put(User.KEY_CREATED_AT, cursor.getString(6));
         }
         cursor.close();
-        db.close();
+        //db.close();
+        //
+        // I am commenting this line here because when we try to access same db instance from different running threads, app crashes
+                        //Please refer to this link
+        /*
+        * http://stackoverflow.com/questions/23293572/android-cannot-perform-this-operation-because-the-connection-pool-has-been-clos
+        * second answer by 'handhand'
+        * */
         // return user
         return user;
     }
