@@ -763,6 +763,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
+    public JSONArray getGroupMessageStatusPending(String msg_unique_id) throws JSONException {
+        JSONArray status = new JSONArray();
+
+        String selectQuery = "SELECT status FROM GROUPCHATSTATUS WHERE msg_unique_id='" + msg_unique_id +"' AND status='pending'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("status", cursor.getString(0));
+                //contact.put("user_phone", cursor.getString(1));
+                //contact.put("read_date", cursor.getString(2));
+                //contact.put("delivered_date", cursor.getString(3));
+                status.put(contact);
+                //return cursor.getString(0);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return status;
+
+    }
+
     public JSONArray getGroupMessageStatus(String msg_unique_id) throws JSONException {
                 JSONArray status = new JSONArray();
 
@@ -1590,7 +1619,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             user.put(User.KEY_CREATED_AT, cursor.getString(6));
         }
         cursor.close();
-        db.close();
+        //db.close();
+        //
+        // I am commenting this line here because when we try to access same db instance from different running threads, app crashes
+                        //Please refer to this link
+        /*
+        * http://stackoverflow.com/questions/23293572/android-cannot-perform-this-operation-because-the-connection-pool-has-been-clos
+        * second answer by 'handhand'
+        * */
         // return user
         return user;
     }

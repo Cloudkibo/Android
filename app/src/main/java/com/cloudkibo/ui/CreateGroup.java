@@ -73,6 +73,7 @@ public class CreateGroup extends CustomFragment implements IFragmentName
     HorizontalViewAdapter adapter;
     String group_id;
     String group_name;
+    String unique_id;
     Context context = getContext();
 
     /* (non-Javadoc)
@@ -90,13 +91,16 @@ public class CreateGroup extends CustomFragment implements IFragmentName
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         if(contactList == null){
             contactList = new ArrayList<ContactItem>();
+
         }
         Bundle args = getArguments();
 
         if (args  != null){
             group_id = args.getString("group_id");
             group_name = args.getString("group_name");
+            unique_id = args.getString("unique_id");
             Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
+
         }
 
         adapter = new HorizontalViewAdapter(innerLay);
@@ -116,6 +120,7 @@ public class CreateGroup extends CustomFragment implements IFragmentName
                 //String group_id = randomString(10);
                 //Toast.makeText(getContext(), "Group Name: " + group_name.getText().toString(), Toast.LENGTH_LONG).show();
                 //db.createGroup(group_id, group_name.getText().toString(), 0);
+
                 if(adapter.getPhones().size() <= 0){
                     Toast.makeText(getContext(), "Please select atleast one group member", Toast.LENGTH_LONG).show();
                     return;
