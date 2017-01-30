@@ -55,6 +55,7 @@ import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.CircleTransform;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
@@ -64,6 +65,9 @@ import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import static com.cloudkibo.file.filechooser.utils.FileUtils.getExternalStoragePublicDirForImages;
 
@@ -408,7 +412,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					true, true, "pending", uniqueid, "chat", ""));
 			adp.notifyDataSetChanged();
 
-			sendMessageUsingAPI(messageString, uniqueid, "chat");
+			sendMessageUsingAPI(messageString, uniqueid, "chat", "");
 
 			txt.setText(null);
 		} catch (ParseException e){
@@ -432,7 +436,35 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					true, true, "pending", uniqueid, "file", fileType).setFile_uri(fileInfo.getString("path")));
 			adp.notifyDataSetChanged();
 
-			//sendMessageUsingAPI(imageInfo.getString("file_name"), uniqueid, fileType);
+			sendMessageUsingAPI(fileInfo.getString("file_name"), uniqueid, "file", fileType);
+
+			Ion.with(getActivity().getApplicationContext())
+					.load("https://api.cloudkibo.com/api/filetransfers/upload")
+					//.uploadProgressBar(uploadProgressBar)
+					.setHeader("kibo-token", authtoken)
+					.setMultipartParameter("filetype", fileType)
+					.setMultipartParameter("from", user.get("phone"))
+					.setMultipartParameter("to", contactPhone)
+					.setMultipartParameter("uniqueid", uniqueid)
+					.setMultipartParameter("filename", fileInfo.getString("file_name"))
+					.setMultipartParameter("filesize", fileInfo.getString("file_size"))
+					.setMultipartFile("file", FileUtils.getExtension(fileInfo.getString("path")), new File(fileInfo.getString("path")))
+					.asJsonObject()
+					.setCallback(new FutureCallback<JsonObject>() {
+						@Override
+						public void onCompleted(Exception e, JsonObject result) {
+							// do stuff with the result or error
+							if(e == null) {
+								if(MainActivity.isVisible)
+									MainActivity.mainActivity.ToastNotify2("Uploaded the file to server.");
+							}
+							else {
+								if(MainActivity.isVisible)
+									MainActivity.mainActivity.ToastNotify2("Some error has occurred or Internet not available. Please try later.");
+								e.printStackTrace();
+							}
+						}
+					});
 		} catch (ParseException e){
 			e.printStackTrace();
 		} catch (JSONException e) {
@@ -459,7 +491,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					true, true, "pending", uniqueid, "contact", "").setContact_image(contact_image));
 			adp.notifyDataSetChanged();
 
-			sendMessageUsingAPI(messageString, uniqueid, "contact");
+			sendMessageUsingAPI(messageString, uniqueid, "contact", "");
 
 			txt.setText(null);
 		} catch (ParseException e){
@@ -486,7 +518,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					true, true, "pending", uniqueid, "location", ""));
 			adp.notifyDataSetChanged();
 
-			sendMessageUsingAPI(messageString, uniqueid, "location");
+			sendMessageUsingAPI(messageString, uniqueid, "location", "");
 
 			txt.setText(null);
 		} catch (ParseException e){
@@ -513,7 +545,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 	}
 
-	public void sendMessageUsingAPI(final String msg, final String uniqueid, final String type){
+	public void sendMessageUsingAPI(final String msg, final String uniqueid, final String type, final String file_type){
 		new AsyncTask<String, String, JSONObject>() {
 
 			@Override
@@ -529,7 +561,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					message.put("date", Utility.getCurrentTimeInISO());
 					message.put("uniqueid", uniqueid);
 					message.put("type", type);
-					message.put("file_type", "");
+					message.put("file_type", file_type);
 				} catch (JSONException e){
 					e.printStackTrace();
 				}
@@ -846,7 +878,6 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					name = contactName;
 				}
 				ImageView container_image = (ImageView) v.findViewById(R.id.row_stamp);
-				// todo
 				Glide
 						.with(MainActivity.mainActivity)
 						.load(c.getFile_uri())

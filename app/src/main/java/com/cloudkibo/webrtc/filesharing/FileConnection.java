@@ -433,7 +433,6 @@ public class FileConnection extends CustomActivity {
 								}
 								
 							} catch (JSONException e) {
-								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}  
 				      }
@@ -462,7 +461,6 @@ public class FileConnection extends CustomActivity {
 
 		@Override
 		public void onAddStream(MediaStream arg0) {
-			// TODO Auto-generated method stub
 			
 		}
 
@@ -510,25 +508,21 @@ public class FileConnection extends CustomActivity {
 
 		@Override
 		public void onIceGatheringChange(IceGatheringState arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void onRemoveStream(MediaStream arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void onRenegotiationNeeded() {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void onSignalingChange(SignalingState arg0) {
-			// TODO Auto-generated method stub
 
 		}
 		
@@ -590,13 +584,11 @@ public class FileConnection extends CustomActivity {
 
 		@Override
 		public void onSetFailure(String arg0) {
-			// TODO Auto-generated method stub
 
 		}
 
 		@Override
 		public void onSetSuccess() {
-			// TODO Auto-generated method stub
 
 		}
 

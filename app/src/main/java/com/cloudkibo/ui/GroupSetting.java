@@ -119,7 +119,6 @@ public class GroupSetting extends CustomFragment implements IFragmentName
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // TODO Auto-generated method stub
                         DatabaseHandler db = new DatabaseHandler(getContext());
                         try {
                             JSONObject group_member = db.getGroupMemberDetail(group_id, phoneList[which]);

@@ -333,7 +333,6 @@ public class ConnectionManager {
             try {
 				return new JSONObject().put("Error", "No Internet");
 			} catch (JSONException e1) {
-				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}
         }
@@ -394,7 +393,6 @@ public class ConnectionManager {
             try {
                 return new JSONObject().put("Error", "No Internet");
             } catch (JSONException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         }
@@ -454,7 +452,6 @@ public class ConnectionManager {
             try {
                 return new JSONArray().put(0, new JSONObject().put("Error", "No Internet"));
             } catch (JSONException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         }
@@ -517,7 +514,6 @@ public class ConnectionManager {
             try {
                 return new JSONObject().put("Error", "No Internet");
             } catch (JSONException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         }
@@ -584,7 +580,6 @@ public class ConnectionManager {
             try {
                 return new JSONObject().put("Error", "No Internet");
             } catch (JSONException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         }
@@ -647,7 +642,6 @@ public class ConnectionManager {
             try {
                 return new JSONArray().put(0, new JSONObject().put("Error", "No Internet"));
             } catch (JSONException e1) {
-                // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
         }

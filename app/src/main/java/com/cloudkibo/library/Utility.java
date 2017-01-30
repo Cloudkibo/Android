@@ -120,7 +120,7 @@ public class Utility {
             protected void onPostExecute(String row) {
                 Toast.makeText(context, row, Toast.LENGTH_LONG).show();
                 MainActivity.mainActivity.updateChatList();
-                MainActivity.mainActivity.updateGroupUIChat();
+                //MainActivity.mainActivity.updateGroupUIChat();
             }
 
         }.execute();

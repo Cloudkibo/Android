@@ -455,8 +455,6 @@ public class DisplayNameReg extends Activity
         finish();
     }
 
-
-    /** TODO What if user closes the app without giving display name */
     @Override
     public void onBackPressed() {
         finish();

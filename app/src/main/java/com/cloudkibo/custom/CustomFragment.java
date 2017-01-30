@@ -4,7 +4,7 @@ import android.support.v4.app.Fragment;
 import android.view.View;
 import android.view.View.OnClickListener;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class CustomFragment is the base Fragment class. You can extend your
  * Fragment classes with this class in case you want to apply common set of

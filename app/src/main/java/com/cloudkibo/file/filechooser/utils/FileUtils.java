@@ -647,6 +647,16 @@ public class FileUtils {
         return file;
     }
 
+    public static File getExternalStoragePublicDirForAudio(String foldername) {
+        // Get the directory for the user's public pictures directory.
+        File file = new File(Environment.getExternalStoragePublicDirectory(
+                Environment.DIRECTORY_MUSIC), foldername);
+        if (!file.mkdirs()) {
+            Log.e("FILESTORAGE", "Directory not created");
+        }
+        return file;
+    }
+
     public static File getExternalStoragePublicDirForVideos(String foldername) {
         // Get the directory for the user's public pictures directory.
         File file = new File(Environment.getExternalStoragePublicDirectory(

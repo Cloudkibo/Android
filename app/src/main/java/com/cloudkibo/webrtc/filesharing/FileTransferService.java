@@ -154,13 +154,11 @@ public class FileTransferService extends Service {
 
 			@Override
 			public void onSetFailure(String arg0) {
-				// TODO Auto-generated method stub
 
 			}
 
 			@Override
 			public void onSetSuccess() {
-				// TODO Auto-generated method stub
 
 			}
 

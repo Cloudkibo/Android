@@ -38,7 +38,6 @@ public class CustomContactAdapter extends BaseAdapter {
 
     private static LayoutInflater inflater=null;
     public CustomContactAdapter(LayoutInflater context, ArrayList<String> phones, Context ctx) {
-        // TODO Auto-generated constructor stub
 //        result=prgmNameList;
         this.phones = phones;
         inflater = context;
@@ -52,20 +51,17 @@ public class CustomContactAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return phones.size();
     }
 
     @Override
     public Object getItem(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
 
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
 
@@ -80,7 +76,6 @@ public class CustomContactAdapter extends BaseAdapter {
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
         final Holder holder=new Holder();
         View rowView;
 
@@ -109,7 +104,7 @@ public class CustomContactAdapter extends BaseAdapter {
 //
 //            @Override
 //            public void onClick(View v) {
-//                // TODO Auto-generated method stub
+//
 //                // Toast.makeText(context, "You Clicked "+result[position], Toast.LENGTH_LONG).show();
 //                if(!holder.clicked){
 //                    holder.single_contact.setBackgroundColor(Color.parseColor("#2ecc71"));

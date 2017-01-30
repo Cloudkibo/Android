@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
@@ -353,6 +354,29 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                     status = "sent";
 //                    String temp = db.getGroupMessageStatus(unique_id, db.getUserDetails().get("phone")).getJSONObject(0).getString("status");
 //                    Toast.makeText(getContext(), temp, Toast.LENGTH_LONG).show();
+                }
+
+                if(!from.equals("You")){
+                    JSONArray arrayForMyStatus = db.getGroupMessageStatusDelivered(unique_id);
+                    for( int k=0; k<arrayForMyStatus.length(); k++ ) {
+                        JSONObject jsonForMyStatus = arrayForMyStatus.getJSONObject(k);
+                        if(jsonForMyStatus.getString("status").equals("delivered")){
+                            final String uniqueIdTemp = unique_id;
+                            new AsyncTask<String, String, JSONObject>() {
+                                @Override
+                                protected JSONObject doInBackground(String... args) {
+                                    return (new UserFunctions()).updateGroupChatStatusToSeen(uniqueIdTemp, authtoken);
+                                }
+                                @Override
+                                protected void onPostExecute(JSONObject row) {
+                                    if(row != null){
+                                        DatabaseHandler db= new DatabaseHandler(getActivity().getApplicationContext());
+                                        db.updateGroupChatStatus(uniqueIdTemp, "seen");
+                                    }
+                                }
+                            }.execute();
+                        }
+                    }
                 }
 
                 convList.add(new Conversation(message, from, isSent, date, unique_id, status, type));
