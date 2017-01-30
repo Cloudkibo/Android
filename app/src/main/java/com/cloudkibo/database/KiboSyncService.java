@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.SplashScreen;
+import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
@@ -42,6 +43,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -153,7 +155,7 @@ public class KiboSyncService extends Service {
                 JSONObject row = chats.getJSONObject(i);
 
                 sendMessageUsingAPI(row.getString("toperson"),
-                        row.getString("msg"), row.getString("uniqueid"));
+                        row.getString("msg"), row.getString("uniqueid"), row.getString("type"), row.getString("file_type"));
 
             }
 
@@ -263,7 +265,6 @@ public class KiboSyncService extends Service {
     }
 
     private void updateServerAboutGroups(JsonObject body){
-        // todo
         Ion.with(getApplicationContext())
                 .load("https://api.cloudkibo.com/api/groupmessaging/")
                 .setHeader("kibo-token", authtoken)
@@ -283,7 +284,8 @@ public class KiboSyncService extends Service {
                 });
     }
 
-    public void sendMessageUsingAPI(final String contactPhone, final String msg, final String uniqueid){
+    public void sendMessageUsingAPI(final String contactPhone, final String msg, final String uniqueid,
+                                    final String type, final String file_type){
         new AsyncTask<String, String, JSONObject>() {
 
             @Override
@@ -302,8 +304,8 @@ public class KiboSyncService extends Service {
                     message.put("msg", msg);
                     message.put("date", Utility.getCurrentTimeInISO());
                     message.put("uniqueid", uniqueid);
-                    message.put("type", "chat"); // todo make it dynamic
-                    message.put("file_type", ""); // todo make it dynamic
+                    message.put("type", type);
+                    message.put("file_type", file_type);
                 } catch (JSONException e){
                     e.printStackTrace();
                 }
@@ -319,7 +321,39 @@ public class KiboSyncService extends Service {
                         if(row.has("status")){
                             DatabaseHandler db = new DatabaseHandler(getApplicationContext());
                             db.updateChat(row.getString("status"), row.getString("uniqueid"));
+                            HashMap<String, String> user;
+                            user = db.getUserDetails();
                             mListener.chatLoaded();
+                            if (type.equals("file")) {
+                                JSONObject fileInfo = db.getFilesInfo(uniqueid);
+                                Ion.with(getApplicationContext())
+                                        .load("https://api.cloudkibo.com/api/filetransfers/upload")
+                                        //.uploadProgressBar(uploadProgressBar)
+                                        .setHeader("kibo-token", authtoken)
+                                        .setMultipartParameter("filetype", file_type)
+                                        .setMultipartParameter("from", user.get("phone"))
+                                        .setMultipartParameter("to", contactPhone)
+                                        .setMultipartParameter("uniqueid", uniqueid)
+                                        .setMultipartParameter("filename", fileInfo.getString("file_name"))
+                                        .setMultipartParameter("filesize", fileInfo.getString("file_size"))
+                                        .setMultipartFile("file", FileUtils.getExtension(fileInfo.getString("path")), new File(fileInfo.getString("path")))
+                                        .asJsonObject()
+                                        .setCallback(new FutureCallback<JsonObject>() {
+                                            @Override
+                                            public void onCompleted(Exception e, JsonObject result) {
+                                                // do stuff with the result or error
+                                                if(e == null) {
+                                                    if(MainActivity.isVisible)
+                                                        MainActivity.mainActivity.ToastNotify2("Uploaded the file to server.");
+                                                }
+                                                else {
+                                                    if(MainActivity.isVisible)
+                                                        MainActivity.mainActivity.ToastNotify2("Some error has occurred or Internet not available. Please try later.");
+                                                    e.printStackTrace();
+                                                }
+                                            }
+                                        });
+                            }
                         }
                     }
 

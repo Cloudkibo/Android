@@ -103,6 +103,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
         create_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 if(group_name.getText().toString().equals("")){
                     String tmp = group_name.getText().toString();
                     Toast.makeText(getContext(), "Please insert group name before proceeding", Toast.LENGTH_SHORT).show();
@@ -120,6 +121,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
                     uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
                     //Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
                     //db.addGroupMessage(group_id, message, member_phone, member_name, uniqueid, "log");
+
 
 //                addMembers(selected_contacts);
                     CreateGroup nextFrag = new CreateGroup();

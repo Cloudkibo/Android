@@ -27,7 +27,6 @@ public class CustomParticipantAdapter extends BaseAdapter{
     String group_id;
     private static LayoutInflater inflater=null;
     public CustomParticipantAdapter(LayoutInflater inflater, JSONArray members, Context context, String group_id) {
-        // TODO Auto-generated constructor stub
         this.members = members;
         this.inflater = inflater;
         this.context = context;
@@ -36,19 +35,16 @@ public class CustomParticipantAdapter extends BaseAdapter{
     }
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return members.length();
     }
 
     @Override
     public Object getItem(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
 
@@ -59,7 +55,6 @@ public class CustomParticipantAdapter extends BaseAdapter{
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
         Holder holder=new Holder();
         View rowView;
         rowView = inflater.inflate(R.layout.participant, null);
@@ -89,7 +84,6 @@ public class CustomParticipantAdapter extends BaseAdapter{
         rowView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 GroupUtility groupUtility = new GroupUtility(context);
                 if(!groupUtility.isAdmin(group_id)){
                     return;
@@ -103,7 +97,6 @@ public class CustomParticipantAdapter extends BaseAdapter{
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        // TODO Auto-generated method stub
                         DatabaseHandler db = new DatabaseHandler(context);
                         GroupUtility groupUtility = new GroupUtility(context);
                         final AccessToken accessToken = AccountKit.getCurrentAccessToken();

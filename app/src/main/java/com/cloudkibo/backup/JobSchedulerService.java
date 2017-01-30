@@ -47,7 +47,7 @@ public class JobSchedulerService extends JobService implements
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String TAG = "SyncService";
+    private static final String TAG = "JobScheduler";
     private int number;
     MainActivity mainActivity = new MainActivity();
     protected static final int REQUEST_CODE_RESOLUTION = 1;

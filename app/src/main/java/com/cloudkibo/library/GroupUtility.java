@@ -83,14 +83,23 @@ public class GroupUtility {
                                 MainActivity.mainActivity.updateChatList();
                             }
                         }
-                        String message = msg;
+
                         String member_phone = sender_id;
+
+                        String personWhoAdded = "";
+                        JSONArray specificContact = db.getSpecificContact(member_phone);
+                        if(specificContact.length() > 0) {
+                            personWhoAdded = specificContact.getJSONObject(0).getString("display_name");
+                        } else {
+                            personWhoAdded = member_phone;
+                        }
+
+                        String message = personWhoAdded +" added you to the group";
                         String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
                         uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
                         uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
 
-                        // todo add group creators name also
-                        db.addGroupMessage(group_id,message,member_phone,member_phone,uniqueid, "log");
+                        db.addGroupMessage(group_id,message,member_phone,personWhoAdded,uniqueid, "log");
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -102,30 +111,6 @@ public class GroupUtility {
 
     }
 
-    public void updateMessageStatusToSeen(final String unique_id, final String auth_token){
-
-            new AsyncTask<String, String, JSONObject>() {
-
-                @Override
-                protected JSONObject doInBackground(String... args) {
-                    return user.updateGroupChatStatus(unique_id,auth_token);
-                }
-
-                @Override
-                protected void onPostExecute(JSONObject row) {
-                    if(row != null){
-                        // todo remove this developer message
-                        sendNotification("Updated message status on server to seen", row.toString());
-                        db.updateGroupChatStatus(unique_id, "seen");
-                    }
-                }
-
-            }.execute();
-
-    }
-
-
-
     public void updateGroupMembers(final String payload, final String auth_token){
         try {
             JSONObject data = new JSONObject(payload);
@@ -136,8 +121,35 @@ public class GroupUtility {
             if(!db.isMute(group_id))
                 sendNotification("New Member Added", payload.toString());
 
+            String personWhoAdded = "";
+            JSONArray specificContact = db.getSpecificContact(admin_phone);
+            if(specificContact.length() > 0) {
+                personWhoAdded = specificContact.getJSONObject(0).getString("display_name");
+            } else {
+                personWhoAdded = admin_phone;
+            }
+
             for (int i = 0; i < persons.length() ; i++) {
                 db.addGroupMember(group_id,persons.getString(i).toString(),"0","joined");
+
+                String personBeingAdded = "";
+                JSONArray specificAddedContact = db.getSpecificContact(persons.getString(i).toString());
+                if(specificAddedContact.length() > 0) {
+                    personBeingAdded = specificAddedContact.getJSONObject(0).getString("display_name");
+                } else {
+                    personBeingAdded = persons.getString(i).toString();
+                }
+
+                String message = ""+ personWhoAdded +" added "+ personBeingAdded;
+                String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+                uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+                uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+
+                DatabaseHandler db = new DatabaseHandler(ctx.getApplicationContext());
+                db.addGroupChat(admin_phone, personWhoAdded, message,
+                        Utility.getCurrentTimeInISO(), "log",
+                        uniqueid,
+                        group_id);
             }
             if(MainActivity.isVisible){
                 MainActivity.mainActivity.updateGroupMembers();
@@ -164,6 +176,34 @@ public class GroupUtility {
             if(MainActivity.isVisible){
                 MainActivity.mainActivity.updateGroupMembers();
             }
+
+            String personWhoRemoved = "";
+            JSONArray specificContact = db.getSpecificContact(admin_phone);
+            if(specificContact.length() > 0) {
+                personWhoRemoved = specificContact.getJSONObject(0).getString("display_name");
+            } else {
+                personWhoRemoved = admin_phone;
+            }
+
+            String personBeingRemoved = "";
+            JSONArray specificAddedContact = db.getSpecificContact(person_phone);
+            if(specificAddedContact.length() > 0) {
+                personBeingRemoved = specificAddedContact.getJSONObject(0).getString("display_name");
+            } else {
+                personBeingRemoved = person_phone;
+            }
+            if(person_phone.equals(db.getUserDetails().get("phone"))) personBeingRemoved = "you";
+
+            String message = ""+ personWhoRemoved +" removed "+ personBeingRemoved;
+            String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+            uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+            uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+
+            DatabaseHandler db = new DatabaseHandler(ctx.getApplicationContext());
+            db.addGroupChat(admin_phone, personWhoRemoved, message,
+                    Utility.getCurrentTimeInISO(), "log",
+                    uniqueid,
+                    group_id);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -244,7 +284,7 @@ public class GroupUtility {
             JSONObject data = new JSONObject(payload);
             String message = data.getString("msg");
             String member_phone = data.getString("senderId");
-            String unique_id = data.getString("unique_id");
+            final String unique_id = data.getString("unique_id");
             String group_id = data.getString("groupId");
             String msg_type = data.getString("msg_type");
             if(!isGroupMember(group_id)){
@@ -254,15 +294,30 @@ public class GroupUtility {
                 sendNotification(message, message);
 
             db.addGroupMessage(group_id,message,member_phone,member_phone,unique_id, msg_type);
+            db.addGroupChatStatus(unique_id, "delivered", db.getUserDetails().get("phone"));
             if(MainActivity.isVisible){
-                updateMessageStatusToSeen(unique_id, auth_token);
-                MainActivity.mainActivity.updateGroupUIChat();
+                MainActivity.mainActivity.updateGroupUIChat(unique_id);
+            } else {
+                final String temp_auth_token = auth_token;
+                new AsyncTask<String, String, JSONObject>() {
+                    @Override
+                    protected JSONObject doInBackground(String... args) {
+                        return (new UserFunctions()).updateGroupChatStatusToDelivered(unique_id, temp_auth_token);
+                    }
+                    @Override
+                    protected void onPostExecute(JSONObject row) {
+                        if(row != null){
+                            // todo remove this developer message
+                            //sendNotification("Updated message status on server to seen", row.toString());
+                            DatabaseHandler db= new DatabaseHandler(MainActivity.mainActivity);
+                            db.updateGroupChatStatus(unique_id, "delivered");
+                        }
+                    }
+                }.execute();
             }
             loadSpecificGroupChat(unique_id, auth_token);
         } catch (JSONException e) {
-            if(MainActivity.isVisible){
-                MainActivity.mainActivity.updateGroupUIChat();
-            }
+
             e.printStackTrace();
         }
 
@@ -283,7 +338,7 @@ public class GroupUtility {
                     sendNotification("Message Sent To Server", "Your message was sync to server");
                     db.updateGroupChatStatus(msg_unique_id,"sent");
                     if(MainActivity.isVisible) {
-                        MainActivity.mainActivity.updateGroupUIChat();
+                        MainActivity.mainActivity.updateGroupUIChat(msg_unique_id);
                     }
                 }else if(row.optString("Error").equals("No Internet")){
                     sendNotification("No Internet Connection", "Message will be sent as soon as the device gets connected to internet");
@@ -311,7 +366,7 @@ public class GroupUtility {
             e.printStackTrace();
         }
         // todo remove later, good for development
-        Toast.makeText(ctx, "Local Database Updated Successfully", Toast.LENGTH_LONG).show();
+        //Toast.makeText(ctx, "Local Database Updated Successfully", Toast.LENGTH_LONG).show();
         new AsyncTask<String, String, JSONObject>() {
 
             @Override
@@ -439,9 +494,42 @@ public class GroupUtility {
         try {
             JSONObject body = new JSONObject(payload);
             String group_id = body.getString("groupId");
-            String phone = body.getString("personUpdated");
+            String admin_phone = body.getString("senderId");
+            String person_phone = body.getString("personUpdated");
             String isAdmin = body.getString("isAdmin").equals("Yes") ? "1" : "0";
-            db.updateAdminStatus(group_id,phone,isAdmin);
+            db.updateAdminStatus(group_id,person_phone,isAdmin);
+
+            String personWhoUpdates = "";
+            JSONArray specificContact = db.getSpecificContact(admin_phone);
+            if(specificContact.length() > 0) {
+                personWhoUpdates = specificContact.getJSONObject(0).getString("display_name");
+            } else {
+                personWhoUpdates = admin_phone;
+            }
+
+            String personBeingUpdated = "";
+            JSONArray specificAddedContact = db.getSpecificContact(person_phone);
+            if(specificAddedContact.length() > 0) {
+                personBeingUpdated = specificAddedContact.getJSONObject(0).getString("display_name");
+            } else {
+                personBeingUpdated = person_phone;
+            }
+            if(person_phone.equals(db.getUserDetails().get("phone"))) personBeingUpdated = "you";
+
+            String message = ""+ personWhoUpdates +" made "+ personBeingUpdated +" an admin of this group";
+            if(isAdmin.equals("0"))
+                message = ""+ personWhoUpdates +" removed "+ personBeingUpdated +" as admin of this group";
+
+            String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+            uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+            uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+
+            DatabaseHandler db = new DatabaseHandler(ctx.getApplicationContext());
+            db.addGroupChat(admin_phone, personWhoUpdates, message,
+                    Utility.getCurrentTimeInISO(), "log",
+                    uniqueid,
+                    group_id);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -525,6 +613,25 @@ public class GroupUtility {
                 MainActivity.mainActivity.updateGroupMembers();
             }
 
+            String personWhoLeft = "";
+            JSONArray specificContact = db.getSpecificContact(member_phone);
+            if(specificContact.length() > 0) {
+                personWhoLeft = specificContact.getJSONObject(0).getString("display_name");
+            } else {
+                personWhoLeft = member_phone;
+            }
+
+            String message = ""+ personWhoLeft +" left";
+            String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+            uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+            uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+
+            DatabaseHandler db = new DatabaseHandler(ctx.getApplicationContext());
+            db.addGroupChat(member_phone, personWhoLeft, message,
+                    Utility.getCurrentTimeInISO(), "log",
+                    uniqueid,
+                    group_id);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -551,7 +658,7 @@ public class GroupUtility {
                        db.updateGroupChatStatusReadTime(msg_unique_id, status, user_phone, read_time);
                    }
                    // todo remove this developer message
-                   Toast.makeText(ctx, "Updated Chat Status to: " + status, Toast.LENGTH_LONG).show();
+                  Toast.makeText(ctx, "Updated Chat Status to: " + status, Toast.LENGTH_LONG).show();
                }
                if(MainActivity.isVisible) {
                    MainActivity.mainActivity.updateGroupUIChat();

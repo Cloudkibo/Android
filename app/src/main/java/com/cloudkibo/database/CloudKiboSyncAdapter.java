@@ -83,7 +83,7 @@ public class CloudKiboSyncAdapter extends AbstractThreadedSyncAdapter {
 
 	        Log.d("SYNC_ADAPTER", remoteUser.toString());
 	        
-//	        provider.delete(User.CONTENT_URI, null, null); // TODO this is temporary commented
+//	        provider.delete(User.CONTENT_URI, null, null); // this is temporary commented
 	        
 	        ContentValues cvUser = new ContentValues();
 	        
@@ -94,7 +94,7 @@ public class CloudKiboSyncAdapter extends AbstractThreadedSyncAdapter {
 	        cvUser.put(User.KEY_UID, remoteUser.getString(User.KEY_UID));
 	        cvUser.put(User.KEY_CREATED_AT, remoteUser.getString(User.KEY_CREATED_AT));
 	        
-//	        provider.insert(User.CONTENT_URI, cvUser); // TODO this is temporary commented
+//	        provider.insert(User.CONTENT_URI, cvUser); // this is temporary commented
 	        
 	        /*
 			JSONArray localContacts = new JSONArray();
@@ -122,7 +122,7 @@ public class CloudKiboSyncAdapter extends AbstractThreadedSyncAdapter {
 	        */
 	        //Log.d("SYNC_ADAPTER", remoteContacts.toString());
 	        
-//	        provider.delete(Contacts.CONTENT_URI, null, null); // TODO this is temporary commented
+//	        provider.delete(Contacts.CONTENT_URI, null, null); //  this is temporary commented
 	        
 	        ContentValues cvContacts = new ContentValues();
 	        
@@ -152,7 +152,7 @@ public class CloudKiboSyncAdapter extends AbstractThreadedSyncAdapter {
 	        	cvContacts.put(Contacts.CONTACT_STATUS, 
 	        			row.getJSONObject("contactid").getString(Contacts.CONTACT_STATUS));
 	        	
-//	        	provider.insert(Contacts.CONTENT_URI, cvContacts); // TODO this is temporary commented
+//	        	provider.insert(Contacts.CONTENT_URI, cvContacts); // this is temporary commented
 	        	
 	        	cvContacts = new ContentValues();
 	        }
@@ -166,7 +166,7 @@ public class CloudKiboSyncAdapter extends AbstractThreadedSyncAdapter {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		//} catch (RemoteException e) { // TODO this is temporary commented
+		//} catch (RemoteException e) { // this is temporary commented
 		//	e.printStackTrace();
 		} catch (JSONException e) {
 			e.printStackTrace();

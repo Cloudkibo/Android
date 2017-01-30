@@ -179,7 +179,7 @@ public class SplashScreen extends Activity
 
 		} else if (currentVersionCode > savedVersionCode) {
 
-			// TODO This is an upgrade
+			// This is an upgrade
 			Toast.makeText(
 					this,
 					"This is an upgrade to next version : old version "+ savedVersionCode,
@@ -198,7 +198,7 @@ public class SplashScreen extends Activity
 	}
 
 	private void setupForNewInstall(){
-		// TODO This is a new install (or the user cleared the shared preferences)
+		// This is a new install (or the user cleared the shared preferences)
 		Toast.makeText(
 				this,
 				"This is a new install",

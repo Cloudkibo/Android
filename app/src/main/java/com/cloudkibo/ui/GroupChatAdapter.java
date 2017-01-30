@@ -34,7 +34,6 @@ public class GroupChatAdapter extends BaseAdapter{
     private ArrayList<Conversation> convList;
     private static LayoutInflater inflater=null;
     public GroupChatAdapter(LayoutInflater context, ArrayList<String> chatList, ArrayList<String> contactName, ArrayList<Conversation> convList) {
-        // TODO Auto-generated constructor stub
         result=chatList;
         this.contactName =contactName;
         inflater = ( LayoutInflater )context;
@@ -42,19 +41,16 @@ public class GroupChatAdapter extends BaseAdapter{
     }
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return convList.size();
     }
 
     @Override
     public Object getItem(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
 
@@ -67,7 +63,6 @@ public class GroupChatAdapter extends BaseAdapter{
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
         Holder holder=new Holder();
 
         View rowView;
@@ -145,7 +140,6 @@ public class GroupChatAdapter extends BaseAdapter{
         rowView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO Auto-generated method stub
                 //Toast.makeText(inflater.getContext(), "item clicked", Toast.LENGTH_SHORT).show();
             }
 

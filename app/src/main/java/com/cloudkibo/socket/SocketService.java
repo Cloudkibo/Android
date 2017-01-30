@@ -466,7 +466,6 @@ public class SocketService extends Service {
             socket.emit("message", message);//new JSONArray().put(message));
 
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }
@@ -604,7 +603,6 @@ public class SocketService extends Service {
 
 
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
     }

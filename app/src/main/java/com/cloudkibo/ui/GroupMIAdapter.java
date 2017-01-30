@@ -30,7 +30,6 @@ public class GroupMIAdapter extends BaseAdapter {
     String message;
     private static LayoutInflater inflater=null;
     public GroupMIAdapter(LayoutInflater inflater, JSONArray members, JSONArray status, Context context, String group_id, String message_id, String message) {
-        // TODO Auto-generated constructor stub
         this.members = members;
         this.status = status;
         this.inflater = inflater;
@@ -42,19 +41,16 @@ public class GroupMIAdapter extends BaseAdapter {
     }
     @Override
     public int getCount() {
-        // TODO Auto-generated method stub
         return members.length();
     }
 
     @Override
     public Object getItem(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
 
     @Override
     public long getItemId(int position) {
-        // TODO Auto-generated method stub
         return position;
     }
 
@@ -67,7 +63,6 @@ public class GroupMIAdapter extends BaseAdapter {
     }
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        // TODO Auto-generated method stub
         Holder holder=new Holder();
         View rowView;
         rowView = inflater.inflate(R.layout.group_message_status, null);

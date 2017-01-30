@@ -253,7 +253,6 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
 
 
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
 

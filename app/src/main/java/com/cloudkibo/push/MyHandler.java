@@ -4,14 +4,17 @@ package com.cloudkibo.push;
  * Created by sojharo on 20/08/2016.
  */
 
+import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -20,18 +23,31 @@ import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.SplashScreen;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
 import com.facebook.accountkit.AccessToken;
 import com.facebook.accountkit.AccountKit;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 import com.microsoft.windowsazure.notifications.NotificationsHandler;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
+
+import static com.cloudkibo.file.filechooser.utils.FileUtils.getExternalStoragePublicDirForDocuments;
+import static com.cloudkibo.file.filechooser.utils.FileUtils.getExternalStoragePublicDirForDownloads;
+import static com.cloudkibo.file.filechooser.utils.FileUtils.getExternalStoragePublicDirForImages;
+import static com.cloudkibo.file.filechooser.utils.FileUtils.getMimeType;
+import static com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData;
 
 public class MyHandler extends NotificationsHandler {
     public static final int NOTIFICATION_ID = 1;
@@ -47,7 +63,6 @@ public class MyHandler extends NotificationsHandler {
         AccountKit.initialize(ctx.getApplicationContext());
         String nhMessage = bundle.getString("message");
         userDetail = new DatabaseHandler(ctx.getApplicationContext()).getUserDetails();
-        //sendNotification("Test Push Notification", nhMessage); // todo remove this
         Utility.sendLogToServer(""+ userDetail.get("phone") +" gets push notification payload : "+ nhMessage);
         JSONObject payload;
         try {
@@ -126,8 +141,7 @@ public class MyHandler extends NotificationsHandler {
                     }
                     return ;
                 } else if(payload.getString("type").equals("chat") || payload.getString("type").equals("contact")
-                        || payload.getString("type").equals("location")) {
-                    // todo work on this for files: image, document, audio and video
+                        || payload.getString("type").equals("location") || payload.getString("type").equals("file")) {
 
                     loadSpecificChatFromServer(payload.getString("uniqueId"));
 
@@ -248,6 +262,76 @@ public class MyHandler extends NotificationsHandler {
                             sendNotification(displayName, row.getString("msg"));
                         }
 
+                        if (row.getString("type").equals("file")) {
+                            final JSONObject rowTemp = row;
+                            Ion.with(ctx.getApplicationContext())
+                                    .load("https://api.cloudkibo.com/api/filetransfers/download")
+                                    .setHeader("kibo-token", accessToken.getToken())
+                                    .setBodyParameter("uniqueid", row.getString("uniqueid"))
+                                    .write(new File(ctx.getApplicationContext().getFilesDir().getPath() + "" + row.getString("uniqueid")))
+                                    .setCallback(new FutureCallback<File>() {
+                                        @Override
+                                        public void onCompleted(Exception e, File file) {
+                                            // download done...
+                                            // do stuff with the File or error
+
+                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // todo check permissions
+                                                sendNotification("KiboChat", "File attachment was not downloaded in background due to permission");
+                                            } else {
+                                                try {
+                                                    File folder= getExternalStoragePublicDirForImages(ctx.getString(R.string.app_name));
+                                                    if (rowTemp.getString("file_type").equals("document")){
+                                                        folder= getExternalStoragePublicDirForDocuments(ctx.getString(R.string.app_name));
+                                                    }
+                                                    if (rowTemp.getString("file_type").equals("audio")){
+                                                        folder= getExternalStoragePublicDirForDownloads(ctx.getString(R.string.app_name));
+                                                    }
+                                                    FileOutputStream outputStream;
+                                                    outputStream = new FileOutputStream(folder.getPath() +"/"+ rowTemp.getString("msg"));
+                                                    outputStream.write(com.cloudkibo.webrtc.filesharing.Utility.convertFileToByteArray(file));
+                                                    outputStream.close();
+
+                                                    JSONObject fileMetaData = getFileMetaData(folder.getPath() +"/"+ rowTemp.getString("msg"));
+                                                    DatabaseHandler db = new DatabaseHandler(ctx.getApplicationContext());
+                                                    db.createFilesInfo(uniqueid,
+                                                            fileMetaData.getString("name"),
+                                                            fileMetaData.getString("size"),
+                                                            "image",
+                                                            fileMetaData.getString("filetype"), folder.getPath() +"/"+ rowTemp.getString("msg"));
+
+                                                    new AsyncTask<String, String, JSONObject>() {
+                                                        @Override
+                                                        protected JSONObject doInBackground(String... args) {
+                                                            try {
+                                                                return (new UserFunctions()).confirmFileDownload(rowTemp.getString("uniqueid"), accessToken.getToken());
+                                                            } catch (JSONException e5){
+                                                                e5.printStackTrace();
+                                                            }
+                                                            return null;
+                                                        }
+                                                        @Override
+                                                        protected void onPostExecute(JSONObject row) {
+                                                            if(row != null){
+                                                                // todo see if server couldn't get the confirmation
+                                                            }
+                                                        }
+                                                    }.execute();
+
+                                                }catch (IOException e2){
+                                                    e2.printStackTrace();
+                                                }catch (JSONException e3){
+                                                    e3.printStackTrace();
+                                                }
+
+                                                file.delete();
+
+                                                Log.d("chat attachment", "Downloaded file attachment");
+                                            }
+
+                                        }
+                                    });
+                        }
+
                     } else {
                         Utility.sendLogToServer(""+ userDetail.get("phone") +" did not get message from API. SERVER gave NULL");
                     }
@@ -300,7 +384,7 @@ public class MyHandler extends NotificationsHandler {
                         if (MainActivity.isVisible) {
                             // todo @dayem please update the UI for incoming group chat when UI logic is done
                             ///MainActivity.mainActivity.handleIncomingChatMessage("im", row);
-                            MainActivity.mainActivity.updateGroupUIChat();
+                           // MainActivity.mainActivity.updateGroupUIChat();
                         } else {
 
                         }

@@ -193,7 +193,7 @@ public class MainActivity extends CustomActivity
 
         //if(!ContentResolver.isSyncActive(account, CloudKiboDatabaseContract.AUTHORITY)) {
 
-        	/* todo this starts syncing on very short intervals */
+        	/* this starts syncing on very short intervals */
 
         //ContentResolver.setSyncAutomatically(account, CloudKiboDatabaseContract.AUTHORITY, true);
         //ContentResolver.requestSync(account, CloudKiboDatabaseContract.AUTHORITY, new Bundle());
@@ -816,37 +816,6 @@ public class MainActivity extends CustomActivity
                     } else {
                         Toast.makeText(getApplicationContext(), getString(R.string.error_selecting_file), Toast.LENGTH_LONG).show();
                     }
-                    /*Ion.with(getApplicationContext())
-                            .load("https://api.cloudkibo.com/api/groupmessaging/uploadIcon")
-                            //.uploadProgressBar(uploadProgressBar)
-                            .setHeader("kibo-token", authtoken)
-                            .setMultipartParameter("unique_id", icon_upload_group_id)
-                            .setMultipartFile("file", FileUtils.getExtension(selectedFilePath), new File(selectedFilePath))
-                            .asJsonObject()
-                            .setCallback(new FutureCallback<JsonObject>() {
-                                @Override
-                                public void onCompleted(Exception e, JsonObject result) {
-                                    // do stuff with the result or error
-                                    if(e == null) {
-                                        try {
-
-                                            String filename = icon_upload_group_id + FileUtils.getExtension(selectedFilePath);
-                                            FileOutputStream outputStream;
-                                            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-                                            outputStream.write(com.cloudkibo.webrtc.filesharing.Utility.convertFileToByteArray(new File(selectedFilePath)));
-                                            outputStream.close();
-                                        } catch (Exception e2) {
-                                            e2.printStackTrace();
-                                        }
-
-                                        Toast.makeText(getApplicationContext(), result.toString(), Toast.LENGTH_LONG).show();
-                                    }
-                                    else {
-                                        Toast.makeText(getApplicationContext(), "Some error has occurred or Internet not available. Please try later.", Toast.LENGTH_LONG).show();
-                                        e.printStackTrace();
-                                    }
-                                }
-                            });*/
                 }
                 break;
             case 5123:
@@ -1256,6 +1225,50 @@ public class MainActivity extends CustomActivity
                 }
             });
 
+        }
+    }
+
+    public void updateGroupUIChat(final String unique_id) {
+        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+        if(myFragment == null) return;
+        if(myFragment.getFragmentName().equals("GroupChatUI"))
+        {
+            final GroupChatUI groupChatUIFragment = (GroupChatUI) myFragment;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    groupChatUIFragment.populateMessages();
+                }
+            });
+
+            new AsyncTask<String, String, JSONObject>() {
+                @Override
+                protected JSONObject doInBackground(String... args) {
+                    return (new UserFunctions()).updateGroupChatStatusToSeen(unique_id, mainActivity.authtoken);
+                }
+                @Override
+                protected void onPostExecute(JSONObject row) {
+                    if(row != null){
+                        DatabaseHandler db= new DatabaseHandler(getApplicationContext());
+                        db.updateGroupChatStatus(unique_id, "seen");
+                    }
+                }
+            }.execute();
+        } else {
+            new AsyncTask<String, String, JSONObject>() {
+                @Override
+                protected JSONObject doInBackground(String... args) {
+                    return (new UserFunctions()).updateGroupChatStatusToDelivered(unique_id, mainActivity.authtoken);
+                }
+                @Override
+                protected void onPostExecute(JSONObject row) {
+                    if(row != null){
+                        DatabaseHandler db= new DatabaseHandler(getApplicationContext());
+                        db.updateGroupChatStatus(unique_id, "delivered");
+                    }
+                }
+            }.execute();
         }
     }
 

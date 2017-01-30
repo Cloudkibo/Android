@@ -120,27 +120,34 @@ public class CreateGroup extends CustomFragment implements IFragmentName
                 //String group_id = randomString(10);
                 //Toast.makeText(getContext(), "Group Name: " + group_name.getText().toString(), Toast.LENGTH_LONG).show();
                 //db.createGroup(group_id, group_name.getText().toString(), 0);
-                if(adapter.getPhones().isEmpty()){
-                    Toast.makeText(getContext(), "Please select members", Toast.LENGTH_SHORT).show();
+
+                if(adapter.getPhones().size() <= 0){
+                    Toast.makeText(getContext(), "Please select atleast one group member", Toast.LENGTH_LONG).show();
+                    return;
                 }
-                else {
-                    String member_name = db.getUserDetails().get("display_name");
-                    String member_phone = db.getUserDetails().get("phone");
-                    String message = "You created group " + group_name;
-                    db.createGroup(group_id, group_name, 0);
-                    db.addGroupMessage(group_id, message, member_phone, member_name, unique_id, "log");
-                    addMembers(adapter.getPhones());
-                    createGroupOnServer(group_name, group_id, adapter.getPhones(), authtoken);
-                    GroupChatUI nextFrag = new GroupChatUI();
-                    Bundle args = new Bundle();
-                    args.putString("group_id", group_id);
-                    args.putString("group_name", group_name);
-                    nextFrag.setArguments(args);
-                    temp.getFragmentManager().beginTransaction()
-                            .replace(R.id.content_frame, nextFrag, null)
-                            .addToBackStack(group_name)
-                            .commit();
-                }
+                group_id = randomString(10);
+                Toast.makeText(getContext(), "Group Name: " + group_name, Toast.LENGTH_LONG).show();
+                db.createGroup(group_id, group_name, 0);
+
+                String message = "You created group "+ group_name;
+                String member_name = db.getUserDetails().get("display_name");
+                String member_phone = db.getUserDetails().get("phone");
+                String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+                uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+                uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+                Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+                db.addGroupMessage(group_id,message,member_phone,member_name,uniqueid, "log");
+                addMembers(adapter.getPhones());
+                createGroupOnServer(group_name, group_id, adapter.getPhones(), authtoken);
+                GroupChatUI nextFrag= new GroupChatUI();
+                Bundle args = new Bundle();
+                args.putString("group_id", group_id);
+                args.putString("group_name", group_name);
+                nextFrag.setArguments(args);
+                temp.getFragmentManager().beginTransaction()
+                        .replace(R.id.content_frame, nextFrag,null)
+//                        .addToBackStack(group_name)
+                        .commit();
             }
         });
 

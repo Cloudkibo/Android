@@ -72,6 +72,7 @@ public class UserFunctions {
     public static String checkGroupChatStatus =          baseURL + "/api/groupchatstatus/checkStatus";
     public static String updateMemberRole =          baseURL + "/api/groupmessaginguser/updateRole";
     public static String lastSeenStatus =          baseURL + "/api/users/getUserInfo";
+    public static String confirmFileDownloadURL =          baseURL + "/api/filetransfers/confirmdownload";
     
     
     
@@ -295,15 +296,32 @@ public class UserFunctions {
         return response;
     }
 
+    public JSONObject confirmFileDownload(String chat_unique_id,  String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
 
-    public JSONObject updateGroupChatStatus(String chat_unique_id,  String authtoken) {
-                List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("uniqueid", chat_unique_id));
+        JSONObject response = connection.sendObjectToServer(confirmFileDownloadURL, authtoken, params);
+        return response;
+    }
 
-                params.add(new BasicNameValuePair("chat_unique_id", chat_unique_id));
-                params.add(new BasicNameValuePair("status", "seen"));
-                JSONObject response = connection.sendObjectToServer(updateGroupChatStatus, authtoken, params);
-                return response;
-            }
+
+    public JSONObject updateGroupChatStatusToDelivered(String chat_unique_id,  String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("chat_unique_id", chat_unique_id));
+        params.add(new BasicNameValuePair("status", "delivered"));
+        JSONObject response = connection.sendObjectToServer(updateGroupChatStatus, authtoken, params);
+        return response;
+    }
+
+    public JSONObject updateGroupChatStatusToSeen(String chat_unique_id,  String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("chat_unique_id", chat_unique_id));
+        params.add(new BasicNameValuePair("status", "seen"));
+        JSONObject response = connection.sendObjectToServer(updateGroupChatStatus, authtoken, params);
+        return response;
+    }
     public JSONObject getAllChatList(String user1, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("user1", user1));
