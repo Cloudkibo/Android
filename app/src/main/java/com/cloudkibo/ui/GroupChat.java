@@ -48,6 +48,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.cloudkibo.MainActivity;
@@ -149,14 +150,6 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		list.setAdapter(adp);
 		list.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
 		list.setStackFromBottom(true);
-
-
-		list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-			@Override
-			public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-				return false;
-			}
-		});
 		registerForContextMenu(list);
 
 
@@ -349,6 +342,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		if (v.getId() == R.id.btnSend)
 		{
 			sendMessage();
+			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			db.unArchive(contactPhone);
 
 		}
 
@@ -357,8 +352,17 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
 		super.onCreateContextMenu(menu, v, menuinfo);
 
-		menu.setHeaderTitle(getString(R.string.common_select_action));
-		menu.add(0, v.getId(), 0, getString(R.string.common_message_info));
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuinfo;
+		Conversation cItem = convList.get(info.position);
+
+		if(cItem.isSent()){
+			menu.setHeaderTitle(getString(R.string.common_select_action));
+			menu.add(0, v.getId(), 0, getString(R.string.common_message_info));
+			menu.add(0, v.getId(), 0, getString(R.string.common_remove_message));
+		} else {
+			menu.setHeaderTitle(getString(R.string.common_select_action));
+			menu.add(0, v.getId(), 0, getString(R.string.common_remove_message));
+		}
 	}
 
 	public boolean onContextItemSelected(MenuItem item){
@@ -380,6 +384,11 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					.replace(R.id.content_frame, mInfoFrag, "messageInfoFragmentTag")
 					.addToBackStack("Message Info")
 					.commit();
+		}
+		if(item.getTitle() == getString(R.string.common_remove_message)){
+			DatabaseHandler db = new DatabaseHandler(getContext());
+			db.deleteNormalChatMessage(convList.get(info.position).getUniqueid());
+			loadConversationList();
 		}
 
 
