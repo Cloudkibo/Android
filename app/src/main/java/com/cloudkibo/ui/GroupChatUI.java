@@ -237,9 +237,17 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
         super.onCreateContextMenu(menu, v, menuinfo);
 
-        menu.setHeaderTitle(getString(R.string.common_select_action));
-        menu.add(0, v.getId(), 0, getString(R.string.common_message_info));
-        menu.add(0, v.getId(), 0, getString(R.string.common_remove_message));
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuinfo;
+        Conversation cItem = convList.get(info.position);
+
+        if(cItem.isSent()){
+            menu.setHeaderTitle(getString(R.string.common_select_action));
+            menu.add(0, v.getId(), 0, getString(R.string.common_message_info));
+            menu.add(0, v.getId(), 0, getString(R.string.common_remove_message));
+        } else {
+            menu.setHeaderTitle(getString(R.string.common_select_action));
+            menu.add(0, v.getId(), 0, getString(R.string.common_remove_message));
+        }
     }
 
 

@@ -678,6 +678,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void deleteNormalChatMessage(String message_unique_id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String deleteQuery = "DELETE FROM userchat WHERE uniqueid='"+ message_unique_id +"'";
+        db.execSQL(deleteQuery);
+        db.close();
+    }
+
     public void makeGroupAdmin(String group_unique_id, String member_phone) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues args = new ContentValues();
