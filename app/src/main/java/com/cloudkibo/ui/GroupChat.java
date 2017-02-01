@@ -342,6 +342,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		if (v.getId() == R.id.btnSend)
 		{
 			sendMessage();
+			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			db.unArchive(contactPhone);
 
 		}
 

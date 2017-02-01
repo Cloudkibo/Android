@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -116,6 +117,16 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             @Override
             public void onClick(View view) {
                 sendMessage(my_message);
+                DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+                try {
+                    JSONObject info = db.getGroupInfo(group_id);
+                    String isArchived = info.get("isArchived").toString();
+                    if(isArchived.equals("1")){
+                        db.unArchiveGroup(group_id);
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         });
 

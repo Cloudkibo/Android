@@ -1007,7 +1007,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     public JSONObject getGroupInfo(String group_id) throws JSONException {
-        String selectQuery = "SELECT unique_id, group_name, is_mute, date_creation FROM GROUPINFO WHERE unique_id ='"+ group_id +"'" ;
+        String selectQuery = "SELECT unique_id, group_name, is_mute, date_creation, isArchived FROM GROUPINFO WHERE unique_id ='"+ group_id +"'" ;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -1022,6 +1022,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 contact.put("group_name", cursor.getString(1));
                 contact.put("is_mute", cursor.getString(2));
                 contact.put("date_creation", cursor.getString(3));
+                contact.put("isArchived", cursor.getString(4));
 
 
 
@@ -1549,6 +1550,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         db.close();
     }
+
+
 
 
     public void updateContact(String status, String phone, String id) {

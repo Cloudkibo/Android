@@ -648,4 +648,10 @@ public class ChatList extends CustomFragment implements IFragmentName
 	{
 		return "About Chat";
 	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		adp.notifyDataSetChanged();
+	}
 }
