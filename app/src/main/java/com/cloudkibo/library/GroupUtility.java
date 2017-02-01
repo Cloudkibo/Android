@@ -37,7 +37,7 @@ import java.util.HashMap;
  */
 public class GroupUtility {
     UserFunctions user = new UserFunctions();
-    DatabaseHandler db;
+    public DatabaseHandler db;
     private NotificationManager mNotificationManager;
     public static final int NOTIFICATION_ID = 1;
     Context ctx;
@@ -214,6 +214,8 @@ public class GroupUtility {
     public void downloadGroupIcon(final String payload, final Context context, final String auth_token){
         try {
             final JSONObject data = new JSONObject(payload);
+            final String unique_id = randomString();
+            db.addGroupMessage(data.getString("groupId"), "Group Icon was updated by " + db.getContactName(data.getString("senderId")) , db.getUserDetails().get("phone"),"", unique_id, "log");
             Ion.with(context)
                     .load("https://api.cloudkibo.com/api/groupmessaging/downloadIcon")
                     .setHeader("kibo-token", auth_token)
@@ -239,6 +241,9 @@ public class GroupUtility {
                             file.delete();
 
                             Log.d("GROUPFILE", "Downloaded icon");
+                            if(MainActivity.isVisible){
+                                MainActivity.mainActivity.updateGroupUIChat(unique_id);
+                            }
                         }
                     });
         } catch (JSONException e) {
@@ -791,7 +796,7 @@ public class GroupUtility {
         mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
 
-    String randomString() {
+    public String randomString() {
         String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
         uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
         uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());

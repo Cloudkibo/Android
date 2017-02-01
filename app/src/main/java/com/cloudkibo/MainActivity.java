@@ -471,6 +471,8 @@ public class MainActivity extends CustomActivity
             public void onDrawerOpened(View drawerView)
             {
                 getActionBar().setTitle("KiboChat");
+                getActionBar().setSubtitle(null);
+                
             }
             @Override
             public boolean onOptionsItemSelected(MenuItem item) {
@@ -951,6 +953,7 @@ public class MainActivity extends CustomActivity
         if (drawerLayout.isDrawerOpen(drawerLeft))
         {
             getActionBar().setTitle(R.string.app_name);
+            getActionBar().setSubtitle(null);
             return;
         }
         if (getSupportFragmentManager().getBackStackEntryCount() == 0)

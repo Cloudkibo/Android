@@ -193,16 +193,28 @@ public class GroupSetting extends CustomFragment implements IFragmentName
             menu.findItem(R.id.archived).setVisible(false);
             menu.findItem(R.id.language).setVisible(false);
             menu.findItem(R.id.backup_setting).setVisible(false);
+            menu.findItem(R.id.search_chats).setVisible(false);
         }
         inflater.inflate(R.menu.groupsetting, menu);  // Use filter.xml from step 1
+        GroupUtility groupUtility = new GroupUtility(getContext());
+        if(!groupUtility.isMember(group_id)){
+            menu.findItem(R.id.settingMenu).setVisible(false);
+        }
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
+        GroupUtility groupUtility = new GroupUtility(getContext());
         if(id == R.id.settingMenu){
+            if(!groupUtility.isMember(group_id)){
+                return false;
+            }
             MainActivity act1 = (MainActivity)getActivity();
             act1.uploadIcon(group_id);
+
+            final String unique_id = groupUtility.randomString();
+            groupUtility.db.addGroupMessage(group_id, "Group Icon was updated by " + groupUtility.db.getUserDetails().get("display_name") , groupUtility.db.getUserDetails().get("phone"),"", unique_id, "log");
             return true;
         }
         return super.onOptionsItemSelected(item);
