@@ -5,8 +5,13 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,7 +34,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -60,6 +67,7 @@ import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.CircleTransform;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
+import com.cloudkibo.model.ContactItem;
 import com.cloudkibo.model.Conversation;
 import com.cloudkibo.utils.IFragmentName;
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
@@ -83,6 +91,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 	/** The Conversation list. */
 	private ArrayList<Conversation> convList;
+    public ArrayList<Conversation> backupList = new ArrayList<Conversation>();
 
 	/** The chat adapter. */
 	private ChatAdapter adp;
@@ -100,7 +109,9 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	private String tempCameraCaptureHolderString;
 
 	View view;
-
+    EditText editsearch;
+	LinearLayout search_view;
+    public static int totalCount = 0;
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
@@ -108,7 +119,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState)
 	{
-		View v = inflater.inflate(R.layout.group_chat, null);
+		final View v = inflater.inflate(R.layout.group_chat, null);
 		view = v;
 		setHasOptionsMenu(true);
 
@@ -161,8 +172,43 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 		setTouchNClick(v.findViewById(R.id.btnSend));
 
+        editsearch = (EditText) v.findViewById(R.id.contact_search);
 
-		return v;
+        editsearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                String text = editsearch.getText().toString().toLowerCase(Locale.getDefault());
+                adp.filter(text);
+
+            }
+        });
+
+        search_view = (LinearLayout) v.findViewById(R.id.search_view);
+        search_view.setVisibility(View.GONE);
+        ImageView close_search = (ImageView) v.findViewById(R.id.close_search);
+        close_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                search_view = (LinearLayout) v.findViewById(R.id.search_view);
+                search_view.setVisibility(View.GONE);
+                editsearch.setText("");
+                adp.filter("");
+            }
+        });
+
+
+        return v;
 	}
 
 	@Override
@@ -176,7 +222,18 @@ public class GroupChat extends CustomFragment implements IFragmentName
 //		getActivity().getActionBar().setSubtitle("Last seen on: ");
 		Utility.getLastSeenStatus(contactPhone, authtoken, getActivity().getActionBar());
 		ActionBar actionBar = getActivity().getActionBar();
-		actionBar.setDisplayShowCustomEnabled(false);
+		actionBar.setDisplayShowCustomEnabled(true);
+
+		LayoutInflater inflator = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		View v = inflator.inflate(R.layout.custom_imageview, null);
+		ImageView search_button = (ImageView) v.findViewById(R.id.imageView4);
+		search_button.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				search_view.setVisibility(View.VISIBLE);
+			}
+		});
+		actionBar.setCustomView(v);
 
 	}
 
@@ -419,6 +476,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			convList.add(new Conversation(messageString,
 					Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()),
 					true, true, "pending", uniqueid, "chat", ""));
+            totalCount = convList.size();
 			adp.notifyDataSetChanged();
 
 			sendMessageUsingAPI(messageString, uniqueid, "chat", "");
@@ -525,6 +583,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			convList.add(new Conversation(messageString,
 					Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()),
 					true, true, "pending", uniqueid, "location", ""));
+
 			adp.notifyDataSetChanged();
 
 			sendMessageUsingAPI(messageString, uniqueid, "location", "");
@@ -752,6 +811,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			convList.clear();
 
 			convList.addAll(chatList1);
+            totalCount = convList.size();
 
 			if(adp != null)
 				adp.notifyDataSetChanged();
@@ -810,9 +870,11 @@ public class GroupChat extends CustomFragment implements IFragmentName
 						R.layout.chat_item_contact, null);
 				if (c.isSent()) {
 					TextView contact_name = (TextView) v.findViewById(R.id.contact_name);
+                    TextView status = (TextView) v.findViewById(R.id.lblContactPhone);
 					contact_name.setText(c.getMsg().split(":")[0]);
 					ImageView contact_image = (ImageView) v.findViewById(R.id.contact_image);
 					DatabaseHandler db = new DatabaseHandler(MainActivity.mainActivity);
+                    status.setText(c.getStatus());
 					String image_uri = db.getContactImage(c.getMsg().split(":")[1]);
 					Glide
 							.with(MainActivity.mainActivity)
@@ -1003,6 +1065,33 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			return v;
 		}
+
+        // Filter Class
+        public void filter(String charText) {
+            charText = charText.toLowerCase(Locale.getDefault());
+//            if(backupList.size() < totalCount) {
+//                backupList.addAll(convList);
+//            }
+            backupList.clear();
+            loadChatFromDatabase();
+            backupList.addAll(convList);
+            convList.clear();
+            if (charText.length() == 0) {
+                convList.addAll(backupList);
+            } else {
+                for (Conversation conv : backupList) {
+                    if (conv.getMsg().toLowerCase(Locale.getDefault())
+                            .startsWith(charText)) {
+                        convList.add(conv);
+                    }
+                }
+            }
+//            Set<Conversation> duplicate = new HashSet<Conversation>(convList);
+//            convList.clear();
+//            convList.addAll(new ArrayList<Conversation>(duplicate));
+
+            notifyDataSetChanged();
+        }
 
 	}
 

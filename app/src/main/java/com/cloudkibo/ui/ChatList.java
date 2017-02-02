@@ -206,6 +206,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 			@Override
 			public void onClick(View view) {
 				search_view = (LinearLayout) v.findViewById(R.id.search_view);
+				adp.filter("");
 				search_view.setVisibility(View.GONE);
 			}
 		});

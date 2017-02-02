@@ -19,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -159,6 +160,22 @@ public class ContactListPending extends CustomFragment implements IFragmentName
             menu.findItem(R.id.search_chats).setVisible(false);
         }
         inflater.inflate(R.menu.contacts, menu);  // Use filter.xml from step 1
+
+        getActivity().getActionBar().setSubtitle(null);
+        ActionBar actionBar = getActivity().getActionBar();
+        actionBar.setDisplayShowCustomEnabled(true);
+
+        LayoutInflater inflator = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflator.inflate(R.layout.custom_imageview, null);
+        ImageView search_button = (ImageView) v.findViewById(R.id.imageView4);
+        search_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                search_view.setVisibility(View.VISIBLE);
+            }
+        });
+        actionBar.setCustomView(v);
+
     }
 
     @Override
