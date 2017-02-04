@@ -544,9 +544,9 @@ public class MainActivity extends CustomActivity
         ArrayList<Data> al = new ArrayList<Data>();
         al.add(new Data(getString(R.string.side_menu_chat), null, R.drawable.ic_chat));
         al.add(new Data(getString(R.string.side_menu_contacts), null, R.drawable.ic_notes));
-        al.add(new Data(getString(R.string.side_menu_calls_history), null, android.R.drawable.sym_action_call));
-        al.add(new Data("Invite", null, R.drawable.ic_notes));
         al.add(new Data(getString(R.string.side_menu_create_group), null, R.drawable.ic_about));
+        al.add(new Data("Invite", null, R.drawable.ic_notes));
+        al.add(new Data(getString(R.string.side_menu_calls_history), null, android.R.drawable.sym_action_call));
         //al.add(new Data("Add Requests", null, R.drawable.ic_projects));
         //al.add(new Data("Conference", null, R.drawable.group1));
         //al.add(new Data("Settings", null, R.drawable.ic_setting));
@@ -575,7 +575,7 @@ public class MainActivity extends CustomActivity
             title = getString(R.string.side_menu_contacts);
             f = new ContactList();
         }
-        else if(pos == 3){
+        else if(pos == 5){
             title = getString(R.string.side_menu_calls_history);
             f = new CallHistory();
         }
@@ -583,7 +583,7 @@ public class MainActivity extends CustomActivity
             title = getString(R.string.side_menu_contacts_invite);
             f = new ContactListPending();
         }
-        else if(pos == 5){
+        else if(pos == 3){
             title = getString(R.string.side_menu_create_group);
             f = new AddMembers();
         }
