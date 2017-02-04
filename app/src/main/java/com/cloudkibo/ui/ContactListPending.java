@@ -160,6 +160,7 @@ public class ContactListPending extends CustomFragment implements IFragmentName
             menu.findItem(R.id.search_chats).setVisible(false);
         }
         inflater.inflate(R.menu.contacts, menu);  // Use filter.xml from step 1
+
         getActivity().getActionBar().setSubtitle(null);
         ActionBar actionBar = getActivity().getActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
@@ -176,6 +177,7 @@ public class ContactListPending extends CustomFragment implements IFragmentName
             }
         });
         actionBar.setCustomView(v);
+
     }
 
     @Override
