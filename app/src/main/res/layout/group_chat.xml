@@ -44,6 +44,29 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:background="@color/main_color_gray_lt" />
+    <LinearLayout
+        android:id="@+id/search_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white_smoke"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/contact_search"
+            android:layout_width="0dp"
+            android:layout_height="70dp"
+            android:hint="Search Chats"
+            android:layout_weight="1"/>
+
+        <ImageView
+            android:id="@+id/close_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:layout_gravity="center_vertical"/>
+
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/list"
