@@ -139,6 +139,8 @@ public class CreateGroup extends CustomFragment implements IFragmentName
                 db.addGroupMessage(group_id,message,member_phone,member_name,uniqueid, "log");
                 addMembers(adapter.getPhones());
                 createGroupOnServer(group_name, group_id, adapter.getPhones(), authtoken);
+                MainActivity act1 = (MainActivity)getActivity();
+                act1.uploadIcon(group_id);
                 GroupChatUI nextFrag= new GroupChatUI();
                 Bundle args = new Bundle();
                 args.putString("group_id", group_id);
