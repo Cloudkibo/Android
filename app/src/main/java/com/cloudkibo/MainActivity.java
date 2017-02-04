@@ -471,6 +471,7 @@ public class MainActivity extends CustomActivity
             public void onDrawerOpened(View drawerView)
             {
                 getActionBar().setTitle("KiboChat");
+                getActionBar().setDisplayShowCustomEnabled(false);
                 getActionBar().setSubtitle(null);
                 
             }
@@ -941,7 +942,7 @@ public class MainActivity extends CustomActivity
                         setActionBarTitle();
                     }
                 });
-        launchFragment(1);
+        launchFragment(6);
     }
 
     /**
@@ -953,6 +954,7 @@ public class MainActivity extends CustomActivity
         if (drawerLayout.isDrawerOpen(drawerLeft))
         {
             getActionBar().setTitle(R.string.app_name);
+            getActionBar().setDisplayShowCustomEnabled(false);
             getActionBar().setSubtitle(null);
             return;
         }

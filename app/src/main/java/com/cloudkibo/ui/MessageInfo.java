@@ -1,5 +1,6 @@
 package com.cloudkibo.ui;
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -55,6 +56,9 @@ public class MessageInfo extends CustomFragment implements IFragmentName {
             menu.findItem(R.id.backup_setting).setVisible(false);
         }
         inflater.inflate(R.menu.newchat, menu);  // Use filter.xml from step 1
+        getActivity().getActionBar().setSubtitle(null);
+        ActionBar actionBar = getActivity().getActionBar();
+        actionBar.setDisplayShowCustomEnabled(false);
     }
 
     @Override
