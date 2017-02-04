@@ -168,6 +168,8 @@ public class ContactListPending extends CustomFragment implements IFragmentName
         LayoutInflater inflator = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflator.inflate(R.layout.custom_imageview, null);
         ImageView search_button = (ImageView) v.findViewById(R.id.imageView4);
+        TextView title_text = (TextView) v.findViewById(R.id.title);
+        title_text.setText("Invite List");
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

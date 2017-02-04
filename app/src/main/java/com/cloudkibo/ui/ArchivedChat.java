@@ -1,6 +1,7 @@
 package com.cloudkibo.ui;
 
 
+import android.app.ActionBar;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -120,6 +121,9 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
             menu.findItem(R.id.backup_setting).setVisible(false);
         }
         inflater.inflate(R.menu.newchat, menu);  // Use filter.xml from step 1
+        getActivity().getActionBar().setSubtitle(null);
+        ActionBar actionBar = getActivity().getActionBar();
+        actionBar.setDisplayShowCustomEnabled(false);
     }
 
     @Override

@@ -61,7 +61,7 @@
     <string name="side_menu_calls_history">Calls History</string>
     <string name="side_menu_contacts_invite">Invite Contacts</string>
     <string name="side_menu_create_group">Create Group</string>
-    <string name="side_menu_about">About KiboChat</string>
+    <string name="side_menu_about">KiboChat</string>
     <string name="side_menu_edit_profile">Edit Profile</string>
 
     <string name="install_setting_name">Setting your name&#8230;</string>
