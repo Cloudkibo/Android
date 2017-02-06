@@ -1311,6 +1311,34 @@ public class MainActivity extends CustomActivity
         }
     }
 
+    public void handleDownloadedFile(final JSONObject body){
+        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+        if(myFragment == null) return;
+        if(myFragment.getFragmentName().equals("GroupChat")) {
+            try {
+                if (myFragment.getFragmentContactPhone().equals(body.getString("from"))) {
+                    final GroupChat myGroupChatFragment = (GroupChat) myFragment;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            try {
+                                myGroupChatFragment.updateFileDownloaded(body.getString("uniqueid"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
     public void handleIncomingChatMessage(String type, final JSONObject body){
         try{
             IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);

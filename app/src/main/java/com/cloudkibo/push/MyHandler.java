@@ -50,9 +50,7 @@ import static com.cloudkibo.file.filechooser.utils.FileUtils.getMimeType;
 import static com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData;
 
 public class MyHandler extends NotificationsHandler {
-    public static final int NOTIFICATION_ID = 1;
-    private NotificationManager mNotificationManager;
-    NotificationCompat.Builder builder;
+
     Context ctx;
 
     HashMap<String, String> userDetail;
@@ -80,7 +78,7 @@ public class MyHandler extends NotificationsHandler {
 
                     DatabaseHandler db = new DatabaseHandler(ctx);
                     if(!db.isMute(payload.getString("groupId")))
-                        sendNotification(payload.getString("group_name"), payload.getString("msg"));
+                        Utility.sendNotification(ctx, payload.getString("group_name"), payload.getString("msg"));
 
                 }
 
@@ -180,35 +178,6 @@ public class MyHandler extends NotificationsHandler {
         }
     }
 
-    private void sendNotification(String header, String msg) {
-
-        Utility.sendLogToServer(""+ userDetail.get("phone") +" is showing alert and chime now.");
-
-        Intent intent = new Intent(ctx, SplashScreen.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-
-        mNotificationManager = (NotificationManager)
-                ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-
-        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0,
-                intent, PendingIntent.FLAG_ONE_SHOT);
-
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-        NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(ctx)
-                        .setSmallIcon(R.drawable.icon)
-                        .setContentTitle(header)
-                        .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(msg))
-                        .setSound(defaultSoundUri)
-                        .setAutoCancel(true)
-                        .setPriority(Notification.PRIORITY_HIGH)
-                        .setContentText(msg);
-
-        mBuilder.setContentIntent(contentIntent);
-        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
-    }
-
     private void loadSpecificChatFromServer(final String uniqueid) {
 
         final AccessToken accessToken = AccountKit.getCurrentAccessToken();
@@ -259,26 +228,32 @@ public class MyHandler extends NotificationsHandler {
                             } else {
                                 displayName = row.getString("from");
                             }
-                            sendNotification(displayName, row.getString("msg"));
+                            Utility.sendNotification(ctx, displayName, row.getString("msg"));
                         }
 
                         if (row.getString("type").equals("file")) {
                             final JSONObject rowTemp = row;
-                            Ion.with(ctx.getApplicationContext())
-                                    .load("https://api.cloudkibo.com/api/filetransfers/download")
-                                    .setHeader("kibo-token", accessToken.getToken())
-                                    .setBodyParameter("uniqueid", row.getString("uniqueid"))
-                                    .write(new File(ctx.getApplicationContext().getFilesDir().getPath() + "" + row.getString("uniqueid")))
-                                    .setCallback(new FutureCallback<File>() {
-                                        @Override
-                                        public void onCompleted(Exception e, File file) {
-                                            // download done...
-                                            // do stuff with the File or error
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ctx.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                Utility.sendNotification(ctx, "KiboChat", "File attachment was not downloaded in background due to permission. Please go to settings to allow this app to store files on storage.");
+                                db.createFilesInfo(uniqueid,
+                                        "",
+                                        "notDownloaded",
+                                        rowTemp.getString("file_type"),
+                                        "", "");
+                            } else {
+                                Ion.with(ctx.getApplicationContext())
+                                        .load("https://api.cloudkibo.com/api/filetransfers/download")
+                                        .setHeader("kibo-token", accessToken.getToken())
+                                        .setBodyParameter("uniqueid", row.getString("uniqueid"))
+                                        .write(new File(ctx.getApplicationContext().getFilesDir().getPath() + "" + row.getString("uniqueid")))
+                                        .setCallback(new FutureCallback<File>() {
+                                            @Override
+                                            public void onCompleted(Exception e, File file) {
+                                                // download done...
+                                                // do stuff with the File or error
 
-                                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) { // todo check permissions
-                                                sendNotification("KiboChat", "File attachment was not downloaded in background due to permission");
-                                            } else {
                                                 try {
+                                                    DatabaseHandler db = new DatabaseHandler(ctx.getApplicationContext());
                                                     File folder= getExternalStoragePublicDirForImages(ctx.getString(R.string.app_name));
                                                     if (rowTemp.getString("file_type").equals("document")){
                                                         folder= getExternalStoragePublicDirForDocuments(ctx.getString(R.string.app_name));
@@ -292,12 +267,15 @@ public class MyHandler extends NotificationsHandler {
                                                     outputStream.close();
 
                                                     JSONObject fileMetaData = getFileMetaData(folder.getPath() +"/"+ rowTemp.getString("msg"));
-                                                    DatabaseHandler db = new DatabaseHandler(ctx.getApplicationContext());
                                                     db.createFilesInfo(uniqueid,
                                                             fileMetaData.getString("name"),
                                                             fileMetaData.getString("size"),
-                                                            "image",
+                                                            rowTemp.getString("file_type"),
                                                             fileMetaData.getString("filetype"), folder.getPath() +"/"+ rowTemp.getString("msg"));
+
+                                                    if (MainActivity.isVisible) {
+                                                        MainActivity.mainActivity.handleDownloadedFile(rowTemp);
+                                                    }
 
                                                     new AsyncTask<String, String, JSONObject>() {
                                                         @Override
@@ -317,19 +295,21 @@ public class MyHandler extends NotificationsHandler {
                                                         }
                                                     }.execute();
 
+                                                    file.delete();
+
+                                                    Log.d("chat attachment", "Downloaded file attachment");
+
                                                 }catch (IOException e2){
                                                     e2.printStackTrace();
                                                 }catch (JSONException e3){
                                                     e3.printStackTrace();
                                                 }
 
-                                                file.delete();
 
-                                                Log.d("chat attachment", "Downloaded file attachment");
                                             }
+                                        });
+                            }
 
-                                        }
-                                    });
                         }
 
                     } else {

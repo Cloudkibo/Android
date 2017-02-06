@@ -102,4 +102,6 @@
     <string name="backup_to_google_drive">Google Drive میں بیک اپ</string>
     <string name="backup_settings">بیک اپ کی ترتیبات</string>
     <string name="backup_description">Backup your messages and media to Google Drive. You can restore them when you reinstall KiboChat. Your messages and media will also back up to your phone\'s internal storage. Media and messages you back up are not protected by KiboChat end-to-end encryption while in Google Drive.</string>
+    <string name="menu_send_audio">آڈیو بھیجیں</string>
+    <string name="side_menu_contacts_invite">رابطوں کو مدعو کریں</string>
 </resources>

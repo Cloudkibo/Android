@@ -286,15 +286,59 @@ public class KiboSyncService extends Service {
 
     public void sendMessageUsingAPI(final String contactPhone, final String msg, final String uniqueid,
                                     final String type, final String file_type){
+
+        try {
+            if (type.equals("file")) {
+                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                JSONObject fileInfo = db.getFilesInfo(uniqueid);
+                HashMap<String, String> user;
+                user = db.getUserDetails();
+                Ion.with(getApplicationContext())
+                        .load("https://api.cloudkibo.com/api/filetransfers/upload")
+                        //.uploadProgressBar(uploadProgressBar)
+                        .setHeader("kibo-token", authtoken)
+                        .setMultipartParameter("filetype", file_type)
+                        .setMultipartParameter("from", user.get("phone"))
+                        .setMultipartParameter("to", contactPhone)
+                        .setMultipartParameter("uniqueid", uniqueid)
+                        .setMultipartParameter("filename", fileInfo.getString("file_name"))
+                        .setMultipartParameter("filesize", fileInfo.getString("file_size"))
+                        .setMultipartFile("file", FileUtils.getExtension(fileInfo.getString("path")), new File(fileInfo.getString("path")))
+                        .asJsonObject()
+                        .setCallback(new FutureCallback<JsonObject>() {
+                            @Override
+                            public void onCompleted(Exception e, JsonObject result) {
+                                // do stuff with the result or error
+                                if (e == null) {
+                                    if (MainActivity.isVisible)
+                                        MainActivity.mainActivity.ToastNotify2("Uploaded the file to server.");
+                                    sendMessageUsingAPIforChatOnly(contactPhone, msg, uniqueid, type, file_type);
+                                } else {
+                                    if (MainActivity.isVisible)
+                                        MainActivity.mainActivity.ToastNotify2("Some error has occurred or Internet not available. Please try later.");
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+            } else {
+                sendMessageUsingAPIforChatOnly(contactPhone, msg, uniqueid, type, file_type);
+            }
+        } catch ( JSONException e ) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void sendMessageUsingAPIforChatOnly(final String contactPhone, final String msg, final String uniqueid,
+                                    final String type, final String file_type) {
         new AsyncTask<String, String, JSONObject>() {
 
             @Override
             protected JSONObject doInBackground(String... args) {
                 UserFunctions userFunction = new UserFunctions();
                 JSONObject message = new JSONObject();
-                HashMap<String, String> user;
                 DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-
+                HashMap<String, String> user;
                 user = db.getUserDetails();
 
                 try {
@@ -324,36 +368,7 @@ public class KiboSyncService extends Service {
                             HashMap<String, String> user;
                             user = db.getUserDetails();
                             mListener.chatLoaded();
-                            if (type.equals("file")) {
-                                JSONObject fileInfo = db.getFilesInfo(uniqueid);
-                                Ion.with(getApplicationContext())
-                                        .load("https://api.cloudkibo.com/api/filetransfers/upload")
-                                        //.uploadProgressBar(uploadProgressBar)
-                                        .setHeader("kibo-token", authtoken)
-                                        .setMultipartParameter("filetype", file_type)
-                                        .setMultipartParameter("from", user.get("phone"))
-                                        .setMultipartParameter("to", contactPhone)
-                                        .setMultipartParameter("uniqueid", uniqueid)
-                                        .setMultipartParameter("filename", fileInfo.getString("file_name"))
-                                        .setMultipartParameter("filesize", fileInfo.getString("file_size"))
-                                        .setMultipartFile("file", FileUtils.getExtension(fileInfo.getString("path")), new File(fileInfo.getString("path")))
-                                        .asJsonObject()
-                                        .setCallback(new FutureCallback<JsonObject>() {
-                                            @Override
-                                            public void onCompleted(Exception e, JsonObject result) {
-                                                // do stuff with the result or error
-                                                if(e == null) {
-                                                    if(MainActivity.isVisible)
-                                                        MainActivity.mainActivity.ToastNotify2("Uploaded the file to server.");
-                                                }
-                                                else {
-                                                    if(MainActivity.isVisible)
-                                                        MainActivity.mainActivity.ToastNotify2("Some error has occurred or Internet not available. Please try later.");
-                                                    e.printStackTrace();
-                                                }
-                                            }
-                                        });
-                            }
+
                         }
                     }
 

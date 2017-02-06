@@ -102,4 +102,6 @@
     <string name="google_drive">في Google Drive:</string>
     <string name="menu_send_contact">إرسال الاتصال</string>
     <string name="menu_send_location">إرسال الموقع</string>
+    <string name="menu_send_audio">إرسال الصوت</string>
+    <string name="side_menu_contacts_invite">دعوة اتصالات</string>
 </resources>

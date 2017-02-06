@@ -102,4 +102,6 @@
     <string name="backup_to_google_drive">Sicherung auf Google Drive</string>
     <string name="backup_settings">Sicherungseinstellungen</string>
     <string name="backup_description">Sichern Sie Ihre Nachrichten und Medien nach Google Drive. Sie können sie wiederherstellen, wenn Sie KiboChat neu installieren. Ihre Nachrichten und Medien werden auch auf den internen Speicher Ihres Telefons gesichert. Medien und Nachrichten, die Sie sichern, sind nicht durch KiboChat-End-to-End-Verschlüsselung geschützt, während in Google Drive.</string>
+    <string name="menu_send_audio">Audio senden</string>
+    <string name="side_menu_contacts_invite">Kontakte einladen</string>
 </resources>

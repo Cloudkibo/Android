@@ -1,19 +1,25 @@
 package com.cloudkibo.library;
 
 import android.app.ActionBar;
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
+import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
+import com.cloudkibo.SplashScreen;
 import com.cloudkibo.database.DatabaseHandler;
 
 import org.json.JSONException;
@@ -33,6 +39,10 @@ import java.util.TimeZone;
  */
 
 public class Utility {
+
+    public static final int NOTIFICATION_ID = 1;
+    private static NotificationManager mNotificationManager;
+    NotificationCompat.Builder builder;
 
     public static String convertDateToLocalTimeZoneAndReadable(String dStr) throws ParseException {
 
@@ -223,6 +233,35 @@ public class Utility {
             }
 
         }.execute();
+    }
+
+    public static void sendNotification(Context ctx, String header, String msg) {
+
+        //Utility.sendLogToServer(""+ userDetail.get("phone") +" is showing alert and chime now.");
+
+        Intent intent = new Intent(ctx, SplashScreen.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        mNotificationManager = (NotificationManager)
+                ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(ctx, 0,
+                intent, PendingIntent.FLAG_ONE_SHOT);
+
+        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(ctx)
+                        .setSmallIcon(R.drawable.icon)
+                        .setContentTitle(header)
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText(msg))
+                        .setSound(defaultSoundUri)
+                        .setAutoCancel(true)
+                        .setPriority(Notification.PRIORITY_HIGH)
+                        .setContentText(msg);
+
+        mBuilder.setContentIntent(contentIntent);
+        mNotificationManager.notify(NOTIFICATION_ID, mBuilder.build());
     }
 
 }

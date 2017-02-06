@@ -102,4 +102,6 @@
     <string name="google_drive">Google Drive:</string>
     <string name="menu_send_contact">Envoyer un message</string>
     <string name="menu_send_location">Envoyer l\'emplacement</string>
+    <string name="menu_send_audio">Envoyer audio</string>
+    <string name="side_menu_contacts_invite">Inviter des contacts</string>
 </resources>

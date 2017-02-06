@@ -251,6 +251,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     }
 
+    public void updateFileInfo(String unique_id, String file_name, String file_size, String file_type, String file_ext, String path){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("file_name", file_name);
+        values.put("file_size", file_size);
+        values.put("file_type", file_type);
+        values.put("file_ext", file_ext);
+        values.put("path", path);
+        db.update("FILESINFO",values,"uniqueid='"+unique_id+"'",null);
+        db.close(); // Closing database connection
+    }
+
     public JSONObject getFilesInfo(String unique_id) {
         JSONObject filesInfo = new JSONObject();
         String selectQuery = "SELECT uniqueid, file_name, file_size, file_type, file_ext, path FROM FILESINFO WHERE uniqueid='"+ unique_id +"'";
@@ -276,10 +288,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return filesInfo;
     }
 
-    public JSONArray getAllFiles() throws JSONException {
+    public JSONArray getAllFiles(String type) throws JSONException {
         JSONArray groups = new JSONArray();
 
-        String selectQuery = "SELECT uniqueid, file_name, file_size, file_type, file_ext, path FROM FILESINFO";
+        String selectQuery = "SELECT uniqueid, file_name, file_size, file_type, file_ext, path FROM FILESINFO " +
+                "WHERE file_type='"+ type+"'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

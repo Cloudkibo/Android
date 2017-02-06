@@ -1,6 +1,8 @@
 package com.cloudkibo.ui;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -78,7 +80,10 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
+import static com.cloudkibo.file.filechooser.utils.FileUtils.getExternalStoragePublicDirForDocuments;
+import static com.cloudkibo.file.filechooser.utils.FileUtils.getExternalStoragePublicDirForDownloads;
 import static com.cloudkibo.file.filechooser.utils.FileUtils.getExternalStoragePublicDirForImages;
+import static com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData;
 
 /**
  * The Class GroupChat is the Fragment class that is launched when the user
@@ -487,12 +492,12 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		}
 	}
 
-	public void sendFileAttachment(String uniqueid, String fileType)
+	public void sendFileAttachment(final String uniqueid, final String fileType)
 	{
 		try {
 
 			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-			JSONObject fileInfo = db.getFilesInfo(uniqueid);
+			final JSONObject fileInfo = db.getFilesInfo(uniqueid);
 
 			db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
 					fileInfo.getString("file_name"), Utility.getCurrentTimeInISO(), "pending", uniqueid, "file",
@@ -502,8 +507,6 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()),
 					true, true, "pending", uniqueid, "file", fileType).setFile_uri(fileInfo.getString("path")));
 			adp.notifyDataSetChanged();
-
-			sendMessageUsingAPI(fileInfo.getString("file_name"), uniqueid, "file", fileType);
 
 			Ion.with(getActivity().getApplicationContext())
 					.load("https://api.cloudkibo.com/api/filetransfers/upload")
@@ -522,8 +525,11 @@ public class GroupChat extends CustomFragment implements IFragmentName
 						public void onCompleted(Exception e, JsonObject result) {
 							// do stuff with the result or error
 							if(e == null) {
-								if(MainActivity.isVisible)
-									MainActivity.mainActivity.ToastNotify2("Uploaded the file to server.");
+								try {
+									if (MainActivity.isVisible)
+										MainActivity.mainActivity.ToastNotify2("Uploaded the file to server.");
+									sendMessageUsingAPI(fileInfo.getString("file_name"), uniqueid, "file", fileType);
+								}catch (JSONException ee){ ee.printStackTrace(); }
 							}
 							else {
 								if(MainActivity.isVisible)
@@ -611,6 +617,24 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			e.printStackTrace();
 		}
 
+	}
+
+	public void updateFileDownloaded(String uniqueid){
+		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+		JSONObject fileInfo = db.getFilesInfo(uniqueid);
+		String path = "";
+		try {
+			if (fileInfo.has("path")) path = fileInfo.getString("path");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		for(int i=convList.size()-1; i>-1; i--){
+			if(convList.get(i).getUniqueid().equals(uniqueid)){
+				convList.get(i).setFile_uri(path);
+				break;
+			}
+		}
+		adp.notifyDataSetChanged();
 	}
 
 	public void sendMessageUsingAPI(final String msg, final String uniqueid, final String type, final String file_type){
@@ -776,7 +800,14 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							row.has("file_type") ? row.getString("file_type") : "");
 					if(row.has("type")){
 						if(row.getString("type").equals("file")){
-							conversation.setFile_uri(db.getFilesInfo(row.getString("uniqueid")).getString("path"));
+							JSONObject fileInfo = db.getFilesInfo(row.getString("uniqueid"));
+							String path = "";
+							try {
+								if (fileInfo.has("path")) path = fileInfo.getString("path");
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+							conversation.setFile_uri(path);
 						}
 					}
 				} else {
@@ -788,7 +819,22 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							row.has("file_type") ? row.getString("file_type") : "");
 					if(row.has("type")){
 						if(row.getString("type").equals("file")){
-							conversation.setFile_uri(db.getFilesInfo(row.getString("uniqueid")).getString("path"));
+							JSONObject fileInfo = db.getFilesInfo(row.getString("uniqueid"));
+							String path = "";
+							try {
+								if (fileInfo.has("path")) path = fileInfo.getString("path");
+								if (fileInfo.getString("file_size").equals("notDownloaded")) {
+									if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+										// todo check if we need this really or not. This might be irritating to user
+										Utility.sendNotification(getActivity().getApplicationContext(), "Storage Permissions", "This conversation contains file attachments to be downloaded. Please give storage permission from settings and come back.");
+									} else {
+										downloadPendingFile(row);
+									}
+								}
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+							conversation.setFile_uri(path);
 						}
 					}
 				}
@@ -819,6 +865,81 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		} catch (JSONException e) {
 			e.printStackTrace();
 		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void downloadPendingFile(final JSONObject row) {
+		try {
+			Ion.with(getActivity().getApplicationContext())
+					.load("https://api.cloudkibo.com/api/filetransfers/download")
+					.setHeader("kibo-token", authtoken)
+					.setBodyParameter("uniqueid", row.getString("uniqueid"))
+					.write(new File(getActivity().getApplicationContext().getFilesDir().getPath() + "" + row.getString("uniqueid")))
+					.setCallback(new FutureCallback<File>() {
+						@Override
+						public void onCompleted(Exception e, File file) {
+							// download done...
+							// do stuff with the File or error
+
+							try {
+								DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+								File folder = getExternalStoragePublicDirForImages(getActivity().getString(R.string.app_name));
+								if (row.getString("file_type").equals("document")) {
+									folder = getExternalStoragePublicDirForDocuments(getActivity().getString(R.string.app_name));
+								}
+								if (row.getString("file_type").equals("audio")) {
+									folder = getExternalStoragePublicDirForDownloads(getActivity().getString(R.string.app_name));
+								}
+								// todo for video also -- in above conditions
+
+								FileOutputStream outputStream;
+								outputStream = new FileOutputStream(folder.getPath() + "/" + row.getString("msg"));
+								outputStream.write(com.cloudkibo.webrtc.filesharing.Utility.convertFileToByteArray(file));
+								outputStream.close();
+
+								JSONObject fileMetaData = getFileMetaData(folder.getPath() + "/" + row.getString("msg"));
+								db.updateFileInfo(row.getString("uniqueid"),
+										fileMetaData.getString("name"),
+										fileMetaData.getString("size"),
+										row.getString("file_type"),
+										fileMetaData.getString("filetype"), folder.getPath() + "/" + row.getString("msg"));
+
+								updateFileDownloaded(row.getString("uniqueid"));
+
+								new AsyncTask<String, String, JSONObject>() {
+									@Override
+									protected JSONObject doInBackground(String... args) {
+										try {
+											return (new UserFunctions()).confirmFileDownload(row.getString("uniqueid"), authtoken);
+										} catch (JSONException e5) {
+											e5.printStackTrace();
+										}
+										return null;
+									}
+
+									@Override
+									protected void onPostExecute(JSONObject row) {
+										if (row != null) {
+											// todo see if server couldn't get the confirmation
+										}
+									}
+								}.execute();
+
+								file.delete();
+
+								Log.d("chat attachment", "Downloaded file attachment");
+
+							} catch (IOException e2) {
+								e2.printStackTrace();
+							} catch (JSONException e3) {
+								e3.printStackTrace();
+							}
+
+
+						}
+					});
+		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 	}
@@ -1146,7 +1267,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
             } else {
                 for (Conversation conv : backupList) {
                     if (conv.getMsg().toLowerCase(Locale.getDefault())
-                            .startsWith(charText)) {
+                            .contains(charText)) {
                         convList.add(conv);
                     }
                 }
