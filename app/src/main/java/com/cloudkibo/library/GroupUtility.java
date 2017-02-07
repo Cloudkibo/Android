@@ -314,7 +314,7 @@ public class GroupUtility {
                         if(row != null){
                             // todo remove this developer message
                             //sendNotification("Updated message status on server to seen", row.toString());
-                            DatabaseHandler db= new DatabaseHandler(MainActivity.mainActivity);
+                            DatabaseHandler db= new DatabaseHandler(ctx);
                             db.updateGroupChatStatus(unique_id, "delivered");
                         }
                     }

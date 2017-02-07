@@ -84,8 +84,16 @@ public class MyHandler extends NotificationsHandler {
 
                 if(payload.getString("type").equals("group:chat_received")){
                     GroupUtility groupUtility = new GroupUtility(context);
-                    final AccessToken accessToken = AccountKit.getCurrentAccessToken();
-                    groupUtility.updateGroupChat(payload.toString(), accessToken.getToken());
+                    AccessToken accessToken = AccountKit.getCurrentAccessToken();
+                    try {
+                        groupUtility.updateGroupChat(payload.toString(), accessToken.getToken());
+                    }catch (NullPointerException e){
+                        e.printStackTrace();
+                        AccountKit.initialize(ctx.getApplicationContext());
+                        accessToken = AccountKit.getCurrentAccessToken();
+                        if(accessToken != null)
+                        groupUtility.updateGroupChat(payload.toString(), accessToken.getToken());
+                    }
                 }
                 if(payload.getString("type").equals("group:added_to_group")){
                     GroupUtility groupUtility = new GroupUtility(context);
@@ -210,7 +218,7 @@ public class MyHandler extends NotificationsHandler {
 
                         db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
                                 row.getString("msg"), row.getString("date_server_received"),
-                                row.has("status") ? row.getString("status") : "",
+                                "delivered",
                                 row.has("uniqueid") ? row.getString("uniqueid") : "",
                                 row.has("type") ? row.getString("type") : "",
                                 row.has("file_type") ? row.getString("file_type") : "");
