@@ -265,8 +265,9 @@ public class KiboSyncService extends Service {
     }
 
     private void updateServerAboutGroups(JsonObject body){
+        UserFunctions userFunctions = new UserFunctions(getApplicationContext());
         Ion.with(getApplicationContext())
-                .load("https://api.cloudkibo.com/api/groupmessaging/")
+                .load(userFunctions.getBaseURL() + "/api/groupmessaging/")
                 .setHeader("kibo-token", authtoken)
                 .setJsonObjectBody(body)
                 .asJsonObject()
@@ -293,8 +294,9 @@ public class KiboSyncService extends Service {
                 JSONObject fileInfo = db.getFilesInfo(uniqueid);
                 HashMap<String, String> user;
                 user = db.getUserDetails();
+                UserFunctions userFunctions = new UserFunctions(getApplicationContext());
                 Ion.with(getApplicationContext())
-                        .load("https://api.cloudkibo.com/api/filetransfers/upload")
+                        .load(userFunctions.getBaseURL() + "/api/filetransfers/upload")
                         //.uploadProgressBar(uploadProgressBar)
                         .setHeader("kibo-token", authtoken)
                         .setMultipartParameter("filetype", file_type)
@@ -335,7 +337,7 @@ public class KiboSyncService extends Service {
 
             @Override
             protected JSONObject doInBackground(String... args) {
-                UserFunctions userFunction = new UserFunctions();
+                UserFunctions userFunction = new UserFunctions(getApplicationContext());
                 JSONObject message = new JSONObject();
                 DatabaseHandler db = new DatabaseHandler(getApplicationContext());
                 HashMap<String, String> user;
@@ -385,7 +387,7 @@ public class KiboSyncService extends Service {
 
             @Override
             protected JSONArray doInBackground(String... args) {
-                return new UserFunctions().checkStatusOfGroupMessages(data, authtoken);
+                return new UserFunctions(getApplicationContext()).checkStatusOfGroupMessages(data, authtoken);
             }
 
             @Override
@@ -424,7 +426,7 @@ public class KiboSyncService extends Service {
 
             @Override
             protected JSONArray doInBackground(String... args) {
-                return new UserFunctions().checkStatusOfSentChatMessages(data, authtoken);
+                return new UserFunctions(getApplicationContext()).checkStatusOfSentChatMessages(data, authtoken);
             }
 
             @Override
@@ -454,7 +456,7 @@ public class KiboSyncService extends Service {
 
             @Override
             protected JSONObject doInBackground(String... args) {
-                UserFunctions userFunction = new UserFunctions();
+                UserFunctions userFunction = new UserFunctions(getApplicationContext());
                 JSONObject message = new JSONObject();
 
                 try {
@@ -537,13 +539,13 @@ public class KiboSyncService extends Service {
                                 String userPhone = db.getUserDetails().get("phone");
                                 if(userPhone.equals(phone)) continue;
                                 if(phone.equals("+923323800399") || phone.equals("+14255035617")) {
-                                    Utility.sendLogToServer("CONTACT LOADING.. GOT NUMBER "+ phone);
+                                    Utility.sendLogToServer(getApplicationContext(), "CONTACT LOADING.. GOT NUMBER "+ phone);
                                 }
                                 if(contactList1Phone.contains(phone)) continue;
                                 //if(Character.isLetter(name.charAt(0)))
                                 //    name = name.substring(0, 1).toUpperCase() + name.substring(1);
                                 if(phone.equals("+923323800399") || phone.equals("+14255035617")) {
-                                    Utility.sendLogToServer("CONTACT LOADING.. THIS NUMBER WENT INTO LIST "+ phone);
+                                    Utility.sendLogToServer(getApplicationContext(), "CONTACT LOADING.. THIS NUMBER WENT INTO LIST "+ phone);
                                 }
                                 phones.add(new BasicNameValuePair("phonenumbers", phone));
                                 Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
@@ -576,7 +578,7 @@ public class KiboSyncService extends Service {
                 }
                 cur.close();
 
-                UserFunctions userFunction = new UserFunctions();
+                UserFunctions userFunction = new UserFunctions(getApplicationContext());
                 JSONObject json = userFunction.sendAddressBookPhoneContactsToServer(phones, authtoken);
                 Log.w("SERVER SENT RESPONSE", json.toString());
                 return json;
@@ -679,7 +681,7 @@ public class KiboSyncService extends Service {
 
             @Override
             protected JSONArray doInBackground(String... args) {
-                UserFunctions userFunction = new UserFunctions();
+                UserFunctions userFunction = new UserFunctions(getApplicationContext());
                 JSONArray json = userFunction.getContactsList(authtoken);
                 return json;
             }
@@ -722,8 +724,9 @@ public class KiboSyncService extends Service {
     }
 
     private void loadMyGroupsFromServer() {
+        UserFunctions userFunctions = new UserFunctions(getApplicationContext());
         Ion.with(getApplicationContext())
-                .load("https://api.cloudkibo.com/api/groupmessaginguser/mygroups")
+                .load(userFunctions.getBaseURL() + "/api/groupmessaginguser/mygroups")
                 .setHeader("kibo-token", authtoken)
                 .asJsonArray()
                 .setCallback(new FutureCallback<JsonArray>() {
@@ -756,8 +759,9 @@ public class KiboSyncService extends Service {
     }
 
     private void loadMyGroupsMembersFromServer(){
+        UserFunctions userFunctions = new UserFunctions(getApplicationContext());
         Ion.with(getApplicationContext())
-                .load("https://api.cloudkibo.com/api/groupmessaginguser/mygroupsmembers")
+                .load(userFunctions.getBaseURL() + "/api/groupmessaginguser/mygroupsmembers")
                 .setHeader("kibo-token", authtoken)
                 .asJsonArray()
                 .setCallback(new FutureCallback<JsonArray>() {
@@ -830,7 +834,7 @@ public class KiboSyncService extends Service {
             protected JSONArray doInBackground(String... args) {
                 DatabaseHandler db = new DatabaseHandler(
                         getApplicationContext());
-                UserFunctions userFunction = new UserFunctions();
+                UserFunctions userFunction = new UserFunctions(getApplicationContext());
                 JSONArray json = new JSONArray();
                 try {
                     json = userFunction.getAllChatList(db.getUserDetails().get("phone"), authtoken).getJSONArray("msg");
@@ -964,7 +968,8 @@ public class KiboSyncService extends Service {
                 Log.e("Load", "Requesting Server for partial chatlist");
                 DatabaseHandler db = new DatabaseHandler(
                         getApplicationContext());
-                return (new UserFunctions()).getPartialChatList(db.getUserDetails().get("phone"), authtoken);
+                UserFunctions userFunctions = new UserFunctions(getApplicationContext());
+                return userFunctions.getPartialChatList(db.getUserDetails().get("phone"), authtoken);
             }
 
             @Override
@@ -1081,8 +1086,9 @@ public class KiboSyncService extends Service {
     }
 
     private void loadPartialGroupChatFromServer(){
+        UserFunctions userFunctions = new UserFunctions(getApplicationContext());
         Ion.with(getApplicationContext())
-                .load("https://api.cloudkibo.com/api/groupchatstatus/")
+                .load(userFunctions.getBaseURL() + "/api/groupchatstatus/")
                 .setHeader("kibo-token", authtoken)
                 .asJsonArray()
                 .setCallback(new FutureCallback<JsonArray>() {

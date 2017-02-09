@@ -15,6 +15,7 @@ import com.cloudkibo.database.DatabaseHandler;
 
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 
@@ -27,52 +28,52 @@ public class UserFunctions {
 
     private ConnectionManager connection;
 
-    private static String baseURL = "https://api.cloudkibo.com";
-    private static final String TAG = "UserFunctions";
+    private String baseURL = ""; //"https://api.cloudkibo.com";
+    private final String TAG = "UserFunctions";
 
     //URL of the NODEJS API
-    private static String loginURL =                baseURL + "/auth/local";
-    private static String registerURL =             baseURL + "/api/users/";
-    private static String userDataURL =             baseURL + "/api/users/me";
-    private static String saveChatURL =             baseURL + "/api/userchat/save";
-    private static String getChatURL =              baseURL + "/api/userchat";
-    private static String markChatReadURL =         baseURL + "/api/userchat/markasread";
-    private static String saveContactURL =          baseURL + "/api/contactslist/addbyusername";
-    private static String forpassURL =              baseURL + "/api/users/resetpasswordrequest";
-    private static String chgpassURL =              baseURL + "/learn2crack_login_api/";
-    private static String getContactsURL =          baseURL + "/api/contactslist/";
-    private static String getPendingContactsURL =   baseURL + "/api/contactslist/pendingcontacts/";
-    private static String approveContactURL =       baseURL + "/api/contactslist/approvefriendrequest/";
-    private static String rejectContactURL =        baseURL + "/api/contactslist/rejectfriendrequest/";
-    private static String removeChatURL =           baseURL + "/api/userchat/removechathistory/";
-    private static String removeContactURL =        baseURL + "/api/contactslist/removefriend/";
-    private static String phoneContactsURL =        baseURL + "/api/users/searchaccountsbyphone/";
-    private static String emailContactsURL =        baseURL + "/api/users/searchaccountsbyemail/";
-    private static String inviteContactsURL =       baseURL + "/api/users/invitebymultipleemail/";
-    private static String saveDisplayNameURL =      baseURL + "/api/users/newuser";
-    private static String getAllChatURL =           baseURL + "/api/userchat/alluserchat";
-    private static String sendChatURL =             baseURL + "/api/userchat/save2";
-    private static String sendChatStatusURL =       baseURL + "/api/userchat/updateStatus";
-    private static String getPartialChatURL =       baseURL + "/api/userchat/partialchatsync";
-    private static String getSingleChatURL =        baseURL + "/api/userchat/getsinglechat";
-    public static String checkSentChatStatus =          baseURL + "/api/userchat/checkStatus";
-    private static String getSingleGroupChatURL =   baseURL + "/api/groupchat/fetchSingleChat";
-    private static String sendLogURL =              baseURL + "/api/users/log";
-    private static String createGroupURL =          baseURL + "/api/groupmessaging/";
-    public static String getGroupInfo =          baseURL + "/api/groupmessaging/specificGroup";
-    public static String getMyGroups =          baseURL + "/api/groupmessaginguser/mygroups";
-    public static String sendGroupChat =          baseURL + "/api/groupchat/";
-    public static String addGroupMembers =          baseURL + "/api/groupmessaginguser/";
-    public static String leaveGroup =          baseURL + "/api/groupmessaginguser/leaveGroup";
-    public static String removeMember =          baseURL + "/api/groupmessaginguser/removeFromGroup";
-    public static String groupMembers =          baseURL + "/api/groupmessaginguser/myspecificgroupsmembers";
-    public static String updateGroupChatStatus =          baseURL + "/api/groupchatstatus/updateStatus";
-    public static String uploadIcon =          baseURL + "/api/groupmessaging/uploadIcon";
-    public static String downloadIcon =          baseURL + "/api/groupmessaging/downloadIcon";
-    public static String checkGroupChatStatus =          baseURL + "/api/groupchatstatus/checkStatus";
-    public static String updateMemberRole =          baseURL + "/api/groupmessaginguser/updateRole";
-    public static String lastSeenStatus =          baseURL + "/api/users/getUserInfo";
-    public static String confirmFileDownloadURL =          baseURL + "/api/filetransfers/confirmdownload";
+    private String loginURL;
+    private String registerURL;
+    private String userDataURL;
+    private String saveChatURL;
+    private String getChatURL;
+    private String markChatReadURL;
+    private String saveContactURL;
+    private String forpassURL;
+    private String chgpassURL;
+    private String getContactsURL;
+    private String getPendingContactsURL;
+    private String approveContactURL;
+    private String rejectContactURL;
+    private String removeChatURL;
+    private String removeContactURL;
+    private String phoneContactsURL;
+    private String emailContactsURL;
+    private String inviteContactsURL;
+    private String saveDisplayNameURL;
+    private String getAllChatURL;
+    private String sendChatURL;
+    private String sendChatStatusURL;
+    private String getPartialChatURL;
+    private String getSingleChatURL;
+    private String checkSentChatStatus;
+    private String getSingleGroupChatURL;
+    private String sendLogURL;
+    private String createGroupURL;
+    private String getGroupInfo;
+    private String getMyGroups;
+    private String sendGroupChat;
+    private String addGroupMembers;
+    private String leaveGroup;
+    private String removeMember;
+    private String groupMembers;
+    private String updateGroupChatStatus;
+    private String uploadIcon;
+    private String downloadIcon;
+    private String checkGroupChatStatus;
+    private String updateMemberRole;
+    private String lastSeenStatus;
+    private String confirmFileDownloadURL;
     
     
     
@@ -83,7 +84,56 @@ public class UserFunctions {
 	// Constructor                                                     //
 	/////////////////////////////////////////////////////////////////////
 
-    public UserFunctions(){
+    public UserFunctions(Context ctx){
+
+        final String PREFS_NAME = "MyPrefsFile";
+        final String PREF_SERVER_URL_KEY = "server_url";
+        final SharedPreferences prefs = ctx.getSharedPreferences(PREFS_NAME, 0);
+        baseURL = prefs.getString(PREF_SERVER_URL_KEY, "-1");
+
+        loginURL =                baseURL + "/auth/local";
+        registerURL =             baseURL + "/api/users/";
+        userDataURL =             baseURL + "/api/users/me";
+        saveChatURL =             baseURL + "/api/userchat/save";
+        getChatURL =              baseURL + "/api/userchat";
+        markChatReadURL =         baseURL + "/api/userchat/markasread";
+        saveContactURL =          baseURL + "/api/contactslist/addbyusername";
+        forpassURL =              baseURL + "/api/users/resetpasswordrequest";
+        chgpassURL =              baseURL + "/learn2crack_login_api/";
+        getContactsURL =          baseURL + "/api/contactslist/";
+        getPendingContactsURL =   baseURL + "/api/contactslist/pendingcontacts/";
+        approveContactURL =       baseURL + "/api/contactslist/approvefriendrequest/";
+        rejectContactURL =        baseURL + "/api/contactslist/rejectfriendrequest/";
+        removeChatURL =           baseURL + "/api/userchat/removechathistory/";
+        removeContactURL =        baseURL + "/api/contactslist/removefriend/";
+        phoneContactsURL =        baseURL + "/api/users/searchaccountsbyphone/";
+        emailContactsURL =        baseURL + "/api/users/searchaccountsbyemail/";
+        inviteContactsURL =       baseURL + "/api/users/invitebymultipleemail/";
+        saveDisplayNameURL =      baseURL + "/api/users/newuser";
+        getAllChatURL =           baseURL + "/api/userchat/alluserchat";
+        sendChatURL =             baseURL + "/api/userchat/save2";
+        sendChatStatusURL =       baseURL + "/api/userchat/updateStatus";
+        getPartialChatURL =       baseURL + "/api/userchat/partialchatsync";
+        getSingleChatURL =        baseURL + "/api/userchat/getsinglechat";
+        checkSentChatStatus =     baseURL + "/api/userchat/checkStatus";
+        getSingleGroupChatURL =   baseURL + "/api/groupchat/fetchSingleChat";
+        sendLogURL =              baseURL + "/api/users/log";
+        createGroupURL =          baseURL + "/api/groupmessaging/";
+        getGroupInfo =            baseURL + "/api/groupmessaging/specificGroup";
+        getMyGroups =             baseURL + "/api/groupmessaginguser/mygroups";
+        sendGroupChat =           baseURL + "/api/groupchat/";
+        addGroupMembers =         baseURL + "/api/groupmessaginguser/";
+        leaveGroup =              baseURL + "/api/groupmessaginguser/leaveGroup";
+        removeMember =            baseURL + "/api/groupmessaginguser/removeFromGroup";
+        groupMembers =            baseURL + "/api/groupmessaginguser/myspecificgroupsmembers";
+        updateGroupChatStatus =   baseURL + "/api/groupchatstatus/updateStatus";
+        uploadIcon =              baseURL + "/api/groupmessaging/uploadIcon";
+        downloadIcon =            baseURL + "/api/groupmessaging/downloadIcon";
+        checkGroupChatStatus =    baseURL + "/api/groupchatstatus/checkStatus";
+        updateMemberRole =        baseURL + "/api/groupmessaginguser/updateRole";
+        lastSeenStatus =          baseURL + "/api/users/getUserInfo";
+        confirmFileDownloadURL =  baseURL + "/api/filetransfers/confirmdownload";
+
         connection = new ConnectionManager();
     }
     
@@ -562,6 +612,10 @@ public class UserFunctions {
         }
 
         return sortedJsonArray;
+    }
+
+    public String getBaseURL () {
+        return baseURL;
     }
 
 }

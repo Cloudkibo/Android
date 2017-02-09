@@ -388,7 +388,7 @@ public class CreateGroup extends CustomFragment implements IFragmentName
 
             @Override
             protected JSONObject doInBackground(String... args) {
-                UserFunctions userFunctions = new UserFunctions();
+                UserFunctions userFunctions = new UserFunctions(getActivity().getApplicationContext());
                 try {
                     db.createGroupServerPending(group_id, group_name, getGroupCreationData(group_name, group_id, selected_contacts).getJSONArray("members").toString());
                 } catch (JSONException e) {

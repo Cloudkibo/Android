@@ -102,7 +102,7 @@ public class RegistrationIntentService extends IntentService {
         // Notify UI that registration has completed.
         if (MainActivity.isVisible) {
             //MainActivity.mainActivity.ToastNotify2(resultString);
-            Utility.sendLogToServer(resultString+ " FOR NUMBER: "+ user.get("phone").substring(1));
+            Utility.sendLogToServer(getApplicationContext(), resultString+ " FOR NUMBER: "+ user.get("phone").substring(1));
         }
     }
 }

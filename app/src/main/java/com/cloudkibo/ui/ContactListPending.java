@@ -98,7 +98,7 @@ public class ContactListPending extends CustomFragment implements IFragmentName
         final View v = inflater.inflate(R.layout.note, null);
         setHasOptionsMenu(true);
 
-        userFunction = new UserFunctions();
+        userFunction = new UserFunctions(getActivity().getApplicationContext());
 
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         if(contactList == null){
@@ -234,7 +234,7 @@ public class ContactListPending extends CustomFragment implements IFragmentName
                     JSONArray jsonB = db.getContactsOnAddressBookWithImages();
                     ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 
-                    Utility.sendLogToServer("In Contact List page: the size of contacts on address book "+ jsonB.length());
+                    Utility.sendLogToServer(getActivity().getApplicationContext(), "In Contact List page: the size of contacts on address book "+ jsonB.length());
 
                     jsonB = UserFunctions.sortJSONArrayIgnoreCase(jsonB, "display_name");
 //

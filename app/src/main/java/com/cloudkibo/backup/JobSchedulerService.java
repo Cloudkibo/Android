@@ -402,7 +402,7 @@ public class JobSchedulerService extends JobService implements
         //super.onConnected(connectionHint);
         Log.i("BaseDriveActivity", "On COnneceted: ");
         CreateKiboFolder();
-        CreateKiboAppFolder();
+        //CreateKiboAppFolder();
     }
 
     @Override

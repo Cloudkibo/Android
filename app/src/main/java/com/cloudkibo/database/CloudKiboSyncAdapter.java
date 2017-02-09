@@ -35,9 +35,12 @@ public class CloudKiboSyncAdapter extends AbstractThreadedSyncAdapter {
 	private final AccountManager mAccountManager;
 
     private final KiboAuthenticator kiboAuth;
+
+	private Context ctx;
 	 
     public CloudKiboSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
+		ctx = context;
         mAccountManager = AccountManager.get(context);
 
         kiboAuth = new KiboAuthenticator(context);
@@ -53,7 +56,7 @@ public class CloudKiboSyncAdapter extends AbstractThreadedSyncAdapter {
 
 //            String authToken = kiboAuth.
 
-			UserFunctions userFunction = new UserFunctions();
+			UserFunctions userFunction = new UserFunctions(ctx);
 			
 			JSONObject remoteUser = userFunction.getUserData(authToken);
 			

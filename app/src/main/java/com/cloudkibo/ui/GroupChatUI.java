@@ -387,7 +387,8 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                             new AsyncTask<String, String, JSONObject>() {
                                 @Override
                                 protected JSONObject doInBackground(String... args) {
-                                    return (new UserFunctions()).updateGroupChatStatusToSeen(uniqueIdTemp, authtoken);
+                                    UserFunctions userFunctions = new UserFunctions(getActivity().getApplicationContext());
+                                    return userFunctions.updateGroupChatStatusToSeen(uniqueIdTemp, authtoken);
                                 }
                                 @Override
                                 protected void onPostExecute(JSONObject row) {

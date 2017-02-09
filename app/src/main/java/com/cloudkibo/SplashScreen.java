@@ -4,7 +4,6 @@ package com.cloudkibo;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.DisplayNameReg;
 import com.cloudkibo.library.UserFunctions;
-import com.cloudkibo.library.Utility;
 import com.facebook.accountkit.AccessToken;
 import com.facebook.accountkit.AccountKit;
 import com.facebook.accountkit.AccountKitLoginResult;
@@ -22,11 +21,15 @@ import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.net.URISyntaxException;
@@ -68,7 +71,8 @@ public class SplashScreen extends Activity
 
 		try {
 
-			socket = IO.socket("https://api.cloudkibo.com"); // https://api.cloudkibo.com
+			UserFunctions userFunctions = new UserFunctions(getApplicationContext());
+			socket = IO.socket(userFunctions.getBaseURL());
 			socket.connect();
 
 			socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
@@ -128,7 +132,7 @@ public class SplashScreen extends Activity
 						@Override
 						public void run()
 						{
-							checkFirstRun();
+							checkFirstRunAndServerURL();
 						}
 					});
 				}
@@ -136,10 +140,11 @@ public class SplashScreen extends Activity
 		}).start();
 	}
 
-	private void checkFirstRun() {
+	private void checkFirstRunAndServerURL() {
 
 		final String PREFS_NAME = "MyPrefsFile";
 		final String PREF_VERSION_CODE_KEY = "version_code";
+		final String PREF_SERVER_URL_KEY = "server_url";
 		final int DOESNT_EXIST = -1;
 
 
@@ -154,9 +159,64 @@ public class SplashScreen extends Activity
 		}
 
 		// Get saved version code
-		SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+		final SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 		int savedVersionCode = prefs.getInt(PREF_VERSION_CODE_KEY, DOESNT_EXIST);
 
+		String savedServerURL = prefs.getString(PREF_SERVER_URL_KEY, "-1");
+
+		if(savedServerURL.equals("-1")){
+			final int tempCurrentVersionCode = currentVersionCode;
+			final int tempSavedVersionCode = savedVersionCode;
+			// get prompts.xml view
+			LayoutInflater layoutInflater = LayoutInflater.from(getApplicationContext());
+
+			View promptView = layoutInflater.inflate(R.layout.prompt_server_url, null);
+
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+
+			final EditText input = (EditText) promptView.findViewById(R.id.userInput);
+
+			// set prompts.xml to be the layout file of the alertdialog builder
+			alertDialogBuilder.setView(promptView);
+
+			// setup a dialog window
+			alertDialogBuilder
+					.setCancelable(false)
+					.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							// get user input and send it to server
+							Log.w("SOJHARO", "VALUE = "+ input.getText());
+
+							prefs.edit().putString(PREF_SERVER_URL_KEY, input.getText().toString()).commit();
+
+							checkFirstRun(tempCurrentVersionCode, tempSavedVersionCode, DOESNT_EXIST);
+						}
+					})
+					.setNegativeButton("Cancel",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,	int id) {
+									dialog.cancel();
+									prefs.edit().putString(PREF_SERVER_URL_KEY, getString(R.string.server_url)).commit();
+									checkFirstRun(tempCurrentVersionCode, tempSavedVersionCode, DOESNT_EXIST);
+								}
+							});
+
+			// create an alert dialog
+			AlertDialog alertD = alertDialogBuilder.create();
+
+			alertD.show();
+		} else {
+			prefs.edit().putString(PREF_SERVER_URL_KEY, getString(R.string.server_url)).commit();
+			checkFirstRun(currentVersionCode, savedVersionCode, DOESNT_EXIST);
+		}
+
+
+		// Update the shared preferences with the current version code
+		prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).commit();
+
+	}
+
+	private void checkFirstRun (int currentVersionCode, int savedVersionCode, int DOESNT_EXIST) {
 		// Check for first run or upgrade
 		if (currentVersionCode == savedVersionCode) {
 
@@ -191,10 +251,6 @@ public class SplashScreen extends Activity
 			doFinish();
 
 		}
-
-		// Update the shared preferences with the current version code
-		prefs.edit().putInt(PREF_VERSION_CODE_KEY, currentVersionCode).commit();
-
 	}
 
 	private void setupForNewInstall(){
@@ -207,7 +263,7 @@ public class SplashScreen extends Activity
 
 		logMessage("This is a new install");
 
-		UserFunctions fn = new UserFunctions();
+		UserFunctions fn = new UserFunctions(getApplicationContext());
 		if(fn.isUserLoggedIn(getApplicationContext())){
 			Toast.makeText(
 					this,
@@ -306,7 +362,7 @@ public class SplashScreen extends Activity
 					startActivity(i);
 					finish();
 				} else {
-					UserFunctions fn = new UserFunctions();
+					UserFunctions fn = new UserFunctions(getApplicationContext());
 					if(fn.isUserLoggedIn(getApplicationContext())){
 						socket.disconnect();
 						socket.close();

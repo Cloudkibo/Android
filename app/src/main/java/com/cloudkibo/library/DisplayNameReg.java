@@ -198,7 +198,7 @@ public class DisplayNameReg extends Activity
 
             @Override
             protected JSONObject doInBackground(String... args) {
-                UserFunctions userFunction = new UserFunctions();
+                UserFunctions userFunction = new UserFunctions(getApplicationContext());
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
                 params.add(new BasicNameValuePair("display_name", displayName));
                 JSONObject json = userFunction.setDisplayName(params, authtoken);
@@ -216,7 +216,7 @@ public class DisplayNameReg extends Activity
 
                         // Clear all previous data in SQlite database.
 
-                        UserFunctions logout = new UserFunctions();
+                        UserFunctions logout = new UserFunctions(getApplicationContext());
                         logout.logoutUser(getApplicationContext());
 
                         db.resetTables();
@@ -314,13 +314,13 @@ public class DisplayNameReg extends Activity
                                 String userPhone = db.getUserDetails().get("phone");
                                 if(userPhone.equals(phone)) continue;
                                 if(phone.equals("+923323800399") || phone.equals("+14255035617")) {
-                                    Utility.sendLogToServer("CONTACT LOADING.. GOT NUMBER "+ phone);
+                                    Utility.sendLogToServer(getApplicationContext(), "CONTACT LOADING.. GOT NUMBER "+ phone);
                                 }
                                 if(contactList1Phone.contains(phone)) continue;
                                 //if(Character.isLetter(name.charAt(0)))
                                 //    name = name.substring(0, 1).toUpperCase() + name.substring(1);
                                 if(phone.equals("+923323800399") || phone.equals("+14255035617")) {
-                                    Utility.sendLogToServer("CONTACT LOADING.. THIS NUMBER WENT INTO LIST "+ phone);
+                                    Utility.sendLogToServer(getApplicationContext(), "CONTACT LOADING.. THIS NUMBER WENT INTO LIST "+ phone);
                                 }
                                 phones.add(new BasicNameValuePair("phonenumbers", phone));
                                 Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
@@ -355,7 +355,7 @@ public class DisplayNameReg extends Activity
                 cur.close();
 
                 publishProgress(-1);
-                UserFunctions userFunction = new UserFunctions();
+                UserFunctions userFunction = new UserFunctions(getApplicationContext());
                 JSONObject json = userFunction.sendAddressBookPhoneContactsToServer(phones, authtoken);
                 Log.w("SERVER SENT RESPONSE", json.toString());
                 return json;

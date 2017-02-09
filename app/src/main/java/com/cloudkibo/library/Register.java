@@ -230,7 +230,7 @@ public class Register extends Activity {
 		@Override
 		protected Intent doInBackground(String... args) {
 
-			UserFunctions userFunction = new UserFunctions();
+			UserFunctions userFunction = new UserFunctions(getApplicationContext());
 			
 			final String accountType = getIntent().getStringExtra(ARG_ACCOUNT_TYPE);
 			

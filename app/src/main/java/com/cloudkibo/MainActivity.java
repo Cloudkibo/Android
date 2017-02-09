@@ -183,7 +183,7 @@ public class MainActivity extends CustomActivity
         setupDrawer();
 
 
-        userFunction = new UserFunctions();
+        userFunction = new UserFunctions(getApplicationContext());
 
         if(userFunction.isUserLoggedIn(getApplicationContext()));
             getUserFromSQLiteDatabase();
@@ -726,8 +726,9 @@ public class MainActivity extends CustomActivity
                     final Uri uri = data.getData();
                     final String selectedFilePath = FileUtils.getPath(getApplicationContext(), uri);
                     String groupId = icon_upload_group_id;
+                    UserFunctions userFunctions = new UserFunctions(getApplicationContext());
                     Ion.with(getApplicationContext())
-                            .load("https://api.cloudkibo.com/api/groupmessaging/uploadIcon")
+                            .load(userFunctions.getBaseURL() + "/api/groupmessaging/uploadIcon")
                             //.uploadProgressBar(uploadProgressBar)
                             .setHeader("kibo-token", authtoken)
                             .setMultipartParameter("unique_id", icon_upload_group_id)
@@ -1250,7 +1251,8 @@ public class MainActivity extends CustomActivity
             new AsyncTask<String, String, JSONObject>() {
                 @Override
                 protected JSONObject doInBackground(String... args) {
-                    return (new UserFunctions()).updateGroupChatStatusToSeen(unique_id, mainActivity.authtoken);
+                    UserFunctions userFunctions = new UserFunctions(getApplicationContext());
+                    return userFunctions.updateGroupChatStatusToSeen(unique_id, mainActivity.authtoken);
                 }
                 @Override
                 protected void onPostExecute(JSONObject row) {
@@ -1264,7 +1266,8 @@ public class MainActivity extends CustomActivity
             new AsyncTask<String, String, JSONObject>() {
                 @Override
                 protected JSONObject doInBackground(String... args) {
-                    return (new UserFunctions()).updateGroupChatStatusToDelivered(unique_id, mainActivity.authtoken);
+                    UserFunctions userFunctions = new UserFunctions(getApplicationContext());
+                    return userFunctions.updateGroupChatStatusToDelivered(unique_id, mainActivity.authtoken);
                 }
                 @Override
                 protected void onPostExecute(JSONObject row) {
@@ -1355,7 +1358,7 @@ public class MainActivity extends CustomActivity
                             try {
                                 myGroupChatFragment.receiveMessage(body.getString("msg"), body.getString("uniqueid"), body.getString("from"), body.getString("date_server_received"), body.getString("type"),
                                         body.has("file_type") ? body.getString("file_type") : "");
-                                Utility.sendLogToServer(""+ body.getString("to") +" is now going to show the message on the UI in chat window");
+                                Utility.sendLogToServer(getApplicationContext(), ""+ body.getString("to") +" is now going to show the message on the UI in chat window");
                             } catch(JSONException e){
                                 e.printStackTrace();
                             }
@@ -1382,7 +1385,7 @@ public class MainActivity extends CustomActivity
 
                     (new GroupUtility(getApplicationContext())).sendNotification(senderName, subMsg);
 
-                    Utility.sendLogToServer(""+ body.getString("to") +" is going to show notification and chime for message because user is on other chat screen in app");
+                    Utility.sendLogToServer(getApplicationContext(), ""+ body.getString("to") +" is going to show notification and chime for message because user is on other chat screen in app");
 
                     try {
                         Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -1414,7 +1417,7 @@ public class MainActivity extends CustomActivity
 
                 (new GroupUtility(getApplicationContext())).sendNotification(senderName, subMsg);
 
-                Utility.sendLogToServer(""+ body.getString("to") +" is going to show notification and chime for message because user is on conversations list screen in app");
+                Utility.sendLogToServer(getApplicationContext(), ""+ body.getString("to") +" is going to show notification and chime for message because user is on conversations list screen in app");
 
                 try {
                     Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -1496,13 +1499,13 @@ public class MainActivity extends CustomActivity
                                 String userPhone = db.getUserDetails().get("phone");
                                 if(userPhone.equals(phone)) continue;
                                 if(phone.equals("+923323800399") || phone.equals("+14255035617")) {
-                                    Utility.sendLogToServer("CONTACT LOADING.. GOT NUMBER "+ phone);
+                                    Utility.sendLogToServer(getApplicationContext(), "CONTACT LOADING.. GOT NUMBER "+ phone);
                                 }
                                 if(contactList1Phone.contains(phone)) continue;
                                 //if(Character.isLetter(name.charAt(0)))
                                 //    name = name.substring(0, 1).toUpperCase() + name.substring(1);
                                 if(phone.equals("+923323800399") || phone.equals("+14255035617")) {
-                                    Utility.sendLogToServer("CONTACT LOADING.. THIS NUMBER WENT INTO LIST "+ phone);
+                                    Utility.sendLogToServer(getApplicationContext(), "CONTACT LOADING.. THIS NUMBER WENT INTO LIST "+ phone);
                                 }
                                 phones.add(new BasicNameValuePair("phonenumbers", phone));
                                 Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
@@ -1516,7 +1519,7 @@ public class MainActivity extends CustomActivity
                 }
                 cur.close();
 
-                UserFunctions userFunction = new UserFunctions();
+                UserFunctions userFunction = new UserFunctions(getApplicationContext());
                 JSONObject json = userFunction.sendAddressBookPhoneContactsToServer(phones, authtoken);
                 Log.w("SERVER SENT RESPONSE", json.toString());
                 ToastNotify2("Synced contacts with KiboChat");

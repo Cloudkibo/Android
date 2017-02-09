@@ -225,7 +225,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		}
 		inflater.inflate(R.menu.chat, menu);  // Use filter.xml from step 1
 //		getActivity().getActionBar().setSubtitle("Last seen on: ");
-		Utility.getLastSeenStatus(contactPhone, authtoken, getActivity().getActionBar());
+		Utility.getLastSeenStatus(getActivity().getApplicationContext(), contactPhone, authtoken, getActivity().getActionBar());
 		ActionBar actionBar = getActivity().getActionBar();
 		actionBar.setDisplayShowCustomEnabled(true);
 
@@ -508,8 +508,9 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					true, true, "pending", uniqueid, "file", fileType).setFile_uri(fileInfo.getString("path")));
 			adp.notifyDataSetChanged();
 
+			UserFunctions userFunctions = new UserFunctions(getActivity().getApplicationContext());
 			Ion.with(getActivity().getApplicationContext())
-					.load("https://api.cloudkibo.com/api/filetransfers/upload")
+					.load(userFunctions.getBaseURL() + "/api/filetransfers/upload")
 					//.uploadProgressBar(uploadProgressBar)
 					.setHeader("kibo-token", authtoken)
 					.setMultipartParameter("filetype", fileType)
@@ -642,7 +643,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			@Override
 			protected JSONObject doInBackground(String... args) {
-				UserFunctions userFunction = new UserFunctions();
+				UserFunctions userFunction = new UserFunctions(getActivity().getApplicationContext());
 				JSONObject message = new JSONObject();
 
 				try {
@@ -685,7 +686,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			@Override
 			protected JSONObject doInBackground(String... args) {
-				UserFunctions userFunction = new UserFunctions();
+				UserFunctions userFunction = new UserFunctions(getActivity().getApplicationContext());
 				JSONObject message = new JSONObject();
 
 				try {
@@ -871,8 +872,9 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 	private void downloadPendingFile(final JSONObject row) {
 		try {
+			final UserFunctions userFunctions = new UserFunctions(getActivity().getApplicationContext());
 			Ion.with(getActivity().getApplicationContext())
-					.load("https://api.cloudkibo.com/api/filetransfers/download")
+					.load(userFunctions.getBaseURL() + "/api/filetransfers/download")
 					.setHeader("kibo-token", authtoken)
 					.setBodyParameter("uniqueid", row.getString("uniqueid"))
 					.write(new File(getActivity().getApplicationContext().getFilesDir().getPath() + "" + row.getString("uniqueid")))
@@ -911,7 +913,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 									@Override
 									protected JSONObject doInBackground(String... args) {
 										try {
-											return (new UserFunctions()).confirmFileDownload(row.getString("uniqueid"), authtoken);
+											UserFunctions userFunctions1 = new UserFunctions(getActivity().getApplicationContext());
+											return userFunctions.confirmFileDownload(row.getString("uniqueid"), authtoken);
 										} catch (JSONException e5) {
 											e5.printStackTrace();
 										}

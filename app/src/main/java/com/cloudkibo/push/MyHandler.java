@@ -61,7 +61,7 @@ public class MyHandler extends NotificationsHandler {
         AccountKit.initialize(ctx.getApplicationContext());
         String nhMessage = bundle.getString("message");
         userDetail = new DatabaseHandler(ctx.getApplicationContext()).getUserDetails();
-        Utility.sendLogToServer(""+ userDetail.get("phone") +" gets push notification payload : "+ nhMessage);
+        Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" gets push notification payload : "+ nhMessage);
         JSONObject payload;
         try {
             payload = new JSONObject(nhMessage);
@@ -135,7 +135,7 @@ public class MyHandler extends NotificationsHandler {
                     try {
                         DatabaseHandler db = new DatabaseHandler(ctx.getApplicationContext());
                         db.updateChat(payload.getString("status"), payload.getString("uniqueId"));
-                        Utility.sendLogToServer(""+ userDetail.get("phone") +" gets push notification payload to update status of sent message");
+                        Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" gets push notification payload to update status of sent message");
                         if(MainActivity.isVisible){
                             JSONObject statusData = new JSONObject();
                             statusData.put("status", payload.getString("status"));
@@ -190,9 +190,9 @@ public class MyHandler extends NotificationsHandler {
 
         final AccessToken accessToken = AccountKit.getCurrentAccessToken();
 
-        Utility.sendLogToServer(""+ userDetail.get("phone") +" is going to fetch the message using API.");
+        Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" is going to fetch the message using API.");
         if (accessToken == null) {
-            Utility.sendLogToServer(""+ userDetail.get("phone") +" could not get the message using API as Facebook accountkit did not give auth token.");
+            Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" could not get the message using API as Facebook accountkit did not give auth token.");
             return ;
         }
 
@@ -200,7 +200,7 @@ public class MyHandler extends NotificationsHandler {
 
             @Override
             protected JSONObject doInBackground(String... args) {
-                UserFunctions userFunction = new UserFunctions();
+                UserFunctions userFunction = new UserFunctions(ctx.getApplicationContext());
                 return userFunction.getSingleChat(uniqueid, accessToken.getToken());
             }
 
@@ -223,7 +223,7 @@ public class MyHandler extends NotificationsHandler {
                                 row.has("type") ? row.getString("type") : "",
                                 row.has("file_type") ? row.getString("file_type") : "");
 
-                        Utility.sendLogToServer(""+ userDetail.get("phone") +" got the message using API and saved to Database: "+ row.toString());
+                        Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" got the message using API and saved to Database: "+ row.toString());
 
                         if (MainActivity.isVisible) {
                             MainActivity.mainActivity.handleIncomingChatMessage("im", row);
@@ -249,8 +249,9 @@ public class MyHandler extends NotificationsHandler {
                                         rowTemp.getString("file_type"),
                                         "", "");
                             } else {
+                                final UserFunctions userFunctions = new UserFunctions(ctx.getApplicationContext());
                                 Ion.with(ctx.getApplicationContext())
-                                        .load("https://api.cloudkibo.com/api/filetransfers/download")
+                                        .load(userFunctions.getBaseURL() + "/api/filetransfers/download")
                                         .setHeader("kibo-token", accessToken.getToken())
                                         .setBodyParameter("uniqueid", row.getString("uniqueid"))
                                         .write(new File(ctx.getApplicationContext().getFilesDir().getPath() + "" + row.getString("uniqueid")))
@@ -289,7 +290,8 @@ public class MyHandler extends NotificationsHandler {
                                                         @Override
                                                         protected JSONObject doInBackground(String... args) {
                                                             try {
-                                                                return (new UserFunctions()).confirmFileDownload(rowTemp.getString("uniqueid"), accessToken.getToken());
+                                                                UserFunctions userFunctions1 = new UserFunctions(ctx.getApplicationContext());
+                                                                return userFunctions.confirmFileDownload(rowTemp.getString("uniqueid"), accessToken.getToken());
                                                             } catch (JSONException e5){
                                                                 e5.printStackTrace();
                                                             }
@@ -321,7 +323,7 @@ public class MyHandler extends NotificationsHandler {
                         }
 
                     } else {
-                        Utility.sendLogToServer(""+ userDetail.get("phone") +" did not get message from API. SERVER gave NULL");
+                        Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" did not get message from API. SERVER gave NULL");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -336,9 +338,9 @@ public class MyHandler extends NotificationsHandler {
 
         final AccessToken accessToken = AccountKit.getCurrentAccessToken();
 
-        Utility.sendLogToServer(""+ userDetail.get("phone") +" is going to fetch the group message using API.");
+        Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" is going to fetch the group message using API.");
         if (accessToken == null) {
-            Utility.sendLogToServer(""+ userDetail.get("phone") +" could not get the group message using API as Facebook accountkit did not give auth token.");
+            Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" could not get the group message using API as Facebook accountkit did not give auth token.");
             return ;
         }
 
@@ -346,7 +348,7 @@ public class MyHandler extends NotificationsHandler {
 
             @Override
             protected JSONObject doInBackground(String... args) {
-                UserFunctions userFunction = new UserFunctions();
+                UserFunctions userFunction = new UserFunctions(ctx.getApplicationContext());
                 return userFunction.getSingleGroupChat(uniqueid, accessToken.getToken());
             }
 
@@ -367,7 +369,7 @@ public class MyHandler extends NotificationsHandler {
                                 row.getString("unique_id"),
                                 row.getString("group_unique_id"));
 
-                        Utility.sendLogToServer(""+ userDetail.get("phone") +" got the group message using API and saved to Database: "+ row.toString());
+                        Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" got the group message using API and saved to Database: "+ row.toString());
 
                         if (MainActivity.isVisible) {
                             // todo @dayem please update the UI for incoming group chat when UI logic is done
@@ -378,7 +380,7 @@ public class MyHandler extends NotificationsHandler {
                         }
 
                     } else {
-                        Utility.sendLogToServer(""+ userDetail.get("phone") +" did not get group message from API. SERVER gave NULL");
+                        Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" did not get group message from API. SERVER gave NULL");
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();

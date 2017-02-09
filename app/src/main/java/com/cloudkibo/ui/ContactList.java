@@ -99,7 +99,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 		final View v = inflater.inflate(R.layout.note, null);
 		setHasOptionsMenu(true);
 
-		userFunction = new UserFunctions();
+		userFunction = new UserFunctions(getActivity().getApplicationContext());
 
 		authtoken = getActivity().getIntent().getExtras().getString("authtoken");
 		if(contactList == null){
@@ -298,7 +298,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 					JSONArray jsonA = db.getContactsWithImages();
 					ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 
-					Utility.sendLogToServer("In Contact List page: the size of contacts on cloudkibo "+ jsonA.length());
+					Utility.sendLogToServer(getActivity().getApplicationContext(), "In Contact List page: the size of contacts on cloudkibo "+ jsonA.length());
 
 					jsonA = UserFunctions.sortJSONArrayIgnoreCase(jsonA, "display_name");
 //

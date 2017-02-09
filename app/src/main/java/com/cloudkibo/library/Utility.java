@@ -143,12 +143,12 @@ public class Utility {
         return df.format(new Date());
     }
 
-    public static void sendLogToServer(final String message){
+    public static void sendLogToServer(final Context ctx, final String message){
         new AsyncTask<String, String, JSONObject>() {
 
             @Override
             protected JSONObject doInBackground(String... args) {
-                UserFunctions userFunction = new UserFunctions();
+                UserFunctions userFunction = new UserFunctions(ctx);
                 return userFunction.sendLog("ANDROID : "+message);
             }
 
@@ -200,13 +200,13 @@ public class Utility {
 
     }
 
-    public static void getLastSeenStatus(final String phone, final String authtoken, final ActionBar actbar){
+    public static void getLastSeenStatus(final Context ctx, final String phone, final String authtoken, final ActionBar actbar){
         Log.e("Last Seen on", "In last seen");
         new AsyncTask<String, String, JSONObject>() {
 
             @Override
             protected JSONObject doInBackground(String... args) {
-                UserFunctions userFunctions = new UserFunctions();
+                UserFunctions userFunctions = new UserFunctions(ctx);
                 return userFunctions.getUserStatus(phone, authtoken);
             }
 

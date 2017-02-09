@@ -5,6 +5,7 @@
     <string name="app_name">KiboChat</string>
     <string name="client_token" translatable="false">97da63ec347d10ac62e84a9d92ce2361</string>
     <string name="host" translatable="false">api.cloudkibo.com</string>
+    <string name="server_url" translatable="false">https://api.cloudkibo.com</string>
     <string name="port" translatable="false">443</string>
 
     <string name="server_host" translatable="false">192.168.8.103</string> <!-- api.cloudkibo.com -->

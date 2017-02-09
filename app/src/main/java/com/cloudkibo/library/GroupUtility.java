@@ -36,7 +36,7 @@ import java.util.HashMap;
  * Created by root on 11/14/16.
  */
 public class GroupUtility {
-    UserFunctions user = new UserFunctions();
+    UserFunctions user;
     public DatabaseHandler db;
     private NotificationManager mNotificationManager;
     public static final int NOTIFICATION_ID = 1;
@@ -44,6 +44,7 @@ public class GroupUtility {
 
     public GroupUtility(Context ctx){
         this.ctx = ctx;
+        user = new UserFunctions(ctx);
         db = new DatabaseHandler(ctx);
     }
 
@@ -216,8 +217,9 @@ public class GroupUtility {
             final JSONObject data = new JSONObject(payload);
             final String unique_id = randomString();
             db.addGroupMessage(data.getString("groupId"), "Group Icon was updated by " + db.getContactName(data.getString("senderId")) , db.getUserDetails().get("phone"),"", unique_id, "log");
+            UserFunctions userFunctions = new UserFunctions(ctx.getApplicationContext());
             Ion.with(context)
-                    .load("https://api.cloudkibo.com/api/groupmessaging/downloadIcon")
+                    .load(userFunctions.getBaseURL() + "/api/groupmessaging/downloadIcon")
                     .setHeader("kibo-token", auth_token)
                     .setBodyParameter("unique_id", data.getString("groupId"))
                     .write(new File(context.getFilesDir().getPath() + "" + data.getString("groupId")))
@@ -259,10 +261,11 @@ public class GroupUtility {
         try {
             JSONArray groups =   db.getMyGroups(db.getUserDetails().get("phone"));
 
+            UserFunctions userFunctions = new UserFunctions(ctx.getApplicationContext());
             for (int i = 0; i < groups.length(); i++) {
                 String group_id = groups.getJSONObject(i).getString("unique_id");
                 Ion.with(ctx)
-                        .load("https://api.cloudkibo.com/api/groupmessaging/downloadIcon")
+                        .load(userFunctions.getBaseURL() + "/api/groupmessaging/downloadIcon")
                         .setHeader("kibo-token", auth_token)
                         .setBodyParameter("unique_id", group_id)
                         .write(new File(ctx.getFilesDir().getPath() + "" + group_id))
@@ -307,7 +310,8 @@ public class GroupUtility {
                 new AsyncTask<String, String, JSONObject>() {
                     @Override
                     protected JSONObject doInBackground(String... args) {
-                        return (new UserFunctions()).updateGroupChatStatusToDelivered(unique_id, temp_auth_token);
+                        UserFunctions userFunctions = new UserFunctions(ctx.getApplicationContext());
+                        return userFunctions.updateGroupChatStatusToDelivered(unique_id, temp_auth_token);
                     }
                     @Override
                     protected void onPostExecute(JSONObject row) {
@@ -433,7 +437,7 @@ public class GroupUtility {
 
             @Override
             protected JSONObject doInBackground(String... args) {
-                UserFunctions userFunctions = new UserFunctions();
+                UserFunctions userFunctions = new UserFunctions(ctx);
 //                getMemberData(group_name, group_id, phone)
                 return userFunctions.addGroupMembers(getMemberData(group_name, group_id, phone), authtoken);
             }
@@ -470,7 +474,7 @@ public class GroupUtility {
 
             @Override
             protected JSONObject doInBackground(String... args) {
-                UserFunctions userFunctions = new UserFunctions();
+                UserFunctions userFunctions = new UserFunctions(ctx);
                 return  userFunctions.leaveGroup(group_id, authtoken);
             }
 
@@ -546,7 +550,7 @@ public class GroupUtility {
 
             @Override
             protected JSONObject doInBackground(String... args) {
-                UserFunctions userFunctions = new UserFunctions();
+                UserFunctions userFunctions = new UserFunctions(ctx);
                 return  userFunctions.updateMemberRole(group_id,member_phone, makeAdmin,authtoken);
             }
 
@@ -576,7 +580,7 @@ public class GroupUtility {
 
             @Override
             protected JSONObject doInBackground(String... args) {
-                UserFunctions userFunctions = new UserFunctions();
+                UserFunctions userFunctions = new UserFunctions(ctx);
                 return  userFunctions.removeMember(group_id, member_phone, authtoken);
             }
 
@@ -683,7 +687,7 @@ public class GroupUtility {
 
                     @Override
                     protected JSONObject doInBackground(String... args) {
-                        UserFunctions userFunction = new UserFunctions();
+                        UserFunctions userFunction = new UserFunctions(ctx);
                         return userFunction.getSingleGroupChat(uniqueid, authtoken);
                     }
 
@@ -697,7 +701,7 @@ public class GroupUtility {
 
                                 // todo @dayem please test following when you are ready to send messsage, this is saving the received chat message
 
-                                Utility.sendLogToServer(""+ userDetail.get("phone") +" got the group message using API and saved to Database: "+ row.toString());
+                                Utility.sendLogToServer(ctx, ""+ userDetail.get("phone") +" got the group message using API and saved to Database: "+ row.toString());
 
                                 if (MainActivity.isVisible) {
                                     // todo @dayem please update the UI for incoming group chat when UI logic is done
@@ -705,7 +709,7 @@ public class GroupUtility {
                                 }
 
                             } else {
-                                Utility.sendLogToServer(""+ userDetail.get("phone") +" did not get group message from API. SERVER gave NULL");
+                                Utility.sendLogToServer(ctx, ""+ userDetail.get("phone") +" did not get group message from API. SERVER gave NULL");
                             }
 
                     }

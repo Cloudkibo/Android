@@ -16,6 +16,7 @@ import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.SplashScreen;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.ui.ContactList;
 import com.cloudkibo.ui.GroupChat;
@@ -109,7 +110,8 @@ public class SocketService extends Service {
 
         try {
 
-            socket = IO.socket("https://api.cloudkibo.com"); // https://api.cloudkibo.com
+            UserFunctions userFunctions = new UserFunctions(getApplicationContext());
+            socket = IO.socket(userFunctions.getBaseURL());
             socket.connect();
 
             socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
