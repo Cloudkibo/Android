@@ -12,7 +12,9 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
 import android.text.Html;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -55,6 +57,7 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -76,7 +79,9 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     private String group_name="";
     private GroupChatAdapter groupAdapter;
     private ArrayList<Conversation> convList = new ArrayList<Conversation>();
-
+    public ArrayList<Conversation> backupList = new ArrayList<Conversation>();
+    EditText editsearch;
+    LinearLayout search_view;
     static final int PICK_CONTACT=1;
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -87,6 +92,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                              Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.group_chat, null);
+        final View cusView = v;
         setHasOptionsMenu(true);
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         final GroupChatUI temp = this;
@@ -130,6 +136,41 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             }
         });
 
+        editsearch = (EditText) v.findViewById(R.id.contact_search);
+
+        editsearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+                String text = editsearch.getText().toString().toLowerCase(Locale.getDefault());
+                filter(text);
+
+            }
+        });
+
+        search_view = (LinearLayout) v.findViewById(R.id.search_view);
+        search_view.setVisibility(View.GONE);
+        ImageView close_search = (ImageView) v.findViewById(R.id.close_search);
+        close_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                search_view = (LinearLayout) cusView.findViewById(R.id.search_view);
+                search_view.setVisibility(View.GONE);
+                editsearch.setText("");
+                filter("");
+            }
+        });
+
 //        settings.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
@@ -157,6 +198,33 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         return v;
     }
 
+    // Filter Class
+    public void filter(String charText) {
+        charText = charText.toLowerCase(Locale.getDefault());
+//            if(backupList.size() < totalCount) {
+//                backupList.addAll(convList);
+//            }
+        backupList.clear();
+        populateMessages();
+        backupList.addAll(convList);
+        convList.clear();
+        if (charText.length() == 0) {
+            convList.addAll(backupList);
+        } else {
+            for (Conversation conv : backupList) {
+                if (conv.getMsg().toLowerCase(Locale.getDefault())
+                        .contains(charText)) {
+                    convList.add(conv);
+                }
+            }
+        }
+//            Set<Conversation> duplicate = new HashSet<Conversation>(convList);
+//            convList.clear();
+//            convList.addAll(new ArrayList<Conversation>(duplicate));
+
+        groupAdapter.notifyDataSetChanged();
+    }
+
 
 
     @Override
@@ -168,7 +236,19 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         }
         inflater.inflate(R.menu.groupchat, menu);  // Use filter.xml from step 1
         ActionBar actionBar = getActivity().getActionBar();
-        actionBar.setDisplayShowCustomEnabled(false);
+        actionBar.setDisplayShowCustomEnabled(true);
+
+        LayoutInflater inflator = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View v = inflator.inflate(R.layout.custom_imageview, null);
+        ImageView search_button = (ImageView) v.findViewById(R.id.imageView4);
+        search_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                search_view.setVisibility(View.VISIBLE);
+            }
+        });
+        actionBar.setCustomView(v);
+
     }
 
 
