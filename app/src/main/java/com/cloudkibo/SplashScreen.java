@@ -53,8 +53,6 @@ public class SplashScreen extends Activity
 
 	public static int APP_REQUEST_CODE = 99;
 
-	Socket socket;
-	boolean isSocketConnected;
 
 	/* (non-Javadoc)
 	 * @see android.app.Activity#onCreate(android.os.Bundle)
@@ -66,37 +64,6 @@ public class SplashScreen extends Activity
 		super.onCreate(savedInstanceState);
 		mAccountManager = AccountManager.get(this);
 		AccountKit.initialize(getApplicationContext());
-
-		isSocketConnected = false;
-
-		try {
-
-			UserFunctions userFunctions = new UserFunctions(getApplicationContext());
-			socket = IO.socket(userFunctions.getBaseURL());
-			socket.connect();
-
-			socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-
-				@Override
-				public void call(Object... args) {
-
-					Log.w("SOCKET", "CONNECTED FROM SPLASH");
-
-					isSocketConnected = true;
-
-					logMessage("Application started. Showing splash screen.");
-
-					TimeZone tz = TimeZone.getDefault();
-					String gmt1= TimeZone.getTimeZone(tz.getID()).getDisplayName(false, TimeZone.SHORT);
-					String gmt2= TimeZone.getTimeZone(tz.getID()).getDisplayName(false, TimeZone.LONG);
-					logMessage("TimeZone : "+gmt1+"\t"+gmt2);
-
-				}
-
-			});
-		} catch (URISyntaxException e){
-			e.printStackTrace();
-		}
 
 		setContentView(R.layout.splash);
 
@@ -227,8 +194,6 @@ public class SplashScreen extends Activity
 					Toast.LENGTH_LONG)
 					.show();
 
-			logMessage("This is normal run : version "+ currentVersionCode);
-
 			doFinish();
 
 			return;
@@ -246,8 +211,6 @@ public class SplashScreen extends Activity
 					Toast.LENGTH_LONG)
 					.show();
 
-			logMessage("This is an upgrade to next version : old version "+ savedVersionCode);
-
 			doFinish();
 
 		}
@@ -261,8 +224,6 @@ public class SplashScreen extends Activity
 				Toast.LENGTH_LONG)
 				.show();
 
-		logMessage("This is a new install");
-
 		UserFunctions fn = new UserFunctions(getApplicationContext());
 		if(fn.isUserLoggedIn(getApplicationContext())){
 			Toast.makeText(
@@ -270,8 +231,6 @@ public class SplashScreen extends Activity
 					"Old data is found from previous install. Removing it.",
 					Toast.LENGTH_LONG)
 					.show();
-
-			logMessage("Old data is found from previous install. Removing it.");
 
 			DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 			db.resetChatsTable();
@@ -286,20 +245,11 @@ public class SplashScreen extends Activity
 			db = new DatabaseHandler(getApplicationContext());
 			db.resetContactImageTable();
 
-			logMessage("Old data removed from tables. Checking old facebook auth token.");
-
 			AccessToken accessToken = null;
 			try {
 				accessToken = AccountKit.getCurrentAccessToken();
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
-
-			if(accessToken != null) {
-				logMessage("Facebook old auth token was there. Removing it now.");
-				AccountKit.logOut();
-			} else {
-				logMessage("Facebook old auth token was not there.");
 			}
 
 			Toast.makeText(
@@ -318,7 +268,6 @@ public class SplashScreen extends Activity
 					"Old data is not found from previous install.",
 					Toast.LENGTH_LONG)
 					.show();
-			logMessage("Old data is not found from previous install.");
 			doFinish();
 		}
 	}
@@ -354,8 +303,6 @@ public class SplashScreen extends Activity
                         Toast.LENGTH_LONG)
                         .show();
 				if(isDevelopment) {
-					socket.disconnect();
-					socket.close();
 					Intent i = new Intent(this, DisplayNameReg.class);
 					i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 					i.putExtra("authtoken", accessToken.getToken());
@@ -364,8 +311,6 @@ public class SplashScreen extends Activity
 				} else {
 					UserFunctions fn = new UserFunctions(getApplicationContext());
 					if(fn.isUserLoggedIn(getApplicationContext())){
-						socket.disconnect();
-						socket.close();
 						Intent i = new Intent(this, MainActivity.class);
 						i.putExtra("authtoken", accessToken.getToken());
 						i.putExtra("sync", true);
@@ -373,8 +318,6 @@ public class SplashScreen extends Activity
 						startActivity(i);
 						finish();
 					} else {
-						socket.disconnect();
-						socket.close();
 						Intent i = new Intent(this, DisplayNameReg.class);
 						i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 						i.putExtra("authtoken", accessToken.getToken());
@@ -432,8 +375,6 @@ public class SplashScreen extends Activity
 				toastMessage = "Login Cancelled";
 			} else {
 				if (loginResult.getAccessToken() != null) {
-					socket.disconnect();
-					socket.close();
 					toastMessage = "Login Successful"; //+ loginResult.getAccessToken().getAccountId();
 
 					Intent i = new Intent(this, DisplayNameReg.class);
@@ -462,11 +403,6 @@ public class SplashScreen extends Activity
 					Toast.LENGTH_LONG)
 					.show();
 		}
-	}
-
-	private void logMessage(String msg){
-		//if(isSocketConnected)
-		//	socket.emit("logClient", "ANDROID : "+ msg);
 	}
 
 	/**

@@ -741,6 +741,10 @@ public class MainActivity extends CustomActivity
                                     if(e == null) {
                                         try {
 
+                                            GroupUtility groupUtility = new GroupUtility(getApplicationContext());
+                                            final String unique_id = groupUtility.randomString();
+                                            groupUtility.db.addGroupMessage(icon_upload_group_id, "You updated the group icon", groupUtility.db.getUserDetails().get("phone"),"", unique_id, "log");
+
                                             String filename = icon_upload_group_id;
                                             FileOutputStream outputStream;
                                             outputStream = openFileOutput(filename, Context.MODE_PRIVATE);

@@ -213,8 +213,6 @@ public class GroupSetting extends CustomFragment implements IFragmentName
             MainActivity act1 = (MainActivity)getActivity();
             act1.uploadIcon(group_id);
 
-            final String unique_id = groupUtility.randomString();
-            groupUtility.db.addGroupMessage(group_id, "You updated the group icon", groupUtility.db.getUserDetails().get("phone"),"", unique_id, "log");
             return true;
         }
         return super.onOptionsItemSelected(item);
