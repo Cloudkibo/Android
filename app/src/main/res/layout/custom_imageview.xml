@@ -24,4 +24,25 @@
         android:layout_centerVertical="true"
         android:textColor="@color/white"
         android:textSize="18sp"/>
+    <TextView
+        android:id="@+id/chatTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:text=""
+        android:layout_centerVertical="false"
+        android:paddingTop="3dp"
+        android:textColor="@color/white"
+        android:textSize="18sp"/>
+    <TextView
+        android:id="@+id/lastSeen"
+        android:layout_alignParentLeft="true"
+        android:text=""
+        android:layout_below="@+id/chatTitle"
+        android:paddingBottom="2dp"
+        android:layout_centerVertical="true"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </RelativeLayout>

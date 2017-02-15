@@ -21,6 +21,7 @@ import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.SplashScreen;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.ui.GroupChat;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -220,6 +221,8 @@ public class Utility {
 
                     try {
                         actbar.setSubtitle(Html.fromHtml("<font color='#ffffff'>"+"Last Seen on " + convertDateToLocalTimeZoneAndReadable(row.getString("last_seen"))+"</font>"));
+                        String text = Html.toHtml(Html.fromHtml("<font color='#ffffff'>"+"Last Seen on " + convertDateToLocalTimeZoneAndReadable(row.getString("last_seen"))+"</font>"));
+                        Toast.makeText(ctx, text, Toast.LENGTH_SHORT).show();
                     } catch (JSONException e) {
                         e.printStackTrace();
                     } catch (ParseException e) {

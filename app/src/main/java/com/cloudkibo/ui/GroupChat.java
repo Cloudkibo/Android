@@ -37,7 +37,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
+import android.text.Html;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -98,6 +100,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	/** The Conversation list. */
 	private ArrayList<Conversation> convList;
     public ArrayList<Conversation> backupList = new ArrayList<Conversation>();
+	public String lastSeen = "";
 
 	/** The chat adapter. */
 	private ChatAdapter adp;
@@ -213,8 +216,48 @@ public class GroupChat extends CustomFragment implements IFragmentName
             }
         });
 
+		lastSeenStatus();
+
 
         return v;
+	}
+
+	public void lastSeenStatus(){
+		new AsyncTask<String, String, JSONObject>() {
+
+			@Override
+			protected JSONObject doInBackground(String... args) {
+				UserFunctions userFunctions = new UserFunctions(getActivity().getApplicationContext());
+				return userFunctions.getUserStatus(contactPhone, authtoken);
+			}
+
+			@Override
+			protected void onPostExecute(JSONObject row) {
+				Log.e("Last Seen on", "post executed");
+				if(row != null){
+					Log.e("Last Seen on", "Fetched data");
+
+
+
+					try {
+						//actbar.setSubtitle(Html.fromHtml("<font color='#ffffff'>"+"Last Seen on " + Utility.convertDateToLocalTimeZoneAndReadable(row.getString("last_seen"))+"</font>"));
+						String text = "Last Seen on " + Utility.convertDateToLocalTimeZoneAndReadable(row.getString("last_seen"));
+						//Toast.makeText(getActivity().getApplicationContext(), text, Toast.LENGTH_SHORT).show();
+						lastSeen = text;
+						getActivity().invalidateOptionsMenu();
+					} catch (JSONException e) {
+						e.printStackTrace();
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
+					Log.e("Last Seen on", "Inside TRY Statement");
+
+
+				}
+				Log.e("Last Seen on", "leaving post executed");
+			}
+
+		}.execute();
 	}
 
 	@Override
@@ -226,13 +269,27 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		}
 		inflater.inflate(R.menu.chat, menu);  // Use filter.xml from step 1
 //		getActivity().getActionBar().setSubtitle("Last seen on: ");
-		Utility.getLastSeenStatus(getActivity().getApplicationContext(), contactPhone, authtoken, getActivity().getActionBar());
+		//Utility.getLastSeenStatus(getActivity().getApplicationContext(), contactPhone, authtoken, getActivity().getActionBar());
+		Toast.makeText(getActivity().getApplicationContext(),lastSeen, Toast.LENGTH_SHORT).show();
 		ActionBar actionBar = getActivity().getActionBar();
 		actionBar.setDisplayShowCustomEnabled(true);
 
 		LayoutInflater inflator = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		View v = inflator.inflate(R.layout.custom_imageview, null);
 		ImageView search_button = (ImageView) v.findViewById(R.id.imageView4);
+		TextView lstSeen = (TextView) v.findViewById(R.id.lastSeen);
+		TextView chatTitle = (TextView) v.findViewById(R.id.chatTitle);
+		TextView title = (TextView) v.findViewById(R.id.title);
+		title.setVisibility(View.GONE);
+
+		DatabaseHandler db = new DatabaseHandler(getContext());
+		try{
+			chatTitle.setText(db.getContactName(contactPhone));
+		} catch (Exception e){
+			e.printStackTrace();
+		}
+
+		lstSeen.setText(lastSeen);
 		search_button.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
@@ -240,9 +297,9 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			}
 		});
 		actionBar.setCustomView(v);
+		super.onCreateOptionsMenu(menu, inflater);
 
 	}
-
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
