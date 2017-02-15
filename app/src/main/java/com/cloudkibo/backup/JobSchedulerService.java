@@ -54,6 +54,8 @@ public class JobSchedulerService extends JobService implements
     protected static final int REQUEST_CODE_RESOLUTION = 1;
     GoogleApiClient mGoogleApiClient;
     private FileUtils fileUtils;
+    DatabaseHandler db;
+    JSONArray folders = new JSONArray();
 
     DriveId groupIconsFolder;
     DriveId imagesAttachmentFolder;
@@ -61,6 +63,7 @@ public class JobSchedulerService extends JobService implements
     DriveId audioAttachmentFolder;
     DriveId videoAttachmentFolder;
     DriveId sqliteTablesFolder;
+    DriveId kiboChatAppFolder;
 
 
     // todo this for testing only and will make the beep sound on defined intervals
@@ -73,6 +76,7 @@ public class JobSchedulerService extends JobService implements
 
         final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.bell);
         mp.start();
+        db = new DatabaseHandler(this);
 
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -142,6 +146,7 @@ public class JobSchedulerService extends JobService implements
                 createAudioAttachmentFolder(result.getDriveFolder().getDriveId());
                 createVideoAttachmentFolder(result.getDriveFolder().getDriveId());
                 createSqliteFolder(result.getDriveFolder().getDriveId());
+
             }
         });
 
@@ -150,27 +155,62 @@ public class JobSchedulerService extends JobService implements
     public void CreateKiboFolder(){
         Toast.makeText(getApplicationContext(), "Drive Connected", Toast.LENGTH_SHORT).show();
 
+        try{
+            folders = db.getDriveFolderInfo();
+            int a = folders.length();
+            System.out.println(a);
 
-        MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-                .setTitle("KiboChat").build();
-        Drive.DriveApi.getRootFolder(mGoogleApiClient).createFolder(
-                mGoogleApiClient, changeSet).setResultCallback(new ResultCallback<DriveFolder.DriveFolderResult>() {
-            @Override
-            public void onResult(@NonNull DriveFolder.DriveFolderResult result) {
-                if (!result.getStatus().isSuccess()) {
-                    showMessage("Error while trying to create the folder");
-                    return;
+            if(folders.length()<=0) {
+
+            MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                    .setTitle("KiboChat").build();
+            Drive.DriveApi.getRootFolder(mGoogleApiClient).createFolder(
+                    mGoogleApiClient, changeSet).setResultCallback(new ResultCallback<DriveFolder.DriveFolderResult>() {
+                @Override
+                public void onResult(@NonNull DriveFolder.DriveFolderResult result) {
+                    if (!result.getStatus().isSuccess()) {
+                        showMessage("Error while trying to create the folder");
+                        return;
+                    }
+                    showMessage("Created a folder: " + result.getDriveFolder().getDriveId());
+
+
+                        createGroupIconsFolder(result.getDriveFolder().getDriveId());
+                        createImagesAttachmentFolder(result.getDriveFolder().getDriveId());
+                        createDocumentAttachmentFolder(result.getDriveFolder().getDriveId());
+                        createAudioAttachmentFolder(result.getDriveFolder().getDriveId());
+                        createVideoAttachmentFolder(result.getDriveFolder().getDriveId());
+                        createSqliteFolder(result.getDriveFolder().getDriveId());
+
                 }
-                showMessage("Created a folder: " + result.getDriveFolder().getDriveId());
+            });
+        }
+            for(int i=0; i<folders.length(); i++){
+                JSONObject row = folders.getJSONObject(i);
 
-                createGroupIconsFolder(result.getDriveFolder().getDriveId());
-                createImagesAttachmentFolder(result.getDriveFolder().getDriveId());
-                createDocumentAttachmentFolder(result.getDriveFolder().getDriveId());
-                createAudioAttachmentFolder(result.getDriveFolder().getDriveId());
-                createVideoAttachmentFolder(result.getDriveFolder().getDriveId());
-                createSqliteFolder(result.getDriveFolder().getDriveId());
+                if(row.getString("folder_type").equals("GroupIcons")){
+                    groupIconsFolder = DriveId.decodeFromString(row.getString("folder_address"));
+                } else if(row.getString("folder_type").equals("ImageAttachment")){
+                    imagesAttachmentFolder = DriveId.decodeFromString(row.getString("folder_address"));
+                } else if(row.getString("folder_type").equals("DocumentAttachment")){
+                    documentAttachmentFolder = DriveId.decodeFromString(row.getString("folder_address"));
+                } else if(row.getString("folder_type").equals("AudioAttachment")){
+                    audioAttachmentFolder = DriveId.decodeFromString(row.getString("folder_address"));
+                } else if(row.getString("folder_type").equals("VideoAttachment")){
+                    videoAttachmentFolder = DriveId.decodeFromString(row.getString("folder_address"));
+                } else if(row.getString("folder_type").equals("Sqlite")){
+                    sqliteTablesFolder = DriveId.decodeFromString(row.getString("folder_address"));
+                }
             }
-        });
+            uploadFiles("image");
+            uploadFiles("document");
+            uploadFiles("audio");
+            uploadFiles("video");
+
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
     }
 
@@ -188,6 +228,7 @@ public class JobSchedulerService extends JobService implements
                 }
                 showMessage("Created GroupIcons folder: " + result.getDriveFolder().getDriveId());
                 groupIconsFolder = result.getDriveFolder().getDriveId();
+                db.createDriveFolderInfo("GroupIcons", groupIconsFolder.encodeToString());
 
                 //Drive.DriveApi.newDriveContents(mGoogleApiClient)
                 //        .setResultCallback(driveContentsCallback);
@@ -208,6 +249,7 @@ public class JobSchedulerService extends JobService implements
                 }
                 showMessage("Created ImageAttachment folder: " + result.getDriveFolder().getDriveId());
                 imagesAttachmentFolder = result.getDriveFolder().getDriveId();
+                db.createDriveFolderInfo("ImageAttachment", imagesAttachmentFolder.encodeToString());
                 uploadFiles("image");
 
                 //Drive.DriveApi.newDriveContents(mGoogleApiClient)
@@ -229,6 +271,7 @@ public class JobSchedulerService extends JobService implements
                 }
                 showMessage("Created DocumentAttachment folder: " + result.getDriveFolder().getDriveId());
                 documentAttachmentFolder = result.getDriveFolder().getDriveId();
+                db.createDriveFolderInfo("DocumentAttachment", documentAttachmentFolder.encodeToString());
                 uploadFiles("document");
 
                 //Drive.DriveApi.newDriveContents(mGoogleApiClient)
@@ -250,6 +293,7 @@ public class JobSchedulerService extends JobService implements
                 }
                 showMessage("Created AudioAttachment folder: " + result.getDriveFolder().getDriveId());
                 audioAttachmentFolder = result.getDriveFolder().getDriveId();
+                db.createDriveFolderInfo("AudioAttachment", audioAttachmentFolder.encodeToString());
                 uploadFiles("audio");
 
                 //Drive.DriveApi.newDriveContents(mGoogleApiClient)
@@ -271,6 +315,7 @@ public class JobSchedulerService extends JobService implements
                 }
                 showMessage("Created VideoAttachment folder: " + result.getDriveFolder().getDriveId());
                 videoAttachmentFolder = result.getDriveFolder().getDriveId();
+                db.createDriveFolderInfo("VideoAttachment", audioAttachmentFolder.encodeToString());
                 uploadFiles("video");
 
                 //Drive.DriveApi.newDriveContents(mGoogleApiClient)
@@ -292,6 +337,7 @@ public class JobSchedulerService extends JobService implements
                 }
                 showMessage("Created Sqlite folder: " + result.getDriveFolder().getDriveId());
                 sqliteTablesFolder = result.getDriveFolder().getDriveId();
+                db.createDriveFolderInfo("Sqlite", sqliteTablesFolder.encodeToString());
 
                 //Drive.DriveApi.newDriveContents(mGoogleApiClient)
                 //        .setResultCallback(driveContentsCallback);
@@ -301,7 +347,6 @@ public class JobSchedulerService extends JobService implements
 
 
     private void uploadFiles(String type){
-        DatabaseHandler db = new DatabaseHandler(this);
 
         try{
             JSONArray files = db.getAllFiles(type);
@@ -318,6 +363,9 @@ public class JobSchedulerService extends JobService implements
                 File file = new File(url.getPath());
 
                 Toast.makeText(this, "file path " + url, Toast.LENGTH_SHORT);
+
+                String id = row.getString("uniqueid");
+                db.setBackup(id);
 
                 saveFiletoDrive(file, mime, type);
             }

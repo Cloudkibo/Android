@@ -197,9 +197,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "file_size TEXT, "
                 + "file_type TEXT, "
                 + "file_ext TEXT, "
+                + "isBackup INTEGER DEFAULT 0 , "
                 + "path TEXT "
                 + ")";
         db.execSQL(CREATE_FILES_INFO);
+
+        String CREATE_DRIVE_FOLDER_INFO = "CREATE TABLE DRIVEFOLDERINFO ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "folder_type TEXT, "
+                + "folder_address "
+                + ")";
+        db.execSQL(CREATE_DRIVE_FOLDER_INFO);
 
     }
 
@@ -230,6 +238,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS GROUPMEMBERREMOVEPENDING");
         db.execSQL("DROP TABLE IF EXISTS MUTESETTING");
         db.execSQL("DROP TABLE IF EXISTS FILESINFO");
+        db.execSQL("DROP TABLE IF EXISTS DRIVEFOLDERINFO");
 
         // Create tables again
         onCreate(db);
@@ -249,6 +258,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         db.close(); // Closing database connection
 
+    }
+
+    public void createDriveFolderInfo(String folder_type, String folder_address){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("folder_type", folder_type);
+        values.put("folder_address", folder_address);
+        //Inserting Row
+        db.insert("DRIVEFOLDERINFO", null, values);
     }
 
     public void updateFileInfo(String unique_id, String file_name, String file_size, String file_type, String file_ext, String path){
@@ -288,11 +306,39 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return filesInfo;
     }
 
+    public JSONArray getDriveFolderInfo() throws JSONException{
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT folder_type, folder_address from DRIVEFOLDERINFO";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        //Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("folder_type", cursor.getString(0));
+                contact.put("folder_address", cursor.getString(1));
+                groups.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return groups;
+
+    }
+
     public JSONArray getAllFiles(String type) throws JSONException {
         JSONArray groups = new JSONArray();
 
         String selectQuery = "SELECT uniqueid, file_name, file_size, file_type, file_ext, path FROM FILESINFO " +
-                "WHERE file_type='"+ type+"'";
+                "WHERE file_type='"+ type+"' AND isBackup=0";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -318,6 +364,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
         // return user
         return groups;
+    }
+
+    public void setBackup(String unique_id) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String updateQuery = "UPDATE FILESINFO" +
+                " SET isBackup="+ 1 +" WHERE uniqueid='"+unique_id+"'";
+
+        try {
+            db.execSQL(updateQuery);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        db.close();
     }
 
 
