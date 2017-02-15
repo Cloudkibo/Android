@@ -1093,6 +1093,14 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							act1.createContact(cTemp.getMsg().split(":")[1], cTemp.getMsg().split(":")[0]);
 						}
 					});
+					TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
+					DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+					DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+					try {
+						lbl.setText(outputFormat.format(inputFormat.parse(c.getDate())));
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
 				}
 				return  v;
 			}
@@ -1101,15 +1109,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				v = LayoutInflater.from(getActivity()).inflate(
 						R.layout.chat_item_image, null);
 				String name = user.get("display_name");
-				TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
-				DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-				DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
-				try {
-					lbl.setText(outputFormat.format(inputFormat.parse(c.getDate())));
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-				lbl = (TextView) v.findViewById(R.id.lblContactPhone);
+
+				TextView lbl = (TextView) v.findViewById(R.id.lblContactPhone);
 				if (c.isSuccess())
 					lbl.setText(c.getStatus());
 				else
@@ -1118,6 +1119,14 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					v = LayoutInflater.from(getActivity()).inflate(
 							R.layout.chat_item_image_received, null);
 					name = contactName;
+				}
+				lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
+				DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+				DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+				try {
+					lbl.setText(outputFormat.format(inputFormat.parse(c.getDate())));
+				} catch (ParseException e) {
+					e.printStackTrace();
 				}
 				final String latitude = c.getMsg().split(":")[0];
 				final String longitude = c.getMsg().split(":")[1];
@@ -1144,6 +1153,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 								Uri.parse(uri)));
 					}
 				});
+
 				return  v;
 			}
 
@@ -1151,15 +1161,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				v = LayoutInflater.from(getActivity()).inflate(
 						R.layout.chat_item_image, null);
 				String name = user.get("display_name");
-				TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
-				DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-				DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
-				try {
-					lbl.setText(outputFormat.format(inputFormat.parse(c.getDate())));
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-				lbl = (TextView) v.findViewById(R.id.lblContactPhone);
+
+				TextView lbl = (TextView) v.findViewById(R.id.lblContactPhone);
 				if (c.isSuccess())
 					lbl.setText(c.getStatus());
 				else
@@ -1169,6 +1172,16 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							R.layout.chat_item_image_received, null);
 					name = contactName;
 				}
+
+				lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
+				DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+				DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+				try {
+					lbl.setText(outputFormat.format(inputFormat.parse(c.getDate())));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+
 				ImageView container_image = (ImageView) v.findViewById(R.id.row_stamp);
 				Glide
 						.with(MainActivity.mainActivity)
@@ -1196,15 +1209,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				v = LayoutInflater.from(getActivity()).inflate(
 						R.layout.chat_item_file, null);
 				String name = user.get("display_name");
-				TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
-				DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-				DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
-				try {
-					lbl.setText(outputFormat.format(inputFormat.parse(c.getDate())));
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-				lbl = (TextView) v.findViewById(R.id.lblContactPhone);
+
+				TextView lbl = (TextView) v.findViewById(R.id.lblContactPhone);
 				if (c.isSuccess())
 					lbl.setText(c.getStatus());
 				else
@@ -1213,6 +1219,15 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					v = LayoutInflater.from(getActivity()).inflate(
 							R.layout.chat_item_file_received, null);
 					name = contactName;
+				}
+
+				lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
+				DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+				DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+				try {
+					lbl.setText(outputFormat.format(inputFormat.parse(c.getDate())));
+				} catch (ParseException e) {
+					e.printStackTrace();
 				}
 
 				TextView msgView = (TextView) v.findViewById(R.id.file_name);
@@ -1237,15 +1252,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				v = LayoutInflater.from(getActivity()).inflate(
 						R.layout.chat_item_audio, null);
 				String name = user.get("display_name");
-				TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
-				DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-				DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
-				try {
-					lbl.setText(outputFormat.format(inputFormat.parse(c.getDate())));
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-				lbl = (TextView) v.findViewById(R.id.lblContactPhone);
+
+				TextView lbl = (TextView) v.findViewById(R.id.lblContactPhone);
 				if (c.isSuccess())
 					lbl.setText(c.getStatus());
 				else
@@ -1254,6 +1262,15 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					v = LayoutInflater.from(getActivity()).inflate(
 							R.layout.chat_item_audio_received, null);
 					name = contactName;
+				}
+
+				lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
+				DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+				DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+				try {
+					lbl.setText(outputFormat.format(inputFormat.parse(c.getDate())));
+				} catch (ParseException e) {
+					e.printStackTrace();
 				}
 
 				TextView msgView = (TextView) v.findViewById(R.id.file_name);
@@ -1283,32 +1300,30 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			}
 
 
-			if(true){//(c.getType().equals("chat")) {
-				TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
+
+			TextView lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
 //				String date_temp = c.getDate().replaceAll("-", "/").split(" ")[0].split("/")[1] + "/" +c.getDate().replaceAll("-", "/").split(" ")[0].split("/")[2];
 //				c.getDate() +" - "+ date_temp+" "+Utility.dateConversion(c.getDate().replaceAll("-", "/").split("/",2)[1].split(" ")[1])
-				DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-				DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
-				try {
-					lbl.setText(outputFormat.format(inputFormat.parse(c.getDate())));
-				} catch (ParseException e) {
-					e.printStackTrace();
-				}
-
-				TextView phone = (TextView) v.findViewById(R.id.phone);
-				phone.setVisibility(View.GONE);
-
-				lbl = (TextView) v.findViewById(R.id.lbl2);
-				lbl.setText(c.getMsg());
-
-				lbl = (TextView) v.findViewById(R.id.lblContactPhone);
-				if (c.isSuccess())
-					lbl.setText(c.getStatus());
-				else
-					lbl.setText("");
-			} else {
-
+			DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+			DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+			try {
+				lbl.setText(outputFormat.format(inputFormat.parse(c.getDate())));
+			} catch (ParseException e) {
+				e.printStackTrace();
 			}
+
+			TextView phone = (TextView) v.findViewById(R.id.phone);
+			phone.setVisibility(View.GONE);
+
+			lbl = (TextView) v.findViewById(R.id.lbl2);
+			lbl.setText(c.getMsg());
+
+			lbl = (TextView) v.findViewById(R.id.lblContactPhone);
+			if (c.isSuccess())
+				lbl.setText(c.getStatus());
+			else
+				lbl.setText("");
+
 
 			return v;
 		}
