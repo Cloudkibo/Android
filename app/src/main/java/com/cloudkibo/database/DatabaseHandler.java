@@ -110,6 +110,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "fromperson TEXT "+ ")";
         db.execSQL(CREATE_CHAT_HISTORY_SYNC_TABLE);
 
+        String CREATE_GROUP_CHAT_HISTORY_SYNC_TABLE = "CREATE TABLE group_chat_history_sync ("
+                + "id INTEGER PRIMARY KEY, "
+                + "status TEXT, "
+                + "uniqueid TEXT, "
+                + "fromperson TEXT "+ ")";
+        db.execSQL(CREATE_GROUP_CHAT_HISTORY_SYNC_TABLE);
+
 
         //Below are the tables for group chat.
         String CREATE_GROUP = "CREATE TABLE GROUPINFO ("
@@ -239,7 +246,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS MUTESETTING");
         db.execSQL("DROP TABLE IF EXISTS FILESINFO");
         db.execSQL("DROP TABLE IF EXISTS DRIVEFOLDERINFO");
-
+        db.execSQL("DROP TABLE IF EXISTS group_chat_history_sync");
         // Create tables again
         onCreate(db);
     }
@@ -1679,6 +1686,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
+    public void addGroupChatSyncHistory(String status, String uniqueid, String fromperson) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put("status", status);
+        values.put("uniqueid", uniqueid);
+        values.put("fromperson", fromperson);
+
+        // Inserting Row
+        db.insert("group_chat_history_sync", null, values);
+        db.close(); // Closing database connection
+    }
+
 
 
 
@@ -2083,6 +2104,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public JSONArray getChatHistoryStatus() throws JSONException {
         JSONArray chats = new JSONArray();
         String selectQuery = "SELECT uniqueid, status, fromperson FROM chat_history_sync";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("uniqueid", cursor.getString(0));
+                contact.put("status", cursor.getString(1));
+                contact.put("fromperson", cursor.getString(2));
+
+                chats.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return chats;
+    }
+
+    public JSONArray getGroupChatHistoryStatus() throws JSONException {
+        JSONArray chats = new JSONArray();
+        String selectQuery = "SELECT uniqueid, status, fromperson FROM group_chat_history_sync";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -2587,6 +2636,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         String deleteQuery = "DELETE FROM chat_history_sync WHERE uniqueid='"+ uniqueid +"'";
+
+        db.execSQL(deleteQuery);
+        db.close();
+    }
+
+    public void resetSpecificGroupChatHistorySync(String uniqueid){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String deleteQuery = "DELETE FROM group_chat_history_sync WHERE uniqueid='"+ uniqueid +"'";
 
         db.execSQL(deleteQuery);
         db.close();
