@@ -27,7 +27,7 @@ import com.cloudkibo.library.Utility;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 21;
+    private static final int DATABASE_VERSION = 22;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -77,7 +77,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + Contacts.SHARED_DETAILS + " TEXT,"
                 + Contacts.CONTACT_STATUS + " TEXT,"
                 + "on_cloudkibo" + " TEXT,"
-                + "image_uri TEXT DEFAULT NULL "
+                + "image_uri TEXT DEFAULT NULL,"
+                + "blocked_me" + " TEXT," // possible values : "true" or "false"
+                + "blocked_by_me" + " TEXT " // possible values : "true" or "false"
                 + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
 
@@ -1653,6 +1655,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void blockContact(String phone){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("blocked_by_me", "true");
+        db.update(Contacts.TABLE_CONTACTS,values,"phone='"+phone+"'",null);
+        db.close(); // Closing database connection
+    }
+
+    public void unBlockContact(String phone){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("blocked_by_me", "false");
+        db.update(Contacts.TABLE_CONTACTS,values,"phone='"+phone+"'",null);
+        db.close(); // Closing database connection
+    }
 
     /////////////////////////////////////////////////////////////////////
     // Storing userchat details in database                            //
@@ -1804,6 +1821,62 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 contact.put("on_cloudkibo", cursor.getString(6));
 
         		contacts.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return contacts;
+    }
+
+    public JSONArray getContactsBlockedByMe() throws JSONException {
+        JSONArray contacts = new JSONArray();
+        String selectQuery = "SELECT display_name, image_uri, phone FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='true' and blocked_by_me='true'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("display_name", cursor.getString(1));
+                contact.put("image_uri", cursor.getString(2));
+                contact.put(Contacts.CONTACT_PHONE, cursor.getString(3));
+
+                contacts.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return contacts;
+    }
+
+    public JSONArray getContactsWhoBlockedMe() throws JSONException {
+        JSONArray contacts = new JSONArray();
+        String selectQuery = "SELECT display_name, image_uri, phone FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='true' and blocked_me='true'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("display_name", cursor.getString(1));
+                contact.put("image_uri", cursor.getString(2));
+                contact.put(Contacts.CONTACT_PHONE, cursor.getString(3));
+
+                contacts.put(contact);
 
                 cursor.moveToNext();
             }

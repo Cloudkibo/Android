@@ -300,6 +300,12 @@ public class ChatList extends CustomFragment implements IFragmentName
 		menu.setHeaderTitle(getString(R.string.common_select_action));
 		menu.add(0, v.getId(), 0, "Archive");
 
+		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuinfo;
+		int position = info.position;
+		ChatItem item = (ChatItem) chatList.get(position);
+		if (!item.isGroup()) {
+			menu.add(0, v.getId(), 0, "Block");
+		}
 
 	}
 
@@ -330,6 +336,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 					adp.notifyDataSetChanged();
 				}
 
+			} else if (item.getTitle() == "Block") {
+				// todo logic to block someone will be added here.
 			}
 		} catch(Exception e){
 			e.printStackTrace();
