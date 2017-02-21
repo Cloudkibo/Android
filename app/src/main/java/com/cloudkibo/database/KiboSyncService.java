@@ -181,6 +181,18 @@ public class KiboSyncService extends Service {
 
             }
 
+            JSONArray seenGroupChats = db.getGroupChatHistoryStatus();
+
+            for (int i=0; i < seenGroupChats.length(); i++) {
+                JSONObject row = seenGroupChats.getJSONObject(i);
+
+                sendGroupMessageStatusUsingAPI(
+                        row.getString("status"),
+                        row.getString("uniqueid")
+                );
+
+            }
+
             JSONArray unSyncedCreatedGroups = db.getGroupsServerPending();
 
             for(int i=0; i<unSyncedCreatedGroups.length(); i++) {
@@ -481,6 +493,39 @@ public class KiboSyncService extends Service {
                             db = new DatabaseHandler(getApplicationContext());
                             db.updateChat(status, row.getString("uniqueid"));
                         }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.execute();
+    }
+
+    public void sendGroupMessageStatusUsingAPI(final String status, final String uniqueid){
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunction = new UserFunctions(getApplicationContext());
+
+                return userFunction.updateGroupChatStatusToSeen(uniqueid, authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                try {
+
+                    if (row != null) {
+                        if(row.has("status")) {
+                            String demo = row.getString("uniqueid");
+                            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                            db.resetSpecificGroupChatHistorySync(uniqueid);
+                            db = new DatabaseHandler(getApplicationContext());
+                            db.updateGroupChatStatus(status, uniqueid);
+                        }
+
                     }
 
                 } catch (JSONException e) {
