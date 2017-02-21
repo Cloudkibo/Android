@@ -436,7 +436,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                 if(!display_name.equals("")){
                     from = display_name;
                 }
-
+                final String tmpFrom = from;
                 JSONArray msgStatus = db.getGroupMessageStatusSeen(unique_id);
                 String status = "";
 //                if(msgStatus.length() != 0){
@@ -468,13 +468,17 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                                 @Override
                                 protected JSONObject doInBackground(String... args) {
                                     UserFunctions userFunctions = new UserFunctions(getActivity().getApplicationContext());
+                                    updateChatStatus(uniqueIdTemp, "seen");
+                                    addChatHistorySync(uniqueIdTemp, tmpFrom);
                                     return userFunctions.updateGroupChatStatusToSeen(uniqueIdTemp, authtoken);
                                 }
                                 @Override
                                 protected void onPostExecute(JSONObject row) {
                                     if(row != null){
-                                        DatabaseHandler db= new DatabaseHandler(getActivity().getApplicationContext());
-                                        db.updateGroupChatStatus(uniqueIdTemp, "seen");
+                                        if(row.has("status")) {
+                                            resetSpecificChatHistorySync(uniqueIdTemp);
+                                            updateChatStatus(uniqueIdTemp, "seen");
+                                        }
                                     }
                                 }
                             }.execute();
@@ -496,7 +500,32 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         }
     }
 
+    public void updateChatStatus(String uniqueid, String status){
+        try {
+            DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+            db.updateGroupChatStatus(status, uniqueid);
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
+    }
 
+    public void addChatHistorySync(String uniqueid, String from){
+        try {
+            DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+            db.addGroupChatSyncHistory("seen", uniqueid, from);
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
+    }
+
+    public void resetSpecificChatHistorySync(String uniqueid){
+        try {
+            DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+            db.resetSpecificGroupChatHistorySync(uniqueid);
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
+    }
 
 
     public String getMembersName(String group_id){
