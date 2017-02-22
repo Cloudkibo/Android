@@ -239,6 +239,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 		menu.setHeaderTitle(getString(R.string.common_select_action));
 		menu.add(0, v.getId(), 0, getString(R.string.common_call));
 		menu.add(0, v.getId(), 0, getString(R.string.common_transfer_file));
+		menu.add(0, v.getId(), 0, getString(R.string.block));
 	}
 
 	@Override
@@ -262,6 +263,9 @@ public class ContactList extends CustomFragment implements IFragmentName
 		{
 			MainActivity act1 = (MainActivity)getActivity();
 			act1.sendFileToThisPerson(contactList.get(info.position).getUserName());
+		}
+		else if (item.getTitle() == getString(R.string.block)) {
+			// todo logic to block contact here
 		}
 		else
 		{

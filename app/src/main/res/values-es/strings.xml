@@ -104,4 +104,7 @@
     <string name="menu_send_location">Enviar ubicación</string>
     <string name="menu_send_audio">Enviar audio</string>
     <string name="side_menu_contacts_invite">Invitar Contactos</string>
+    <string name="archive">Enviar a archivo</string>
+    <string name="unarchive">Eliminar del archivo</string>
+    <string name="unblock_contact">Desatascar</string>
 </resources>

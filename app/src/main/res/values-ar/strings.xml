@@ -104,4 +104,7 @@
     <string name="menu_send_location">إرسال الموقع</string>
     <string name="menu_send_audio">إرسال الصوت</string>
     <string name="side_menu_contacts_invite">دعوة اتصالات</string>
+    <string name="archive">ارسل الى أرشفة</string>
+    <string name="unarchive">إزالة من أرشيف</string>
+    <string name="unblock_contact">رفع الحظر</string>
 </resources>

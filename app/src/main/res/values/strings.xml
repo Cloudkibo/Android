@@ -37,6 +37,7 @@
 
     <string name="block">Block</string>
     <string name="add_contact">Add Contact</string>
+    <string name="unblock_contact">Unblock</string>
 
     <string name="first_name" translatable="false">First Name</string>
     <string name="last_name" translatable="false">Last Name</string>
@@ -55,6 +56,8 @@
 
 
     <string name="archived_menu_item">Archived</string>
+    <string name="archive">Send to archive</string>
+    <string name="unarchive">Remove from archive</string>
 
 
     <string name="side_menu_chat">Chat</string>
