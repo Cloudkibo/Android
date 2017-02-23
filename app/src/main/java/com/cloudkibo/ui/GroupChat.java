@@ -145,8 +145,14 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			tab1.setOnClickListener(new View.OnClickListener() {
 				@Override
 				public void onClick(View view) {
-					MainActivity act1 = (MainActivity) getActivity();
-					act1.ToastNotify2("Under Construction");
+					JSONObject body = new JSONObject();
+					try {
+						body.put("phone", contactPhone);
+						Utility.blockContact(getActivity().getApplicationContext(), body, authtoken);
+					} catch (JSONException e) {
+						e.printStackTrace();
+						Utility.sendLogToServer(getActivity().getApplicationContext(), "Block Contact failed on android in GroupChat");
+					}
 				}
 			});
 			Button tab2 = (Button) v.findViewById(R.id.tab2);
@@ -370,6 +376,16 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			}
 
 			return true;
+		}
+		if(id == R.id.blockThisContact){
+			JSONObject body = new JSONObject();
+			try {
+				body.put("phone", contactPhone);
+				Utility.blockContact(getActivity().getApplicationContext(), body, authtoken);
+			} catch (JSONException e) {
+				e.printStackTrace();
+				Utility.sendLogToServer(getActivity().getApplicationContext(), "Block Contact failed on android in GroupChat");
+			}
 		}
 
 		return super.onOptionsItemSelected(item);

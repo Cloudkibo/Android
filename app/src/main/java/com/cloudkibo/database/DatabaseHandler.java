@@ -1671,6 +1671,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
+    public void blockedMe(String phone){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("blocked_me", "true");
+        db.update(Contacts.TABLE_CONTACTS,values,"phone='"+phone+"'",null);
+        db.close(); // Closing database connection
+    }
+
+    public void unBlockedMe(String phone){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("blocked_me", "false");
+        db.update(Contacts.TABLE_CONTACTS,values,"phone='"+phone+"'",null);
+        db.close(); // Closing database connection
+    }
+
     /////////////////////////////////////////////////////////////////////
     // Storing userchat details in database                            //
     /////////////////////////////////////////////////////////////////////
@@ -1953,7 +1969,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public JSONArray getSpecificContact(String phone) throws JSONException {
         JSONArray contacts = new JSONArray();
-        String selectQuery = "SELECT  * FROM " + Contacts.TABLE_CONTACTS +" where phone='"+ phone +"'";
+        String selectQuery = "SELECT phone, display_name, _id, detailsshared, status, on_cloudkibo, blocked_by_me, blocked_me FROM " + Contacts.TABLE_CONTACTS +" where phone='"+ phone +"'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -1964,14 +1980,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             while (cursor.isAfterLast() != true) {
 
                 JSONObject contact = new JSONObject();
-                //contact.put(Contacts.CONTACT_FIRSTNAME, cursor.getString(1));
-                //contact.put(Contacts.CONTACT_LASTNAME, cursor.getString(2));
                 contact.put(Contacts.CONTACT_PHONE, cursor.getString(1));
                 contact.put("display_name", cursor.getString(2));
                 contact.put(Contacts.CONTACT_UID, cursor.getString(3));
                 contact.put(Contacts.SHARED_DETAILS, cursor.getString(4));
                 contact.put(Contacts.CONTACT_STATUS, cursor.getString(5));
                 contact.put("on_cloudkibo", cursor.getString(6));
+                contact.put("blocked_by_me", cursor.getString(7));
+                contact.put("blocked_me", cursor.getString(8));
 
                 contacts.put(contact);
 

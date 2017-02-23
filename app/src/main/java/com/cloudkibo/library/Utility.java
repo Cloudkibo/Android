@@ -173,6 +173,37 @@ public class Utility {
         }.execute();
     }
 
+    public static void blockContact(final Context ctx, final JSONObject body, final String authtoken){
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunction = new UserFunctions(ctx);
+                return userFunction.blockContact(body, authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                try {
+
+                    if (row != null) {
+                        if(row.has("status")){
+                            if(!row.getString("status").equals("Successfully blocked.")){
+                                DatabaseHandler db = new DatabaseHandler(ctx);
+                                db.blockContact(body.getString("phone"));
+                                sendNotification(ctx, "Blocked Contacted", "You blocked this contact.");
+                            }
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.execute();
+    }
+
     public static String dateConversion(String time){
 
         try {

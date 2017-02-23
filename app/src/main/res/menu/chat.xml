@@ -52,4 +52,11 @@
         android:title="@string/menu_send_location"
         />
 
+    <item
+        android:id="@+id/blockThisContact"
+        android:icon="@android:drawable/ic_dialog_map"
+        app:showAsAction="ifRoom"
+        android:title="@string/block"
+        />
+
 </menu>

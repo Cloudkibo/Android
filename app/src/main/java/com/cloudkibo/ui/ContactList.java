@@ -265,7 +265,14 @@ public class ContactList extends CustomFragment implements IFragmentName
 			act1.sendFileToThisPerson(contactList.get(info.position).getUserName());
 		}
 		else if (item.getTitle() == getString(R.string.block)) {
-			// todo logic to block contact here
+			JSONObject body = new JSONObject();
+			try {
+				body.put("phone", contactList.get(info.position).getPhone());
+				Utility.blockContact(getActivity().getApplicationContext(), body, authtoken);
+			} catch (JSONException e) {
+				e.printStackTrace();
+				Utility.sendLogToServer(getActivity().getApplicationContext(), "Block Contact failed on android in GroupChat");
+			}
 		}
 		else
 		{

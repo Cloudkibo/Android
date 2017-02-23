@@ -337,7 +337,15 @@ public class ChatList extends CustomFragment implements IFragmentName
 				}
 
 			} else if (item.getTitle() == getString(R.string.block)) {
-				// todo logic to block someone will be added here.
+				ChatItem cItem = (ChatItem) chatList.get(info.position);
+				JSONObject body = new JSONObject();
+				try {
+					body.put("phone", cItem.getTitle());
+					Utility.blockContact(getActivity().getApplicationContext(), body, authtoken);
+				} catch (JSONException e) {
+					e.printStackTrace();
+					Utility.sendLogToServer(getActivity().getApplicationContext(), "Block Contact failed on android in GroupChat");
+				}
 			}
 		} catch(Exception e){
 			e.printStackTrace();

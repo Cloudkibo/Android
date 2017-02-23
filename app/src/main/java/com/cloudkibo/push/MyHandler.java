@@ -67,6 +67,29 @@ public class MyHandler extends NotificationsHandler {
             payload = new JSONObject(nhMessage);
             Log.v("MyHandler", "Push received: "+ payload.toString());
             if (payload.has("type")) {
+
+                // don't accept anything from contact who is blocked
+                if(payload.has("senderId")){
+                    DatabaseHandler db = new DatabaseHandler(ctx);
+                    JSONArray contact = db.getSpecificContact(payload.getString("senderId"));
+                    if (contact.length() > 0) {
+                        if (contact.getJSONObject(0).getString("blocked_by_me").equals("true") ||
+                                contact.getJSONObject(0).getString("blocked_me").equals("true")) {
+                            return ;
+                        }
+                    }
+                }
+
+                if (payload.getString("type").equals("block:blockedyou")) {
+                    DatabaseHandler db = new DatabaseHandler(ctx);
+                    db.blockedMe(payload.getString("senderId"));
+                }
+
+                if (payload.getString("type").equals("block:unblockedyou")) {
+                    DatabaseHandler db = new DatabaseHandler(ctx);
+                    db.unBlockedMe(payload.getString("senderId"));
+                }
+
                 if(payload.getString("type").equals("group:you_are_added")){
                     if (MainActivity.isVisible) {
                         MainActivity.mainActivity.ToastNotify2("You are added to a group.");
@@ -148,6 +171,18 @@ public class MyHandler extends NotificationsHandler {
                     return ;
                 } else if(payload.getString("type").equals("chat") || payload.getString("type").equals("contact")
                         || payload.getString("type").equals("location") || payload.getString("type").equals("file")) {
+
+                    // don't accept anything from contact who is blocked
+                    if(payload.has("senderId")){
+                        DatabaseHandler db = new DatabaseHandler(ctx);
+                        JSONArray contact = db.getSpecificContact(payload.getString("senderId"));
+                        if (contact.length() > 0) {
+                            if (contact.getJSONObject(0).getString("blocked_by_me").equals("true") ||
+                                    contact.getJSONObject(0).getString("blocked_me").equals("true")) {
+                                return ;
+                            }
+                        }
+                    }
 
                     loadSpecificChatFromServer(payload.getString("uniqueId"));
 

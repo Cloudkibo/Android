@@ -74,6 +74,7 @@ public class UserFunctions {
     private String updateMemberRole;
     private String lastSeenStatus;
     private String confirmFileDownloadURL;
+    private String blockContactURL;
     
     
     
@@ -133,6 +134,7 @@ public class UserFunctions {
         updateMemberRole =        baseURL + "/api/groupmessaginguser/updateRole";
         lastSeenStatus =          baseURL + "/api/users/getUserInfo";
         confirmFileDownloadURL =  baseURL + "/api/filetransfers/confirmdownload";
+        blockContactURL =         baseURL + "/api/contactslist/blockContact";
 
         connection = new ConnectionManager();
     }
@@ -302,6 +304,10 @@ public class UserFunctions {
         }
         JSONObject response = connection.sendObjectToServer(sendChatURL, authtoken, params);
         return response;
+    }
+
+    public JSONObject blockContact(JSONObject data, String authtoken){
+        return connection.sendJSONObjectToServer(blockContactURL, authtoken, data);
     }
 
     public JSONObject sendCreateGroupToServer(JSONObject data, String authtoken){
