@@ -1980,14 +1980,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             while (cursor.isAfterLast() != true) {
 
                 JSONObject contact = new JSONObject();
-                contact.put(Contacts.CONTACT_PHONE, cursor.getString(1));
-                contact.put("display_name", cursor.getString(2));
-                contact.put(Contacts.CONTACT_UID, cursor.getString(3));
-                contact.put(Contacts.SHARED_DETAILS, cursor.getString(4));
-                contact.put(Contacts.CONTACT_STATUS, cursor.getString(5));
-                contact.put("on_cloudkibo", cursor.getString(6));
-                contact.put("blocked_by_me", cursor.getString(7));
-                contact.put("blocked_me", cursor.getString(8));
+                contact.put(Contacts.CONTACT_PHONE, cursor.getString(0));
+                contact.put("display_name", cursor.getString(1));
+                contact.put(Contacts.CONTACT_UID, cursor.getString(2));
+                contact.put(Contacts.SHARED_DETAILS, cursor.getString(3));
+                contact.put(Contacts.CONTACT_STATUS, cursor.getString(4));
+                contact.put("on_cloudkibo", cursor.getString(5));
+                contact.put("blocked_by_me", cursor.getString(6));
+                contact.put("blocked_me", cursor.getString(7));
 
                 contacts.put(contact);
 
