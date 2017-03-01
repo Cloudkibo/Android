@@ -144,6 +144,11 @@ public class MyHandler extends NotificationsHandler {
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();
                     groupUtility.downloadGroupIcon(payload.toString(), context, accessToken.getToken());
                 }
+                if(payload.getString("type").equals("group:name_update")){
+                    GroupUtility groupUtility = new GroupUtility(context);
+                    final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+                    groupUtility.updateGroupName(payload.toString(), accessToken.getToken());
+                }
                 if(payload.getString("type").equals("group:msg_status_changed")){
                     GroupUtility groupUtility = new GroupUtility(context);
                     final AccessToken accessToken = AccountKit.getCurrentAccessToken();

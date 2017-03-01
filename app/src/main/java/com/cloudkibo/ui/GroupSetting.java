@@ -214,6 +214,19 @@ public class GroupSetting extends CustomFragment implements IFragmentName
 
             return true;
         }
+        if(id == R.id.grpNameChange){
+            ChangeGroupName cGNameFrag = new ChangeGroupName();
+            Bundle bundle = new Bundle();
+            bundle.putString("authtoken", authtoken);
+            bundle.putString("groupid", group_id);
+
+            cGNameFrag.setArguments(bundle);
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, cGNameFrag, "changeGroupNameTag").addToBackStack("GroupNameChange")
+                    .commit();
+            return true;
+
+        }
         return super.onOptionsItemSelected(item);
     }
 

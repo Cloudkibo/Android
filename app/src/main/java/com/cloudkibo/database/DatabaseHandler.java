@@ -548,6 +548,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
+    public void updateGroupName(String group_unique_id, String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put("group_name", name);
+        db.update("GROUPINFO", args,"unique_id='"+group_unique_id+"'", null);
+        db.close();
+    }
+
     public void updateGroupChatStatus(String msg_unique_id, String status){
             SQLiteDatabase db = this.getWritableDatabase();
             ContentValues args = new ContentValues();

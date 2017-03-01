@@ -65,6 +65,7 @@ public class UserFunctions {
     private String getGroupInfo;
     private String getMyGroups;
     private String sendGroupChat;
+    private String sendChangedGroupName;
     private String addGroupMembers;
     private String leaveGroup;
     private String removeMember;
@@ -128,6 +129,7 @@ public class UserFunctions {
         getGroupInfo =            baseURL + "/api/groupmessaging/specificGroup";
         getMyGroups =             baseURL + "/api/groupmessaginguser/mygroups";
         sendGroupChat =           baseURL + "/api/groupchat/";
+        sendChangedGroupName =    baseURL + "/api/groupmessaging/updateGroupName";
         addGroupMembers =         baseURL + "/api/groupmessaginguser/";
         leaveGroup =              baseURL + "/api/groupmessaginguser/leaveGroup";
         removeMember =            baseURL + "/api/groupmessaginguser/removeFromGroup";
@@ -371,6 +373,16 @@ public class UserFunctions {
         params.add(new BasicNameValuePair("from_fullname", from_fullname));
         params.add(new BasicNameValuePair("unique_id", unique_id));
         JSONObject response = connection.sendObjectToServer(sendGroupChat, authtoken, params);
+        return response;
+    }
+
+    public JSONObject sendChangedGroupName(String group_unique_id, String new_name, String authtoken){
+        List <NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("mygroupname", new_name));
+        params.add(new BasicNameValuePair("unique_id", group_unique_id));
+
+        JSONObject response = connection.sendObjectToServer(sendChangedGroupName, authtoken, params);
         return response;
     }
 

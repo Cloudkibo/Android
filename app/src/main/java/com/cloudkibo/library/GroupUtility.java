@@ -678,6 +678,20 @@ public class GroupUtility {
 
     }
 
+    public void updateGroupName(String payload, String auth_token){
+        try {
+            JSONObject body = new JSONObject(payload);
+            final String unique_id = randomString();
+            db.addGroupMessage(body.getString("groupId"), "Group Name was updated to " +body.getString("new_name")+ " by " + db.getContactName(body.getString("senderId")) , db.getUserDetails().get("phone"),"", unique_id, "log");
+            db.updateGroupName(body.getString("groupId"), body.getString("new_name"));
+
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
     // todo need to discuss with @dayem
     public void loadSpecificGroupChat(final String uniqueid, final String authtoken){
 
