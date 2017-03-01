@@ -7,5 +7,10 @@
         app:showAsAction="always"
         android:title="@string/menu_change_group_image"
         />
+    <item
+        android:id="@+id/grpNameChange"
+        app:showAsAction="always"
+        android:title="Change Group Name"
+        />
 
 </menu>
