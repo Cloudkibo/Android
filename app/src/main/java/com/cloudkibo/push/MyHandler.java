@@ -83,11 +83,17 @@ public class MyHandler extends NotificationsHandler {
                 if (payload.getString("type").equals("block:blockedyou")) {
                     DatabaseHandler db = new DatabaseHandler(ctx);
                     db.blockedMe(payload.getString("senderId"));
+                    if (MainActivity.isVisible) {
+                        MainActivity.mainActivity.handleBlockUnblock(payload.getString("senderId"), true);
+                    }
                 }
 
                 if (payload.getString("type").equals("block:unblockedyou")) {
                     DatabaseHandler db = new DatabaseHandler(ctx);
                     db.unBlockedMe(payload.getString("senderId"));
+                    if (MainActivity.isVisible) {
+                        MainActivity.mainActivity.handleBlockUnblock(payload.getString("senderId"), false);
+                    }
                 }
 
                 if(payload.getString("type").equals("group:you_are_added")){
@@ -303,6 +309,9 @@ public class MyHandler extends NotificationsHandler {
                                                         folder= getExternalStoragePublicDirForDocuments(ctx.getString(R.string.app_name));
                                                     }
                                                     if (rowTemp.getString("file_type").equals("audio")){
+                                                        folder= getExternalStoragePublicDirForDownloads(ctx.getString(R.string.app_name));
+                                                    }
+                                                    if (rowTemp.getString("file_type").equals("video")){
                                                         folder= getExternalStoragePublicDirForDownloads(ctx.getString(R.string.app_name));
                                                     }
                                                     FileOutputStream outputStream;

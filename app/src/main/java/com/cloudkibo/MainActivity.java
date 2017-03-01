@@ -713,6 +713,7 @@ public class MainActivity extends CustomActivity
         Intent getContentIntent = FileUtils.createGetContentIntentForImage();
         if(attachmentType.equals("document")) getContentIntent = FileUtils.createGetContentIntentForDocument();
         if(attachmentType.equals("audio")) getContentIntent = FileUtils.createGetContentIntentForAudio();
+        if(attachmentType.equals("video")) getContentIntent = FileUtils.createGetContentIntentForVideo();
 
         Intent intent = Intent.createChooser(getContentIntent, "Select file");
         startActivityForResult(intent, 112);
@@ -1199,6 +1200,33 @@ public class MainActivity extends CustomActivity
             kiboServiceIsBound = false;
         }
     };
+
+    public void handleBlockUnblock(String phone, final Boolean blocked){
+        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+        if(myFragment == null) return;
+        if(myFragment.getFragmentName().equals("ChatList")){
+            final ChatList myChatListFragment = (ChatList) myFragment;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    myChatListFragment.loadChatList();
+                }
+            });
+        }
+        if(myFragment.getFragmentName().equals("GroupChat"))
+        {
+            if(myFragment.getFragmentContactPhone().equals(phone)){
+                final GroupChat myGroupChatFragment = (GroupChat) myFragment;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        myGroupChatFragment.handleBlock(blocked);
+                    }
+                });
+            }
+        }
+    }
 
     public void handleIncomingStatusForSentMessage(String type, final JSONObject body) {
         IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);

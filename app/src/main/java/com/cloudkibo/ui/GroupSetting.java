@@ -191,9 +191,8 @@ public class GroupSetting extends CustomFragment implements IFragmentName
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         if (menu != null) {
             menu.findItem(R.id.archived).setVisible(false);
-            menu.findItem(R.id.language).setVisible(false);
-            menu.findItem(R.id.backup_setting).setVisible(false);
             menu.findItem(R.id.search_chats).setVisible(false);
+            menu.findItem(R.id.settings).setVisible(false);
         }
         inflater.inflate(R.menu.groupsetting, menu);  // Use filter.xml from step 1
         GroupUtility groupUtility = new GroupUtility(getContext());

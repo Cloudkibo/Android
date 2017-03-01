@@ -27,7 +27,7 @@ import com.cloudkibo.library.Utility;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 22;
+    private static final int DATABASE_VERSION = 23;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -78,8 +78,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + Contacts.CONTACT_STATUS + " TEXT,"
                 + "on_cloudkibo" + " TEXT,"
                 + "image_uri TEXT DEFAULT NULL,"
-                + "blocked_me" + " TEXT," // possible values : "true" or "false"
-                + "blocked_by_me" + " TEXT " // possible values : "true" or "false"
+                + "blocked_me" + " TEXT DEFAULT 'false'," // possible values : "true" or "false"
+                + "blocked_by_me" + " TEXT DEFAULT 'false' " // possible values : "true" or "false"
                 + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
 
@@ -1643,7 +1643,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         String updateQuery = "UPDATE " + Contacts.TABLE_CONTACTS +
-                " SET "+ Contacts.CONTACT_STATUS +"='"+ status +"', " + Contacts.CONTACT_UID +"='"+ id +"' "+
+                " SET "+ Contacts.CONTACT_STATUS +"='"+ status +"', " + Contacts.CONTACT_UID +"='"+ id +"', "+
+                " blocked_me='false', blocked_by_me='false' "+
                 " WHERE "+ Contacts.CONTACT_PHONE +"='"+phone+"'";
 
         try {
@@ -1783,7 +1784,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         JSONArray contacts = new JSONArray();
 //        String selectQuery = "SELECT  member_phone, isAdmin, date_joined, display_name  FROM GROUPMEMBER LEFT JOIN "+ Contacts.TABLE_CONTACTS +" ON phone = member_phone where group_unique_id='"+ group_id +"' AND membership_status='joined'";
 //        String selectQuery = "SELECT  contacts.phone, display_name, _id, detailsshared, status, on_cloudkibo, image_uri FROM " + Contacts.TABLE_CONTACTS +" LEFT JOIN CONTACT_IMAGE ON contacts.phone = CONTACT_IMAGE.phone where on_cloudkibo='true'";
-        String selectQuery = "SELECT  contacts.phone, display_name, _id, detailsshared, status, on_cloudkibo, image_uri FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='true'";
+        String selectQuery = "SELECT  contacts.phone, display_name, _id, detailsshared, status, on_cloudkibo, image_uri FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='true' and blocked_by_me='false' and blocked_me='false'";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
         // Move to first row
@@ -1816,7 +1817,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public JSONArray getContacts() throws JSONException {
     	JSONArray contacts = new JSONArray();
-        String selectQuery = "SELECT  * FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='true'";
+        String selectQuery = "SELECT  * FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='true' and blocked_by_me='false' and blocked_me='false'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -1849,7 +1850,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public JSONArray getContactsBlockedByMe() throws JSONException {
         JSONArray contacts = new JSONArray();
-        String selectQuery = "SELECT display_name, image_uri, phone FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='true' and blocked_by_me='true'";
+        String selectQuery = "SELECT _id, display_name, image_uri, phone, on_cloudkibo FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='true' and blocked_by_me='true'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -1860,9 +1861,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             while (cursor.isAfterLast() != true) {
 
                 JSONObject contact = new JSONObject();
+                contact.put("_id", cursor.getString(0));
                 contact.put("display_name", cursor.getString(1));
                 contact.put("image_uri", cursor.getString(2));
                 contact.put(Contacts.CONTACT_PHONE, cursor.getString(3));
+                contact.put("on_cloudkibo", cursor.getString(4));
 
                 contacts.put(contact);
 
@@ -1877,7 +1880,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     public JSONArray getContactsWhoBlockedMe() throws JSONException {
         JSONArray contacts = new JSONArray();
-        String selectQuery = "SELECT display_name, image_uri, phone FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='true' and blocked_me='true'";
+        String selectQuery = "SELECT _id, display_name, image_uri, phone FROM " + Contacts.TABLE_CONTACTS +" where on_cloudkibo='true' and blocked_me='true'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -1888,6 +1891,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             while (cursor.isAfterLast() != true) {
 
                 JSONObject contact = new JSONObject();
+                contact.put("_id", cursor.getString(0));
                 contact.put("display_name", cursor.getString(1));
                 contact.put("image_uri", cursor.getString(2));
                 contact.put(Contacts.CONTACT_PHONE, cursor.getString(3));
@@ -2258,7 +2262,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String selectQuery =
                 " SELECT "+ UserChat.USERCHAT_DATE +", contact_phone, " + UserChat.USERCHAT_MSG
                         +", image_uri FROM " + UserChat.TABLE_USERCHAT
-                        +" LEFT JOIN contacts ON contacts.phone = contact_phone WHERE isArchived=0"
+                        +" LEFT JOIN contacts ON contacts.phone = contact_phone WHERE"
+                        +" isArchived=0 and blocked_me='false' and blocked_by_me='false'"
                         +" GROUP BY contact_phone ORDER BY "+ UserChat.USERCHAT_DATE + " DESC";
 
         SQLiteDatabase db = this.getReadableDatabase();

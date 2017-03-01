@@ -42,6 +42,8 @@ public class UserFunctions {
     private String forpassURL;
     private String chgpassURL;
     private String getContactsURL;
+    private String getContactsWhoBlockedMeURL;
+    private String getContactsBlockedByMeURL;
     private String getPendingContactsURL;
     private String approveContactURL;
     private String rejectContactURL;
@@ -75,6 +77,7 @@ public class UserFunctions {
     private String lastSeenStatus;
     private String confirmFileDownloadURL;
     private String blockContactURL;
+    private String unBlockContactURL;
     
     
     
@@ -102,6 +105,8 @@ public class UserFunctions {
         forpassURL =              baseURL + "/api/users/resetpasswordrequest";
         chgpassURL =              baseURL + "/learn2crack_login_api/";
         getContactsURL =          baseURL + "/api/contactslist/";
+        getContactsWhoBlockedMeURL=baseURL + "/api/contactslist/blockedby";
+        getContactsBlockedByMeURL=baseURL + "/api/contactslist/blockedbyme";
         getPendingContactsURL =   baseURL + "/api/contactslist/pendingcontacts/";
         approveContactURL =       baseURL + "/api/contactslist/approvefriendrequest/";
         rejectContactURL =        baseURL + "/api/contactslist/rejectfriendrequest/";
@@ -135,6 +140,7 @@ public class UserFunctions {
         lastSeenStatus =          baseURL + "/api/users/getUserInfo";
         confirmFileDownloadURL =  baseURL + "/api/filetransfers/confirmdownload";
         blockContactURL =         baseURL + "/api/contactslist/blockContact";
+        unBlockContactURL =       baseURL + "/api/contactslist/unblockContact";
 
         connection = new ConnectionManager();
     }
@@ -288,6 +294,18 @@ public class UserFunctions {
         return contactslist;
 	}
 
+    public JSONArray getContactsListWhoBlockedMe(String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        JSONArray contactslist = connection.getArrayFromServer(getContactsWhoBlockedMeURL, authtoken);
+        return contactslist;
+    }
+
+    public JSONArray getContactsListBlockedByMe(String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        JSONArray contactslist = connection.getArrayFromServer(getContactsBlockedByMeURL, authtoken);
+        return contactslist;
+    }
+
     public JSONObject sendChatMessageToServer(JSONObject data, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         try{
@@ -308,6 +326,10 @@ public class UserFunctions {
 
     public JSONObject blockContact(JSONObject data, String authtoken){
         return connection.sendJSONObjectToServer(blockContactURL, authtoken, data);
+    }
+
+    public JSONObject unBlockContact(JSONObject data, String authtoken){
+        return connection.sendJSONObjectToServer(unBlockContactURL, authtoken, data);
     }
 
     public JSONObject sendCreateGroupToServer(JSONObject data, String authtoken){

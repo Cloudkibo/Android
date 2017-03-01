@@ -188,10 +188,55 @@ public class Utility {
 
                     if (row != null) {
                         if(row.has("status")){
-                            if(!row.getString("status").equals("Successfully blocked.")){
+                            if(row.getString("status").equals("Successfully blocked.")){
                                 DatabaseHandler db = new DatabaseHandler(ctx);
                                 db.blockContact(body.getString("phone"));
-                                sendNotification(ctx, "Blocked Contacted", "You blocked this contact.");
+                                sendNotification(ctx, "Blocked Contact", "You blocked one contact.");
+                                if (MainActivity.isVisible) {
+                                    MainActivity.mainActivity.handleBlockUnblock(body.getString("phone"), true);
+                                }
+                            }
+                        } else if (row.has("Error")) {
+                            if (row.getString("Error").equals("No Internet")) {
+                                sendNotification(ctx, "No Internet", "Contact was not blocked.");
+                            }
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.execute();
+    }
+
+    public static void unBlockContact(final Context ctx, final JSONObject body, final String authtoken){
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunction = new UserFunctions(ctx);
+                return userFunction.unBlockContact(body, authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                try {
+
+                    if (row != null) {
+                        if(row.has("status")){
+                            if(row.getString("status").equals("Successfully blocked.")){
+                                DatabaseHandler db = new DatabaseHandler(ctx);
+                                db.unBlockContact(body.getString("phone"));
+                                sendNotification(ctx, "Unblocked Contact", "You unblocked one contact.");
+                                if (MainActivity.isVisible) {
+                                    MainActivity.mainActivity.handleBlockUnblock(body.getString("phone"), false);
+                                }
+                            }
+                        } else if (row.has("Error")) {
+                            if (row.getString("Error").equals("No Internet")) {
+                                sendNotification(ctx, "No Internet", "Contact was not unblocked.");
                             }
                         }
                     }

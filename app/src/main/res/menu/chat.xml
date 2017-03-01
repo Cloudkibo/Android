@@ -39,6 +39,13 @@
         />
 
     <item
+        android:id="@+id/sendVideo"
+        android:icon="@android:drawable/presence_audio_online"
+        app:showAsAction="ifRoom"
+        android:title="@string/menu_send_video"
+        />
+
+    <item
         android:id="@+id/sendContact"
         android:icon="@drawable/ic_username"
         app:showAsAction="ifRoom"

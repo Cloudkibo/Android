@@ -761,6 +761,84 @@ public class KiboSyncService extends Service {
                     e.printStackTrace();
                 }
 
+                loadContactsWhoBlockedMe();
+            }
+
+        }.execute();
+
+    }
+
+    private void loadContactsWhoBlockedMe(){
+
+        new AsyncTask<String, String, JSONArray>() {
+
+            @Override
+            protected JSONArray doInBackground(String... args) {
+                UserFunctions userFunction = new UserFunctions(getApplicationContext());
+                JSONArray json = userFunction.getContactsListWhoBlockedMe(authtoken);
+                return json;
+            }
+
+            @Override
+            protected void onPostExecute(JSONArray jsonA) {
+                try {
+
+                    if (jsonA != null) {
+
+                        DatabaseHandler db = new DatabaseHandler(
+                                getApplicationContext());
+
+                        for (int i=0; i < jsonA.length(); i++) {
+                            JSONObject row = jsonA.getJSONObject(i);
+
+                            db.blockedMe(row.getJSONObject("contactid").getString("phone"));
+
+                        }
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                loadContactsBlockedByMe();
+            }
+
+        }.execute();
+
+    }
+
+    private void loadContactsBlockedByMe(){
+
+        new AsyncTask<String, String, JSONArray>() {
+
+            @Override
+            protected JSONArray doInBackground(String... args) {
+                UserFunctions userFunction = new UserFunctions(getApplicationContext());
+                JSONArray json = userFunction.getContactsListBlockedByMe(authtoken);
+                return json;
+            }
+
+            @Override
+            protected void onPostExecute(JSONArray jsonA) {
+                try {
+
+                    if (jsonA != null) {
+
+                        DatabaseHandler db = new DatabaseHandler(
+                                getApplicationContext());
+
+                        for (int i=0; i < jsonA.length(); i++) {
+                            JSONObject row = jsonA.getJSONObject(i);
+
+                            db.blockContact(row.getJSONObject("contactid").getString("phone"));
+
+                        }
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
                 loadMyGroupsFromServer();
             }
 
@@ -1142,7 +1220,7 @@ public class KiboSyncService extends Service {
                         // todo messages are already given to us by push.. the sync don't get any undelivered message.. needs to test more
 
                         if(result != null){
-                        Log.d("KiboSyncService", result.toString());
+                            Log.d("KiboSyncService", result.toString());
                         }
 
 

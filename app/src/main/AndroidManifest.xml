@@ -155,6 +155,14 @@
             android:name=".ui.BackSettingActivity"
             android:label="@string/app_name" />
         <activity
+            android:name=".ui.Settings"
+            android:label="@string/app_name"
+            android:theme="@style/Base.Theme.AppCompat.Light" />
+        <activity
+            android:name=".ui.BlockedContacts"
+            android:label="@string/app_name"
+            android:theme="@style/Base.Theme.AppCompat.Light" />
+        <activity
             android:name=".file.filechooser.FileChooserActivity"
             android:enabled="@bool/use_activity"
             android:exported="true"

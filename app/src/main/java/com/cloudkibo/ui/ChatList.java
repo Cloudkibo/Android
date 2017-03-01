@@ -233,10 +233,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		if (menu != null) {
 			menu.findItem(R.id.archived).setVisible(false);
-			menu.findItem(R.id.backup_setting).setVisible(false);
-			menu.findItem(R.id.language).setVisible(false);
 			menu.findItem(R.id.search_chats).setVisible(false);
-
+			menu.findItem(R.id.settings).setVisible(false);
 		}
 		inflater.inflate(R.menu.main, menu);  // Use filter.xml from step 1
 
@@ -275,7 +273,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 			search_view.setVisibility(View.VISIBLE);
 			return true;
 		}
-		if(id == R.id.backup_setting){
+		/*if(id == R.id.backup_setting){
 			Toast.makeText(getContext(), "Opening Backup Settings", Toast.LENGTH_LONG).show();
 //            BackupSetting backupSettingFragment = new BackupSetting();
 //            Bundle bundle = new Bundle();
@@ -286,8 +284,14 @@ public class ChatList extends CustomFragment implements IFragmentName
 //                    .commit();
 			startActivity(new Intent(getActivity().getApplicationContext(), BackSettingActivity.class));
 			return true;
-		} else if (id == R.id.language){
+		}
+		else if (id == R.id.language){
 			startActivity(new Intent(getActivity().getApplicationContext(), LocaleChange.class));
+		}*/
+		else if(id ==  R.id.settings) {
+			Intent i = new Intent(getActivity().getApplicationContext(), Settings.class);
+			i.putExtra("token", authtoken);
+			startActivity(i);
 		}
 
 		return super.onOptionsItemSelected(item);

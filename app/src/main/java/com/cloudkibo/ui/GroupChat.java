@@ -70,6 +70,7 @@ import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.CircleTransform;
+import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.ContactItem;
@@ -270,8 +271,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
 		if (menu != null) {
 			menu.findItem(R.id.archived).setVisible(false);
-			menu.findItem(R.id.language).setVisible(false);
-			menu.findItem(R.id.backup_setting).setVisible(false);
+			menu.findItem(R.id.settings).setVisible(false);
 		}
 		inflater.inflate(R.menu.chat, menu);  // Use filter.xml from step 1
 //		getActivity().getActionBar().setSubtitle("Last seen on: ");
@@ -353,6 +353,12 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		if(id == R.id.sendAudio){
 			MainActivity act2 = (MainActivity)getActivity();
 			act2.uploadChatAttachment("audio");
+
+			return true;
+		}
+		if(id == R.id.sendVideo){
+			MainActivity act2 = (MainActivity)getActivity();
+			act2.uploadChatAttachment("video");
 
 			return true;
 		}
@@ -694,6 +700,18 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 	}
 
+	public void handleBlock(Boolean blocked) {
+
+		final EditText my_message = (EditText) view.findViewById(R.id.txt);
+		if (blocked) {
+			my_message.setEnabled(false);
+			my_message.setHint("Chat Disabled");
+		} else {
+			my_message.setEnabled(true);
+			my_message.setHint(getString(R.string.type_msg));
+		}
+	}
+
 	public void updateFileDownloaded(String uniqueid){
 		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
 		JSONObject fileInfo = db.getFilesInfo(uniqueid);
@@ -967,7 +985,9 @@ public class GroupChat extends CustomFragment implements IFragmentName
 								if (row.getString("file_type").equals("audio")) {
 									folder = getExternalStoragePublicDirForDownloads(getActivity().getString(R.string.app_name));
 								}
-								// todo for video also -- in above conditions
+								if (row.getString("file_type").equals("video")) {
+									folder = getExternalStoragePublicDirForDownloads(getActivity().getString(R.string.app_name));
+								}
 
 								FileOutputStream outputStream;
 								outputStream = new FileOutputStream(folder.getPath() + "/" + row.getString("msg"));
@@ -1300,6 +1320,49 @@ public class GroupChat extends CustomFragment implements IFragmentName
 						Intent intent = new Intent();
 						intent.setAction(Intent.ACTION_VIEW);
 						intent.setDataAndType(Uri.parse("file://" + uri), "audio/*");
+						startActivity(intent);
+					}
+				});
+
+				return  v;
+			}
+
+			if(c.getFile_type().equals("video")){
+				v = LayoutInflater.from(getActivity()).inflate(
+						R.layout.chat_item_audio, null); // todo change this
+				String name = user.get("display_name");
+
+				TextView lbl = (TextView) v.findViewById(R.id.lblContactPhone);
+				if (c.isSuccess())
+					lbl.setText(c.getStatus());
+				else
+					lbl.setText("");
+				if (!c.isSent()) {
+					v = LayoutInflater.from(getActivity()).inflate(
+							R.layout.chat_item_audio_received, null); // todo change this
+					name = contactName;
+				}
+
+				lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
+				DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+				DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+				try {
+					lbl.setText(outputFormat.format(inputFormat.parse(c.getDate())));
+				} catch (ParseException e) {
+					e.printStackTrace();
+				}
+
+				TextView msgView = (TextView) v.findViewById(R.id.file_name);
+				msgView.setText(c.getFile_type());
+
+				LinearLayout audioFileItem = (LinearLayout) v.findViewById(R.id.fileItem);
+				final String uri = c.getFile_uri();
+				audioFileItem.setOnClickListener(new View.OnClickListener() {
+					@Override
+					public void onClick(View view) {
+						Intent intent = new Intent();
+						intent.setAction(Intent.ACTION_VIEW);
+						intent.setDataAndType(Uri.parse("file://" + uri), "video/*");
 						startActivity(intent);
 					}
 				});
