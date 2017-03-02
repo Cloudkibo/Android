@@ -9,10 +9,18 @@
         />
 
 	<item android:id="@+id/search_chats"
-		android:title="Search Chats"
+		android:title="@string/menu_search_chats"
 		android:icon="@drawable/ic_search"
 		android:orderInCategory="100"
 		app:showAsAction="always" />
+
+	<item android:id="@+id/connect_to_desktop"
+		android:title="@string/menu_connect_to_desktop"
+		android:icon="@drawable/ic_search"
+		android:orderInCategory="100"
+		app:showAsAction="always" />
+
+
 
 	<item
 		android:id="@+id/settings"

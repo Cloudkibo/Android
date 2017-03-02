@@ -107,4 +107,5 @@
     <string name="archive">ارسل الى أرشفة</string>
     <string name="unarchive">إزالة من أرشيف</string>
     <string name="unblock_contact">رفع الحظر</string>
+    <string name="menu_send_video">ارسل مقطع فيديو</string>
 </resources>

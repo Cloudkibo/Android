@@ -111,6 +111,8 @@
     <string name="common_calling">Calling</string>
     <string name="common_dialing">Dialing</string>
 
+    <string name="prompt_connect_desktop">Enter the id shown on desktop app</string>
+
     <string name="main_activity_contacts_permission_denied">Cannot refresh contacts without permission.</string>
     <string name="main_activity_file_permission_denied">Cannot load file without permission.</string>
     <string name="main_activity_file_upload_error">Some error has occurred or Internet not available. Please try later.</string>
@@ -125,6 +127,8 @@
     <string name="menu_attach">Attach</string>
     <string name="menu_refresh_contacts">Refresh Contacts</string>
     <string name="menu_change_group_image">Change Group Image</string>
+    <string name="menu_search_chats">Search Chats</string>
+    <string name="menu_connect_to_desktop">Connect to Desktop App</string>
 
     <string name="backup_description">Backup your messages and media to Google Drive. You can restore them when you reinstall KiboChat. Your messages and media will also back up to your phone\'s internal storage. Media and messages you back up are not protected by KiboChat end-to-end encryption while in Google Drive.</string>
     <!-- TODO: Remove or change this placeholder text -->

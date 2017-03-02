@@ -23,7 +23,9 @@ import java.util.TimeZone;
 import java.util.UUID;
 
 import android.app.ActionBar;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -273,21 +275,33 @@ public class ChatList extends CustomFragment implements IFragmentName
 			search_view.setVisibility(View.VISIBLE);
 			return true;
 		}
-		/*if(id == R.id.backup_setting){
-			Toast.makeText(getContext(), "Opening Backup Settings", Toast.LENGTH_LONG).show();
-//            BackupSetting backupSettingFragment = new BackupSetting();
-//            Bundle bundle = new Bundle();
-//            bundle.putString("authToken", authtoken);
-//            backupSettingFragment.setArguments(bundle);
-//            getFragmentManager().beginTransaction()
-//                    .replace(R.id.content_frame, backupSettingFragment, "backupSettingFragmentTag").addToBackStack("Backup Setting")
-//                    .commit();
-			startActivity(new Intent(getActivity().getApplicationContext(), BackSettingActivity.class));
-			return true;
+		else if(id ==  R.id.connect_to_desktop) {
+			LayoutInflater layoutInflater = LayoutInflater.from(getActivity().getApplicationContext());
+			View promptView = layoutInflater.inflate(R.layout.prompt_connect_desktop, null);
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+			final EditText input = (EditText) promptView.findViewById(R.id.userInput);
+			// set prompts.xml to be the layout file of the alertdialog builder
+			alertDialogBuilder.setView(promptView);
+			// setup a dialog window
+			alertDialogBuilder
+					.setCancelable(false)
+					.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int id) {
+							Log.w("SOJHARO", "VALUE = "+ input.getText());
+							MainActivity act2 = (MainActivity)getActivity();
+							act2.connectToDesktop(input.getText().toString());
+						}
+					})
+					.setNegativeButton("Cancel",
+							new DialogInterface.OnClickListener() {
+								public void onClick(DialogInterface dialog,	int id) {
+									dialog.cancel();
+								}
+							});
+			// create an alert dialog
+			AlertDialog alertD = alertDialogBuilder.create();
+			alertD.show();
 		}
-		else if (id == R.id.language){
-			startActivity(new Intent(getActivity().getApplicationContext(), LocaleChange.class));
-		}*/
 		else if(id ==  R.id.settings) {
 			Intent i = new Intent(getActivity().getApplicationContext(), Settings.class);
 			i.putExtra("token", authtoken);

@@ -136,16 +136,11 @@ public class SplashScreen extends Activity
 			final int tempSavedVersionCode = savedVersionCode;
 			// get prompts.xml view
 			LayoutInflater layoutInflater = LayoutInflater.from(getApplicationContext());
-
 			View promptView = layoutInflater.inflate(R.layout.prompt_server_url, null);
-
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
-
 			final EditText input = (EditText) promptView.findViewById(R.id.userInput);
-
 			// set prompts.xml to be the layout file of the alertdialog builder
 			alertDialogBuilder.setView(promptView);
-
 			// setup a dialog window
 			alertDialogBuilder
 					.setCancelable(false)
@@ -167,10 +162,8 @@ public class SplashScreen extends Activity
 									checkFirstRun(tempCurrentVersionCode, tempSavedVersionCode, DOESNT_EXIST);
 								}
 							});
-
 			// create an alert dialog
 			AlertDialog alertD = alertDialogBuilder.create();
-
 			alertD.show();
 		} else {
 			prefs.edit().putString(PREF_SERVER_URL_KEY, getString(R.string.server_url)).commit();

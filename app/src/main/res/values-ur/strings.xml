@@ -107,4 +107,5 @@
     <string name="archive">آرکائو کو بھیجیں</string>
     <string name="unarchive">محفوظ شدہ دستاویزات سے ہٹا دیں</string>
     <string name="unblock_contact">غیر مسدود کریں</string>
+    <string name="menu_send_video">ویڈیو بھیجیں</string>
 </resources>

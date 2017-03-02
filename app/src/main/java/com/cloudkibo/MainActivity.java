@@ -652,6 +652,10 @@ public class MainActivity extends CustomActivity
         }
     }
 
+    public void connectToDesktop (String id) {
+        socketService.connectToDesktop(id);
+    }
+
     public void createContact () {
         Intent i = new Intent(Intent.ACTION_INSERT);
         i.setType(ContactsContract.Contacts.CONTENT_TYPE);
@@ -1131,7 +1135,7 @@ public class MainActivity extends CustomActivity
                 }
 
             });
-            //socketService.setSocketIOConfig();
+            socketService.setSocketIOConfig();
         }
     };
 

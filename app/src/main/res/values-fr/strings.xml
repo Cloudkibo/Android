@@ -107,4 +107,5 @@
     <string name="archive">Envoyer à l\'archive</string>
     <string name="unarchive">Supprimer de l\'archive</string>
     <string name="unblock_contact">Débloquer</string>
+    <string name="menu_send_video">Envoyer une vidéo</string>
 </resources>

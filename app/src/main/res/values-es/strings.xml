@@ -107,4 +107,5 @@
     <string name="archive">Enviar a archivo</string>
     <string name="unarchive">Eliminar del archivo</string>
     <string name="unblock_contact">Desatascar</string>
+    <string name="menu_send_video">Enviar vídeo</string>
 </resources>

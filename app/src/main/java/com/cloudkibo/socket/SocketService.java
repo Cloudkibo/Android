@@ -88,6 +88,83 @@ public class SocketService extends Service {
     //nkzawa
     Socket socket;
 
+    private String desktop_id;
+    private String my_id;
+    private Boolean platform_connected = false;
+
+    public void connectToDesktop (String id) {
+        desktop_id = id;
+        try {
+            JSONObject payload = new JSONObject();
+            payload.put("phone", user.get("phone"));
+
+            socket.emit("join_platform_room", payload);//new JSONArray().put(message));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendChatListToDesktop () {
+        try {
+
+            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+            JSONArray chatListArray = db.getChatList();
+
+            JSONObject payload = new JSONObject();
+            payload.put("phone", user.get("phone"));
+            payload.put("to_connection_id", desktop_id);
+            payload.put("from_connection_id", my_id);
+            payload.put("type", "loading_chatlist");
+            payload.put("data", chatListArray);
+
+            socket.emit("platform_room_message", payload);//new JSONArray().put(message));
+            sendContactListToDesktop();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendContactListToDesktop () {
+        try {
+
+            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+            JSONArray contactListArray = db.getContacts();
+
+            JSONObject payload = new JSONObject();
+            payload.put("phone", user.get("phone"));
+            payload.put("to_connection_id", desktop_id);
+            payload.put("from_connection_id", my_id);
+            payload.put("type", "loading_contacts");
+            payload.put("data", contactListArray);
+
+            socket.emit("platform_room_message", payload);//new JSONArray().put(message));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendConversationToDesktop (String user1, String user2) {
+        try {
+
+            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+            JSONArray contactListArray = db.getChat(user1, user2);
+
+            JSONObject payload = new JSONObject();
+            payload.put("phone", user.get("phone"));
+            payload.put("to_connection_id", desktop_id);
+            payload.put("from_connection_id", my_id);
+            payload.put("type", "loading_conversation");
+            payload.put("data", contactListArray);
+
+            socket.emit("platform_room_message", payload);//new JSONArray().put(message));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         return socketBinder;
@@ -139,6 +216,15 @@ public class SocketService extends Service {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
+                }
+
+            }).on("joined_platform_room", new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+                    my_id = args[0].toString();
+                    platform_connected = true;
+                    sendChatListToDesktop();
                 }
 
             }).on("messagefordatachannel", new Emitter.Listener() {
@@ -452,6 +538,8 @@ public class SocketService extends Service {
 
         super.onCreate();
     }
+
+
 
 
     public void sendSocketMessage(String msg, String peer) {
