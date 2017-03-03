@@ -8,25 +8,35 @@ import android.Manifest;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.SplashScreen;
+import com.cloudkibo.database.BoundKiboSyncListener;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.database.KiboSyncService;
 import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
+import com.cloudkibo.socket.BoundServiceListener;
+import com.cloudkibo.socket.SocketService;
+import com.cloudkibo.ui.ChatList;
+import com.cloudkibo.ui.GroupChat;
+import com.cloudkibo.utils.IFragmentName;
 import com.facebook.accountkit.AccessToken;
 import com.facebook.accountkit.AccountKit;
 import com.koushikdutta.async.future.FutureCallback;
@@ -40,6 +50,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.Socket;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -55,13 +66,22 @@ public class MyHandler extends NotificationsHandler {
 
     HashMap<String, String> userDetail;
 
+    Boolean socketServiceBound = false;
+    SocketService socketService;
+
+
     @Override
     public void onReceive(Context context, Bundle bundle) {
         ctx = context;
+
+        connectToSocketService();
+
         AccountKit.initialize(ctx.getApplicationContext());
         String nhMessage = bundle.getString("message");
+
         userDetail = new DatabaseHandler(ctx.getApplicationContext()).getUserDetails();
         Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" gets push notification payload : "+ nhMessage);
+
         JSONObject payload;
         try {
             payload = new JSONObject(nhMessage);
@@ -232,6 +252,47 @@ public class MyHandler extends NotificationsHandler {
         }
     }
 
+    private void connectToSocketService () {
+        Intent intentSync = new Intent(ctx.getApplicationContext(), SocketService.class);
+        // todo this throws error, check this
+        ctx.getApplicationContext().bindService(intentSync, socketConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    private ServiceConnection socketConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            socketServiceBound = false;
+        }
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            SocketService.SocketBinder binder = (SocketService.SocketBinder) service;
+            socketService = binder.getService();
+            socketServiceBound = true;
+
+            binder.setListener(new BoundServiceListener() {
+
+                @Override
+                public void receiveSocketMessage(String type, String msg) {
+
+                }
+
+                @Override
+                public void receiveSocketArray(String type, final JSONArray body) {
+
+                }
+
+                @Override
+                public void receiveSocketJson(String type, final JSONObject body) {
+
+                }
+
+            });
+            // socketService.setSocketIOConfig();
+        }
+    };
+
     private void loadSpecificChatFromServer(final String uniqueid) {
 
         final AccessToken accessToken = AccountKit.getCurrentAccessToken();
@@ -255,6 +316,12 @@ public class MyHandler extends NotificationsHandler {
                 try {
 
                     if (row != null) {
+
+                        if(socketService.isPlatformConnected()){
+                            // TODO this will not work due to error thrown in above // TODO: 03/03/2017
+                            socketService.sendNewArrivedChatToDesktop(row);
+                        }
+
                         DatabaseHandler db = new DatabaseHandler(
                                 ctx.getApplicationContext());
 

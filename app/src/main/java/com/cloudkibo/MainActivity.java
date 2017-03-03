@@ -263,33 +263,17 @@ public class MainActivity extends CustomActivity
     public void syncContacts(){
         //startSocketService();
         reconnectSocket();
-        if (socketService.isSocketConnected()) {
-            Intent intentSync = new Intent(getApplicationContext(), KiboSyncService.class);
-            bindService(intentSync, kiboSyncConnection, Context.BIND_AUTO_CREATE);
-            if (kiboServiceIsBound) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
-                    //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
-                } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED){
-                    ToastNotify2("Can't refresh contacts without permission.");
-                } else {
-                    loadContactsFromAddressBook();
-                }
+        Intent intentSync = new Intent(getApplicationContext(), KiboSyncService.class);
+        bindService(intentSync, kiboSyncConnection, Context.BIND_AUTO_CREATE);
+        if (kiboServiceIsBound) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{android.Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
+                //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
+            } else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED){
+                ToastNotify2("Can't refresh contacts without permission.");
+            } else {
+                loadContactsFromAddressBook();
             }
-        } else {
-            if(countRetryConnectingSocket > 2){
-                countRetryConnectingSocket = 0;
-                ToastNotify2("Can't sync at the moment.");
-                return ;
-            }
-            new android.os.Handler().postDelayed(
-                    new Runnable() {
-                        public void run() {
-                            syncContacts();
-                        }
-                    },
-                    1000);
-            countRetryConnectingSocket++;
         }
     }
 
@@ -653,7 +637,7 @@ public class MainActivity extends CustomActivity
     }
 
     public void connectToDesktop (String id) {
-        socketService.connectToDesktop(id);
+        socketService.connectToDesktop(id, authtoken);
     }
 
     public void createContact () {
@@ -1380,6 +1364,7 @@ public class MainActivity extends CustomActivity
 
     public void handleIncomingChatMessage(String type, final JSONObject body){
         try{
+            socketService.sendNewArrivedChatToDesktop(body);
             IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 
             if(myFragment == null) return;

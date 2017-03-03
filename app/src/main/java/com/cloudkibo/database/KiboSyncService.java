@@ -1012,6 +1012,8 @@ public class KiboSyncService extends Service {
                                         db = new DatabaseHandler(
                                                 getApplicationContext());
                                         db.updateChat("delivered", row.getString("uniqueid"));
+
+                                        // todo correct this
                                         mListener.sendMessageStatusUsingSocket(row.getString("from"),
                                                 "delivered", row.getString("uniqueid"));
 
