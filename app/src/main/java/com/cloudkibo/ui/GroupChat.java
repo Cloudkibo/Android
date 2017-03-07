@@ -244,8 +244,6 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				if(row != null){
 					Log.e("Last Seen on", "Fetched data");
 
-
-
 					try {
 						//actbar.setSubtitle(Html.fromHtml("<font color='#ffffff'>"+"Last Seen on " + Utility.convertDateToLocalTimeZoneAndReadable(row.getString("last_seen"))+"</font>"));
 						String text = "Last Seen on " + Utility.convertDateToLocalTimeZoneAndReadable(row.getString("last_seen"));
@@ -272,6 +270,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		if (menu != null) {
 			menu.findItem(R.id.archived).setVisible(false);
 			menu.findItem(R.id.settings).setVisible(false);
+			menu.findItem(R.id.connect_to_desktop).setVisible(false);
 		}
 		inflater.inflate(R.menu.chat, menu);  // Use filter.xml from step 1
 //		getActivity().getActionBar().setSubtitle("Last seen on: ");
@@ -773,6 +772,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		}.execute();
 	}
 
+	// // TODO: 06/03/2017 Move this to Utility
 	public void sendMessageStatusUsingAPI(final String status, final String uniqueid, final String sender){
 		new AsyncTask<String, String, JSONObject>() {
 

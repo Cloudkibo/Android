@@ -640,6 +640,11 @@ public class MainActivity extends CustomActivity
         socketService.connectToDesktop(id, authtoken);
     }
 
+    public void refreshGroupsOnDesktop () {
+        if(socketService.isPlatformConnected())
+            socketService.refreshGroupInformation();
+    }
+
     public void createContact () {
         Intent i = new Intent(Intent.ACTION_INSERT);
         i.setType(ContactsContract.Contacts.CONTENT_TYPE);
@@ -1115,7 +1120,7 @@ public class MainActivity extends CustomActivity
 
                 @Override
                 public void receiveSocketJson(String type, final JSONObject body) {
-
+                    // todo update this for desktop app notifications coming from socketservice.java
                 }
 
             });

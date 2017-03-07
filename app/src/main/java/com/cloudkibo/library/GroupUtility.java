@@ -102,6 +102,10 @@ public class GroupUtility {
 
                         db.addGroupMessage(group_id,message,member_phone,personWhoAdded,uniqueid, "log");
 
+                        if (MainActivity.isVisible) {
+                            MainActivity.mainActivity.refreshGroupsOnDesktop();
+                        }
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

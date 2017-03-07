@@ -185,6 +185,7 @@ public class CreateGroup extends CustomFragment implements IFragmentName
             menu.findItem(R.id.archived).setVisible(false);
             menu.findItem(R.id.search_chats).setVisible(false);
             menu.findItem(R.id.settings).setVisible(false);
+            menu.findItem(R.id.connect_to_desktop).setVisible(false);
         }
         inflater.inflate(R.menu.newchat, menu);  // Use filter.xml from step 1
         getActivity().getActionBar().setSubtitle(null);
@@ -234,6 +235,9 @@ public class CreateGroup extends CustomFragment implements IFragmentName
         }
         db.addGroupMember(group_id,db.getUserDetails().get("phone"),"1","joined");
         Toast.makeText(getContext(),db.getUserDetails().get("phone") + " added as admin", Toast.LENGTH_SHORT).show();
+        if(MainActivity.isVisible) {
+            MainActivity.mainActivity.refreshGroupsOnDesktop();
+        }
     }
 
     String randomString(final int length) {

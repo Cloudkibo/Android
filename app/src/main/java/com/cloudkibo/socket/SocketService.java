@@ -1,6 +1,7 @@
 package com.cloudkibo.socket;
 
 import java.net.URISyntaxException;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -110,6 +111,10 @@ public class SocketService extends Service {
         return platform_connected;
     }
 
+    public void refreshGroupInformation () {
+        sendGroupsToDesktop();
+    }
+
     private void sendChatListToDesktop () {
         try {
 
@@ -122,6 +127,27 @@ public class SocketService extends Service {
             payload.put("to_connection_id", desktop_id);
             payload.put("from_connection_id", my_id);
             payload.put("type", "loading_chatlist");
+            payload.put("data", chatListArray);
+
+            socket.emit("platform_room_message", payload);//new JSONArray().put(message));
+            sendGroupChatListToDesktop();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendGroupChatListToDesktop () {
+        try {
+
+            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+            JSONArray chatListArray = db.getGroupChatList();
+
+            JSONObject payload = new JSONObject();
+            payload.put("phone", user.get("phone"));
+            payload.put("to_connection_id", desktop_id);
+            payload.put("from_connection_id", my_id);
+            payload.put("type", "loading_group_chatlist");
             payload.put("data", chatListArray);
 
             socket.emit("platform_room_message", payload);//new JSONArray().put(message));
@@ -172,6 +198,26 @@ public class SocketService extends Service {
         }
     }
 
+    private void sendGroupConversationToDesktop (String groupid) {
+        try {
+
+            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+            JSONArray contactListArray = db.getGroupMessages(groupid);
+
+            JSONObject payload = new JSONObject();
+            payload.put("phone", user.get("phone"));
+            payload.put("to_connection_id", desktop_id);
+            payload.put("from_connection_id", my_id);
+            payload.put("type", "loading_group_conversation");
+            payload.put("data", contactListArray);
+
+            socket.emit("platform_room_message", payload);//new JSONArray().put(message));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void sendArchivedConversationToDesktop () {
         try {
 
@@ -187,6 +233,53 @@ public class SocketService extends Service {
             payload.put("data", chatListArray);
 
             socket.emit("platform_room_message", payload);//new JSONArray().put(message));
+            sendGroupsToDesktop();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendGroupsToDesktop () {
+        try {
+
+            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+            JSONArray groupListArray = db.getAllGroups();
+
+            JSONObject payload = new JSONObject();
+            payload.put("phone", user.get("phone"));
+            payload.put("to_connection_id", desktop_id);
+            payload.put("from_connection_id", my_id);
+            payload.put("type", "loading_groups");
+            payload.put("data", groupListArray);
+
+            socket.emit("platform_room_message", payload);//new JSONArray().put(message));
+
+            JSONArray payloadArray = payload.getJSONArray("data");
+
+            for (int i=0; i<payloadArray.length(); i++) {
+                sendGroupMembersToDesktop(payloadArray.getJSONObject(i).getString("unique_id"));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendGroupMembersToDesktop (String group_id) {
+        try {
+
+            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+            JSONArray chatListArray = db.getGroupMessages(group_id);
+
+            JSONObject payload = new JSONObject();
+            payload.put("phone", user.get("phone"));
+            payload.put("to_connection_id", desktop_id);
+            payload.put("from_connection_id", my_id);
+            payload.put("type", "loading_group_members");
+            payload.put("data", chatListArray);
+
+            socket.emit("platform_room_message", payload);//new JSONArray().put(message));
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -195,11 +288,45 @@ public class SocketService extends Service {
     public void sendNewArrivedChatToDesktop (JSONObject chatPayload) {
         try {
 
+            // // TODO: 03/03/2017 sends this payload even if not connected to desktop platform 
             JSONObject payload = new JSONObject();
             payload.put("phone", user.get("phone"));
             payload.put("to_connection_id", desktop_id);
             payload.put("from_connection_id", my_id);
             payload.put("type", "new_message_received");
+            payload.put("data", chatPayload);
+
+            socket.emit("platform_room_message", payload);//new JSONArray().put(message));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendArrivedChatStatusToDesktop(JSONObject chatPayload) {
+        try {
+
+            // // TODO: 03/03/2017 sends this payload even if not connected to desktop platform
+            JSONObject payload = new JSONObject();
+            payload.put("phone", user.get("phone"));
+            payload.put("to_connection_id", desktop_id);
+            payload.put("from_connection_id", my_id);
+            payload.put("type", "message_status");
+            payload.put("data", chatPayload);
+
+            socket.emit("platform_room_message", payload);//new JSONArray().put(message));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendLastSeenInfoToDesktop(String chatPayload) {
+        try {
+
+            JSONObject payload = new JSONObject();
+            payload.put("phone", user.get("phone"));
+            payload.put("to_connection_id", desktop_id);
+            payload.put("from_connection_id", my_id);
+            payload.put("type", "sending_last_seen");
             payload.put("data", chatPayload);
 
             socket.emit("platform_room_message", payload);//new JSONArray().put(message));
@@ -281,10 +408,11 @@ public class SocketService extends Service {
 
                         DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 
-                        JSONObject row = payload.getJSONObject("data");
-
                         if(payload.getString("type").equals("new_message_sent")){
                             // desktop app is trying to send data
+
+                            JSONObject row = payload.getJSONObject("data");
+
 
                             db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
                                     row.getString("msg"), row.getString("date_server_received"),
@@ -299,6 +427,46 @@ public class SocketService extends Service {
 
                             if (isForeground("com.cloudkibo"))
                                 mListener.receiveSocketJson("desktop_sent_chat", payload);
+
+                        } else if (payload.getString("type").equals("message_status")) {
+
+                            JSONObject row = payload.getJSONObject("data");
+
+                            sendMessageStatusUsingAPI(row.getString("status"),
+                                    row.getString("uniqueid"), row.getString("sender"));
+                            if (isForeground("com.cloudkibo"))
+                                mListener.receiveSocketJson("message_status", payload);
+
+                        } else if (payload.getString("type").equals("asking_last_seen")) {
+
+                            lastSeenStatus(payload.getString("data"));
+
+                        } else if (payload.getString("type").equals("new_group_created")) {
+
+                            payload = payload.getJSONObject("data");
+                            String group_name = payload.getString("group_name");
+                            String group_id = payload.getString("unique_id");
+                            db.createGroup(group_id, group_name, 0);
+
+                            String message = "You created group "+ group_name;
+                            String member_name = db.getUserDetails().get("display_name");
+                            String member_phone = db.getUserDetails().get("phone");
+                            String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+                            uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+                            uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+                            db.addGroupMessage(group_id,message,member_phone,member_name,uniqueid, "log");
+
+                        } else if (payload.getString("type").equals("member_added_to_group")) {
+
+                            JSONArray data = payload.getJSONArray("data");
+
+                            for (int i = 0; i< data.length(); i++){
+                                JSONObject row = data.getJSONObject(i);
+                                db.addGroupMember(row.getString("unique_id"),
+                                        row.getString("phone"), row.getString("isAdmin"), "joined");
+
+                            }
+
                         }
 
                     } catch (JSONException e) {
@@ -907,6 +1075,10 @@ public class SocketService extends Service {
                             try {
                                 DatabaseHandler db = new DatabaseHandler(getApplicationContext());
                                 db.updateChat(row.getString("status"), uniqueid);
+                                JSONObject payload = new JSONObject();
+                                payload.put("status", row.getString("status"));
+                                payload.put("uniqueid", uniqueid);
+                                sendArrivedChatStatusToDesktop(payload);
                             } catch (NullPointerException e){
                                 e.printStackTrace();
                             }
@@ -916,6 +1088,77 @@ public class SocketService extends Service {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+
+        }.execute();
+    }
+
+    // TODO move this to Utility Class, it is also duplicated in GroupChat.java
+    public void sendMessageStatusUsingAPI(final String status, final String uniqueid, final String sender){
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunction = new UserFunctions(getApplicationContext());
+                JSONObject message = new JSONObject();
+
+                try {
+                    message.put("sender", sender);
+                    message.put("status", status);
+                    message.put("uniqueid", uniqueid);
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+
+                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                db.updateChat("seen", uniqueid);
+                db.addChatSyncHistory("seen", uniqueid, sender);
+
+                return userFunction.sendChatMessageStatusToServer(message, authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                if (row != null) {
+                    if(row.has("status")){
+                        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                        db.resetSpecificChatHistorySync(uniqueid);
+                        db.updateChat("seen", uniqueid);
+                    }
+                }
+            }
+
+        }.execute();
+    }
+
+    public void lastSeenStatus(final String contactPhone){
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunctions = new UserFunctions(getApplicationContext());
+                return userFunctions.getUserStatus(contactPhone, authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                Log.e("Last Seen on", "post executed");
+                if(row != null){
+                    Log.e("Last Seen on", "Fetched data");
+
+                    try {
+                        String text = "Last Seen on " + Utility.convertDateToLocalTimeZoneAndReadable(row.getString("last_seen"));
+                        sendLastSeenInfoToDesktop(text);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    Log.e("Last Seen on", "Inside TRY Statement");
+
+
+                }
+                Log.e("Last Seen on", "leaving post executed");
             }
 
         }.execute();

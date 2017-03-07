@@ -5,38 +5,25 @@ package com.cloudkibo.push;
  */
 
 import android.Manifest;
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
-import com.cloudkibo.SplashScreen;
-import com.cloudkibo.database.BoundKiboSyncListener;
 import com.cloudkibo.database.DatabaseHandler;
-import com.cloudkibo.database.KiboSyncService;
-import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.socket.BoundServiceListener;
 import com.cloudkibo.socket.SocketService;
-import com.cloudkibo.ui.ChatList;
-import com.cloudkibo.ui.GroupChat;
-import com.cloudkibo.utils.IFragmentName;
 import com.facebook.accountkit.AccessToken;
 import com.facebook.accountkit.AccountKit;
 import com.koushikdutta.async.future.FutureCallback;
@@ -50,8 +37,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.Socket;
-import java.util.Date;
 import java.util.HashMap;
 
 import static com.cloudkibo.file.filechooser.utils.FileUtils.getExternalStoragePublicDirForDocuments;
@@ -196,6 +181,9 @@ public class MyHandler extends NotificationsHandler {
                             statusData.put("uniqueid", payload.getString("uniqueId"));
                             MainActivity.mainActivity.handleIncomingStatusForSentMessage("status", statusData);
                         }
+                        if(socketService.isPlatformConnected()){
+                            socketService.sendArrivedChatStatusToDesktop(payload);
+                        }
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -254,7 +242,6 @@ public class MyHandler extends NotificationsHandler {
 
     private void connectToSocketService () {
         Intent intentSync = new Intent(ctx.getApplicationContext(), SocketService.class);
-        // todo this throws error, check this
         ctx.getApplicationContext().bindService(intentSync, socketConnection, Context.BIND_AUTO_CREATE);
     }
 
@@ -317,11 +304,6 @@ public class MyHandler extends NotificationsHandler {
 
                     if (row != null) {
 
-                        if(socketService.isPlatformConnected()){
-                            // TODO this will not work due to error thrown in above // TODO: 03/03/2017
-                            socketService.sendNewArrivedChatToDesktop(row);
-                        }
-
                         DatabaseHandler db = new DatabaseHandler(
                                 ctx.getApplicationContext());
 
@@ -350,6 +332,9 @@ public class MyHandler extends NotificationsHandler {
                                 displayName = row.getString("from");
                             }
                             Utility.sendNotification(ctx, displayName, row.getString("msg"));
+                            if(socketService.isPlatformConnected()){
+                                socketService.sendNewArrivedChatToDesktop(row);
+                            }
                         }
 
                         if (row.getString("type").equals("file")) {

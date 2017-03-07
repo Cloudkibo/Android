@@ -12,13 +12,15 @@
         android:layout_height="wrap_content"
         android:text="@string/prompt_connect_desktop"
         android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="@color/black"
         />
 
     <EditText
         android:id="@+id/userInput"
         android:layout_width="match_parent"
-        android:inputType="text"
+        android:inputType="number"
         android:layout_height="wrap_content"
+        android:textColor="@color/black"
         >
 
         <requestFocus />
