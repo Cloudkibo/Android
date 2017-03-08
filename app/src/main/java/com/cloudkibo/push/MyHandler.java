@@ -5,6 +5,7 @@ package com.cloudkibo.push;
  */
 
 import android.Manifest;
+import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -14,6 +15,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 
 import com.cloudkibo.MainActivity;
@@ -28,6 +30,7 @@ import com.facebook.accountkit.AccessToken;
 import com.facebook.accountkit.AccountKit;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.ProgressCallback;
 import com.microsoft.windowsazure.notifications.NotificationsHandler;
 
 import org.json.JSONArray;
@@ -181,9 +184,20 @@ public class MyHandler extends NotificationsHandler {
                             statusData.put("uniqueid", payload.getString("uniqueId"));
                             MainActivity.mainActivity.handleIncomingStatusForSentMessage("status", statusData);
                         }
-                        if(socketService.isPlatformConnected()){
-                            socketService.sendArrivedChatStatusToDesktop(payload);
-                        }
+
+                        final JSONObject tempPayload = payload;
+                        new android.os.Handler().postDelayed(
+                                new Runnable() {
+                                    public void run() {
+                                        if(socketService != null) {
+                                            if (socketService.isPlatformConnected()) {
+                                                socketService.sendArrivedChatStatusToDesktop(tempPayload);
+                                            }
+                                        }
+                                    }
+                                },
+                                2500);
+
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -347,9 +361,33 @@ public class MyHandler extends NotificationsHandler {
                                         rowTemp.getString("file_type"),
                                         "", "");
                             } else {
+
+                                final int id = 101;
+
+                                final NotificationManager mNotifyManager =
+                                        (NotificationManager) ctx.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                                final android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(ctx.getApplicationContext());
+                                mBuilder.setContentTitle("Downloading attachment")
+                                        .setContentText("Download in progress")
+                                        .setSmallIcon(R.drawable.icon);
+
                                 final UserFunctions userFunctions = new UserFunctions(ctx.getApplicationContext());
                                 Ion.with(ctx.getApplicationContext())
                                         .load(userFunctions.getBaseURL() + "/api/filetransfers/download")
+                                        .progressHandler(new ProgressCallback() {
+                                            @Override
+                                            public void onProgress(long downloaded, long total) {
+                                                mBuilder.setProgress((int) total, (int) downloaded,
+                                                        false);
+                                                if(downloaded < total) {
+                                                    mBuilder.setContentText("Download in progress: "+
+                                                            ((downloaded / total) * 100) +"%");
+                                                } else {
+                                                    mBuilder.setContentText("Downloaded file attachment");
+                                                }
+                                                mNotifyManager.notify(id, mBuilder.build());
+                                            }
+                                        })
                                         .setHeader("kibo-token", accessToken.getToken())
                                         .setBodyParameter("uniqueid", row.getString("uniqueid"))
                                         .write(new File(ctx.getApplicationContext().getFilesDir().getPath() + "" + row.getString("uniqueid")))

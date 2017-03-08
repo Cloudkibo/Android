@@ -11,6 +11,7 @@ import java.util.Map;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -43,6 +44,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -645,6 +647,19 @@ public class MainActivity extends CustomActivity
             socketService.refreshGroupInformation();
     }
 
+    public void sendArchiveInfoToDesktop (String id, String isArchived) {
+        if(socketService.isPlatformConnected()) {
+            try {
+                JSONObject body = new JSONObject();
+                body.put("id", id);
+                body.put("isArchived", isArchived);
+                socketService.sendNewArchiveUpdateToDesktop(body);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public void createContact () {
         Intent i = new Intent(Intent.ACTION_INSERT);
         i.setType(ContactsContract.Contacts.CONTENT_TYPE);
@@ -723,7 +738,6 @@ public class MainActivity extends CustomActivity
                     UserFunctions userFunctions = new UserFunctions(getApplicationContext());
                     Ion.with(getApplicationContext())
                             .load(userFunctions.getBaseURL() + "/api/groupmessaging/uploadIcon")
-                            //.uploadProgressBar(uploadProgressBar)
                             .setHeader("kibo-token", authtoken)
                             .setMultipartParameter("unique_id", icon_upload_group_id)
                             .setMultipartFile("file", FileUtils.getExtension(selectedFilePath), new File(selectedFilePath))

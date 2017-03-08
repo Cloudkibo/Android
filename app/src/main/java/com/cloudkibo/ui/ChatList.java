@@ -141,7 +141,6 @@ public class ChatList extends CustomFragment implements IFragmentName
 					GroupChatUI groupChatFragment = new GroupChatUI();
 					bundle.putString("group_id", chatList.get(pos).getTitle());
 					bundle.putString("group_name", chatList.get(pos).getName());
-
 					bundle.putString("authtoken", authtoken);
 					groupChatFragment.setArguments(bundle);
 					getFragmentManager().beginTransaction()
@@ -337,18 +336,18 @@ public class ChatList extends CustomFragment implements IFragmentName
 
 				DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
 				ChatItem cItem = (ChatItem) chatList.get(info.position);
-				if(cItem.isGroup()){
+				if (cItem.isGroup()) {
 					db.setArchiveGroup(cItem.getTitle());
 					Toast.makeText(getContext(),cItem.getTitle(),Toast.LENGTH_SHORT).show();
 					chatList.remove(info.position);
-
-				}else{
-
-
+					if(MainActivity.isVisible)
+						MainActivity.mainActivity.sendArchiveInfoToDesktop(cItem.getTitle(), "Yes");
+				} else {
 					db.setArchive(cItem.getTitle());
 					Toast.makeText(getContext(), cItem.getTitle() , Toast.LENGTH_SHORT).show();
 					chatList.remove(info.position);
-
+					if(MainActivity.isVisible)
+						MainActivity.mainActivity.sendArchiveInfoToDesktop(cItem.getTitle(), "Yes");
 				}
 
 				if (adp != null) {

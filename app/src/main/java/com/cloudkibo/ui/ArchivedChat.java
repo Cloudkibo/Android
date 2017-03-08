@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
@@ -158,14 +159,15 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
                     db.unArchiveGroup(cItem.getTitle());
                     Toast.makeText(getContext(),cItem.getTitle(),Toast.LENGTH_SHORT).show();
                     archivedChats.remove(info.position);
+                    if(MainActivity.isVisible)
+                        MainActivity.mainActivity.sendArchiveInfoToDesktop(cItem.getTitle(), "No");
 
                 }else{
-
-
                     db.unArchive(cItem.getTitle());
                     Toast.makeText(getContext(), cItem.getTitle() , Toast.LENGTH_SHORT).show();
                     archivedChats.remove(info.position);
-
+                    if(MainActivity.isVisible)
+                        MainActivity.mainActivity.sendArchiveInfoToDesktop(cItem.getTitle(), "No");
                 }
 
                 if (adp != null) {
@@ -176,8 +178,6 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
         } catch(Exception e){
             e.printStackTrace();
         }
-
-
 
         return true;
     }

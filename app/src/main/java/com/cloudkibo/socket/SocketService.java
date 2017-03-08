@@ -335,6 +335,25 @@ public class SocketService extends Service {
         }
     }
 
+    public void sendNewArchiveUpdateToDesktop(JSONObject chatPayload) {
+        try {
+
+            String type = "chat_archived";
+            if (!chatPayload.getString("isArchived").equals("Yes")) type = "chat_unarchived";
+
+            JSONObject payload = new JSONObject();
+            payload.put("phone", user.get("phone"));
+            payload.put("to_connection_id", desktop_id);
+            payload.put("from_connection_id", my_id);
+            payload.put("type", type);
+            payload.put("data", chatPayload);
+
+            socket.emit("platform_room_message", payload);//new JSONArray().put(message));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         return socketBinder;

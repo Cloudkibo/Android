@@ -24,6 +24,7 @@ import android.app.ActionBar;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,6 +39,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v7.app.NotificationCompat;
 import android.text.Editable;
 import android.text.Html;
 import android.text.InputType;
@@ -83,6 +85,7 @@ import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.ProgressCallback;
 
 import static com.cloudkibo.file.filechooser.utils.FileUtils.getExternalStoragePublicDirForDocuments;
 import static com.cloudkibo.file.filechooser.utils.FileUtils.getExternalStoragePublicDirForDownloads;
@@ -587,10 +590,33 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					true, true, "pending", uniqueid, "file", fileType).setFile_uri(fileInfo.getString("path")));
 			adp.notifyDataSetChanged();
 
+			final int id = 102;
+
+			final NotificationManager mNotifyManager =
+					(NotificationManager) getActivity().getApplicationContext()
+							.getSystemService(Context.NOTIFICATION_SERVICE);
+			final android.support.v4.app.NotificationCompat.Builder mBuilder =
+					new NotificationCompat.Builder(getActivity().getApplicationContext());
+			mBuilder.setContentTitle("Uploading attachment")
+					.setContentText("Upload in progress")
+					.setSmallIcon(R.drawable.icon);
+
 			UserFunctions userFunctions = new UserFunctions(getActivity().getApplicationContext());
 			Ion.with(getActivity().getApplicationContext())
 					.load(userFunctions.getBaseURL() + "/api/filetransfers/upload")
-					//.uploadProgressBar(uploadProgressBar)
+					.progressHandler(new ProgressCallback() {
+						@Override
+						public void onProgress(long downloaded, long total) {
+							mBuilder.setProgress((int) total, (int) downloaded, false);
+							if(downloaded < total) {
+								mBuilder.setContentText("Upload in progress: "+
+										((downloaded / total) * 100) +"%");
+							} else {
+								mBuilder.setContentText("Uploaded file attachment");
+							}
+							mNotifyManager.notify(id, mBuilder.build());
+						}
+					})
 					.setHeader("kibo-token", authtoken)
 					.setMultipartParameter("filetype", fileType)
 					.setMultipartParameter("from", user.get("phone"))
@@ -964,12 +990,37 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 	private void downloadPendingFile(final JSONObject row) {
 		try {
-			final UserFunctions userFunctions = new UserFunctions(getActivity().getApplicationContext());
+			final int id = 101;
+
+			final NotificationManager mNotifyManager =
+					(NotificationManager) getActivity().getApplicationContext()
+							.getSystemService(Context.NOTIFICATION_SERVICE);
+			final android.support.v4.app.NotificationCompat.Builder mBuilder =
+					new NotificationCompat.Builder(getActivity().getApplicationContext());
+			mBuilder.setContentTitle("Downloading attachment")
+					.setContentText("Download in progress")
+					.setSmallIcon(R.drawable.icon);
+			final UserFunctions userFunctions = new UserFunctions(getActivity().
+					getApplicationContext());
 			Ion.with(getActivity().getApplicationContext())
 					.load(userFunctions.getBaseURL() + "/api/filetransfers/download")
 					.setHeader("kibo-token", authtoken)
+					.progressHandler(new ProgressCallback() {
+						@Override
+						public void onProgress(long downloaded, long total) {
+							mBuilder.setProgress((int) total, (int) downloaded, false);
+							if(downloaded < total) {
+								mBuilder.setContentText("Download in progress: "+
+										((downloaded / total) * 100) +"%");
+							} else {
+								mBuilder.setContentText("Downloaded file attachment");
+							}
+							mNotifyManager.notify(id, mBuilder.build());
+						}
+					})
 					.setBodyParameter("uniqueid", row.getString("uniqueid"))
-					.write(new File(getActivity().getApplicationContext().getFilesDir().getPath() + "" + row.getString("uniqueid")))
+					.write(new File(getActivity().getApplicationContext().getFilesDir().getPath() +
+							"" + row.getString("uniqueid")))
 					.setCallback(new FutureCallback<File>() {
 						@Override
 						public void onCompleted(Exception e, File file) {
@@ -977,7 +1028,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							// do stuff with the File or error
 
 							try {
-								DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+								DatabaseHandler db = new DatabaseHandler(getActivity()
+										.getApplicationContext());
 								File folder = getExternalStoragePublicDirForImages(getActivity().getString(R.string.app_name));
 								if (row.getString("file_type").equals("document")) {
 									folder = getExternalStoragePublicDirForDocuments(getActivity().getString(R.string.app_name));
@@ -990,16 +1042,20 @@ public class GroupChat extends CustomFragment implements IFragmentName
 								}
 
 								FileOutputStream outputStream;
-								outputStream = new FileOutputStream(folder.getPath() + "/" + row.getString("msg"));
-								outputStream.write(com.cloudkibo.webrtc.filesharing.Utility.convertFileToByteArray(file));
+								outputStream = new FileOutputStream(folder.getPath() + "/" +
+										row.getString("msg"));
+								outputStream.write(com.cloudkibo.webrtc.filesharing
+										.Utility.convertFileToByteArray(file));
 								outputStream.close();
 
-								JSONObject fileMetaData = getFileMetaData(folder.getPath() + "/" + row.getString("msg"));
+								JSONObject fileMetaData = getFileMetaData(folder.getPath() + "/" +
+										row.getString("msg"));
 								db.updateFileInfo(row.getString("uniqueid"),
 										fileMetaData.getString("name"),
 										fileMetaData.getString("size"),
 										row.getString("file_type"),
-										fileMetaData.getString("filetype"), folder.getPath() + "/" + row.getString("msg"));
+										fileMetaData.getString("filetype"), folder.getPath() + "/" +
+												row.getString("msg"));
 
 								updateFileDownloaded(row.getString("uniqueid"));
 

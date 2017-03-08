@@ -107,7 +107,7 @@ public class Utility {
 
     public void updateDatabaseWithContactImages(final Context context, final ArrayList<String> phone){
 
-            final DatabaseHandler db = new DatabaseHandler(context);
+        final DatabaseHandler db = new DatabaseHandler(context);
 
         new AsyncTask<String, String, String>() {
 
