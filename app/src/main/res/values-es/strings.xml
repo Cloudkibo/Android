@@ -108,4 +108,7 @@
     <string name="unarchive">Eliminar del archivo</string>
     <string name="unblock_contact">Desatascar</string>
     <string name="menu_send_video">Enviar vídeo</string>
+    <string name="menu_connect_to_desktop">Acceder a la aplicación de escritorio</string>
+    <string name="menu_search_chats">Buscar chats</string>
+    <string name="prompt_connect_desktop">Introduce el ID que aparece en la aplicación de escritorio</string>
 </resources>

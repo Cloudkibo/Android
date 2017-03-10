@@ -108,4 +108,7 @@
     <string name="unarchive">إزالة من أرشيف</string>
     <string name="unblock_contact">رفع الحظر</string>
     <string name="menu_send_video">ارسل مقطع فيديو</string>
+    <string name="menu_connect_to_desktop">الاتصال التطبيقات المكتبية</string>
+    <string name="menu_search_chats">البحث دردشات</string>
+    <string name="prompt_connect_desktop">أدخل معرف يظهر على سطح المكتب التطبيق</string>
 </resources>

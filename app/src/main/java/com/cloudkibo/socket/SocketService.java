@@ -1,6 +1,11 @@
 package com.cloudkibo.socket;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.ByteBuffer;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,6 +61,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static com.cloudkibo.file.filechooser.utils.FileUtils.getExternalStoragePublicDirForDocuments;
+import static com.cloudkibo.file.filechooser.utils.FileUtils.getExternalStoragePublicDirForDownloads;
+import static com.cloudkibo.file.filechooser.utils.FileUtils.getExternalStoragePublicDirForImages;
+
 /**
  * Service for connecting to socket server. This should be alive forever to receive
  * chat and other updates from server in real-time.
@@ -94,6 +103,7 @@ public class SocketService extends Service {
     private String my_id;
     private Boolean platform_connected = false;
     private String authtoken;
+    private ArrayList<Byte> fileBytesArray;
 
     public void connectToDesktop (String id, String authtoken) {
         this.authtoken = authtoken;
@@ -130,7 +140,63 @@ public class SocketService extends Service {
             payload.put("data", chatListArray);
 
             socket.emit("platform_room_message", payload);//new JSONArray().put(message));
+            // todo remove this, only for test
+            //sendByteData();
             sendGroupChatListToDesktop();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // todo remove this it was only for test
+    public void sendByteData(){
+        try {
+
+            File file = new File("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20170307-WA0000.jpg");
+
+            int CHUNK_SIZE = 16000;//32000;//16000;
+            int sizeOfFileToSend = (int)file.length();
+            int numberOfChunksInFileToSend = (int) Math.ceil(sizeOfFileToSend / CHUNK_SIZE);
+            int numberOfChunksSent = 0;
+
+            byte chunks[] = com.cloudkibo.webrtc.filesharing
+                    .Utility.convertFileToByteArray(file);
+
+            if (file.length() < CHUNK_SIZE) {
+
+                JSONObject filePayload = new JSONObject();
+                filePayload.put("chunk", chunks);
+                filePayload.put("unique_id", "ABABABABABABABA");
+
+                socket.emit("platform_room_message", filePayload);
+            } else {
+                while (numberOfChunksSent <= numberOfChunksInFileToSend) {
+
+                    int upperLimit = (numberOfChunksSent + 1) * CHUNK_SIZE;
+
+                    if (upperLimit > (int) file.length()) {
+                        upperLimit = (int) file.length() - 1;
+                    }
+
+                    int lowerLimit = (numberOfChunksSent) * CHUNK_SIZE;
+                    Log.w("FILE_ATTACHMENT", "Limits: " + lowerLimit + " " + upperLimit);
+                    Utility.sendLogToServer(getApplicationContext(), "Limits: " + lowerLimit + " - "
+                            + upperLimit + " AND byte length is " + chunks.length + " AND chunk is "
+                    + (upperLimit - lowerLimit));
+
+
+                    ByteBuffer byteBuffer = ByteBuffer.wrap(chunks, lowerLimit, upperLimit - lowerLimit);
+
+
+                    JSONObject filePayload = new JSONObject();
+                    filePayload.put("chunk", byteBuffer.array());
+                    filePayload.put("unique_id", "ABABABABABABABA");
+
+                    socket.emit("platform_room_message", filePayload);
+
+                    numberOfChunksSent++;
+                }
+            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -270,7 +336,7 @@ public class SocketService extends Service {
 
             DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 
-            JSONArray chatListArray = db.getGroupMessages(group_id);
+            JSONArray chatListArray = db.getGroupMembers(group_id);
 
             JSONObject payload = new JSONObject();
             payload.put("phone", user.get("phone"));
@@ -301,6 +367,7 @@ public class SocketService extends Service {
             e.printStackTrace();
         }
     }
+
 
     public void sendArrivedChatStatusToDesktop(JSONObject chatPayload) {
         try {
@@ -347,6 +414,22 @@ public class SocketService extends Service {
             payload.put("from_connection_id", my_id);
             payload.put("type", type);
             payload.put("data", chatPayload);
+
+            socket.emit("platform_room_message", payload);//new JSONArray().put(message));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendFileChunkToDesktop(JSONObject payloadFile) {
+        try {
+
+            JSONObject payload = new JSONObject();
+            payload.put("phone", user.get("phone"));
+            payload.put("to_connection_id", desktop_id);
+            payload.put("from_connection_id", my_id);
+            payload.put("type", "mobile_sending_chunk");
+            payload.put("data", payloadFile);
 
             socket.emit("platform_room_message", payload);//new JSONArray().put(message));
         } catch (JSONException e) {
@@ -434,7 +517,7 @@ public class SocketService extends Service {
 
 
                             db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
-                                    row.getString("msg"), row.getString("date_server_received"),
+                                    row.getString("msg"), row.getString("date"),
                                     "pending",
                                     row.getString("uniqueid"),
                                     row.getString("type"),
@@ -486,6 +569,114 @@ public class SocketService extends Service {
 
                             }
 
+                        } else if (payload.getString("type").equals("desktop_requesting_attachment")) {
+
+                            JSONObject row = payload.getJSONObject("data");
+                            JSONObject fileinfo = db.getFilesInfo(row.getString("unique_id"));
+
+                            File file = new File(fileinfo.getString("path"));
+
+                            int CHUNK_SIZE = 36000;//32000;//16000;
+                            int sizeOfFileToSend = Integer.parseInt(fileinfo.getString("file_size"));
+                            int numberOfChunksInFileToSend = (int) Math.ceil(sizeOfFileToSend / CHUNK_SIZE);
+                            int numberOfChunksSent = 0;
+
+                            if (file.length() < CHUNK_SIZE) {
+
+                                byte chunk [] = com.cloudkibo.webrtc.filesharing
+                                        .Utility.convertFileToByteArray(file);
+
+                                JSONObject filePayload = new JSONObject();
+                                filePayload.put("chunk", chunk);
+                                filePayload.put("unique_id", row.getString("unique_id"));
+                                filePayload.put("chunk_id", numberOfChunksSent);
+                                filePayload.put("total_chunks", numberOfChunksInFileToSend);
+
+                                sendFileChunkToDesktop(filePayload);
+
+                                Log.w("FILE_ATTACHMENT", "File Smaller than chunk size condition");
+
+                            } else {
+                                byte chunks [] = com.cloudkibo.webrtc.filesharing
+                                        .Utility.convertFileToByteArray(file);
+
+                                while (numberOfChunksSent <= numberOfChunksInFileToSend) {
+
+                                    int upperLimit = (numberOfChunksSent + 1) * CHUNK_SIZE;
+
+                                    if (upperLimit > (int) file.length()) {
+                                        upperLimit = (int) file.length() - 1;
+                                    }
+
+                                    int lowerLimit = (numberOfChunksSent) * CHUNK_SIZE;
+                                    Log.w("FILE_ATTACHMENT", "Limits: " + lowerLimit + " " + upperLimit);
+                                    /*Utility.sendLogToServer(getApplicationContext(), "Limits: " + lowerLimit + " - "
+                                            + upperLimit + " AND byte length is " + chunks.length + " AND chunk is "
+                                            + (upperLimit - lowerLimit));*/
+
+                                    ByteBuffer byteBuffer = ByteBuffer.wrap(chunks, lowerLimit, upperLimit - lowerLimit);
+
+
+                                    JSONObject filePayload = new JSONObject();
+                                    filePayload.put("chunk", byteBuffer.array());
+                                    filePayload.put("unique_id", row.getString("unique_id"));
+                                    filePayload.put("chunk_id", numberOfChunksSent+1);
+                                    filePayload.put("total_chunks", numberOfChunksInFileToSend);
+
+                                    sendFileChunkToDesktop(filePayload);
+
+                                    numberOfChunksSent++;
+                                }
+                            }
+                        } else if (payload.getString("type").equals("desktop_wants_send_file")) {
+
+                            JSONObject row = payload.getJSONObject("data");
+
+                            fileBytesArray = new ArrayList<Byte>();
+
+                            db.createFilesInfo(row.getString("unique_id"), row.getString("file_name"),
+                                    row.getString("file_size"), row.getString("file_type"),
+                                    row.getString("file_ext"), "under construction");
+
+                        } else if (payload.getString("type").equals("desktop_sending_chunk")) {
+
+                            JSONObject row = payload.getJSONObject("data");
+                            JSONObject fileinfo = db.getFilesInfo(row.getString("unique_id"));
+
+                            byte[] chunk = (byte[]) row.get("chunk");
+
+                            for(int i=0; i<chunk.length; i++)
+                                fileBytesArray.add(chunk[i]);
+
+                            if (row.getInt("chunk_id") == row.getInt("total_chunks")) {
+                                try {
+                                    Log.w("FILETRANSFER", "File transfer completed");
+                                    byte[] fileBytes = new byte[fileBytesArray.size()];
+                                    for (int i = 0; i < fileBytesArray.size(); i++) {
+                                        fileBytes[i] = fileBytesArray.get(i);
+                                    }
+                                    
+                                    File folder = getExternalStoragePublicDirForImages(getString(R.string.app_name));
+                                    if (fileinfo.getString("file_type").equals("document")) {
+                                        folder = getExternalStoragePublicDirForDocuments(getString(R.string.app_name));
+                                    }
+                                    if (fileinfo.getString("file_type").equals("audio")) {
+                                        folder = getExternalStoragePublicDirForDownloads(getString(R.string.app_name));
+                                    }
+                                    if (fileinfo.getString("file_type").equals("video")) {
+                                        folder = getExternalStoragePublicDirForDownloads(getString(R.string.app_name));
+                                    }
+                                    FileOutputStream outputStream;
+                                    outputStream = new FileOutputStream(folder.getPath() + "/" +
+                                            fileinfo.getString("file_name"));
+                                    outputStream.write(fileBytes);
+                                    outputStream.close();
+                                } catch (FileNotFoundException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            }
                         }
 
                     } catch (JSONException e) {

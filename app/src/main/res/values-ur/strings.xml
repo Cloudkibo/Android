@@ -108,4 +108,7 @@
     <string name="unarchive">محفوظ شدہ دستاویزات سے ہٹا دیں</string>
     <string name="unblock_contact">غیر مسدود کریں</string>
     <string name="menu_send_video">ویڈیو بھیجیں</string>
+    <string name="menu_connect_to_desktop">ڈیسک ٹاپ اپلی کیشن سے رابطہ قائم کریں</string>
+    <string name="menu_search_chats">تلاش کریں چیٹس</string>
+    <string name="prompt_connect_desktop">ID ڈیسک ٹاپ اپلی کیشن پر دکھایا درج کریں</string>
 </resources>

@@ -108,4 +108,7 @@
     <string name="unarchive">Aus dem Archiv entfernen</string>
     <string name="unblock_contact">Entblocken</string>
     <string name="menu_send_video">Video senden</string>
+    <string name="menu_connect_to_desktop">Verbinden Sie mit der Desktop App</string>
+    <string name="menu_search_chats">Chats suchen</string>
+    <string name="prompt_connect_desktop">Geben Sie die ID ein, die auf der Desktop-App angezeigt wird</string>
 </resources>

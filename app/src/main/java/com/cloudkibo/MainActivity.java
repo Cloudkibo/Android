@@ -812,6 +812,8 @@ public class MainActivity extends CustomActivity
                                             com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
                                                     .getString("filetype"), selectedFilePath);
 
+
+
                                     IFragmentName myFragment1 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
                                     if (myFragment1 == null) return;
                                     if (myFragment1.getFragmentName().equals("GroupChat")) {
