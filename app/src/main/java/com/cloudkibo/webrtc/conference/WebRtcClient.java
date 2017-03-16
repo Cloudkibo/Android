@@ -15,6 +15,7 @@ import org.webrtc.MediaConstraints;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
+import org.webrtc.RtpReceiver;
 import org.webrtc.SdpObserver;
 import org.webrtc.SessionDescription;
 import org.webrtc.VideoCapturer;
@@ -211,6 +212,11 @@ public class WebRtcClient {
         }
 
         @Override
+        public void onIceConnectionReceivingChange(boolean b) {
+
+        }
+
+        @Override
         public void onIceGatheringChange(PeerConnection.IceGatheringState iceGatheringState) {}
 
         @Override
@@ -231,6 +237,11 @@ public class WebRtcClient {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+        }
+
+        @Override
+        public void onIceCandidatesRemoved(IceCandidate[] iceCandidates) {
+
         }
 
         @Override
@@ -269,6 +280,11 @@ public class WebRtcClient {
 
         }
 
+        @Override
+        public void onAddTrack(RtpReceiver rtpReceiver, MediaStream[] mediaStreams) {
+
+        }
+
         public Peer(String id, int endPoint, String name) {
             Log.w(TAG,"new Peer: "+id + " " + endPoint);
             this.pc = factory.createPeerConnection(RTCConfig.getIceServer(), RTCConfig.getMediaConstraints(), this);
@@ -294,6 +310,11 @@ public class WebRtcClient {
         }
 
         @Override
+        public void onBufferedAmountChange(long l) {
+
+        }
+
+        @Override
         public void onStateChange() {
 
             Log.w("CONFERENCE", "DataChannel State Changed");
@@ -306,7 +327,7 @@ public class WebRtcClient {
             //Log.w("ConferenceFile", "i is " + key);
             peers.get(key).dc.send(buf);
         }
-    };
+    }
 
     private Peer addPeer(String id, int endPoint, String username) {
         Peer peer = new Peer(id, endPoint, username);
@@ -324,12 +345,12 @@ public class WebRtcClient {
         endPoints[peer.endPoint] = false;
     }
 
-    public WebRtcClient(RtcListener listener, PeerConnectionParameters params, EGLContext mEGLcontext) {
+    public WebRtcClient(RtcListener listener, PeerConnectionParameters params) {
         mListener = listener;
         pcParams = params;
 
         PeerConnectionFactory.initializeAndroidGlobals(listener, true, true,
-                params.videoCodecHwAcceleration, mEGLcontext);
+                params.videoCodecHwAcceleration);
         factory = new PeerConnectionFactory();
     }
 
@@ -337,14 +358,16 @@ public class WebRtcClient {
      * Call this method in Activity.onPause()
      */
     public void onPause() {
-        if(videoSource != null) videoSource.stop();
+        // todo fix it
+        //if(videoSource != null) videoSource.stop();
     }
 
     /**
      * Call this method in Activity.onResume()
      */
     public void onResume() {
-        if(videoSource != null) videoSource.restart();
+        // todo fix it
+        //if(videoSource != null) videoSource.restart();
     }
 
     /**
@@ -385,7 +408,8 @@ public class WebRtcClient {
             videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("maxFrameRate", Integer.toString(pcParams.videoFps)));
             videoConstraints.mandatory.add(new MediaConstraints.KeyValuePair("minFrameRate", Integer.toString(pcParams.videoFps)));
 
-            videoSource = factory.createVideoSource(getVideoCapturer(), videoConstraints);
+            //videoSource = factory.createVideoSource(getVideoCapturer(), videoConstraints);
+            //videoSource = factory.createVideoSource(getVideoCapturer());
             localMS.addTrack(factory.createVideoTrack("ARDAMSv0", videoSource));
         }
 
@@ -396,9 +420,9 @@ public class WebRtcClient {
         Log.w("VideoCallView", "inside setCamera");
     }
 
-    private VideoCapturer getVideoCapturer() {
-        String frontCameraDeviceName = VideoCapturerAndroid.getNameOfFrontFacingDevice();
-        return VideoCapturerAndroid.create(frontCameraDeviceName);
-    }
+    //private VideoCapturer getVideoCapturer() {
+        //String frontCameraDeviceName = VideoCapturer.getNameOfFrontFacingDevice();
+        //return VideoCapturer.create(frontCameraDeviceName);
+    //}
 
 }

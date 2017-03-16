@@ -224,7 +224,6 @@ public class KiboSyncService extends Service {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
             }
 
             JSONArray groupMembersRemove = db.getGroupMembersRemovePending();

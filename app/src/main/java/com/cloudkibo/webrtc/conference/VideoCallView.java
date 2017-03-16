@@ -52,6 +52,7 @@ import org.webrtc.DataChannel;
 import org.webrtc.MediaStream;
 import org.webrtc.VideoRenderer;
 import org.webrtc.VideoRendererGui;
+import org.webrtc.RendererCommon;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -85,7 +86,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
     private static final int REMOTE_Y = 0;
     private static final int REMOTE_WIDTH = 100;
     private static final int REMOTE_HEIGHT = 100;
-    private VideoRendererGui.ScalingType scalingType = VideoRendererGui.ScalingType.SCALE_ASPECT_FILL;
+    private RendererCommon.ScalingType scalingType = RendererCommon.ScalingType.SCALE_ASPECT_FILL;
     private GLSurfaceView vsv;
     private VideoRenderer.Callbacks localRender;
     private VideoRenderer.Callbacks remoteRender;
@@ -200,12 +201,12 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
                             VideoRendererGui.update(localRender,
                                     LOCAL_X_CONNECTED, LOCAL_Y_CONNECTED,
                                     LOCAL_WIDTH_CONNECTED, LOCAL_HEIGHT_CONNECTED,
-                                    scalingType);
+                                    scalingType, true);
                         } else {
                             VideoRendererGui.update(localRender,
                                     LOCAL_X_HIDDEN, LOCAL_Y_HIDDEN,
                                     LOCAL_WIDTH_HIDDEN, LOCAL_HEIGHT_HIDDEN,
-                                    scalingType);
+                                    scalingType, true);
                         }
                     }
                 }catch(JSONException e){
@@ -383,7 +384,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
         PeerConnectionParameters params = new PeerConnectionParameters(
                 true, false, displaySize.x, displaySize.y, 30, 1, VIDEO_CODEC_VP9, true, 1, AUDIO_CODEC_OPUS, true);
 
-        client = new WebRtcClient(this, params, VideoRendererGui.getEGLContext());
+        client = new WebRtcClient(this, params);
 
         startCam();
 
@@ -482,7 +483,7 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
         VideoRendererGui.update(localRender,
                 LOCAL_X_CONNECTING, LOCAL_Y_CONNECTING,
                 LOCAL_WIDTH_CONNECTING, LOCAL_HEIGHT_CONNECTING,
-                scalingType);
+                scalingType, true);
 
        joinRoomForCall();
 
@@ -502,15 +503,15 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
 
         VideoRendererGui.update(remoteRender,
                 0, 0,
-                1, 1, scalingType);
+                1, 1, scalingType, true);
         VideoRendererGui.update(localRender,
                 LOCAL_X_HIDDEN, LOCAL_Y_HIDDEN,
                 LOCAL_WIDTH_HIDDEN, LOCAL_HEIGHT_HIDDEN,
-                scalingType);
+                scalingType, true);
         if(screenShare){
             VideoRendererGui.update(screenRender,
                     REMOTE_X, REMOTE_Y,
-                    REMOTE_WIDTH, REMOTE_HEIGHT, VideoRendererGui.ScalingType.SCALE_ASPECT_FIT);
+                    REMOTE_WIDTH, REMOTE_HEIGHT, RendererCommon.ScalingType.SCALE_ASPECT_FIT, true);
         }
         isStarted = true;
     }
@@ -522,18 +523,18 @@ public class VideoCallView extends Activity implements WebRtcClient.RtcListener 
         VideoRendererGui.update(localRender,
                 LOCAL_X_CONNECTING, LOCAL_Y_CONNECTING,
                 LOCAL_WIDTH_CONNECTING, LOCAL_HEIGHT_CONNECTING,
-                scalingType);
+                scalingType, true);
     }
 
     public void toggleRemoteVideo(boolean action){
         if(action) {
             VideoRendererGui.update(remoteRender,
                     REMOTE_X, REMOTE_Y,
-                    REMOTE_WIDTH, REMOTE_HEIGHT, scalingType);
+                    REMOTE_WIDTH, REMOTE_HEIGHT, scalingType, true);
         } else {
             VideoRendererGui.update(remoteRender,
                     0, 0,
-                    1, 1, scalingType);
+                    1, 1, scalingType, true);
         }
     }
 

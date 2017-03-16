@@ -94,6 +94,10 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         View v = inflater.inflate(R.layout.group_chat, null);
         final View cusView = v;
         setHasOptionsMenu(true);
+
+        LinearLayout mRevealView = (LinearLayout) v.findViewById(R.id.reveal_items);
+        mRevealView.setVisibility(View.GONE);
+
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         final GroupChatUI temp = this;
 //        LinearLayout group_header = (LinearLayout) v.findViewById(R.id.group_header);

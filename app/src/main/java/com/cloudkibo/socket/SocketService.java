@@ -655,7 +655,7 @@ public class SocketService extends Service {
                                     for (int i = 0; i < fileBytesArray.size(); i++) {
                                         fileBytes[i] = fileBytesArray.get(i);
                                     }
-                                    
+
                                     File folder = getExternalStoragePublicDirForImages(getString(R.string.app_name));
                                     if (fileinfo.getString("file_type").equals("document")) {
                                         folder = getExternalStoragePublicDirForDocuments(getString(R.string.app_name));

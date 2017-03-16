@@ -14,6 +14,7 @@ import org.webrtc.IceCandidate;
 import org.webrtc.MediaStream;
 import org.webrtc.PeerConnection;
 import org.webrtc.PeerConnectionFactory;
+import org.webrtc.RtpReceiver;
 import org.webrtc.SdpObserver;
 import org.webrtc.SessionDescription;
 import org.webrtc.PeerConnection.IceConnectionState;
@@ -242,8 +243,9 @@ public class FileConnection extends CustomActivity {
 	}
 	
 	public void createPeerConnectionFactory(){
-		PeerConnectionFactory.initializeAndroidGlobals(getApplicationContext(), true, true,
-        		false, VideoRendererGui.getEGLContext());
+		// // TODO: 15/03/2017 fix it
+		//PeerConnectionFactory.initializeAndroidGlobals(getApplicationContext(), true, true,
+        //		false, VideoRendererGui.getEGLContext());
 
 		Log.w("FILE_TRANSFER", "PeerConnection Factory created");
 
@@ -316,7 +318,11 @@ public class FileConnection extends CustomActivity {
 	}
 	
 	private class DcObserver implements DataChannel.Observer {
-		
+		@Override
+		public void onBufferedAmountChange(long l) {
+
+		}
+
 		public DcObserver(){
 			
 		}
@@ -454,7 +460,21 @@ public class FileConnection extends CustomActivity {
 	}
 	
 	private class PcObserver implements PeerConnection.Observer{
-		
+		@Override
+		public void onIceConnectionReceivingChange(boolean b) {
+
+		}
+
+		@Override
+		public void onIceCandidatesRemoved(IceCandidate[] iceCandidates) {
+
+		}
+
+		@Override
+		public void onAddTrack(RtpReceiver rtpReceiver, MediaStream[] mediaStreams) {
+
+		}
+
 		public PcObserver(){
 			
 		}
