@@ -194,6 +194,32 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		list.setAdapter(adp);
 		list.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
 		list.setStackFromBottom(true);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Conversation cItem = convList.get(i);
+                if(cItem.getType().equals("contact")) {
+
+                    String[] parts = cItem.getMsg().split(":");
+                    String name = parts[0];
+                    String phone = parts[1];
+
+                    ViewContact vCntctFrag = new ViewContact();
+                    Bundle bundle = new Bundle();
+
+                    bundle.putString("name", name);
+                    bundle.putString("phone", phone);
+
+                    vCntctFrag.setArguments(bundle);
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, vCntctFrag, "viewContactFragmentTag")
+                            .addToBackStack("View Contact")
+                            .commit();
+                }
+            }
+        });
+
 		registerForContextMenu(list);
 
 
@@ -266,7 +292,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 						String text = "Last Seen on " + Utility.convertDateToLocalTimeZoneAndReadable(row.getString("last_seen"));
 						//Toast.makeText(getActivity().getApplicationContext(), text, Toast.LENGTH_SHORT).show();
 						lastSeen = text;
-						getActivity().invalidateOptionsMenu();
+                        if(getActivity() != null)
+						    getActivity().invalidateOptionsMenu();
 					} catch (JSONException e) {
 						e.printStackTrace();
 					} catch (ParseException e) {

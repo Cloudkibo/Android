@@ -309,7 +309,8 @@ public class ContactList extends CustomFragment implements IFragmentName
 					JSONArray jsonA = db.getContactsWithImages();
 					ArrayList<ContactItem> contactList1 = new ArrayList<ContactItem>();
 
-					Utility.sendLogToServer(getActivity().getApplicationContext(), "In Contact List page: the size of contacts on cloudkibo "+ jsonA.length());
+					if(getActivity() != null )
+						Utility.sendLogToServer(getActivity().getApplicationContext(), "In Contact List page: the size of contacts on cloudkibo "+ jsonA.length());
 
 					jsonA = UserFunctions.sortJSONArrayIgnoreCase(jsonA, "display_name");
 //

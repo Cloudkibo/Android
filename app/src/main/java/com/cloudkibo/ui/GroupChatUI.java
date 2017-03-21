@@ -122,6 +122,33 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         lv.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         lv.setStackFromBottom(true);
 
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Conversation cItem = convList.get(i);
+                if(cItem.getType().equals("contact")) {
+
+                    String[] parts = cItem.getMsg().split(":");
+                    String name = parts[0];
+                    String phone = parts[1];
+
+                    ViewContact vCntctFrag = new ViewContact();
+                    Bundle bundle = new Bundle();
+
+                    bundle.putString("name", name);
+                    bundle.putString("phone", phone);
+
+                    vCntctFrag.setArguments(bundle);
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, vCntctFrag, "viewContactFragmentTag")
+                            .addToBackStack("View Contact")
+                            .commit();
+                }
+            }
+        });
+
+
         Button send_button = (Button) v.findViewById(R.id.btnSend);
         send_button.setOnClickListener(new View.OnClickListener() {
             @Override
