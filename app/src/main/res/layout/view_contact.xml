@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EFF0F1">
+
+    <RelativeLayout
+
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        >
+
+        <TextView
+            android:id="@+id/lblContactName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Name"
+            android:padding="20dp"
+            android:layout_marginLeft="30dp"
+            android:textColor="@color/main_color_gray"
+            android:textSize="24sp"
+            android:textAlignment="center" />
+
+        <View
+            android:id="@+id/hr"
+            android:layout_width="fill_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_height="1dp"
+            android:background="#EFF0F1"
+            android:layout_below="@+id/lblContactName"
+            />
+
+        <TextView
+            android:id="@+id/lblContactPhone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Phone"
+            android:padding="20dp"
+            android:layout_marginLeft="30dp"
+            android:textColor="@color/main_color_gray"
+            android:textSize="24sp"
+            android:layout_below="@+id/hr"
+
+
+            android:textAlignment="center" />
+
+    </RelativeLayout>
+
+</LinearLayout>
