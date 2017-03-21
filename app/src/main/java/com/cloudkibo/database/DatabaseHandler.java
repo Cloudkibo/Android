@@ -1322,7 +1322,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
             while (cursor.isAfterLast() != true) {
                 JSONObject contact = new JSONObject();
-                contact.put("_from", cursor.getString(0));
+                contact.put("from", cursor.getString(0));
                 contact.put("unique_id", cursor.getString(1));
                 contact.put("status", cursor.getString(2));
                 contacts.put(contact);
@@ -2152,8 +2152,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
                 JSONObject contact = new JSONObject();
 
-                contact.put(UserChat.USERCHAT_TO, cursor.getString(1));
-                contact.put(UserChat.USERCHAT_FROM, cursor.getString(2));
+                contact.put("to", cursor.getString(1));
+                contact.put("from", cursor.getString(2));
                 contact.put(UserChat.USERCHAT_FROM_FULLNAME, cursor.getString(3));
                 contact.put(UserChat.USERCHAT_MSG, cursor.getString(4));
                 contact.put(UserChat.USERCHAT_DATE, cursor.getString(5));
@@ -2217,7 +2217,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 JSONObject contact = new JSONObject();
                 contact.put("uniqueid", cursor.getString(0));
                 contact.put("status", cursor.getString(1));
-                contact.put("fromperson", cursor.getString(2));
+                contact.put("sender", cursor.getString(2));
 
                 chats.put(contact);
 
@@ -2243,9 +2243,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             while (cursor.isAfterLast() != true) {
 
                 JSONObject contact = new JSONObject();
-                contact.put("uniqueid", cursor.getString(0));
+                contact.put("chat_unique_id", cursor.getString(0));
                 contact.put("status", cursor.getString(1));
-                contact.put("fromperson", cursor.getString(2));
+                contact.put("from", cursor.getString(2));
 
                 chats.put(contact);
 

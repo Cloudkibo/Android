@@ -79,6 +79,8 @@ public class UserFunctions {
     private String confirmFileDownloadURL;
     private String blockContactURL;
     private String unBlockContactURL;
+    private String syncURL;
+    private String syncDownWardURL;
     
     
     
@@ -143,6 +145,8 @@ public class UserFunctions {
         confirmFileDownloadURL =  baseURL + "/api/filetransfers/confirmdownload";
         blockContactURL =         baseURL + "/api/contactslist/blockContact";
         unBlockContactURL =       baseURL + "/api/contactslist/unblockContact";
+        syncURL =                 baseURL + "/api/sync/upwardSync";
+        syncDownWardURL =         baseURL + "/api/sync/downwardSync";
 
         connection = new ConnectionManager();
     }
@@ -340,6 +344,15 @@ public class UserFunctions {
 
     public JSONObject addGroupMembers(JSONObject data, String authtoken){
         return connection.sendJSONObjectToServer(addGroupMembers, authtoken, data);
+    }
+
+    public JSONObject upwardSync(JSONObject data, String authtoken){
+        return connection.sendJSONObjectToServer(syncURL, authtoken, data);
+    }
+
+    public JSONObject downwardSync(String authtoken) {
+        JSONObject data = connection.getDataFromServer(syncDownWardURL, authtoken);
+        return data;
     }
 
     public JSONArray checkStatusOfGroupMessages(JSONObject data, String authtoken){

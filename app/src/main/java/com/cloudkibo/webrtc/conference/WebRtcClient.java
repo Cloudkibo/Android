@@ -420,9 +420,9 @@ public class WebRtcClient {
         Log.w("VideoCallView", "inside setCamera");
     }
 
-    //private VideoCapturer getVideoCapturer() {
-        //String frontCameraDeviceName = VideoCapturer.getNameOfFrontFacingDevice();
-        //return VideoCapturer.create(frontCameraDeviceName);
-    //}
+    /*private VideoCapturer getVideoCapturer() {
+        String frontCameraDeviceName = VideoCapturer.getNameOfFrontFacingDevice();
+        return VideoCapturer.create(frontCameraDeviceName);
+    }*/
 
 }

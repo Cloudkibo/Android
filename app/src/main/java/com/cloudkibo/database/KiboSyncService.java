@@ -35,6 +35,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonParser;
 import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.async.parser.JSONArrayParser;
 import com.koushikdutta.ion.Ion;
 
 import org.apache.http.NameValuePair;
@@ -67,22 +68,6 @@ public class KiboSyncService extends Service {
     final ArrayList<String> contactList1Phone = new ArrayList<String>();
     final Map<String, String> photo_uri = new HashMap<>();
 
-    public void startSync (String token) {
-
-        authtoken = token;
-
-        doUpwardSync();
-
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        Log.i("tag", "This'll run 3000 milliseconds later");
-                        loadChatFromServer();
-                    }
-                },
-                3000);
-
-    }
 
     public void startSyncWithoutAddressBookAccess (String token) {
 
@@ -90,20 +75,7 @@ public class KiboSyncService extends Service {
 
         startWithAddressBook = false;
 
-
-        //doUpwardSync();
         mListener.contactsLoaded();
-
-        // This is commented because we have stopped doing sync of chat from server on install (we won't restore anything from server in future)
-        // server will not store chat and would delete once it is sent to client
-        /*new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        Log.i("tag", "This'll run 3000 milliseconds later");
-                        loadChatFromServer();
-                    }
-                },
-                3000);*/
 
     }
 
@@ -119,7 +91,7 @@ public class KiboSyncService extends Service {
                 new Runnable() {
                     public void run() {
                         Log.i("tag", "This'll run 3000 milliseconds later");
-                        loadPartialChatFromServer();
+                        //loadPartialChatFromServer();
                     }
                 },
                 3000);
@@ -134,44 +106,45 @@ public class KiboSyncService extends Service {
 
         doUpwardSync();
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        Log.i("tag", "This'll run 3000 milliseconds later");
-                        loadPartialChatFromServer();
-                    }
-                },
-                3000);
-
     }
 
     private void doUpwardSync(){
         DatabaseHandler db = new DatabaseHandler(
                 getApplicationContext());
         try {
+
+            JSONObject completePayload = new JSONObject();
+
             JSONArray chats = db.getPendingChat();
+
+            completePayload.put("unsentMessages", chats);
 
             for (int i=0; i < chats.length(); i++) {
                 JSONObject row = chats.getJSONObject(i);
 
-                sendMessageUsingAPI(row.getString("toperson"),
+                sendMessageUsingAPI(row.getString("to"),
                         row.getString("msg"), row.getString("uniqueid"), row.getString("type"), row.getString("file_type"));
 
             }
 
             JSONArray groupChats = db.getPendingGroupChat();
-            GroupUtility utility = new GroupUtility(getApplicationContext());
+
+            completePayload.put("unsentGroupMessages", groupChats);
+
+            /*GroupUtility utility = new GroupUtility(getApplicationContext());
             for (int i=0; i < groupChats.length(); i++) {
                 JSONObject row = groupChats.getJSONObject(i);
                 String group_id = row.getString("group_unique_id");
                 String msg = row.getString("msg");
                 String msg_unique_id = row.getString("unique_id");
                 utility.syncGroupMessage(group_id,msg,msg_unique_id,authtoken);
-            }
+            }*/
 
             JSONArray seenChats = db.getChatHistoryStatus();
 
-            for (int i=0; i < seenChats.length(); i++) {
+            completePayload.put("unsentChatMessageStatus", seenChats);
+
+            /*for (int i=0; i < seenChats.length(); i++) {
                 JSONObject row = seenChats.getJSONObject(i);
 
                 sendMessageStatusUsingAPI(
@@ -179,11 +152,13 @@ public class KiboSyncService extends Service {
                         row.getString("uniqueid"), row.getString("fromperson")
                 );
 
-            }
+            }*/
 
             JSONArray seenGroupChats = db.getGroupChatHistoryStatus();
 
-            for (int i=0; i < seenGroupChats.length(); i++) {
+            completePayload.put("unsentGroupChatMessageStatus", seenGroupChats);
+
+            /*for (int i=0; i < seenGroupChats.length(); i++) {
                 JSONObject row = seenGroupChats.getJSONObject(i);
 
                 sendGroupMessageStatusUsingAPI(
@@ -191,27 +166,32 @@ public class KiboSyncService extends Service {
                         row.getString("uniqueid")
                 );
 
-            }
+            }*/
 
             JSONArray unSyncedCreatedGroups = db.getGroupsServerPending();
+
+            JSONArray payloadCreatedGroups = new JSONArray();
 
             for(int i=0; i<unSyncedCreatedGroups.length(); i++) {
                 JSONObject row = unSyncedCreatedGroups.getJSONObject(i);
 
-                JsonObject payload = new JsonObject();
-                payload.addProperty("group_name", row.getString("group_name"));
-                payload.addProperty("unique_id", row.getString("unique_id"));
+                JSONObject payloadJ = new JSONObject();
+                payloadJ.put("group_name", row.getString("group_name"));
+                payloadJ.put("unique_id", row.getString("unique_id"));
                 String array = row.getString("members").replace("\\", "");
-                payload.add("members", new JsonParser().parse(array).getAsJsonArray());
+                payloadJ.put("members", new JSONArray(array));
 
-                updateServerAboutGroups(payload);
-
+                payloadCreatedGroups.put(payloadJ);
 
             }
 
+            completePayload.put("unsentGroups", payloadCreatedGroups);
+
             JSONArray groupMembers = db.getGroupMembersServerPending();
 
-            for (int i=0; i < groupMembers.length(); i++) {
+            completePayload.put("unsentAddedGroupMembers", groupMembers);
+
+            /*for (int i=0; i < groupMembers.length(); i++) {
                 JSONObject row = groupMembers.getJSONObject(i);
 
                 String member_phone[] = new String[]{row.getString("member_phone")};
@@ -224,13 +204,14 @@ public class KiboSyncService extends Service {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
 
             JSONArray groupMembersRemove = db.getGroupMembersRemovePending();
 
-            for (int i=0; i < groupMembersRemove.length(); i++) {
-                JSONObject row = groupMembersRemove.getJSONObject(i);
+            completePayload.put("unsentRemovedGroupMembers", groupMembersRemove);
 
+            /*for (int i=0; i < groupMembersRemove.length(); i++) {
+                JSONObject row = groupMembersRemove.getJSONObject(i);
 
                 //String member_phone[] = new String[]{row.getString("member_phone")};
                 try {
@@ -243,7 +224,7 @@ public class KiboSyncService extends Service {
                     e.printStackTrace();
                 }
 
-            }
+            }*/
 
             JSONArray sentGroupMesssagesForStatus = db.getSentGroupMessagesForSync(db.getUserDetails().get("phone"));
 
@@ -255,7 +236,9 @@ public class KiboSyncService extends Service {
             JSONObject data = new JSONObject();
             data.put("unique_ids", array);
 
-            checkStatusOfGroupMessage(data);
+            completePayload.put("statusOfSentGroupMessages", data);
+
+            //checkStatusOfGroupMessage(data);*/
 
             JSONArray sentChatMesssagesForStatus = db.getSentMessagesForSync(db.getUserDetails().get("phone"));
 
@@ -267,12 +250,85 @@ public class KiboSyncService extends Service {
             JSONObject dataChat = new JSONObject();
             dataChat.put("unique_ids", arrayChat);
 
-            checkStatusOfChatMessage(dataChat);
+            completePayload.put("statusOfSentMessages", dataChat);
 
+            /*checkStatusOfChatMessage(dataChat);*/
+
+            Utility.sendLogToServer(getApplicationContext(), "NEW UPWARD SYNC PAYLOAD"+ completePayload.toString());
+
+            syncToServer(completePayload);
 
         }catch(JSONException e ){
             e.printStackTrace();
         }
+    }
+
+    private void downWardSync() {
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                return new UserFunctions(getApplicationContext()).downwardSync(authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject payload) {
+                try {
+
+                     if (payload != null) {
+
+                         JSONArray partialChat = payload.getJSONObject("partialChat").getJSONArray("msg");
+                         JSONArray contactsUpdate = payload.getJSONArray("contactsUpdate");
+                         JSONArray contactsWhoBlockedYou = payload.getJSONArray("contactsWhoBlockedYou");
+                         JSONArray contactsBlockedByMe = payload.getJSONArray("contactsBlockedByMe");
+                         JSONArray myGroups = payload.getJSONArray("myGroups");
+                         JSONArray myGroupsMembers = payload.getJSONArray("myGroupsMembers");
+                         JSONArray partialGroupChat = payload.getJSONArray("partialGroupChat");
+
+                         loadPartialChat(partialChat);
+                         loadCurrentContacts(contactsUpdate);
+                         loadContactsWhoBlockedMe(contactsWhoBlockedYou);
+                         loadContactsBlockedByMe(contactsBlockedByMe);
+                         loadMyGroups(myGroups);
+                         loadMyGroupsMembers(myGroupsMembers);
+                         // todo partial group chat work here
+
+                     }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.execute();
+    }
+
+    private void syncToServer(final JSONObject body) {
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                return new UserFunctions(getApplicationContext()).upwardSync(body, authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject jsonA) {
+                try {
+
+                    if (jsonA != null) {
+                        if(jsonA.getString("status").equals("success")) {
+                            Utility.sendLogToServer(getApplicationContext(), "Sync Data reached server");
+                        }
+                    }
+
+                    downWardSync();
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.execute();
     }
 
     private void updateServerAboutGroups(JsonObject body){
@@ -325,7 +381,7 @@ public class KiboSyncService extends Service {
                                 if (e == null) {
                                     if (MainActivity.isVisible)
                                         MainActivity.mainActivity.ToastNotify2("Uploaded the file to server.");
-                                    sendMessageUsingAPIforChatOnly(contactPhone, msg, uniqueid, type, file_type);
+                                    //sendMessageUsingAPIforChatOnly(contactPhone, msg, uniqueid, type, file_type);
                                 } else {
                                     if (MainActivity.isVisible)
                                         MainActivity.mainActivity.ToastNotify2("Some error has occurred or Internet not available. Please try later.");
@@ -334,7 +390,7 @@ public class KiboSyncService extends Service {
                             }
                         });
             } else {
-                sendMessageUsingAPIforChatOnly(contactPhone, msg, uniqueid, type, file_type);
+                //sendMessageUsingAPIforChatOnly(contactPhone, msg, uniqueid, type, file_type);
             }
         } catch ( JSONException e ) {
             e.printStackTrace();
@@ -535,706 +591,241 @@ public class KiboSyncService extends Service {
         }.execute();
     }
 
-    private void loadContactsFromAddressBook(){
-
-        new AsyncTask<String, String, JSONObject>() {
-            private ProgressDialog nDialog;
-
-
-            @Override
-            protected JSONObject doInBackground(String... args) {
-
-                List<NameValuePair> phones = new ArrayList<NameValuePair>();
-                List<NameValuePair> emails = new ArrayList<NameValuePair>();
-
-                ContentResolver cr = getApplicationContext().getContentResolver();
-                Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI,
-                        null, null, null, null);
-                if (cur.getCount() > 0) {
-                    while (cur.moveToNext()) {
-                        String id = cur.getString(
-                                cur.getColumnIndex(ContactsContract.Contacts._ID));
-                        String name = cur.getString(
-                                cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                        String image_uri = cur.getString(
-                                cur.getColumnIndex(ContactsContract.Contacts.PHOTO_URI));
-                        //Log.w("Contact Name : ", "Name " + name + "");
-                        if (Integer.parseInt(cur.getString(cur.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                            Cursor pCur = cr.query(
-                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI,
-                                    null,
-                                    ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = ?",
-                                    new String[]{id}, null);
-                            while (pCur.moveToNext()) {
-                                DatabaseHandler db = new DatabaseHandler(
-                                        getApplicationContext());
-                                String phone = pCur.getString(pCur.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                                if(phone.length() < 6) continue;
-                                if(phone.charAt(0) != '+') {
-                                    if(phone.charAt(0) == '0') phone = phone.substring(1, phone.length());
-                                    if(phone.charAt(0) == '1') phone = "+" + phone;
-                                    else phone = "+" + db.getUserDetails().get("country_prefix") + phone;
-                                }
-                                //if(Character.isLetter(name.charAt(0)))
-                                //    name = name.substring(0, 1).toUpperCase() + name.substring(1);
-                                phone = phone.replaceAll("\\s+","");
-                                phone = phone.replaceAll("\\p{P}","");
-                                db = new DatabaseHandler(getApplicationContext());
-                                String userPhone = db.getUserDetails().get("phone");
-                                if(userPhone.equals(phone)) continue;
-                                if(phone.equals("+923323800399") || phone.equals("+14255035617")) {
-                                    Utility.sendLogToServer(getApplicationContext(), "CONTACT LOADING.. GOT NUMBER "+ phone);
-                                }
-                                if(contactList1Phone.contains(phone)) continue;
-                                //if(Character.isLetter(name.charAt(0)))
-                                //    name = name.substring(0, 1).toUpperCase() + name.substring(1);
-                                if(phone.equals("+923323800399") || phone.equals("+14255035617")) {
-                                    Utility.sendLogToServer(getApplicationContext(), "CONTACT LOADING.. THIS NUMBER WENT INTO LIST "+ phone);
-                                }
-                                phones.add(new BasicNameValuePair("phonenumbers", phone));
-                                Log.w("Phone Number: ", "Name : " + name + " Number : " + phone);
-                                contactList1.add(name);
-                                contactList1Phone.add(phone);
-                                photo_uri.put(phone,image_uri);
-                            }
-                            pCur.close();
-                        }
-                        /*Cursor emailCur = cr.query(
-                                ContactsContract.CommonDataKinds.Email.CONTENT_URI,
-                                null,
-                                ContactsContract.CommonDataKinds.Email.CONTACT_ID + " = ?",
-                                new String[]{id}, null);
-                        while (emailCur.moveToNext()) {
-                            // This would allow you get several email addresses
-                            // if the email addresses were stored in an array
-                            String email = emailCur.getString(
-                                    emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA));
-                            String emailType = emailCur.getString(
-                                    emailCur.getColumnIndex(ContactsContract.CommonDataKinds.Email.TYPE));
-                            emails.add(new BasicNameValuePair("emails", email));
-                            Log.w("Email: ", "Name : " + name + " Email : " + email);
-                            //contactList1.add(name);
-                            //contactList1Phone.add(email);
-                            break;
-                        }
-                        emailCur.close();*/
-                    }
-                }
-                cur.close();
-
-                UserFunctions userFunction = new UserFunctions(getApplicationContext());
-                JSONObject json = userFunction.sendAddressBookPhoneContactsToServer(phones, authtoken);
-                Log.w("SERVER SENT RESPONSE", json.toString());
-                return json;
-            }
-
-            @Override
-            protected void onPostExecute(JSONObject json) {
-
-                try {
-
-                    ArrayList<String> contactList1Available = new ArrayList<String>();
-                    ArrayList<String> contactList1PhoneAvailable = new ArrayList<String>();
-
-                    if(json != null){
-
-                        JSONArray jArray = json.getJSONArray("available");
-
-                        for(int i = 0; i<jArray.length(); i++){
-                            contactList1Available.add(contactList1.get(contactList1Phone.indexOf(jArray.get(i).toString())));
-                            contactList1PhoneAvailable.add(contactList1Phone.get(contactList1Phone.indexOf(jArray.get(i).toString())));
-                            contactList1.remove(contactList1Phone.indexOf(jArray.get(i).toString()));
-                            contactList1Phone.remove(contactList1Phone.indexOf(jArray.get(i).toString()));
-                            Log.w("REMOVING", jArray.get(i).toString());
-                        }
-
-                    }
-                    loadNotFoundContacts(contactList1, contactList1Phone);
-                    loadFoundContacts(contactList1Available, contactList1PhoneAvailable);
-//                    Utility utility = new Utility();
-//                    utility.updateDatabaseWithContactImages(getApplicationContext(), contactList1Phone);
-//                    utility.updateDatabaseWithContactImages(getApplicationContext(), contactList1PhoneAvailable);
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-
-        }.execute();
-
-    }
-
-    private void loadNotFoundContacts(ArrayList<String> contactList1, ArrayList<String> contactList1Phone) {
-
-        DatabaseHandler db = new DatabaseHandler(
-                getApplicationContext());
-
-        db.resetContactsTable();
-
-        db = new DatabaseHandler(
-                getApplicationContext());
-
-        for (int i = 0; i < contactList1.size(); i++) {
-            db.addContact("false", "null",
-                    contactList1Phone.get(i),
-                    contactList1.get(i),
-                    "null",
-                    "No",
-                    "N/A",
-                    photo_uri.get(contactList1Phone.get(i)));
-        }
-
-        /*try {
-            JSONArray contacts = db.getContacts();
-            contacts.toString();
-        }catch(JSONException e){
-            e.printStackTrace();
-        }*/
-    }
-
-    private void loadFoundContacts(ArrayList<String> contactList1, ArrayList<String> contactList1Phone) {
-
-        DatabaseHandler db = new DatabaseHandler(
-                getApplicationContext());
-
-        for (int i = 0; i < contactList1.size(); i++) {
-            db.addContact("true", "null",
-                    contactList1Phone.get(i),
-                    contactList1.get(i),
-                    "null",
-                    "Yes",
-                    "N/A",
-                    photo_uri.get(contactList1Phone.get(i)));
-        }
-
-        loadCurrentContactsFromServer();
+    private void loadPartialChat(JSONArray jsonA){
 
         try {
-            JSONArray contacts = db.getContacts();
-            contacts.toString();
-        }catch(JSONException e){
+            if (jsonA.length() > 0) {
+                DatabaseHandler db = new DatabaseHandler(
+                        getApplicationContext());
+
+                HashMap<String, String> user = db.getUserDetails();
+
+                db = new DatabaseHandler(
+                        getApplicationContext());
+
+                for (int i = 0; i < jsonA.length(); i++) {
+                    JSONObject row = jsonA.getJSONObject(i);
+
+                    JSONArray messageAlreadyThere = db.getSpecificChat(row.has("uniqueid") ? row.getString("uniqueid") : "");
+                    if (messageAlreadyThere.length() < 1) {
+                        db = new DatabaseHandler(
+                                getApplicationContext());
+
+                        if (db.getUserDetails().get("phone").equals(row.getString("from"))) {
+                            db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
+                                    row.getString("msg"), row.getString("date"),
+                                    row.has("status") ? row.getString("status") : "",
+                                    row.has("uniqueid") ? row.getString("uniqueid") : "",
+                                    row.has("type") ? row.getString("type") : "",
+                                    row.has("file_type") ? row.getString("file_type") : "");
+                        } else {
+                            db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
+                                    row.getString("msg"), row.getString("date_server_received"),
+                                    row.has("status") ? row.getString("status") : "",
+                                    row.has("uniqueid") ? row.getString("uniqueid") : "",
+                                    row.has("type") ? row.getString("type") : "",
+                                    row.has("file_type") ? row.getString("file_type") : "");
+                        }
+
+                        if (row.has("status")) {
+                            if (row.getString("to").equals(db.getUserDetails().get("phone")) && row.getString("status").equals("sent")) {
+                                db = new DatabaseHandler(
+                                        getApplicationContext());
+                                db.updateChat("delivered", row.getString("uniqueid"));
+                                // todo REALLY DO THIS
+                                mListener.sendMessageStatusUsingSocket(row.getString("from"),
+                                        "delivered", row.getString("uniqueid"));
+
+                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
+
+                                String message = row.getString("msg");
+                                String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
+
+                                DatabaseHandler db2 = new DatabaseHandler(getApplicationContext());
+
+                                String senderName = db2.getSpecificContact(row.getString("from")).getJSONObject(0).getString("display_name");
+
+                                Notification n = new Notification.Builder(getApplicationContext())
+                                        .setContentTitle(senderName)
+                                        .setContentText(subMsg)
+                                        .setSmallIcon(R.drawable.icon)
+                                        .setContentIntent(pIntent)
+                                        .setAutoCancel(true)
+                                        .build();
+
+                                NotificationManager notificationManager =
+                                        (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                                notificationManager.notify(0, n);
+
+                                try {
+                                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                                    r.play();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }
+                    }
+
+                }
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void loadCurrentContacts(JSONArray jsonA){
+
+        try {
+            if (jsonA != null) {
+
+                DatabaseHandler db = new DatabaseHandler(
+                        getApplicationContext());
+
+                for (int i = 0; i < jsonA.length(); i++) {
+                    JSONObject row = jsonA.getJSONObject(i);
+
+                    db.updateContact(row.getJSONObject("contactid").getString("status"),
+                            row.getJSONObject("contactid").getString("phone"),
+                            row.getJSONObject("contactid").getString("_id"));
+
+                }
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void loadContactsWhoBlockedMe(JSONArray jsonA){
+
+        try {
+
+            if (jsonA != null) {
+
+                DatabaseHandler db = new DatabaseHandler(
+                        getApplicationContext());
+
+                for (int i=0; i < jsonA.length(); i++) {
+                    JSONObject row = jsonA.getJSONObject(i);
+
+                    db.blockedMe(row.getJSONObject("contactid").getString("phone"));
+
+                }
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void loadContactsBlockedByMe(JSONArray jsonA){
+
+        try {
+
+            if (jsonA != null) {
+
+                DatabaseHandler db = new DatabaseHandler(
+                        getApplicationContext());
+
+                for (int i=0; i < jsonA.length(); i++) {
+                    JSONObject row = jsonA.getJSONObject(i);
+
+                    db.blockContact(row.getJSONObject("contactid").getString("phone"));
+
+                }
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void loadMyGroups(JSONArray result) {
+        Log.d("KIBOSyncSERVICE", result.toString());
+
+        try {
+            for (int i = 0; i < result.length(); i++) {
+                JSONObject group = result.getJSONObject(i).getJSONObject("group_unique_id");
+
+                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+                try {
+                    db.syncGroup(group.getString("unique_id"),
+                            group.getString("group_name"), 0, group.getString("date_creation"));
+
+                } catch (NullPointerException exc) {
+                    exc.printStackTrace();
+                }
+
+            }
+        } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    private void loadCurrentContactsFromServer(){
+    private void loadMyGroupsMembers(JSONArray result){
 
-        new AsyncTask<String, String, JSONArray>() {
+        DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+        db.resetGroupMembers();
+        for(int i=0; i<result.length(); i++){
 
-            @Override
-            protected JSONArray doInBackground(String... args) {
-                UserFunctions userFunction = new UserFunctions(getApplicationContext());
-                JSONArray json = userFunction.getContactsList(authtoken);
-                return json;
-            }
-
-            @Override
-            protected void onPostExecute(JSONArray jsonA) {
-                try {
-
-                    if (jsonA != null) {
-
-                        DatabaseHandler db = new DatabaseHandler(
-                                getApplicationContext());
-
-                        for (int i=0; i < jsonA.length(); i++) {
-                            JSONObject row = jsonA.getJSONObject(i);
-
-                            /*db.addContact("true", "null",
-                                    row.getJSONObject("contactid").getString("phone"),
-                                    row.getJSONObject("contactid").getString("display_name"),
-                                    row.getJSONObject("contactid").getString("_id"),
-                                    row.getString("detailsshared"),
-                                    row.getJSONObject("contactid").getString("status"));*/
-
-                            db.updateContact(row.getJSONObject("contactid").getString("status"),
-                                    row.getJSONObject("contactid").getString("phone"),
-                                    row.getJSONObject("contactid").getString("_id"));
-
+            try {
+                JSONObject group = result.getJSONObject(i).getJSONObject("group_unique_id");
+                String group_unique_id = group.getString("unique_id");
+                String member_phone = result.getJSONObject(i).getString("member_phone");
+                String display_name = result.getJSONObject(i).getString("display_name");
+                int isAdmin = result.getJSONObject(i).getString("isAdmin").equals("Yes") ? 1 : 0;
+                String membership_status = result.getJSONObject(i).getString("membership_status");
+                String date_join = result.getJSONObject(i).getString("date_join");
+                db.syncGroupMember(group_unique_id,member_phone,isAdmin,membership_status,date_join);
+                if(isAdmin == 1){
+                    if(db.getAllMessagesCountInGroupChat(group_unique_id) < 1) {
+                        JSONArray specificContact = db.getSpecificContact(member_phone);
+                        if(specificContact.length() > 0) {
+                            display_name = specificContact.getJSONObject(0).getString("display_name");
                         }
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                loadContactsWhoBlockedMe();
-            }
-
-        }.execute();
-
-    }
-
-    private void loadContactsWhoBlockedMe(){
-
-        new AsyncTask<String, String, JSONArray>() {
-
-            @Override
-            protected JSONArray doInBackground(String... args) {
-                UserFunctions userFunction = new UserFunctions(getApplicationContext());
-                JSONArray json = userFunction.getContactsListWhoBlockedMe(authtoken);
-                return json;
-            }
-
-            @Override
-            protected void onPostExecute(JSONArray jsonA) {
-                try {
-
-                    if (jsonA != null) {
-
-                        DatabaseHandler db = new DatabaseHandler(
-                                getApplicationContext());
-
-                        for (int i=0; i < jsonA.length(); i++) {
-                            JSONObject row = jsonA.getJSONObject(i);
-
-                            db.blockedMe(row.getJSONObject("contactid").getString("phone"));
-
+                        String message = "";
+                        if(db.getUserDetails().get("phone").equals(member_phone)){
+                            message = "You created this group";
+                        } else {
+                            message = display_name + " added you to the group "+ db.getGroupInfo(group_unique_id).getString("group_name");
                         }
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                loadContactsBlockedByMe();
-            }
-
-        }.execute();
-
-    }
-
-    private void loadContactsBlockedByMe(){
-
-        new AsyncTask<String, String, JSONArray>() {
-
-            @Override
-            protected JSONArray doInBackground(String... args) {
-                UserFunctions userFunction = new UserFunctions(getApplicationContext());
-                JSONArray json = userFunction.getContactsListBlockedByMe(authtoken);
-                return json;
-            }
-
-            @Override
-            protected void onPostExecute(JSONArray jsonA) {
-                try {
-
-                    if (jsonA != null) {
-
-                        DatabaseHandler db = new DatabaseHandler(
-                                getApplicationContext());
-
-                        for (int i=0; i < jsonA.length(); i++) {
-                            JSONObject row = jsonA.getJSONObject(i);
-
-                            db.blockContact(row.getJSONObject("contactid").getString("phone"));
-
-                        }
-
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                loadMyGroupsFromServer();
-            }
-
-        }.execute();
-
-    }
-
-    private void loadMyGroupsFromServer() {
-        UserFunctions userFunctions = new UserFunctions(getApplicationContext());
-        Ion.with(getApplicationContext())
-                .load(userFunctions.getBaseURL() + "/api/groupmessaginguser/mygroups")
-                .setHeader("kibo-token", authtoken)
-                .asJsonArray()
-                .setCallback(new FutureCallback<JsonArray>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonArray result) {
-                        // do stuff with the result or error
-                        if(e==null) {
-                            Log.d("KIBOSyncSERVICE", result.toString());
-
-                            for(int i=0; i<result.size(); i++){
-                                JsonObject group = result.get(i).getAsJsonObject().getAsJsonObject("group_unique_id");
-
-                                DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-
-                                try {
-                                    db.syncGroup(group.get("unique_id").getAsString(),
-                                            group.get("group_name").getAsString(), 0, group.get("date_creation").getAsString());
-
-                                }catch (NullPointerException exc){
-                                    exc.printStackTrace();
-                                }
-
-                            }
-
-                        }
-
-                        loadMyGroupsMembersFromServer();
-                    }
-                });
-    }
-
-    private void loadMyGroupsMembersFromServer(){
-        UserFunctions userFunctions = new UserFunctions(getApplicationContext());
-        Ion.with(getApplicationContext())
-                .load(userFunctions.getBaseURL() + "/api/groupmessaginguser/mygroupsmembers")
-                .setHeader("kibo-token", authtoken)
-                .asJsonArray()
-                .setCallback(new FutureCallback<JsonArray>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonArray result) {
-                        // do stuff with the result or error
-                        if(e==null) {
-                            Log.d("KIBOSyncSERVICE", result.toString());
-
-                            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-                            db.resetGroupMembers();
-                            for(int i=0; i<result.size(); i++){
-                                JsonObject group = result.get(i).getAsJsonObject().getAsJsonObject("group_unique_id");
-
-
-
-                                try {
-                                    String group_unique_id = group.get("unique_id").getAsString();
-                                    String member_phone = result.get(i).getAsJsonObject().get("member_phone").getAsString();
-                                    String display_name = result.get(i).getAsJsonObject().get("display_name").getAsString();
-                                    int isAdmin = result.get(i).getAsJsonObject().get("isAdmin").getAsString().equals("Yes") ? 1 : 0;
-                                    String membership_status = result.get(i).getAsJsonObject().get("membership_status").getAsString();
-                                    String date_join = result.get(i).getAsJsonObject().get("date_join").getAsString();
-                                    db.syncGroupMember(group_unique_id,member_phone,isAdmin,membership_status,date_join);
-                                    if(isAdmin == 1){
-                                        if(db.getAllMessagesCountInGroupChat(group_unique_id) < 1) {
-                                            JSONArray specificContact = db.getSpecificContact(member_phone);
-                                            if(specificContact.length() > 0) {
-                                                display_name = specificContact.getJSONObject(0).getString("display_name");
-                                            }
-                                            String message = "";
-                                            if(db.getUserDetails().get("phone").equals(member_phone)){
-                                                message = "You created this group";
-                                            } else {
-                                                message = display_name + " added you to the group "+ db.getGroupInfo(group_unique_id).getString("group_name");
-                                            }
-                                            String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
-                                            uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
-                                            uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+                        String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+                        uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+                        uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
 
 //                                            db.addGroupMessage(group_unique_id,message,member_phone,display_name,uniqueid, "log");
-                                            db.addGroupChat(member_phone,display_name, message,
-                                                    date_join, "log",
-                                                    uniqueid,
-                                                    group_unique_id);
+                        db.addGroupChat(member_phone,display_name, message,
+                                date_join, "log",
+                                uniqueid,
+                                group_unique_id);
 
-                                        }
-                                    }
-                                }catch (NullPointerException exc){
-                                    exc.printStackTrace();
-                                }catch (JSONException exc){
-                                    exc.printStackTrace();
-                                }
-
-                            }
-
-                        }
-
-                        mListener.contactsLoaded();
                     }
-                });
-    }
-
-
-    private void loadChatFromServer() {
-
-        new AsyncTask<String, String, JSONArray>() {
-
-            @Override
-            protected JSONArray doInBackground(String... args) {
-                DatabaseHandler db = new DatabaseHandler(
-                        getApplicationContext());
-                UserFunctions userFunction = new UserFunctions(getApplicationContext());
-                JSONArray json = new JSONArray();
-                try {
-                    json = userFunction.getAllChatList(db.getUserDetails().get("phone"), authtoken).getJSONArray("msg");
-                } catch(JSONException e){
-                    e.printStackTrace();
                 }
-                return json;
+            }catch (NullPointerException exc){
+                exc.printStackTrace();
+            }catch (JSONException exc){
+                exc.printStackTrace();
             }
 
-            @Override
-            protected void onPostExecute(JSONArray jsonA) {
-                try {
+        }
 
-                    if (jsonA != null) {
-
-                        if(jsonA.length() > 0) {
-                            DatabaseHandler db = new DatabaseHandler(
-                                    getApplicationContext());
-
-                            db.resetChatsTable();
-
-                            db = new DatabaseHandler(
-                                    getApplicationContext());
-
-                            HashMap<String, String> user = db.getUserDetails();
-
-                            db = new DatabaseHandler(
-                                    getApplicationContext());
-
-                            for (int i=0; i < jsonA.length(); i++) {
-                                JSONObject row = jsonA.getJSONObject(i);
-
-                                if(db.getUserDetails().get("phone").equals(row.getString("from"))) {
-                                    db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
-                                            row.getString("msg"), row.getString("date"),
-                                            row.has("status") ? row.getString("status") : "",
-                                            row.has("uniqueid") ? row.getString("uniqueid") : "",
-                                            row.has("type") ? row.getString("type") : "",
-                                            row.has("file_type") ? row.getString("file_type") : "");
-                                } else {
-                                    Log.d("KIBO_SYNC_SERVICE", row.getString("date_server_received"));
-                                    db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
-                                            row.getString("msg"), row.getString("date_server_received"),
-                                            row.has("status") ? row.getString("status") : "",
-                                            row.has("uniqueid") ? row.getString("uniqueid") : "",
-                                            row.has("type") ? row.getString("type") : "",
-                                            row.has("file_type") ? row.getString("file_type") : "");
-                                }
-
-                                if(row.has("status")){
-                                    if(row.getString("to").equals(db.getUserDetails().get("phone")) && row.getString("status").equals("sent")){
-                                        db = new DatabaseHandler(
-                                                getApplicationContext());
-                                        db.updateChat("delivered", row.getString("uniqueid"));
-
-                                        // todo correct this
-                                        mListener.sendMessageStatusUsingSocket(row.getString("from"),
-                                                "delivered", row.getString("uniqueid"));
-
-                                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                        PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-
-                                        String message = row.getString("msg");
-                                        String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
-
-                                        DatabaseHandler db2 = new DatabaseHandler(getApplicationContext());
-
-                                        String senderName = db2.getSpecificContact(row.getString("from")).getJSONObject(0).getString("display_name");
-
-                                        Notification n = new Notification.Builder(getApplicationContext())
-                                                .setContentTitle(senderName)
-                                                .setContentText(subMsg)
-                                                .setSmallIcon(R.drawable.icon)
-                                                .setContentIntent(pIntent)
-                                                .setAutoCancel(true)
-                                                .build();
-
-                                        NotificationManager notificationManager =
-                                                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-                                        notificationManager.notify(0, n);
-
-                                        try {
-                                            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                                            r.play();
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
-
-                                    }
-                                }
-
-                            }
-
-                        /*try {
-                            JSONArray chat = db.getChat();
-                            chat.toString();
-                        }catch(JSONException e){
-                            e.printStackTrace();
-                        }*/
-
-                            mListener.chatLoaded();
-                        } else {
-                            mListener.chatLoaded();
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                GroupUtility utility = new GroupUtility(getApplicationContext());
-                utility.syncGroupIcon(authtoken);
-
-                if(startWithAddressBook)
-                    loadContactsFromAddressBook();
-                else
-                    loadCurrentContactsFromServer();
-
-            }
-
-        }.execute();
-
-    }
-
-
-    private void loadPartialChatFromServer() {
-
-        new AsyncTask<String, String, JSONObject>() {
-
-            @Override
-            protected JSONObject doInBackground(String... args) {
-                Log.e("Load", "Requesting Server for partial chatlist");
-                DatabaseHandler db = new DatabaseHandler(
-                        getApplicationContext());
-                UserFunctions userFunctions = new UserFunctions(getApplicationContext());
-                return userFunctions.getPartialChatList(db.getUserDetails().get("phone"), authtoken);
-            }
-
-            @Override
-            protected void onPostExecute(JSONObject jsonO) {
-                try {
-                    Log.e("Load", "ChatList Fetched");
-                    if (jsonO != null) {
-                        JSONArray jsonA = jsonO.getJSONArray("msg");
-
-                        if(jsonA.length() > 0) {
-                            DatabaseHandler db = new DatabaseHandler(
-                                    getApplicationContext());
-
-                            HashMap<String, String> user = db.getUserDetails();
-
-                            db = new DatabaseHandler(
-                                    getApplicationContext());
-
-                            for (int i=0; i < jsonA.length(); i++) {
-                                JSONObject row = jsonA.getJSONObject(i);
-
-                                JSONArray messageAlreadyThere = db.getSpecificChat(row.has("uniqueid") ? row.getString("uniqueid") : "");
-                                if(messageAlreadyThere.length() < 1){
-                                    db = new DatabaseHandler(
-                                            getApplicationContext());
-
-                                    if(db.getUserDetails().get("phone").equals(row.getString("from"))) {
-                                        db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
-                                                row.getString("msg"), row.getString("date"),
-                                                row.has("status") ? row.getString("status") : "",
-                                                row.has("uniqueid") ? row.getString("uniqueid") : "",
-                                                row.has("type") ? row.getString("type") : "",
-                                                row.has("file_type") ? row.getString("file_type") : "");
-                                    } else {
-                                        db.addChat(row.getString("to"), row.getString("from"), row.getString("fromFullName"),
-                                                row.getString("msg"), row.getString("date_server_received"),
-                                                row.has("status") ? row.getString("status") : "",
-                                                row.has("uniqueid") ? row.getString("uniqueid") : "",
-                                                row.has("type") ? row.getString("type") : "",
-                                                row.has("file_type") ? row.getString("file_type") : "");
-                                    }
-
-                                    if(row.has("status")){
-                                        if(row.getString("to").equals(db.getUserDetails().get("phone")) && row.getString("status").equals("sent")){
-                                            db = new DatabaseHandler(
-                                                    getApplicationContext());
-                                            db.updateChat("delivered", row.getString("uniqueid"));
-                                            // todo REALLY DO THIS
-                                            mListener.sendMessageStatusUsingSocket(row.getString("from"),
-                                                    "delivered", row.getString("uniqueid"));
-
-                                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                            PendingIntent pIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, 0);
-
-                                            String message = row.getString("msg");
-                                            String subMsg = (message.length() > 15) ? message.substring(0, 15) : message;
-
-                                            DatabaseHandler db2 = new DatabaseHandler(getApplicationContext());
-
-                                            String senderName = db2.getSpecificContact(row.getString("from")).getJSONObject(0).getString("display_name");
-
-                                            Notification n = new Notification.Builder(getApplicationContext())
-                                                    .setContentTitle(senderName)
-                                                    .setContentText(subMsg)
-                                                    .setSmallIcon(R.drawable.icon)
-                                                    .setContentIntent(pIntent)
-                                                    .setAutoCancel(true)
-                                                    .build();
-
-                                            NotificationManager notificationManager =
-                                                    (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-
-                                            notificationManager.notify(0, n);
-
-                                            try {
-                                                Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                                                Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                                                r.play();
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-
-                                        }
-                                    }
-                                }
-
-                            }
-
-                        /*try {
-                            JSONArray chat = db.getChat();
-                            chat.toString();
-                        }catch(JSONException e){
-                            e.printStackTrace();
-                        }*/
-
-
-                            mListener.chatLoaded();
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if(startWithAddressBook)
-                    loadContactsFromAddressBook();
-                else
-                    loadCurrentContactsFromServer();
-
-                loadPartialGroupChatFromServer();
-
-            }
-
-        }.execute();
-
-    }
-
-    private void loadPartialGroupChatFromServer(){
-        UserFunctions userFunctions = new UserFunctions(getApplicationContext());
-        Ion.with(getApplicationContext())
-                .load(userFunctions.getBaseURL() + "/api/groupchatstatus/")
-                .setHeader("kibo-token", authtoken)
-                .asJsonArray()
-                .setCallback(new FutureCallback<JsonArray>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonArray result) {
-                        // todo messages are already given to us by push.. the sync don't get any undelivered message.. needs to test more
-
-                        if(result != null){
-                            Log.d("KiboSyncService", result.toString());
-                        }
-
-
-                    }
-                });
     }
 
     @Override
     public IBinder onBind(Intent intent) {
         return kiboSyncBinder;
     }
-
-
 
 
     public class KiboSyncBinder extends Binder {
