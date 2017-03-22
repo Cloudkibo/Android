@@ -92,10 +92,12 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         leave_group = (Button) footer.findViewById(R.id.leave_group);
   //      btnSelectIcon = (ImageButton) v.findViewById(R.id.selectIconBtn);
         GroupUtility groupUtility = new GroupUtility(getContext());
+
+        Switch muteSwitch = (Switch) v.findViewById(R.id.switch1);
         if(!groupUtility.isMember(group_id)){
             leave_group.setVisibility(View.INVISIBLE);
+            muteSwitch.setVisibility(View.INVISIBLE);
         }
-        Switch muteSwitch = (Switch) v.findViewById(R.id.switch1);
         try{
         muteSwitch.setChecked(new DatabaseHandler(getActivity().getApplicationContext()).isMute(group_id));
         } catch (JSONException e ){ e.printStackTrace();}
@@ -199,6 +201,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         GroupUtility groupUtility = new GroupUtility(getContext());
         if(!groupUtility.isMember(group_id)){
             menu.findItem(R.id.settingMenu).setVisible(false);
+            menu.findItem(R.id.grpNameChange).setVisible(false);
         }
     }
 

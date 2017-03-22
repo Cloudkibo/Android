@@ -6,7 +6,8 @@
         android:title="Search Contacts"
         android:icon="@drawable/ic_search"
         android:orderInCategory="100"
-        app:showAsAction="always" />
+        app:showAsAction="always"
+        android:visible="false"/>
     <item
         android:id="@+id/refreshContacts"
         android:icon="@drawable/refresh"
