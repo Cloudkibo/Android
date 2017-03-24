@@ -12,7 +12,8 @@
 		android:title="@string/menu_search_chats"
 		android:icon="@drawable/ic_search"
 		android:orderInCategory="100"
-		app:showAsAction="always" />
+		app:showAsAction="always"
+		android:visible="false"/>
 
 	<item android:id="@+id/connect_to_desktop"
 		android:title="@string/menu_connect_to_desktop"

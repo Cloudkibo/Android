@@ -2389,7 +2389,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 group.put("date_creation", cursor.getString(1));
                 group.put("msg", lastMessage.getJSONObject(0).getString("msg"));
                 //group.put("pendingMsgs", getUnReadMessagesCount(cursor.getString(1)));
-                group.put("group_name", groupInfo.getString("group_name"));
+                group.put("group_name", groupInfo.optString("group_name"));
 
                 chats.put(group);
 
