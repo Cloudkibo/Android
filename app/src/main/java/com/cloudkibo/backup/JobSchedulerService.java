@@ -341,6 +341,24 @@ public class JobSchedulerService extends JobService implements
 
                 //Drive.DriveApi.newDriveContents(mGoogleApiClient)
                 //        .setResultCallback(driveContentsCallback);
+
+                try {
+                    DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+                    JSONArray chatListArray = db.getChatList();
+
+                    /*Writer output = null;
+                    File file = new File(ctx.getApplicationContext().getFilesDir().getPath() + "/chatListArray.json");
+                    output = new BufferedWriter(new FileWriter(file));
+                    output.write(jsonObject.toString());
+                    output.close();*/
+
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -348,10 +366,10 @@ public class JobSchedulerService extends JobService implements
 
     private void uploadFiles(String type){
 
-        try{
+        try {
             JSONArray files = db.getAllFiles(type);
-            Toast.makeText(this,"in Uploading file", Toast.LENGTH_SHORT);
-            for(int i=0; i < files.length(); i++) {
+            Toast.makeText(this, "in Uploading file", Toast.LENGTH_SHORT);
+            for (int i=0; i < files.length(); i++) {
                 JSONObject row = files.getJSONObject(i);
 
                 Uri url = Uri.parse(row.getString("path"));
@@ -425,7 +443,7 @@ public class JobSchedulerService extends JobService implements
                             folder = Drive.DriveApi.getFolder(mGoogleApiClient, videoAttachmentFolder);
                         }
 
-                            String title = file.getName();
+                        String title = file.getName();
                         MetadataChangeSet metadataChangeSet = new MetadataChangeSet.Builder()
                                 .setMimeType(mime).setTitle(title).build();
 
@@ -449,8 +467,8 @@ public class JobSchedulerService extends JobService implements
     public void onConnected(Bundle connectionHint) {
         //super.onConnected(connectionHint);
         Log.i("BaseDriveActivity", "On COnneceted: ");
-        CreateKiboFolder();
-        //CreateKiboAppFolder();
+        //CreateKiboFolder();
+        CreateKiboAppFolder();
     }
 
     @Override
