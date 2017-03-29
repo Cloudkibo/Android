@@ -102,12 +102,12 @@ public class CustomParticipantAdapter extends BaseAdapter{
                         final AccessToken accessToken = AccountKit.getCurrentAccessToken();
                         try {
                             if(which == 0) {
-                                db.makeGroupAdmin(group_id, members.getJSONObject(position).getString("phone"));
-                                groupUtility.updateMemberRole(group_id, members.getJSONObject(position).getString("phone"),"Yes",accessToken.getToken());
+
+                                groupUtility.makeAdmin(group_id, members.getJSONObject(position).getString("phone"),"Yes",accessToken.getToken());
                                 updateData(db);
                             } else if (which == 1){
-                                  db.demoteGroupAdmin(group_id,members.getJSONObject(position).getString("phone"));
-                                  groupUtility.updateMemberRole(group_id, members.getJSONObject(position).getString("phone"),"No",accessToken.getToken());
+
+                                  groupUtility.demoteAdmin(group_id, members.getJSONObject(position).getString("phone"),"No",accessToken.getToken());
                                   updateData(db);
                             } else if (which == 2) {
                                 if(members.getJSONObject(position).getString("isAdmin").equals("1") && groupUtility.adminCount(group_id) <= 1){
