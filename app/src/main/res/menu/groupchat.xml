@@ -14,5 +14,11 @@
         app:showAsAction="ifRoom"
         android:title="@string/menu_send_contact"
         />
+    <item
+        android:id="@+id/sendLocationMenu"
+        android:icon="@drawable/ic_username"
+        app:showAsAction="ifRoom"
+        android:title="Send Location"
+        />
 
 </menu>

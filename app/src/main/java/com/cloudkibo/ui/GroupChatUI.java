@@ -50,6 +50,10 @@ import com.cloudkibo.model.ChatItem;
 import com.cloudkibo.model.ContactItem;
 import com.cloudkibo.model.Conversation;
 import com.cloudkibo.utils.IFragmentName;
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,7 +61,11 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
+
+import static android.content.ContentValues.TAG;
+import static com.cloudkibo.R.id.txt;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -109,7 +117,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             group_name = args.getString("group_name");
         }
 
-        final EditText my_message = (EditText) v.findViewById(R.id.txt);
+        final EditText my_message = (EditText) v.findViewById(txt);
         GroupUtility groupUtility = new GroupUtility(getContext());
         if(!groupUtility.isGroupMember(group_id)){
             my_message.setEnabled(false);
@@ -117,7 +125,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         }
         lv=(ListView) v.findViewById(R.id.list);
         populateMessages();
-        groupAdapter = new GroupChatAdapter(inflater, messages,names, convList);
+        groupAdapter = new GroupChatAdapter(inflater, messages,names, convList, getContext());
         lv.setAdapter(groupAdapter);
         lv.setTranscriptMode(AbsListView.TRANSCRIPT_MODE_ALWAYS_SCROLL);
         lv.setStackFromBottom(true);
@@ -305,6 +313,21 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             getActivity().startActivityForResult(contactPickerIntent, 0123);
         }
 
+        if(id == R.id.sendLocationMenu){
+            Toast.makeText(getContext(), "Location Clicked", Toast.LENGTH_SHORT).show();
+
+            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+            try {
+                getActivity().startActivityForResult(builder.build(MainActivity.mainActivity), 0141);
+            } catch (GooglePlayServicesRepairableException e) {
+                e.printStackTrace();
+            } catch (GooglePlayServicesNotAvailableException e) {
+                e.printStackTrace();
+            }
+
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -315,7 +338,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // check whether the result is ok
-
+        Log.i(TAG, "onActivityResult: Location");
         if (resultCode == Activity.RESULT_OK) {
             // Check for the request code, we might be usign multiple startActivityForReslut
             switch (requestCode) {
@@ -338,6 +361,14 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    break;
+                case 0141:
+                    Place place = PlacePicker.getPlace(data, MainActivity.mainActivity);
+                    String placename = String.format("%s", place.getName());
+                    String latitude = String.valueOf(place.getLatLng().latitude);
+                    String longitude = String.valueOf(place.getLatLng().longitude);
+                    String address = String.format("%s", place.getAddress());
+                    sendLocation(latitude, longitude);
                     break;
                 default:
                     Toast.makeText(getContext(), "Could not get the contact you selected", Toast.LENGTH_LONG).show();
@@ -440,6 +471,25 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             e.printStackTrace();
         }
 
+        groupAdapter.notifyDataSetChanged();
+    }
+
+
+    private void sendLocation(String latitude, String longitude)
+    {
+        try {
+            String messageString = latitude + ":" + longitude;
+            DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+            GroupUtility groupUtility = new GroupUtility(getContext());
+            String msg_unique_id = groupUtility.sendGroupMessage(group_id, messageString, authtoken, "location");
+            messages.add(messageString);
+            names.add("");
+
+            convList.add(new Conversation(messageString, db.getUserDetails().get("phone"), true,"", msg_unique_id, db.getGroupMessageStatus(msg_unique_id, db.getUserDetails().get("phone")).getJSONObject(0).getString("status"), "location"));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         groupAdapter.notifyDataSetChanged();
     }
 
