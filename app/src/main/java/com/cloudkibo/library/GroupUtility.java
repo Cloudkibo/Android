@@ -549,7 +549,7 @@ public class GroupUtility {
 
     }
 
-    public void updateMemberRole(final String group_id, final String member_phone, final String makeAdmin, final String authtoken){
+    public void makeAdmin(final String group_id, final String member_phone, final String makeAdmin, final String authtoken){
         new AsyncTask<String, String, JSONObject>() {
 
             @Override
@@ -563,8 +563,38 @@ public class GroupUtility {
                 if(row != null){
                     if(row.optString("Error").equals("No Internet")){
                         // todo use Toast for this.
-                        sendNotification("No Internet Connection", "Cannot update member role to the server");
+                        sendNotification("No Internet Connection", "Try again when internet is available");
                     }else{
+                        db.makeGroupAdmin(group_id, member_phone);
+                        Toast.makeText(ctx, ctx.getString(R.string.group_utility_member_role_update) + " " + row.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }else{
+                    Toast.makeText(ctx, ctx.getString(R.string.group_utility_member_role_update_failed), Toast.LENGTH_LONG).show();
+                }
+            }
+
+        }.execute();
+
+
+    }
+
+    public void demoteAdmin(final String group_id, final String member_phone, final String makeAdmin, final String authtoken){
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunctions = new UserFunctions(ctx);
+                return  userFunctions.updateMemberRole(group_id,member_phone, makeAdmin,authtoken);
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                if(row != null){
+                    if(row.optString("Error").equals("No Internet")){
+                        // todo use Toast for this.
+                        sendNotification("No Internet Connection", "Try again when internet is available");
+                    }else{
+                        db.demoteGroupAdmin(group_id,member_phone);
                         Toast.makeText(ctx, ctx.getString(R.string.group_utility_member_role_update) + " " + row.toString(), Toast.LENGTH_LONG).show();
                     }
                 }else{

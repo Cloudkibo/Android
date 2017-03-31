@@ -911,6 +911,14 @@ public class MainActivity extends CustomActivity
                     myGroupChatListFragment.onActivityResult(requestCode,  resultCode, data);
                 }
                 break;
+            case 0141:
+                IFragmentName myFragment0 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if(myFragment0 == null) return;
+                if(myFragment0.getFragmentName().equals("GroupChatUI")){
+                    final GroupChatUI myGroupChatListFragment = (GroupChatUI) myFragment0;
+                    myGroupChatListFragment.onActivityResult(requestCode,  resultCode, data);
+                }
+                break;
             case 129:
                 IFragmentName myFragment1 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
                 if(myFragment1 == null) return;
