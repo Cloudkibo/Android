@@ -1,7 +1,9 @@
 package com.cloudkibo.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -32,12 +34,14 @@ public class GroupChatAdapter extends BaseAdapter{
     ArrayList<String> result = new ArrayList<String>();
     ArrayList<String> contactName = new ArrayList<String>();
     private ArrayList<Conversation> convList;
+    Context context;
     private static LayoutInflater inflater=null;
-    public GroupChatAdapter(LayoutInflater context, ArrayList<String> chatList, ArrayList<String> contactName, ArrayList<Conversation> convList) {
+    public GroupChatAdapter(LayoutInflater context, ArrayList<String> chatList, ArrayList<String> contactName, ArrayList<Conversation> convList, Context ctx) {
         result=chatList;
         this.contactName =contactName;
         inflater = ( LayoutInflater )context;
         this.convList = convList;
+        this.context = ctx;
     }
     @Override
     public int getCount() {
@@ -100,6 +104,57 @@ public class GroupChatAdapter extends BaseAdapter{
 
             return  rowView;
         }
+
+        String type = convList.get(position).getType();
+
+        if(convList.get(position).getType().equals("location")){
+            rowView = inflater.inflate(R.layout.chat_item_image, null);
+
+            TextView lbl = (TextView) rowView.findViewById(R.id.lblContactPhone);
+
+                lbl.setText(convList.get(position).getStatus());
+
+            if (!convList.get(position).isSent()) {
+                rowView = inflater.inflate(
+                        R.layout.chat_item_image_received, null);
+            }
+            lbl = (TextView) rowView.findViewById(R.id.lblContactDisplayName);
+            DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+            try {
+                String readable_date = Utility.convertDateToLocalTimeZoneAndReadable(convList.get(position).getDate());
+                lbl.setText(outputFormat.format(inputFormat.parse(readable_date)));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            final String latitude = convList.get(position).getMsg().split(":")[0];
+            final String longitude = convList.get(position).getMsg().split(":")[1];
+            ImageView container_image = (ImageView) rowView.findViewById(R.id.row_stamp);
+            String image_uri = "http://maps.google.com/maps/api/staticmap?center="+ latitude +","+ longitude +"&zoom=18&size=500x300&sensor=TRUE_OR_FALSE";
+            Glide
+                    .with(MainActivity.mainActivity)
+                    .load(image_uri)
+                    .thumbnail(0.1f)
+                    .centerCrop()
+                    .placeholder(android.R.drawable.ic_dialog_map)
+                    .into(container_image);
+
+            container_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Double lat = Double.parseDouble(latitude);
+                    Double  lon = Double.parseDouble(longitude);
+                    String uri = "geo:" + lat + ","
+                            +lon + "?q=" + lat
+                            + "," + lon;
+                    context.startActivity(new Intent(android.content.Intent.ACTION_VIEW,
+                            Uri.parse(uri)));
+                }
+            });
+
+            return  rowView;
+        }
+
         if(convList.get(position).getType().equals("log")){
             rowView = inflater.inflate(R.layout.chat_item_log, null);
         }
