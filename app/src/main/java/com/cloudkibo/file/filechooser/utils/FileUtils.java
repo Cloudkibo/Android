@@ -16,6 +16,7 @@
 
 package com.cloudkibo.file.filechooser.utils;
 
+import android.app.Application;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
@@ -27,11 +28,14 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
+import android.provider.DocumentsProvider;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
 import com.cloudkibo.file.localstorage.LocalStorageProvider;
+
+import org.w3c.dom.Document;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -538,11 +542,13 @@ public class FileUtils {
      */
     public static Intent createGetContentIntentForImage() {
         // Implicitly allow the user to select a particular kind of data
-        final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        //final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         // The MIME data type filter
-        intent.setType(MIME_TYPE_IMAGE);
+        //intent.setType(MIME_TYPE_IMAGE);
         // Only return URIs that can be opened with ContentResolver
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        //intent.addCategory(Intent.CATEGORY_OPENABLE);
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         return intent;
     }
 
@@ -558,21 +564,25 @@ public class FileUtils {
 
     public static Intent createGetContentIntentForAudio() {
         // Implicitly allow the user to select a particular kind of data
-        final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        //final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         // The MIME data type filter
-        intent.setType(MIME_TYPE_AUDIO);
+        //intent.setType(MIME_TYPE_AUDIO);
         // Only return URIs that can be opened with ContentResolver
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        //intent.addCategory(Intent.CATEGORY_OPENABLE);
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                MediaStore.Audio.Media.EXTERNAL_CONTENT_URI);
         return intent;
     }
 
     public static Intent createGetContentIntentForVideo() {
         // Implicitly allow the user to select a particular kind of data
-        final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        //final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         // The MIME data type filter
-        intent.setType(MIME_TYPE_VIDEO);
+        //intent.setType(MIME_TYPE_VIDEO);
         // Only return URIs that can be opened with ContentResolver
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        //intent.addCategory(Intent.CATEGORY_OPENABLE);
+        Intent intent = new Intent(Intent.ACTION_PICK,
+                MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
         return intent;
     }
 

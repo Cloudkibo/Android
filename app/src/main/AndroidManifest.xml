@@ -4,7 +4,7 @@
     package="com.cloudkibo"
     android:hardwareAccelerated="true"
     android:installLocation="preferExternal"
-    android:versionCode="111"
+    android:versionCode="112"
     android:versionName="1.1">
 
     <uses-sdk

@@ -226,31 +226,7 @@ public class KiboSyncService extends Service {
 
             }*/
 
-            JSONArray sentGroupMesssagesForStatus = db.getSentGroupMessagesForSync(db.getUserDetails().get("phone"));
 
-            JSONArray array = new JSONArray();
-            for (int i=0; i < sentGroupMesssagesForStatus.length(); i++) {
-                JSONObject row = sentGroupMesssagesForStatus.getJSONObject(i);
-                array.put(row.getString("unique_id"));
-            }
-            JSONObject data = new JSONObject();
-            data.put("unique_ids", array);
-
-            completePayload.put("statusOfSentGroupMessages", data);
-
-            //checkStatusOfGroupMessage(data);*/
-
-            JSONArray sentChatMesssagesForStatus = db.getSentMessagesForSync(db.getUserDetails().get("phone"));
-
-            JSONArray arrayChat = new JSONArray();
-            for (int i=0; i < sentChatMesssagesForStatus.length(); i++) {
-                JSONObject row = sentChatMesssagesForStatus.getJSONObject(i);
-                arrayChat.put(row.getString("uniqueid"));
-            }
-            JSONObject dataChat = new JSONObject();
-            dataChat.put("unique_ids", arrayChat);
-
-            completePayload.put("statusOfSentMessages", dataChat);
 
             /*checkStatusOfChatMessage(dataChat);*/
 
@@ -268,7 +244,44 @@ public class KiboSyncService extends Service {
 
             @Override
             protected JSONObject doInBackground(String... args) {
-                return new UserFunctions(getApplicationContext()).downwardSync(authtoken);
+
+                JSONObject completePayload = new JSONObject();
+
+                try {
+                    DatabaseHandler db = new DatabaseHandler(
+                            getApplicationContext());
+
+                    JSONArray sentGroupMesssagesForStatus = db.getSentGroupMessagesForSync(db.getUserDetails().get("phone"));
+
+                    JSONArray array = new JSONArray();
+                    for (int i = 0; i < sentGroupMesssagesForStatus.length(); i++) {
+                        JSONObject row = sentGroupMesssagesForStatus.getJSONObject(i);
+                        array.put(row.getString("unique_id"));
+                    }
+                    JSONObject data = new JSONObject();
+                    data.put("unique_ids", array);
+
+                    completePayload.put("statusOfSentGroupMessages", data);
+
+                    //checkStatusOfGroupMessage(data);*/
+
+                    JSONArray sentChatMesssagesForStatus = db.getSentMessagesForSync(db.getUserDetails().get("phone"));
+
+                    JSONArray arrayChat = new JSONArray();
+                    for (int i = 0; i < sentChatMesssagesForStatus.length(); i++) {
+                        JSONObject row = sentChatMesssagesForStatus.getJSONObject(i);
+                        arrayChat.put(row.getString("uniqueid"));
+                    }
+                    JSONObject dataChat = new JSONObject();
+                    dataChat.put("unique_ids", arrayChat);
+
+                    completePayload.put("statusOfSentMessages", dataChat);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                return new UserFunctions(getApplicationContext()).downwardSync(completePayload, authtoken);
             }
 
             @Override
@@ -292,6 +305,33 @@ public class KiboSyncService extends Service {
                          loadMyGroups(myGroups);
                          loadMyGroupsMembers(myGroupsMembers);
                          // todo partial group chat work here
+
+                         JSONArray subpayload = payload.getJSONArray("statusOfSentMessages");
+                         for (int i=0; i < subpayload.length(); i++) {
+                             JSONObject row = subpayload.getJSONObject(i);
+                             DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                             String uniqueid = row.getString("uniqueid");
+                             String status = row.getString("status");
+                             db.updateChat(status, uniqueid);
+                         }
+
+                         JSONArray subpayload2 = payload.getJSONArray("statusOfSentGroupMessages");
+                         for (int i=0; i < subpayload2.length(); i++) {
+                             JSONObject row = subpayload2.getJSONObject(i);
+                             DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                             String msg_unique_id = row.getString("chat_unique_id");
+                             String status = row.getString("status");
+                             String user_phone = row.getString("user_phone");
+                             String current_status = db.getGroupMessageStatus(msg_unique_id,user_phone).getJSONObject(0).getString("status");
+                             if(!current_status.equals("seen")){
+                                 if(status.equals("delivered")){
+                                     db.updateGroupChatStatusDeliveredTime(msg_unique_id, status, user_phone, row.getString("delivered_date"));
+                                 }
+                                 if(status.equals("seen")){
+                                     db.updateGroupChatStatusReadTime(msg_unique_id, status, user_phone, row.getString("read_date"));
+                                 }
+                             }
+                         }
 
                      }
 
@@ -318,6 +358,64 @@ public class KiboSyncService extends Service {
                     if (jsonA != null) {
                         if(jsonA.getString("status").equals("success")) {
                             Utility.sendLogToServer(getApplicationContext(), "Sync Data reached server");
+
+                            DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+
+                            JSONArray chats = db.getPendingChat();
+
+                            for (int i=0; i < chats.length(); i++) {
+                                JSONObject row = chats.getJSONObject(i);
+                                db.updateChat("sent", row.getString("uniqueid"));
+                                if(MainActivity.isVisible) {
+                                    row.put("status", "sent");
+                                    MainActivity.mainActivity.handleIncomingStatusForSentMessage("status", row);
+                                }
+                            }
+
+                            JSONArray groupChats = db.getPendingGroupChat();
+                            for (int i=0; i < groupChats.length(); i++) {
+                                JSONObject row = groupChats.getJSONObject(i);
+                                db.updateGroupChatStatus(row.getString("unique_id"), "sent");
+                                if(MainActivity.isVisible) {
+                                    MainActivity.mainActivity.updateGroupUIChat(row.getString("unique_id"));
+                                }
+                            }
+
+                            JSONArray seenChats = db.getChatHistoryStatus();
+
+                            for (int i=0; i < seenChats.length(); i++) {
+                                JSONObject row = seenChats.getJSONObject(i);
+                                db.resetSpecificChatHistorySync(row.getString("uniqueid"));
+                                db = new DatabaseHandler(getApplicationContext());
+                                db.updateChat(row.getString("status"), row.getString("uniqueid"));
+                            }
+
+                            JSONArray seenGroupChats = db.getGroupChatHistoryStatus();
+
+                            for (int i=0; i < seenGroupChats.length(); i++) {
+                                JSONObject row = seenGroupChats.getJSONObject(i);
+                                db.resetSpecificGroupChatHistorySync(row.getString("uniqueid"));
+                                db = new DatabaseHandler(getApplicationContext());
+                                db.updateGroupChatStatus("sent", row.getString("uniqueid"));
+                            }
+
+                            JSONArray unSyncedCreatedGroups = db.getGroupsServerPending();
+
+                            for(int i=0; i<unSyncedCreatedGroups.length(); i++) {
+                                JSONObject row = unSyncedCreatedGroups.getJSONObject(i);
+                                db.deleteGroupServerPending(row.getString("unique_id"));
+                            }
+
+
+                            //if(subtype.equals("unsentAddedGroupMembers")) {
+                                // todo discuss with dayem
+                                //JSONObject subpayload = payload.getJSONObject("payload");
+                            //}
+                            //if(subtype.equals("unsentRemovedGroupMembers")) {
+                                // todo discuss with dayem
+                                //JSONObject subpayload = payload.getJSONObject("payload");
+                            //}
+
                         }
                     }
 
@@ -430,7 +528,7 @@ public class KiboSyncService extends Service {
 
         }.execute();
     }
-    
+
     public void sendMessageUsingAPIforChatOnly(final String contactPhone, final String msg, final String uniqueid,
                                     final String type, final String file_type) {
         new AsyncTask<String, String, JSONObject>() {

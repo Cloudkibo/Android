@@ -798,6 +798,7 @@ public class MainActivity extends CustomActivity
                                         Integer.parseInt(com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
                                                 .getString("size"))
                                 )) {
+
                                     String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
                                     uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
                                     uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
@@ -811,8 +812,6 @@ public class MainActivity extends CustomActivity
                                             fileType,
                                             com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
                                                     .getString("filetype"), selectedFilePath);
-
-
 
                                     IFragmentName myFragment1 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
                                     if (myFragment1 == null) return;

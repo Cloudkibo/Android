@@ -162,17 +162,18 @@ public class JobSchedulerService extends JobService implements
 
             if(folders.length()<=0) {
 
-            MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
-                    .setTitle("KiboChat").build();
-            Drive.DriveApi.getRootFolder(mGoogleApiClient).createFolder(
-                    mGoogleApiClient, changeSet).setResultCallback(new ResultCallback<DriveFolder.DriveFolderResult>() {
-                @Override
-                public void onResult(@NonNull DriveFolder.DriveFolderResult result) {
-                    if (!result.getStatus().isSuccess()) {
-                        showMessage("Error while trying to create the folder");
-                        return;
-                    }
-                    showMessage("Created a folder: " + result.getDriveFolder().getDriveId());
+                MetadataChangeSet changeSet = new MetadataChangeSet.Builder()
+                        .setTitle("KiboChat").build();
+                Drive.DriveApi.getRootFolder(mGoogleApiClient).createFolder(
+                        mGoogleApiClient, changeSet).setResultCallback(new ResultCallback<DriveFolder.DriveFolderResult>() {
+                    @Override
+                    public void onResult(@NonNull DriveFolder.DriveFolderResult result) {
+
+                        if (!result.getStatus().isSuccess()) {
+                            showMessage("Error while trying to create the folder");
+                            return;
+                        }
+                        showMessage("Created a folder: " + result.getDriveFolder().getDriveId());
 
 
                         createGroupIconsFolder(result.getDriveFolder().getDriveId());
@@ -182,31 +183,33 @@ public class JobSchedulerService extends JobService implements
                         createVideoAttachmentFolder(result.getDriveFolder().getDriveId());
                         createSqliteFolder(result.getDriveFolder().getDriveId());
 
-                }
-            });
-        }
-            for(int i=0; i<folders.length(); i++){
-                JSONObject row = folders.getJSONObject(i);
+                    }
+                });
+            } else {
 
-                if(row.getString("folder_type").equals("GroupIcons")){
-                    groupIconsFolder = DriveId.decodeFromString(row.getString("folder_address"));
-                } else if(row.getString("folder_type").equals("ImageAttachment")){
-                    imagesAttachmentFolder = DriveId.decodeFromString(row.getString("folder_address"));
-                } else if(row.getString("folder_type").equals("DocumentAttachment")){
-                    documentAttachmentFolder = DriveId.decodeFromString(row.getString("folder_address"));
-                } else if(row.getString("folder_type").equals("AudioAttachment")){
-                    audioAttachmentFolder = DriveId.decodeFromString(row.getString("folder_address"));
-                } else if(row.getString("folder_type").equals("VideoAttachment")){
-                    videoAttachmentFolder = DriveId.decodeFromString(row.getString("folder_address"));
-                } else if(row.getString("folder_type").equals("Sqlite")){
-                    sqliteTablesFolder = DriveId.decodeFromString(row.getString("folder_address"));
+                for (int i = 0; i < folders.length(); i++) {
+                    JSONObject row = folders.getJSONObject(i);
+
+                    if (row.getString("folder_type").equals("GroupIcons")) {
+                        groupIconsFolder = DriveId.decodeFromString(row.getString("folder_address"));
+                    } else if (row.getString("folder_type").equals("ImageAttachment")) {
+                        imagesAttachmentFolder = DriveId.decodeFromString(row.getString("folder_address"));
+                    } else if (row.getString("folder_type").equals("DocumentAttachment")) {
+                        documentAttachmentFolder = DriveId.decodeFromString(row.getString("folder_address"));
+                    } else if (row.getString("folder_type").equals("AudioAttachment")) {
+                        audioAttachmentFolder = DriveId.decodeFromString(row.getString("folder_address"));
+                    } else if (row.getString("folder_type").equals("VideoAttachment")) {
+                        videoAttachmentFolder = DriveId.decodeFromString(row.getString("folder_address"));
+                    } else if (row.getString("folder_type").equals("Sqlite")) {
+                        sqliteTablesFolder = DriveId.decodeFromString(row.getString("folder_address"));
+                    }
                 }
+
+                uploadFiles("image");
+                uploadFiles("document");
+                uploadFiles("audio");
+                uploadFiles("video");
             }
-            uploadFiles("image");
-            uploadFiles("document");
-            uploadFiles("audio");
-            uploadFiles("video");
-
 
         } catch (Exception e){
             e.printStackTrace();
@@ -235,6 +238,7 @@ public class JobSchedulerService extends JobService implements
             }
         });
     }
+
     public void createImagesAttachmentFolder(DriveId kiboChatFolderId){
         Toast.makeText(getApplicationContext(), "Creating Images Attachment Folder", Toast.LENGTH_LONG).show();
         DriveFolder folder = Drive.DriveApi.getFolder(mGoogleApiClient, kiboChatFolderId);
@@ -467,8 +471,8 @@ public class JobSchedulerService extends JobService implements
     public void onConnected(Bundle connectionHint) {
         //super.onConnected(connectionHint);
         Log.i("BaseDriveActivity", "On COnneceted: ");
-        //CreateKiboFolder();
-        CreateKiboAppFolder();
+        CreateKiboFolder();
+        //CreateKiboAppFolder();
     }
 
     @Override

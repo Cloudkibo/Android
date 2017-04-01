@@ -350,8 +350,8 @@ public class UserFunctions {
         return connection.sendJSONObjectToServer(syncURL, authtoken, data);
     }
 
-    public JSONObject downwardSync(String authtoken) {
-        JSONObject data = connection.getDataFromServer(syncDownWardURL, authtoken);
+    public JSONObject downwardSync(JSONObject body, String authtoken) {
+        JSONObject data = connection.sendJSONObjectToServer(syncDownWardURL, authtoken, body);
         return data;
     }
 
