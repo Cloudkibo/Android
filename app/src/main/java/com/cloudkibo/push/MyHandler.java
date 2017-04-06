@@ -76,6 +76,12 @@ public class MyHandler extends NotificationsHandler {
             Log.v("MyHandler", "Push received: "+ payload.toString());
             if (payload.has("type")) {
 
+                if(payload.getString("type").equals("new_user")){
+                    JSONObject newUser = payload.getJSONObject("user");
+                    DatabaseHandler db = new DatabaseHandler(ctx);
+                    db.contactJoinedKiboChat(newUser.getString("phone"));
+                }
+
                 // don't accept anything from contact who is blocked
                 if(payload.has("senderId")){
                     DatabaseHandler db = new DatabaseHandler(ctx);

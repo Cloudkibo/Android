@@ -1,5 +1,7 @@
 package com.cloudkibo.ui;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Context;
@@ -8,6 +10,7 @@ import android.content.SyncStatusObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
@@ -23,12 +26,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListAdapter;
@@ -64,6 +69,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
+import io.codetail.animation.SupportAnimator;
+import io.codetail.animation.ViewAnimationUtils;
+
 import static android.content.ContentValues.TAG;
 import static com.cloudkibo.R.id.txt;
 
@@ -91,9 +99,9 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
     EditText editsearch;
     LinearLayout search_view;
     static final int PICK_CONTACT=1;
-    /* (non-Javadoc)
-     * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
-     */
+
+    LinearLayout mRevealView;
+    Boolean attachmentViewHidden = true;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container,
@@ -103,7 +111,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         final View cusView = v;
         setHasOptionsMenu(true);
 
-        LinearLayout mRevealView = (LinearLayout) v.findViewById(R.id.reveal_items);
+        mRevealView = (LinearLayout) v.findViewById(R.id.reveal_items);
         mRevealView.setVisibility(View.GONE);
 
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
@@ -280,10 +288,261 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         LayoutInflater inflator = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflator.inflate(R.layout.custom_imageview, null);
         ImageView search_button = (ImageView) v.findViewById(R.id.imageView4);
+        ImageView attach_button = (ImageView) v.findViewById(R.id.imageView5);
+
+        attach_button.setVisibility(View.VISIBLE);
+
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 search_view.setVisibility(View.VISIBLE);
+            }
+        });
+
+        attach_button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                int cx = (mRevealView.getLeft() + mRevealView.getRight());
+                int cy = mRevealView.getTop();
+
+                // for doing animation from center
+                //int cy = (mRevealView.getTop() + mRevealView.getBottom())/2;
+
+                int radius = Math.max(mRevealView.getWidth(), mRevealView.getHeight());
+
+                ImageButton sendImage = (ImageButton) mRevealView.findViewById(R.id.sendImage);
+                ImageButton sendDoc = (ImageButton) mRevealView.findViewById(R.id.sendDoc);
+                ImageButton sendAudio = (ImageButton) mRevealView.findViewById(R.id.sendAudio);
+                ImageButton sendVideo = (ImageButton) mRevealView.findViewById(R.id.sendVideo);
+                ImageButton sendContact = (ImageButton) mRevealView.findViewById(R.id.sendContact);
+                ImageButton sendLocation = (ImageButton) mRevealView.findViewById(R.id.sendLocation);
+
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+
+                    SupportAnimator animator =
+                            ViewAnimationUtils.createCircularReveal(mRevealView, cx, cy, 0, radius);
+                    animator.setInterpolator(new AccelerateDecelerateInterpolator());
+                    animator.setDuration(800);
+
+                    final SupportAnimator animator_reverse = animator.reverse();
+
+                    if (attachmentViewHidden) {
+                        mRevealView.setVisibility(View.VISIBLE);
+                        animator.start();
+                        attachmentViewHidden = false;
+                    } else {
+                        animator_reverse.addListener(new SupportAnimator.AnimatorListener() {
+                            @Override
+                            public void onAnimationStart() {
+
+                            }
+
+                            @Override
+                            public void onAnimationEnd() {
+                                mRevealView.setVisibility(View.GONE);
+                                attachmentViewHidden = true;
+
+                            }
+
+                            @Override
+                            public void onAnimationCancel() {
+
+                            }
+
+                            @Override
+                            public void onAnimationRepeat() {
+
+                            }
+                        });
+                        animator_reverse.start();
+                    }
+                    sendImage.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            animator_reverse.start();
+                            sendImageSelected();
+                        }
+                    });
+                    sendDoc.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            animator_reverse.start();
+                            MainActivity act2 = (MainActivity)getActivity();
+                            act2.uploadChatAttachment("document");
+                        }
+                    });
+                    sendAudio.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            animator_reverse.start();
+                            MainActivity act2 = (MainActivity)getActivity();
+                            act2.uploadChatAttachment("audio");
+                        }
+                    });
+                    sendVideo.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            animator_reverse.start();
+                            MainActivity act2 = (MainActivity)getActivity();
+                            act2.uploadChatAttachment("video");
+                        }
+                    });
+                    sendContact.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            animator_reverse.start();
+                            Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
+                                    ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                            getActivity().startActivityForResult(contactPickerIntent, 129);
+                        }
+                    });
+                    sendLocation.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            animator_reverse.start();
+                            PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+                            try {
+                                getActivity().startActivityForResult(builder.build(MainActivity.mainActivity), 141);
+                            } catch (GooglePlayServicesRepairableException e) {
+                                e.printStackTrace();
+                            } catch (GooglePlayServicesNotAvailableException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+                } else {
+                    if (attachmentViewHidden) {
+                        final Animator anim = android.view.ViewAnimationUtils.createCircularReveal(mRevealView, cx, cy, 0, radius);
+                        mRevealView.setVisibility(View.VISIBLE);
+                        anim.start();
+                        attachmentViewHidden = false;
+
+                        final int cxTemp = cx, cyTemp = cy, radiusTemp = radius;
+                        sendImage.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Animator anim = android.view.ViewAnimationUtils.createCircularReveal(mRevealView, cxTemp, cyTemp, radiusTemp, 0);
+                                anim.addListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        mRevealView.setVisibility(View.GONE);
+                                        attachmentViewHidden = true;
+                                    }
+                                });
+                                anim.start();
+                                sendImageSelected();
+                            }
+                        });
+                        sendDoc.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Animator anim = android.view.ViewAnimationUtils.createCircularReveal(mRevealView, cxTemp, cyTemp, radiusTemp, 0);
+                                anim.addListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        mRevealView.setVisibility(View.GONE);
+                                        attachmentViewHidden = true;
+                                    }
+                                });
+                                anim.start();
+                                MainActivity act2 = (MainActivity)getActivity();
+                                act2.uploadChatAttachment("document");
+                            }
+                        });
+                        sendAudio.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Animator anim = android.view.ViewAnimationUtils.createCircularReveal(mRevealView, cxTemp, cyTemp, radiusTemp, 0);
+                                anim.addListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        mRevealView.setVisibility(View.GONE);
+                                        attachmentViewHidden = true;
+                                    }
+                                });
+                                anim.start();
+                                MainActivity act2 = (MainActivity)getActivity();
+                                act2.uploadChatAttachment("audio");
+                            }
+                        });
+                        sendVideo.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Animator anim = android.view.ViewAnimationUtils.createCircularReveal(mRevealView, cxTemp, cyTemp, radiusTemp, 0);
+                                anim.addListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        mRevealView.setVisibility(View.GONE);
+                                        attachmentViewHidden = true;
+                                    }
+                                });
+                                anim.start();
+                                MainActivity act2 = (MainActivity)getActivity();
+                                act2.uploadChatAttachment("video");
+                            }
+                        });
+                        sendContact.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Animator anim = android.view.ViewAnimationUtils.createCircularReveal(mRevealView, cxTemp, cyTemp, radiusTemp, 0);
+                                anim.addListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        mRevealView.setVisibility(View.GONE);
+                                        attachmentViewHidden = true;
+                                    }
+                                });
+                                anim.start();
+                                Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
+                                        ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
+                                getActivity().startActivityForResult(contactPickerIntent, 129);
+                            }
+                        });
+                        sendLocation.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Animator anim = android.view.ViewAnimationUtils.createCircularReveal(mRevealView, cxTemp, cyTemp, radiusTemp, 0);
+                                anim.addListener(new AnimatorListenerAdapter() {
+                                    @Override
+                                    public void onAnimationEnd(Animator animation) {
+                                        super.onAnimationEnd(animation);
+                                        mRevealView.setVisibility(View.GONE);
+                                        attachmentViewHidden = true;
+                                    }
+                                });
+                                anim.start();
+                                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+                                try {
+                                    getActivity().startActivityForResult(builder.build(MainActivity.mainActivity), 141);
+                                } catch (GooglePlayServicesRepairableException e) {
+                                    e.printStackTrace();
+                                } catch (GooglePlayServicesNotAvailableException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        });
+
+                    } else {
+                        Animator anim = android.view.ViewAnimationUtils.createCircularReveal(mRevealView, cx, cy, radius, 0);
+                        anim.addListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                super.onAnimationEnd(animation);
+                                mRevealView.setVisibility(View.GONE);
+                                attachmentViewHidden = true;
+                            }
+                        });
+                        anim.start();
+                    }
+                }
             }
         });
         actionBar.setCustomView(v);

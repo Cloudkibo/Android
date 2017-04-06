@@ -347,6 +347,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				search_view.setVisibility(View.VISIBLE);
 			}
 		});
+
         attach_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

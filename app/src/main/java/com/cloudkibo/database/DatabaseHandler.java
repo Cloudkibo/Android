@@ -1664,6 +1664,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void contactJoinedKiboChat (String phone) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String updateQuery = "UPDATE " + Contacts.TABLE_CONTACTS +
+                " SET on_cloudkibo='true' "+
+                " WHERE "+ Contacts.CONTACT_PHONE +"='"+phone+"'";
+
+        try {
+            db.execSQL(updateQuery);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        db.close();
+    }
+
     public void blockContact(String phone){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
