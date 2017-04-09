@@ -418,7 +418,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
                         public void onClick(View view) {
                             animator_reverse.start();
                             MainActivity act2 = (MainActivity)getActivity();
-                            act2.uploadChatAttachment("document");
+                            act2.uploadChatAttachment("document", "not_group");
                         }
                     });
                     sendAudio.setOnClickListener(new View.OnClickListener() {
@@ -426,7 +426,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
                         public void onClick(View view) {
                             animator_reverse.start();
                             MainActivity act2 = (MainActivity)getActivity();
-                            act2.uploadChatAttachment("audio");
+                            act2.uploadChatAttachment("audio", "not_group");
                         }
                     });
                     sendVideo.setOnClickListener(new View.OnClickListener() {
@@ -434,7 +434,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
                         public void onClick(View view) {
                             animator_reverse.start();
                             MainActivity act2 = (MainActivity)getActivity();
-                            act2.uploadChatAttachment("video");
+                            act2.uploadChatAttachment("video", "not_group");
                         }
                     });
                     sendContact.setOnClickListener(new View.OnClickListener() {
@@ -499,7 +499,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
                                 });
                                 anim.start();
                                 MainActivity act2 = (MainActivity)getActivity();
-                                act2.uploadChatAttachment("document");
+                                act2.uploadChatAttachment("document", "not_group");
                             }
                         });
                         sendAudio.setOnClickListener(new View.OnClickListener() {
@@ -516,7 +516,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
                                 });
                                 anim.start();
                                 MainActivity act2 = (MainActivity)getActivity();
-                                act2.uploadChatAttachment("audio");
+                                act2.uploadChatAttachment("audio", "not_group");
                             }
                         });
                         sendVideo.setOnClickListener(new View.OnClickListener() {
@@ -533,7 +533,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
                                 });
                                 anim.start();
                                 MainActivity act2 = (MainActivity)getActivity();
-                                act2.uploadChatAttachment("video");
+                                act2.uploadChatAttachment("video", "not_group");
                             }
                         });
                         sendContact.setOnClickListener(new View.OnClickListener() {
@@ -616,7 +616,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
                     }
                 } else if (options[item].equals("Choose from Gallery")) {
                     MainActivity act3 = (MainActivity)getActivity();
-                    act3.uploadChatAttachment("image");
+                    act3.uploadChatAttachment("image", "not_group");
                 } else if (options[item].equals(R.string.cancel)) {
                     dialog.dismiss();
                 }
@@ -1167,7 +1167,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							true, true, row.getString("status"), row.getString("uniqueid"),
 							row.has("type") ? row.getString("type") : "",
 							row.has("file_type") ? row.getString("file_type") : "");
-					if(row.has("type")){
+					if (row.has("type")) {
 						if(row.getString("type").equals("file")){
 							JSONObject fileInfo = db.getFilesInfo(row.getString("uniqueid"));
 							String path = "";
@@ -1186,7 +1186,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							false, true, row.getString("status"), row.getString("uniqueid"),
 							row.has("type") ? row.getString("type") : "",
 							row.has("file_type") ? row.getString("file_type") : "");
-					if(row.has("type")){
+					if (row.has("type")) {
 						if(row.getString("type").equals("file")){
 							JSONObject fileInfo = db.getFilesInfo(row.getString("uniqueid"));
 							String path = "";

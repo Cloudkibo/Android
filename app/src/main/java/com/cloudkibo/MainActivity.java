@@ -700,6 +700,7 @@ public class MainActivity extends CustomActivity
             uploadIconChooser();
         }
     }
+
     private void uploadIconChooser(){
         Intent getContentIntent = FileUtils.createGetContentIntentForImage();
 
@@ -708,8 +709,10 @@ public class MainActivity extends CustomActivity
     }
 
     String attachmentType = "";
-    public void uploadChatAttachment(String type){
+    String attachmentInGroup = "";
+    public void uploadChatAttachment(String type, String is_group){
         attachmentType = type;
+        attachmentInGroup = is_group;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 101);
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
@@ -804,20 +807,45 @@ public class MainActivity extends CustomActivity
                                     uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
 
                                     DatabaseHandler db = new DatabaseHandler(getApplicationContext());
-                                    db.createFilesInfo(uniqueid,
-                                            com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
-                                                    .getString("name"),
-                                            com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
-                                                    .getString("size"),
-                                            fileType,
-                                            com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
-                                                    .getString("filetype"), selectedFilePath);
 
-                                    IFragmentName myFragment1 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                                    if (myFragment1 == null) return;
-                                    if (myFragment1.getFragmentName().equals("GroupChat")) {
-                                        final GroupChat myGroupChatListFragment = (GroupChat) myFragment1;
-                                        myGroupChatListFragment.sendFileAttachment(uniqueid, fileType);
+                                    if(attachmentInGroup.equals("group")) {
+
+                                        IFragmentName myFragment1 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                                        if (myFragment1 == null) return;
+                                        if (myFragment1.getFragmentName().equals("GroupChatUI")) {
+                                            final GroupChatUI myGroupChatListFragment = (GroupChatUI) myFragment1;
+
+                                            String group_id = myGroupChatListFragment.getGroupId();
+
+                                            db.createFilesInfoGroup(group_id, uniqueid,
+                                                    com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
+                                                            .getString("name"),
+                                                    com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
+                                                            .getString("size"),
+                                                    fileType,
+                                                    com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
+                                                            .getString("filetype"), selectedFilePath);
+
+                                            myGroupChatListFragment.sendFileAttachment(uniqueid, fileType);
+                                        }
+
+                                    } else {
+
+                                        db.createFilesInfo(uniqueid,
+                                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
+                                                        .getString("name"),
+                                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
+                                                        .getString("size"),
+                                                fileType,
+                                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
+                                                        .getString("filetype"), selectedFilePath);
+
+                                        IFragmentName myFragment1 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                                        if (myFragment1 == null) return;
+                                        if (myFragment1.getFragmentName().equals("GroupChat")) {
+                                            final GroupChat myGroupChatListFragment = (GroupChat) myFragment1;
+                                            myGroupChatListFragment.sendFileAttachment(uniqueid, fileType);
+                                        }
                                     }
 
                                 } else {
@@ -1387,7 +1415,33 @@ public class MainActivity extends CustomActivity
                 e.printStackTrace();
             }
         }
+    }
 
+    public void handleDownloadedFileGroup(final JSONObject body){
+        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+        if(myFragment == null) return;
+        if(myFragment.getFragmentName().equals("GroupChatUI")) {
+            try {
+                if (myFragment.getFragmentContactPhone().equals(body.getString("from"))) {
+                    final GroupChatUI myGroupChatFragment = (GroupChatUI) myFragment;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            try {
+                                myGroupChatFragment.updateFileDownloaded(body.getString("unique_id"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    });
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public void handleIncomingChatMessage(String type, final JSONObject body){

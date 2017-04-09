@@ -126,17 +126,7 @@ public class MyHandler extends NotificationsHandler {
                 }
 
                 if(payload.getString("type").equals("group:chat_received")){
-                    GroupUtility groupUtility = new GroupUtility(context);
-                    AccessToken accessToken = AccountKit.getCurrentAccessToken();
-                    try {
-                        groupUtility.updateGroupChat(payload.toString(), accessToken.getToken());
-                    }catch (NullPointerException e){
-                        e.printStackTrace();
-                        AccountKit.initialize(ctx.getApplicationContext());
-                        accessToken = AccountKit.getCurrentAccessToken();
-                        if(accessToken != null)
-                        groupUtility.updateGroupChat(payload.toString(), accessToken.getToken());
-                    }
+                    loadSpecificGroupChatFromServer(payload);
                 }
                 if(payload.getString("type").equals("group:added_to_group")){
                     GroupUtility groupUtility = new GroupUtility(context);
@@ -184,7 +174,7 @@ public class MyHandler extends NotificationsHandler {
                         DatabaseHandler db = new DatabaseHandler(ctx.getApplicationContext());
                         db.updateChat(payload.getString("status"), payload.getString("uniqueId"));
                         Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" gets push notification payload to update status of sent message");
-                        if(MainActivity.isVisible){
+                        if (MainActivity.isVisible) {
                             JSONObject statusData = new JSONObject();
                             statusData.put("status", payload.getString("status"));
                             statusData.put("uniqueid", payload.getString("uniqueId"));
@@ -479,60 +469,174 @@ public class MyHandler extends NotificationsHandler {
 
     }
 
-    private void loadSpecificGroupChatFromServer(final String uniqueid) {
+    private void loadSpecificGroupChatFromServer(final JSONObject payload) {
 
-        final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+        try {
+            final String uniqueid = payload.getString("unique_id");
 
-        Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" is going to fetch the group message using API.");
-        if (accessToken == null) {
-            Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" could not get the group message using API as Facebook accountkit did not give auth token.");
-            return ;
-        }
 
-        new AsyncTask<String, String, JSONObject>() {
+            final AccessToken accessToken = AccountKit.getCurrentAccessToken();
 
-            @Override
-            protected JSONObject doInBackground(String... args) {
-                UserFunctions userFunction = new UserFunctions(ctx.getApplicationContext());
-                return userFunction.getSingleGroupChat(uniqueid, accessToken.getToken());
+            if (accessToken == null) {
+                Utility.sendLogToServer(ctx.getApplicationContext(), "" + userDetail.get("phone") + " could not get the group message using API as Facebook accountkit did not give auth token.");
+                return;
             }
 
-            @Override
-            protected void onPostExecute(JSONObject row) {
-                try {
+            new AsyncTask<String, String, JSONObject>() {
 
+                @Override
+                protected JSONObject doInBackground(String... args) {
+                    UserFunctions userFunction = new UserFunctions(ctx.getApplicationContext());
+                    return userFunction.getSingleGroupChat(uniqueid, accessToken.getToken());
+                }
+
+                @Override
+                protected void onPostExecute(JSONObject row) {
                     if (row != null) {
-                        DatabaseHandler db = new DatabaseHandler(
-                                ctx.getApplicationContext());
+                        GroupUtility groupUtility = new GroupUtility(ctx);
+                        AccessToken accessToken = AccountKit.getCurrentAccessToken();
 
-                        Log.i("MyHandler", row.toString());
+                        try {
+                            groupUtility.updateGroupChat(row.toString(), accessToken.getToken());
+                        }catch (NullPointerException e){
+                            e.printStackTrace();
+                            AccountKit.initialize(ctx.getApplicationContext());
+                            accessToken = AccountKit.getCurrentAccessToken();
+                            if(accessToken != null)
+                                groupUtility.updateGroupChat(row.toString(), accessToken.getToken());
+                        }
 
-                        // todo @dayem please test following when you are ready to send messsage, this is saving the received chat message
+                        try {
 
-                        db.addGroupChat(row.getString("from"), row.getString("from_fullname"), row.getString("msg"),
-                                row.getString("date"), row.has("type") ? row.getString("type") : "",
-                                row.getString("unique_id"),
-                                row.getString("group_unique_id"));
+                            DatabaseHandler db = new DatabaseHandler(ctx.getApplicationContext());
 
-                        Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" got the group message using API and saved to Database: "+ row.toString());
+                            if (row.getString("type").equals("image") || row.getString("type").equals("document")
+                                    || row.getString("type").equals("audio") || row.getString("type").equals("video")) {
+                                final JSONObject rowTemp = row;
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ctx.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                                    Utility.sendNotification(ctx, "KiboChat", "File attachment was not downloaded in background due to permission. Please go to settings to allow this app to store files on storage.");
+                                    db.createFilesInfo(uniqueid,
+                                            "",
+                                            "notDownloaded",
+                                            rowTemp.getString("type"),
+                                            "", "");
+                                } else {
 
-                        if (MainActivity.isVisible) {
-                            // todo @dayem please update the UI for incoming group chat when UI logic is done
-                            ///MainActivity.mainActivity.handleIncomingChatMessage("im", row);
-                           // MainActivity.mainActivity.updateGroupUIChat();
-                        } else {
+                                    final int id = 101;
 
+                                    final NotificationManager mNotifyManager =
+                                            (NotificationManager) ctx.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                                    final android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(ctx.getApplicationContext());
+                                    mBuilder.setContentTitle("Downloading attachment")
+                                            .setContentText("Download in progress")
+                                            .setSmallIcon(R.drawable.icon);
+
+                                    final UserFunctions userFunctions = new UserFunctions(ctx.getApplicationContext());
+
+                                    Ion.with(ctx.getApplicationContext())
+                                            .load(userFunctions.getBaseURL() + "/api/filetransfersgroup/download")
+                                            .progressHandler(new ProgressCallback() {
+                                                @Override
+                                                public void onProgress(long downloaded, long total) {
+                                                    mBuilder.setProgress((int) total, (int) downloaded,
+                                                            false);
+                                                    if (downloaded < total) {
+                                                        mBuilder.setContentText("Download in progress: " +
+                                                                ((downloaded / total) * 100) + "%");
+                                                    } else {
+                                                        mBuilder.setContentText("Downloaded file attachment");
+                                                    }
+                                                    mNotifyManager.notify(id, mBuilder.build());
+                                                }
+                                            })
+                                            .setHeader("kibo-token", accessToken.getToken())
+                                            .setBodyParameter("uniqueid", row.getString("unique_id"))
+                                            .write(new File(ctx.getApplicationContext().getFilesDir().getPath() + "" + row.getString("unique_id")))
+                                            .setCallback(new FutureCallback<File>() {
+                                                @Override
+                                                public void onCompleted(Exception e, File file) {
+                                                    // download done...
+                                                    // do stuff with the File or error
+
+                                                    try {
+                                                        DatabaseHandler db = new DatabaseHandler(ctx.getApplicationContext());
+                                                        File folder = getExternalStoragePublicDirForImages(ctx.getString(R.string.app_name));
+                                                        if (rowTemp.getString("type").equals("document")) {
+                                                            folder = getExternalStoragePublicDirForDocuments(ctx.getString(R.string.app_name));
+                                                        }
+                                                        if (rowTemp.getString("type").equals("audio")) {
+                                                            folder = getExternalStoragePublicDirForDownloads(ctx.getString(R.string.app_name));
+                                                        }
+                                                        if (rowTemp.getString("type").equals("video")) {
+                                                            folder = getExternalStoragePublicDirForDownloads(ctx.getString(R.string.app_name));
+                                                        }
+                                                        FileOutputStream outputStream;
+                                                        outputStream = new FileOutputStream(folder.getPath() + "/" + rowTemp.getString("msg"));
+                                                        outputStream.write(com.cloudkibo.webrtc.filesharing.Utility.convertFileToByteArray(file));
+                                                        outputStream.close();
+
+                                                        JSONObject fileMetaData = getFileMetaData(folder.getPath() + "/" + rowTemp.getString("msg"));
+                                                        db.createFilesInfoGroup(rowTemp.getString("group_unique_id"), uniqueid,
+                                                                fileMetaData.getString("name"),
+                                                                fileMetaData.getString("size"),
+                                                                rowTemp.getString("type"),
+                                                                fileMetaData.getString("filetype"), folder.getPath() + "/" + rowTemp.getString("msg"));
+
+                                                        if (MainActivity.isVisible) {
+                                                            MainActivity.mainActivity.handleDownloadedFileGroup(rowTemp);
+                                                        }
+
+                                                        final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+
+                                                        new AsyncTask<String, String, JSONObject>() {
+                                                            @Override
+                                                            protected JSONObject doInBackground(String... args) {
+                                                                try {
+                                                                    UserFunctions userFunctions1 = new UserFunctions(ctx.getApplicationContext());
+                                                                    return userFunctions1.confirmFileDownloadGroup(rowTemp.getString("unique_id"), accessToken.getToken());
+                                                                } catch (JSONException e5) {
+                                                                    e5.printStackTrace();
+                                                                }
+                                                                return null;
+                                                            }
+
+                                                            @Override
+                                                            protected void onPostExecute(JSONObject row) {
+                                                                if (row != null) {
+                                                                    // todo see if server couldn't get the confirmation
+                                                                }
+                                                            }
+                                                        }.execute();
+
+                                                        file.delete();
+
+                                                        Log.d("chat attachment", "Downloaded file attachment");
+
+                                                    } catch (IOException e2) {
+                                                        e2.printStackTrace();
+                                                    } catch (JSONException e3) {
+                                                        e3.printStackTrace();
+                                                    }
+
+
+                                                }
+                                            });
+                                }
+
+                            }
+                        } catch (JSONException er) {
+                            er.printStackTrace();
                         }
 
                     } else {
-                        Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" did not get group message from API. SERVER gave NULL");
+                        Utility.sendLogToServer(ctx.getApplicationContext(), "" + userDetail.get("phone") + " did not get group message from API. SERVER gave NULL");
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
-            }
 
-        }.execute();
+            }.execute();
+        } catch (JSONException ee) {
+            ee.printStackTrace();
+        }
 
     }
 

@@ -295,10 +295,10 @@ public class GroupUtility {
         try {
             JSONObject data = new JSONObject(payload);
             String message = data.getString("msg");
-            String member_phone = data.getString("senderId");
+            String member_phone = data.getString("from");
             final String unique_id = data.getString("unique_id");
-            String group_id = data.getString("groupId");
-            String msg_type = data.getString("msg_type");
+            String group_id = data.getString("group_unique_id");
+            String msg_type = data.getString("type");
             if(!isGroupMember(group_id)){
                 return;
             }
@@ -328,7 +328,6 @@ public class GroupUtility {
                     }
                 }.execute();
             }
-            loadSpecificGroupChat(unique_id, auth_token);
         } catch (JSONException e) {
 
             e.printStackTrace();
@@ -725,46 +724,6 @@ public class GroupUtility {
         }
 
     }
-
-    // todo need to discuss with @dayem
-    public void loadSpecificGroupChat(final String uniqueid, final String authtoken){
-
-                final HashMap<String, String> userDetail = new DatabaseHandler(ctx.getApplicationContext()).getUserDetails();
-
-                new AsyncTask<String, String, JSONObject>() {
-
-                    @Override
-                    protected JSONObject doInBackground(String... args) {
-                        UserFunctions userFunction = new UserFunctions(ctx);
-                        return userFunction.getSingleGroupChat(uniqueid, authtoken);
-                    }
-
-                    @Override
-                    protected void onPostExecute(JSONObject row) {
-
-
-                            if (row != null) {
-
-                                Log.i("MyHandler", row.toString());
-
-                                // todo @dayem please test following when you are ready to send messsage, this is saving the received chat message
-
-                                Utility.sendLogToServer(ctx, ""+ userDetail.get("phone") +" got the group message using API and saved to Database: "+ row.toString());
-
-                                if (MainActivity.isVisible) {
-                                    // todo @dayem please update the UI for incoming group chat when UI logic is done
-                                    ///MainActivity.mainActivity.handleIncomingChatMessage("im", row);
-                                }
-
-                            } else {
-                                Utility.sendLogToServer(ctx, ""+ userDetail.get("phone") +" did not get group message from API. SERVER gave NULL");
-                            }
-
-                    }
-
-                }.execute();
-
-            }
 
     public int adminCount(String group_id){
         try {

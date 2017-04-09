@@ -155,6 +155,176 @@ public class GroupChatAdapter extends BaseAdapter{
             return  rowView;
         }
 
+        if(convList.get(position).getType().equals("image")){
+            rowView = inflater.inflate(
+                    R.layout.chat_item_image, null);
+
+            TextView lbl = (TextView) rowView.findViewById(R.id.lblContactPhone);
+            if (convList.get(position).isSuccess())
+                lbl.setText(convList.get(position).getStatus());
+            else
+                lbl.setText("");
+            if (!convList.get(position).isSent()) {
+                rowView = inflater.inflate(
+                        R.layout.chat_item_image_received, null);
+            }
+
+            lbl = (TextView) rowView.findViewById(R.id.lblContactDisplayName);
+            DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+            try {
+                lbl.setText(outputFormat.format(inputFormat.parse(convList.get(position).getDate())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            ImageView container_image = (ImageView) rowView.findViewById(R.id.row_stamp);
+            Glide
+                    .with(MainActivity.mainActivity)
+                    .load(convList.get(position).getFile_uri())
+                    .thumbnail(0.1f)
+                    .centerCrop()
+                    .placeholder(R.drawable.avatar)
+                    .into(container_image);
+
+            final String uri = convList.get(position).getFile_uri();
+            container_image.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.parse("file://" + uri), "image/*");
+                    context.startActivity(intent);
+                }
+            });
+
+            return  rowView;
+        }
+
+        if(convList.get(position).getType().equals("document")){
+            rowView = inflater.inflate(
+                    R.layout.chat_item_file, null);
+
+            TextView lbl = (TextView) rowView.findViewById(R.id.lblContactPhone);
+            if (convList.get(position).isSuccess())
+                lbl.setText(convList.get(position).getStatus());
+            else
+                lbl.setText("");
+            if (!convList.get(position).isSent()) {
+                rowView = inflater.inflate(
+                        R.layout.chat_item_file_received, null);
+            }
+
+            lbl = (TextView) rowView.findViewById(R.id.lblContactDisplayName);
+            DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+            try {
+                lbl.setText(outputFormat.format(inputFormat.parse(convList.get(position).getDate())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            TextView msgView = (TextView) rowView.findViewById(R.id.file_name);
+            msgView.setText(convList.get(position).getMsg());
+
+            LinearLayout fileItem = (LinearLayout) rowView.findViewById(R.id.fileItem);
+            final String uri = convList.get(position).getFile_uri();
+            fileItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.parse("file://" + uri), "application/*");
+                    context.startActivity(intent);
+                }
+            });
+
+            return  rowView;
+        }
+
+        if(convList.get(position).getType().equals("audio")){
+            rowView = inflater.inflate(
+                    R.layout.chat_item_audio, null);
+
+            TextView lbl = (TextView) rowView.findViewById(R.id.lblContactPhone);
+            if (convList.get(position).isSuccess())
+                lbl.setText(convList.get(position).getStatus());
+            else
+                lbl.setText("");
+            if (!convList.get(position).isSent()) {
+                rowView = inflater.inflate(
+                        R.layout.chat_item_audio_received, null);
+            }
+
+            lbl = (TextView) rowView.findViewById(R.id.lblContactDisplayName);
+            DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+            try {
+                lbl.setText(outputFormat.format(inputFormat.parse(convList.get(position).getDate())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            TextView msgView = (TextView) rowView.findViewById(R.id.file_name);
+            msgView.setText(convList.get(position).getFile_type());
+
+            LinearLayout audioFileItem = (LinearLayout) rowView.findViewById(R.id.fileItem);
+            final String uri = convList.get(position).getFile_uri();
+            audioFileItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.parse("file://" + uri), "audio/*");
+                    context.startActivity(intent);
+                }
+            });
+
+            return  rowView;
+        }
+
+        if(convList.get(position).getType().equals("video")){
+            rowView = inflater.inflate(
+                    R.layout.chat_item_audio, null); // todo change this
+
+            TextView lbl = (TextView) rowView.findViewById(R.id.lblContactPhone);
+            if (convList.get(position).isSuccess())
+                lbl.setText(convList.get(position).getStatus());
+            else
+                lbl.setText("");
+            if (!convList.get(position).isSent()) {
+                rowView = inflater.inflate(
+                        R.layout.chat_item_audio_received, null); // todo change this
+            }
+
+            lbl = (TextView) rowView.findViewById(R.id.lblContactDisplayName);
+            DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+            try {
+                lbl.setText(outputFormat.format(inputFormat.parse(convList.get(position).getDate())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            TextView msgView = (TextView) rowView.findViewById(R.id.file_name);
+            msgView.setText(convList.get(position).getFile_type());
+
+            LinearLayout audioFileItem = (LinearLayout) rowView.findViewById(R.id.fileItem);
+            final String uri = convList.get(position).getFile_uri();
+            audioFileItem.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.parse("file://" + uri), "video/*");
+                    context.startActivity(intent);
+                }
+            });
+
+            return  rowView;
+        }
+
+
         if(convList.get(position).getType().equals("log")){
             rowView = inflater.inflate(R.layout.chat_item_log, null);
         }

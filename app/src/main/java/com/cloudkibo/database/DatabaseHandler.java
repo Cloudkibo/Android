@@ -27,7 +27,7 @@ import com.cloudkibo.library.Utility;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 23;
+    private static final int DATABASE_VERSION = 24;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -211,6 +211,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + ")";
         db.execSQL(CREATE_FILES_INFO);
 
+        String CREATE_FILES_GROUP_INFO = "CREATE TABLE FILESINFOGROUP ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "group_unique_id TEXT, "
+                + "uniqueid TEXT, "
+                + "file_name TEXT, "
+                + "file_size TEXT, "
+                + "file_type TEXT, "
+                + "file_ext TEXT, "
+                + "isBackup INTEGER DEFAULT 0 , "
+                + "path TEXT "
+                + ")";
+        db.execSQL(CREATE_FILES_GROUP_INFO);
+
         String CREATE_DRIVE_FOLDER_INFO = "CREATE TABLE DRIVEFOLDERINFO ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "folder_type TEXT, "
@@ -247,6 +260,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS GROUPMEMBERREMOVEPENDING");
         db.execSQL("DROP TABLE IF EXISTS MUTESETTING");
         db.execSQL("DROP TABLE IF EXISTS FILESINFO");
+        db.execSQL("DROP TABLE IF EXISTS FILESINFOGROUP");
         db.execSQL("DROP TABLE IF EXISTS DRIVEFOLDERINFO");
         db.execSQL("DROP TABLE IF EXISTS group_chat_history_sync");
         // Create tables again
@@ -264,6 +278,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("path", path);
         // Inserting Row
         db.insert("FILESINFO", null, values);
+
+        db.close(); // Closing database connection
+
+    }
+
+    public void createFilesInfoGroup(String group_unique_id, String unique_id, String file_name, String file_size, String file_type, String file_ext, String path) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("group_unique_id", group_unique_id);
+        values.put("uniqueid", unique_id);
+        values.put("file_name", file_name);
+        values.put("file_size", file_size);
+        values.put("file_type", file_type);
+        values.put("file_ext", file_ext);
+        values.put("path", path);
+        // Inserting Row
+        db.insert("FILESINFOGROUP", null, values);
 
         db.close(); // Closing database connection
 
@@ -290,6 +321,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
 
+    public void updateFileInfoGroup(String group_unique_id, String unique_id, String file_name, String file_size, String file_type, String file_ext, String path){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("file_name", file_name);
+        values.put("file_size", file_size);
+        values.put("file_type", file_type);
+        values.put("file_ext", file_ext);
+        values.put("path", path);
+        db.update("FILESINFOGROUP",values,"uniqueid='"+unique_id+"' AND group_unique_id='"+group_unique_id+"'", null);
+        db.close(); // Closing database connection
+    }
+
     public JSONObject getFilesInfo(String unique_id) {
         JSONObject filesInfo = new JSONObject();
         String selectQuery = "SELECT uniqueid, file_name, file_size, file_type, file_ext, path FROM FILESINFO WHERE uniqueid='"+ unique_id +"'";
@@ -305,6 +348,32 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 filesInfo.put("file_type", cursor.getString(3));
                 filesInfo.put("file_ext", cursor.getString(4));
                 filesInfo.put("path", cursor.getString(5));
+            }
+            cursor.close();
+            db.close();
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return filesInfo;
+    }
+
+    public JSONObject getFilesInfoGroup(String unique_id) {
+        JSONObject filesInfo = new JSONObject();
+        String selectQuery = "SELECT uniqueid, file_name, file_size, file_type, file_ext, path, group_unique_id FROM FILESINFOGROUP WHERE uniqueid='"+ unique_id +"'";
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            // Move to first row
+            cursor.moveToFirst();
+            if (cursor.getCount() > 0) {
+                filesInfo.put("uniqueid", cursor.getString(0));
+                filesInfo.put("file_name", cursor.getString(1));
+                filesInfo.put("file_size", cursor.getString(2));
+                filesInfo.put("file_type", cursor.getString(3));
+                filesInfo.put("file_ext", cursor.getString(4));
+                filesInfo.put("path", cursor.getString(5));
+                filesInfo.put("group_unique_id", cursor.getString(6));
             }
             cursor.close();
             db.close();
@@ -364,6 +433,39 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 contact.put("file_type", cursor.getString(3));
                 contact.put("file_ext", cursor.getString(4));
                 contact.put("path", cursor.getString(5));
+                groups.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return groups;
+    }
+
+    public JSONArray getAllFilesGroup(String type) throws JSONException {
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT uniqueid, file_name, file_size, file_type, file_ext, path, group_unique_id FROM FILESINFOGROUP " +
+                "WHERE file_type='"+ type+"' AND isBackup=0";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("uniqueid", cursor.getString(0));
+                contact.put("file_name", cursor.getString(1));
+                contact.put("file_size", cursor.getString(2));
+                contact.put("file_type", cursor.getString(3));
+                contact.put("file_ext", cursor.getString(4));
+                contact.put("path", cursor.getString(5));
+                contact.put("group_unique_id", cursor.getString(6));
                 groups.put(contact);
 
                 cursor.moveToNext();

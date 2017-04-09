@@ -554,9 +554,12 @@ public class FileUtils {
 
     public static Intent createGetContentIntentForDocument() {
         // Implicitly allow the user to select a particular kind of data
+        String folderPath = Environment.getExternalStorageDirectory().getPath();
         final Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         // The MIME data type filter
-        intent.setType(MIME_TYPE_APP);
+        Uri myUri = Uri.parse(folderPath);
+        intent.setDataAndType(myUri, MIME_TYPE_APP);
+        //intent.setType(MIME_TYPE_APP);
         // Only return URIs that can be opened with ContentResolver
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         return intent;
