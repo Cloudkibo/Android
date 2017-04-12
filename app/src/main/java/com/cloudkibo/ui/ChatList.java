@@ -303,9 +303,19 @@ public class ChatList extends CustomFragment implements IFragmentName
 			alertD.show();
 		}
 		else if(id ==  R.id.settings) {
-			Intent i = new Intent(getActivity().getApplicationContext(), Settings.class);
-			i.putExtra("token", authtoken);
-			startActivity(i);
+			SettingsFrag settingsFrag = new SettingsFrag();
+			Bundle bundle = new Bundle();
+			bundle.putString("authToken", authtoken);
+			settingsFrag.setArguments(bundle);
+
+			getFragmentManager().beginTransaction()
+					.replace(R.id.content_frame, settingsFrag, "settingsFragmentTag").addToBackStack("Settings")
+					.commit();
+			return true;
+
+//			Intent i = new Intent(getActivity().getApplicationContext(), Settings.class);
+//			i.putExtra("token", authtoken);
+//			startActivity(i);
 		}
 
 		return super.onOptionsItemSelected(item);

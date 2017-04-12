@@ -31,10 +31,14 @@ import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.CloudKiboDatabaseContract;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.CircleTransform;
 import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.utils.IFragmentName;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +47,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.UUID;
 
 /**
@@ -140,6 +145,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                             JSONObject info = db.getGroupInfo(group_id);
                             String group_name = info.getString("group_name");
                             groupUtility.addMemberOnServer(group_name,group_id,member_phone,authtoken);
+                            sendGroupIcon();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -188,6 +194,34 @@ public class GroupSetting extends CustomFragment implements IFragmentName
 
         return vg;
     }
+
+
+    public void sendGroupIcon(){
+        UserFunctions userFunctions = new UserFunctions(getActivity().getApplicationContext());
+        final String selectedFilePath = getActivity().getApplicationContext().getFilesDir()+"/"+group_id;
+        Ion.with(getContext())
+                .load(userFunctions.getBaseURL() + "/api/groupmessaging/uploadIcon")
+                .setHeader("kibo-token", authtoken)
+                .setMultipartParameter("unique_id", group_id)
+                .setMultipartFile("file", FileUtils.getExtension(selectedFilePath), new File(selectedFilePath))
+                .asJsonObject()
+                .setCallback(new FutureCallback<JsonObject>() {
+                    @Override
+                    public void onCompleted(Exception e, JsonObject result) {
+                        // do stuff with the result or error
+                        if(e == null) {
+
+                            String ext = FileUtils.getExtension(selectedFilePath);
+                            Toast.makeText(getContext(), result.toString(), Toast.LENGTH_LONG).show();
+                        }
+                        else {
+                            Toast.makeText(getContext(), "No Group Icon sent", Toast.LENGTH_LONG).show();
+                            e.printStackTrace();
+                        }
+                    }
+                });
+    }
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
