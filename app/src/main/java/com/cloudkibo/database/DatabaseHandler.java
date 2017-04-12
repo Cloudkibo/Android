@@ -2389,7 +2389,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 " SELECT "+ UserChat.USERCHAT_DATE +", contact_phone, " + UserChat.USERCHAT_MSG
                         +", image_uri FROM " + UserChat.TABLE_USERCHAT
                         +" LEFT JOIN contacts ON contacts.phone = contact_phone WHERE"
-                        +" isArchived=0 and blocked_me='false' and blocked_by_me='false'"
+                        +" isArchived=0"
                         +" GROUP BY contact_phone ORDER BY "+ UserChat.USERCHAT_DATE + " DESC";
 
         SQLiteDatabase db = this.getReadableDatabase();

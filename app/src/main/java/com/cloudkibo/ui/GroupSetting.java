@@ -145,7 +145,6 @@ public class GroupSetting extends CustomFragment implements IFragmentName
                             JSONObject info = db.getGroupInfo(group_id);
                             String group_name = info.getString("group_name");
                             groupUtility.addMemberOnServer(group_name,group_id,member_phone,authtoken);
-                            sendGroupIcon();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -196,31 +195,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
     }
 
 
-    public void sendGroupIcon(){
-        UserFunctions userFunctions = new UserFunctions(getActivity().getApplicationContext());
-        final String selectedFilePath = getActivity().getApplicationContext().getFilesDir()+"/"+group_id;
-        Ion.with(getContext())
-                .load(userFunctions.getBaseURL() + "/api/groupmessaging/uploadIcon")
-                .setHeader("kibo-token", authtoken)
-                .setMultipartParameter("unique_id", group_id)
-                .setMultipartFile("file", FileUtils.getExtension(selectedFilePath), new File(selectedFilePath))
-                .asJsonObject()
-                .setCallback(new FutureCallback<JsonObject>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonObject result) {
-                        // do stuff with the result or error
-                        if(e == null) {
 
-                            String ext = FileUtils.getExtension(selectedFilePath);
-                            Toast.makeText(getContext(), result.toString(), Toast.LENGTH_LONG).show();
-                        }
-                        else {
-                            Toast.makeText(getContext(), "No Group Icon sent", Toast.LENGTH_LONG).show();
-                            e.printStackTrace();
-                        }
-                    }
-                });
-    }
 
 
     @Override
