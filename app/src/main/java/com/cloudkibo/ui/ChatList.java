@@ -409,7 +409,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 					//chats = UserFunctions.sortJSONArray(chats, "display_name");
 					totalCount = 0;
 					totalCount = totalCount + chats.length();
-					for (int i=0; i < chats.length(); i++) {
+					for (int i=-1; i < chats.length(); i++) {
 						JSONObject row = chats.getJSONObject(i);
 						String image = row.optString("image_uri");
 						//if(row.getInt("isArchived") ==  0) {

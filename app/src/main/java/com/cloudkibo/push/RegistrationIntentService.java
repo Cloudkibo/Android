@@ -57,7 +57,7 @@ public class RegistrationIntentService extends IntentService {
 
                 String phone = user.get("phone").substring(1);
 
-                regID = hub.register(FCM_token, user.get("phone").substring(1), "new_user").getRegistrationId();
+                regID = hub.register(FCM_token, user.get("phone").substring(1), "newuser").getRegistrationId();
 
                 // If you want to use tags...
                 // Refer to : https://azure.microsoft.com/en-us/documentation/articles/notification-hubs-routing-tag-expressions/
@@ -78,7 +78,7 @@ public class RegistrationIntentService extends IntentService {
 
                 String phone = user.get("phone").substring(1);
 
-                regID = hub.register(FCM_token, user.get("phone").substring(1)).getRegistrationId();
+                regID = hub.register(FCM_token, user.get("phone").substring(1), "newuser").getRegistrationId();
 
                 // If you want to use tags...
                 // Refer to : https://azure.microsoft.com/en-us/documentation/articles/notification-hubs-routing-tag-expressions/

@@ -12,9 +12,11 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.ContactsContract;
+import android.support.annotation.BoolRes;
 import android.support.v4.app.NotificationCompat;
 import android.text.Html;
 import android.util.Log;
+import android.util.Patterns;
 import android.widget.Toast;
 
 import com.cloudkibo.MainActivity;
@@ -22,18 +24,22 @@ import com.cloudkibo.R;
 import com.cloudkibo.SplashScreen;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.ui.GroupChat;
+import com.github.nkzawa.socketio.client.IO;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
 
 /**
  * Created by sojharo on 20/09/2016.
@@ -144,6 +150,18 @@ public class Utility {
         return df.format(new Date());
     }
 
+    public static String[] extractLinks(String text) {
+        List<String> links = new ArrayList<String>();
+        Matcher m = Patterns.WEB_URL.matcher(text);
+        while (m.find()) {
+            String url = m.group();
+            Log.d("EXTRACT LINK", "URL extracted: " + url);
+            links.add(url);
+        }
+
+        return links.toArray(new String[links.size()]);
+    }
+
     public static void sendLogToServer(final Context ctx, final String message){
         new AsyncTask<String, String, JSONObject>() {
 
@@ -247,6 +265,32 @@ public class Utility {
             }
 
         }.execute();
+    }
+
+    public static void getURLInfo(final Context ctx, final String url, final String unique_id, final Boolean isGroupMessage){
+
+        new AsyncTask<String, String, String>() {
+
+            @Override
+            protected String doInBackground(String... args) {
+                String result = null;
+                try{
+                    result = TitleExtractor.getPageTitle(url);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return result;
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                if(result != null){
+
+                }
+            }
+
+        }.execute();
+
     }
 
     public static String dateConversion(String time){

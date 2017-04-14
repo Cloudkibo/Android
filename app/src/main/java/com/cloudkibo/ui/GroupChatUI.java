@@ -793,6 +793,12 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             e.printStackTrace();
         }
 
+        String []links = Utility.extractLinks(message);
+
+        if(links.length > 0) {
+            Utility.getURLInfo(getActivity().getApplicationContext(), links[0], msg_unique_id, true);
+        }
+
         groupAdapter.notifyDataSetChanged();
         my_message.setText("");
     }
@@ -1071,6 +1077,12 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                         conv.setFile_uri(path);
                     }
 
+                }
+
+                String []links = Utility.extractLinks(message);
+
+                if(links.length > 0) {
+                    Utility.getURLInfo(getActivity().getApplicationContext(), links[0], unique_id, true);
                 }
 
                 convList.add(conv);

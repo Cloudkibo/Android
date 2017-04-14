@@ -818,6 +818,12 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			sendMessageUsingAPI(messageString, uniqueid, "chat", "");
 
+            String []links = Utility.extractLinks(messageString);
+
+            if(links.length > 0) {
+                Utility.getURLInfo(getActivity().getApplicationContext(), links[0], uniqueid, false);
+            }
+
 			txt.setText(null);
 		} catch (ParseException e){
 			e.printStackTrace();
@@ -966,6 +972,12 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			convList.add(new Conversation(msg, Utility.convertDateToLocalTimeZoneAndReadable(date), false, true, "seen", uniqueid, type, file_type));
 
 			adp.notifyDataSetChanged();
+
+            String []links = Utility.extractLinks(msg);
+
+            if(links.length > 0) {
+                Utility.getURLInfo(getActivity().getApplicationContext(), links[0], uniqueid, false);
+            }
 
 			updateChatStatus("seen", uniqueid);
 			sendMessageStatusUsingAPI("seen", uniqueid, from);
