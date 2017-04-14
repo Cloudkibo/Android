@@ -48,4 +48,16 @@
 
     </RelativeLayout>
 
+    <Button
+        android:text="Send Message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/sendButton" />
+
+    <Button
+        android:text="Invite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/inviteButton" />
+
 </LinearLayout>

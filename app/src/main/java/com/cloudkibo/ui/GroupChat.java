@@ -210,6 +210,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
                     bundle.putString("name", name);
                     bundle.putString("phone", phone);
+                    bundle.putString("authtoken", authtoken);
 
                     vCntctFrag.setArguments(bundle);
                     getFragmentManager().beginTransaction()
@@ -1358,6 +1359,24 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			e.printStackTrace();
 		}
 	}
+
+    private void unBlockContact()
+    {
+        new AlertDialog.Builder(getContext())
+                .setTitle("Unblock "+ contactName)
+                .setMessage("Do you really want to unblock "+ contactName +"?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        try {
+                            JSONObject data = new JSONObject();
+                            data.put("phone", contactPhone);
+                            Utility.unBlockContact(getContext(), data, authtoken);
+                        } catch (JSONException e) { e.printStackTrace(); }
+                    }})
+                .setNegativeButton(android.R.string.no, null)
+                .show();
+    }
 
 	/**
 	 * The Class CutsomAdapter is the adapter class for Chat ListView. The

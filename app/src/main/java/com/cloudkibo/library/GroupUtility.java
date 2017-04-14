@@ -48,7 +48,7 @@ public class GroupUtility {
         db = new DatabaseHandler(ctx);
     }
 
-    public void updateGroupToLocalDatabase(final String group_id, final String group_name, final String auth_token, final String sender_id, final String msg){
+    public void updateGroupToLocalDatabase(final String group_id, final String group_name, final String auth_token, final String sender_id, final String msg, final Context context){
 
         db.createGroup(group_id, group_name, 0);
 
@@ -101,6 +101,39 @@ public class GroupUtility {
                         uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
 
                         db.addGroupMessage(group_id,message,member_phone,personWhoAdded,uniqueid, "log");
+
+
+                            final String unique_id = randomString();
+                            UserFunctions userFunctions = new UserFunctions(ctx.getApplicationContext());
+                            Ion.with(context)
+                                    .load(userFunctions.getBaseURL() + "/api/groupmessaging/downloadIcon")
+                                    .setHeader("kibo-token", auth_token)
+                                    .setBodyParameter("unique_id", group_id)
+                                    .write(new File(context.getFilesDir().getPath() + "" + group_id))
+                                    .setCallback(new FutureCallback<File>() {
+                                        @Override
+                                        public void onCompleted(Exception e, File file) {
+                                            // download done...
+                                            // do stuff with the File or error
+
+                                            try {
+                                                FileOutputStream outputStream;
+                                                outputStream = context.openFileOutput(group_id, Context.MODE_PRIVATE);
+                                                outputStream.write(com.cloudkibo.webrtc.filesharing.Utility.convertFileToByteArray(file));
+                                                outputStream.close();
+                                            }catch (IOException e2){
+                                                e2.printStackTrace();
+                                            }
+                                            file.delete();
+
+                                            Log.d("GROUPFILE", "Downloaded icon");
+                                            if(MainActivity.isVisible){
+                                                MainActivity.mainActivity.updateGroupUIChat(unique_id);
+                                            }
+                                        }
+                                    });
+
+
 
                         if (MainActivity.isVisible) {
                             MainActivity.mainActivity.refreshGroupsOnDesktop();

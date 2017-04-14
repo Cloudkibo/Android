@@ -31,10 +31,14 @@ import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.CloudKiboDatabaseContract;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.file.filechooser.utils.FileUtils;
 import com.cloudkibo.library.CircleTransform;
 import com.cloudkibo.library.GroupUtility;
 import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.utils.IFragmentName;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -43,6 +47,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.UUID;
 
 /**
@@ -188,6 +193,10 @@ public class GroupSetting extends CustomFragment implements IFragmentName
 
         return vg;
     }
+
+
+
+
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

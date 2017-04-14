@@ -177,6 +177,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
 
                     bundle.putString("name", name);
                     bundle.putString("phone", phone);
+                    bundle.putString("authtoken", authtoken);
 
                     vCntctFrag.setArguments(bundle);
                     getFragmentManager().beginTransaction()
