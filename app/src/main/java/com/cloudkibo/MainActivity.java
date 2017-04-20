@@ -1356,6 +1356,40 @@ public class MainActivity extends CustomActivity
         }
     }
 
+    public void updateGroupUIChatForLink(final String uniqueid, final String link, final String link_title) {
+        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+        if(myFragment == null) return;
+        if(myFragment.getFragmentName().equals("GroupChatUI"))
+        {
+            final GroupChatUI groupChatUIFragment = (GroupChatUI) myFragment;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    groupChatUIFragment.updateMessageForLink(uniqueid, link, link_title);
+                }
+            });
+
+        }
+    }
+
+    public void updateGroupChatForLink(final String uniqueid, final String link, final String link_title) {
+        IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+        if(myFragment == null) return;
+        if(myFragment.getFragmentName().equals("GroupChat"))
+        {
+            final GroupChat groupChatFragment = (GroupChat) myFragment;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    groupChatFragment.updateMessageForLink(uniqueid, link, link_title);
+                }
+            });
+
+        }
+    }
+
     public void updateGroupUIChat() {
         IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
 

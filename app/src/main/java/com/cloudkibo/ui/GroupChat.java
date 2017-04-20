@@ -1112,6 +1112,17 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		adp.notifyDataSetChanged();
 	}
 
+    public void updateMessageForLink(String uniqueid, String link, String link_title) {
+        for(int i=convList.size()-1; i>-1; i--){
+            if(convList.get(i).getUniqueid().equals(uniqueid)){
+                convList.get(i).setType("link");
+                convList.get(i).setLinkInfo(link, link_title);
+                break;
+            }
+        }
+        adp.notifyDataSetChanged();
+    }
+
 	public void updateChatStatus(String status, String uniqueid){
 		try {
 			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
@@ -1191,6 +1202,14 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							}
 							conversation.setFile_uri(path);
 						}
+                        if(row.getString("type").equals("link")){
+                            JSONObject fileInfo = db.getLinksInfo(row.getString("uniqueid"));
+                            try {
+                                conversation.setLinkInfo(fileInfo.getString("link"), fileInfo.getString("title"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
 					}
 				} else {
 					conversation = new Conversation(
@@ -1218,6 +1237,14 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							}
 							conversation.setFile_uri(path);
 						}
+                        if(row.getString("type").equals("link")){
+                            JSONObject fileInfo = db.getLinksInfo(row.getString("uniqueid"));
+                            try {
+                                conversation.setLinkInfo(fileInfo.getString("link"), fileInfo.getString("title"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
 					}
 				}
 
@@ -1706,6 +1733,38 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 				return  v;
 			}
+
+            if(c.getType().equals("link")){
+                v = LayoutInflater.from(getActivity()).inflate(
+                        R.layout.chat_item_url, null); // todo change this
+                String name = user.get("display_name");
+
+                if (!c.isSent()) {
+                    v = LayoutInflater.from(getActivity()).inflate(
+                            R.layout.chat_item_url_received, null); // todo change this
+                    name = contactName;
+                }
+
+                TextView lbl = (TextView) v.findViewById(R.id.link_title);
+                lbl.setText(c.getLink_title());
+
+                lbl = (TextView) v.findViewById(R.id.link_desc);
+                lbl.setText(c.getLink());
+
+                lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
+                DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+                try {
+                    lbl.setText(outputFormat.format(inputFormat.parse(c.getDate())));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                TextView msgView = (TextView) v.findViewById(R.id.msgbody);
+                msgView.setText(c.getMsg());
+
+                return  v;
+            }
 
 			if (c.isSent()) {
 					v = LayoutInflater.from(getActivity()).inflate(

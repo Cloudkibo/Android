@@ -771,6 +771,12 @@ public class KiboSyncService extends Service {
 
                             }
                         }
+
+                        String[] links = Utility.extractLinks(row.getString("msg"));
+
+                        if (links.length > 0) {
+                            Utility.getURLInfo(getApplicationContext(), links[0], row.getString("uniqueid"), true);
+                        }
                     }
 
                 }

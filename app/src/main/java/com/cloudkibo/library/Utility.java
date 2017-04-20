@@ -285,7 +285,17 @@ public class Utility {
             @Override
             protected void onPostExecute(String result) {
                 if(result != null){
-
+                    DatabaseHandler db = new DatabaseHandler(ctx);
+                    db.createLinksInfo(unique_id, url, result, "", "");
+                    if(isGroupMessage) {
+                        db.updateChatForTypeGroup("link", unique_id);
+                        if(MainActivity.isVisible) {
+                            MainActivity.mainActivity.updateGroupUIChatForLink(unique_id, url, result);
+                        }
+                    } else {
+                        db.updateChatForType("link", unique_id);
+                        MainActivity.mainActivity.updateGroupChatForLink(unique_id, url, result);
+                    }
                 }
             }
 

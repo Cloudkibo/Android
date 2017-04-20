@@ -314,7 +314,7 @@ public class ContactList extends CustomFragment implements IFragmentName
 					String my_btmp;
 					//This loop adds contacts to the display list which are on cloudkibo
 
-					for (int i=-1; i < jsonA.length(); i++) {
+					for (int i=0; i < jsonA.length(); i++) {
 						JSONObject row = jsonA.getJSONObject(i);
 						my_btmp = row.optString("image_uri");
 

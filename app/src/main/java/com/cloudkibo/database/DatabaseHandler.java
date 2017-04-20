@@ -27,7 +27,7 @@ import com.cloudkibo.library.Utility;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 24;
+    private static final int DATABASE_VERSION = 25;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -231,6 +231,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + ")";
         db.execSQL(CREATE_DRIVE_FOLDER_INFO);
 
+        String CREATE_LINK_INFO = "CREATE TABLE LINKSINFO ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "uniqueid TEXT, "
+                + "link TEXT, "
+                + "title TEXT, "
+                + "description TEXT, "
+                + "path TEXT "
+                + ")";
+        db.execSQL(CREATE_LINK_INFO);
+
     }
 
 
@@ -263,6 +273,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS FILESINFOGROUP");
         db.execSQL("DROP TABLE IF EXISTS DRIVEFOLDERINFO");
         db.execSQL("DROP TABLE IF EXISTS group_chat_history_sync");
+        db.execSQL("DROP TABLE IF EXISTS LINKSINFO");
         // Create tables again
         onCreate(db);
     }
@@ -295,6 +306,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("path", path);
         // Inserting Row
         db.insert("FILESINFOGROUP", null, values);
+
+        db.close(); // Closing database connection
+
+    }
+
+    public void createLinksInfo(String unique_id, String link, String title, String description, String path) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("uniqueid", unique_id);
+        values.put("link", link);
+        values.put("title", title);
+        values.put("description", description);
+        values.put("path", path);
+        // Inserting Row
+        db.insert("LINKSINFO", null, values);
 
         db.close(); // Closing database connection
 
@@ -374,6 +400,28 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 filesInfo.put("file_ext", cursor.getString(4));
                 filesInfo.put("path", cursor.getString(5));
                 filesInfo.put("group_unique_id", cursor.getString(6));
+            }
+            cursor.close();
+            db.close();
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
+
+        return filesInfo;
+    }
+
+    public JSONObject getLinksInfo(String unique_id) {
+        JSONObject filesInfo = new JSONObject();
+        String selectQuery = "SELECT uniqueid, title, link FROM LINKSINFO WHERE uniqueid='"+ unique_id +"'";
+        try {
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            // Move to first row
+            cursor.moveToFirst();
+            if (cursor.getCount() > 0) {
+                filesInfo.put("uniqueid", cursor.getString(0));
+                filesInfo.put("title", cursor.getString(1));
+                filesInfo.put("link", cursor.getString(2));
             }
             cursor.close();
             db.close();
@@ -1656,6 +1704,38 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Inserting Row
         db.insert("GROUPCHAT", null, values);
         db.close(); // Closing database connection
+    }
+
+    public void updateChatForType(String type, String uniqueid) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String updateQuery = "UPDATE " + UserChat.TABLE_USERCHAT +
+                " SET type='"+ type +"' WHERE uniqueid='"+uniqueid+"'";
+
+        try {
+            db.execSQL(updateQuery);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        db.close();
+    }
+
+    public void updateChatForTypeGroup(String type, String uniqueid) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String updateQuery = "UPDATE GROUPCHAT "+
+                " SET type='"+ type +"' WHERE unique_id='"+uniqueid+"'";
+
+        try {
+            db.execSQL(updateQuery);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        db.close();
     }
 
     public void updateChat(String status, String uniqueid) {

@@ -324,6 +324,36 @@ public class GroupChatAdapter extends BaseAdapter{
             return  rowView;
         }
 
+        if(convList.get(position).getType().equals("link")){
+            rowView = inflater.inflate(
+                    R.layout.chat_item_url, null); // todo change this
+
+            if (!convList.get(position).isSent()) {
+                rowView = inflater.inflate(
+                        R.layout.chat_item_url_received, null); // todo change this
+            }
+
+            TextView lbl = (TextView) rowView.findViewById(R.id.link_title);
+            lbl.setText(convList.get(position).getLink_title());
+
+            lbl = (TextView) rowView.findViewById(R.id.link_desc);
+            lbl.setText(convList.get(position).getLink());
+
+            lbl = (TextView) rowView.findViewById(R.id.lblContactDisplayName);
+            DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+            DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+            try {
+                lbl.setText(outputFormat.format(inputFormat.parse(convList.get(position).getDate())));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            TextView msgView = (TextView) rowView.findViewById(R.id.msgbody);
+            msgView.setText(convList.get(position).getMsg());
+
+            return  rowView;
+        }
+
 
         if(convList.get(position).getType().equals("log")){
             rowView = inflater.inflate(R.layout.chat_item_log, null);

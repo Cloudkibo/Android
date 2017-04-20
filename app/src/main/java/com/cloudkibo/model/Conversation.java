@@ -38,6 +38,10 @@ public class Conversation
 
 	private String file_uri;
 
+	private String link;
+
+	private String link_title;
+
 	/**
 	 * Instantiates a new conversation.
 	 *
@@ -215,5 +219,18 @@ public class Conversation
 	public Conversation setFile_uri(String file_uri){
 		this.file_uri = file_uri;
 		return this;
+	}
+
+	public void setLinkInfo(String link, String link_title){
+		this.link = link;
+		this.link_title = link_title;
+	}
+
+	public String getLink() {
+		return link;
+	}
+
+	public String getLink_title() {
+		return link_title;
 	}
 }

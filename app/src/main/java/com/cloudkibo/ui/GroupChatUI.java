@@ -1078,12 +1078,20 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                         conv.setFile_uri(path);
                     }
 
-                }
+                } else if(row.getString("type").equals("link")){
+                    JSONObject fileInfo = db.getLinksInfo(row.getString("uniqueid"));
+                    try {
+                        conv.setLinkInfo(fileInfo.getString("link"), fileInfo.getString("title"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
 
-                String []links = Utility.extractLinks(message);
+                    String[] links = Utility.extractLinks(message);
 
-                if(links.length > 0) {
-                    Utility.getURLInfo(getActivity().getApplicationContext(), links[0], unique_id, true);
+                    if (links.length > 0) {
+                        Utility.getURLInfo(getActivity().getApplicationContext(), links[0], unique_id, true);
+                    }
                 }
 
                 convList.add(conv);
@@ -1231,6 +1239,16 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
         }
     }
 
+    public void updateMessageForLink(String uniqueid, String link, String link_title) {
+        for(int i=convList.size()-1; i>-1; i--){
+            if(convList.get(i).getUniqueid().equals(uniqueid)){
+                convList.get(i).setType("link");
+                convList.get(i).setLinkInfo(link, link_title);
+                break;
+            }
+        }
+        groupAdapter.notifyDataSetChanged();
+    }
 
     public String getMembersName(String group_id){
 
