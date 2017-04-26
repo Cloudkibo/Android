@@ -29,6 +29,12 @@
 		app:showAsAction="ifRoom"
 		android:title="@string/common_settings"
 		/>
+	<item
+		android:id="@+id/broadcast"
+		android:icon="@drawable/ic_notes"
+		app:showAsAction="ifRoom"
+		android:title="Create Broadcast"
+		/>
 
 	<!--<item
 		android:id="@+id/backup_setting"
