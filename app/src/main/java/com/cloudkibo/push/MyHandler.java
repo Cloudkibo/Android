@@ -83,7 +83,7 @@ public class MyHandler extends NotificationsHandler {
                 }
 
                 // don't accept anything from contact who is blocked
-                if(payload.has("senderId")){
+                if(payload.has("senderId") && !payload.getString("type").equals("group:chat_received")){
                     DatabaseHandler db = new DatabaseHandler(ctx);
                     JSONArray contact = db.getSpecificContact(payload.getString("senderId"));
                     if (contact.length() > 0) {

@@ -27,7 +27,7 @@ import com.cloudkibo.library.Utility;
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     // Database Version
-    private static final int DATABASE_VERSION = 25;
+    private static final int DATABASE_VERSION = 26;
 
     // Database Name
     private static final String DATABASE_NAME = "cloudkibo";
@@ -241,6 +241,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + ")";
         db.execSQL(CREATE_LINK_INFO);
 
+        String CREATE_BROADCAST_LIST = "CREATE TABLE BROADCAST_LIST ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "uniqueid TEXT, "
+                + "name TEXT "
+                + ")";
+        db.execSQL(CREATE_BROADCAST_LIST);
+
+        String CREATE_BROADCAST_MEMBER = "CREATE TABLE BROADCAST_MEMBER ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "uniqueid TEXT, "
+                + "phone TEXT "
+                + ")";
+        db.execSQL(CREATE_BROADCAST_MEMBER);
+
     }
 
 
@@ -274,8 +288,70 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS DRIVEFOLDERINFO");
         db.execSQL("DROP TABLE IF EXISTS group_chat_history_sync");
         db.execSQL("DROP TABLE IF EXISTS LINKSINFO");
+        db.execSQL("DROP TABLE IF EXISTS BROADCAST_LIST");
+        db.execSQL("DROP TABLE IF EXISTS BROADCAST_MEMBER");
         // Create tables again
         onCreate(db);
+    }
+
+    public void createBroadcastList(String unique_id, String name) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("uniqueid", unique_id);
+        values.put("name", name);
+        // Inserting Row
+        db.insert("BROADCAST_LIST", null, values);
+
+        db.close(); // Closing database connection
+
+    }
+
+    public void updateBroadCastListName(String unique_id, String name){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("name", name);
+        db.update("BROADCAST_LIST",values,"uniqueid='"+unique_id+"'",null);
+        db.close(); // Closing database connection
+    }
+
+    public void DeleteBroadCastList(String unique_id){
+
+        removeAllMembersOfBroadCastList(unique_id);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String deleteQuery = "DELETE FROM BROADCAST_LIST WHERE uniqueid='"+ unique_id +"'";
+
+        db.execSQL(deleteQuery);
+        db.close();
+    }
+
+    public void addBroadCastListMember(String unique_id, String phone) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put("uniqueid", unique_id);
+        values.put("phone", phone);
+        // Inserting Row
+        db.insert("BROADCAST_MEMBER", null, values);
+
+        db.close(); // Closing database connection
+
+    }
+
+    public void removeBroadCastListMember(String unique_id, String phone){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String deleteQuery = "DELETE FROM BROADCAST_MEMBER WHERE uniqueid='"+ unique_id +"' AND " +
+                "phone='"+ phone+"'";
+
+        db.execSQL(deleteQuery);
+        db.close();
+    }
+
+    public void removeAllMembersOfBroadCastList(String unique_id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String deleteQuery = "DELETE FROM BROADCAST_MEMBER WHERE uniqueid='"+ unique_id +"'";
+
+        db.execSQL(deleteQuery);
+        db.close();
     }
 
     public void createFilesInfo(String unique_id, String file_name, String file_size, String file_type, String file_ext, String path) {
