@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F1F3EE"
+    android:gravity="center">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textColor="#00b863"
+        android:textSize="25dp"
+        android:text="New BroadCast List"/>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/to_text_input_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/FAB">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:id="@+id/group_name"
+            android:hint="Type a List name here"
+            android:layout_gravity="center"
+            android:layout_margin="25dp"
+            />
+
+    </android.support.design.widget.TextInputLayout>
+
+
+    <Button
+        android:id="@+id/create_group"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create List"
+        android:background="@drawable/rounded_button"
+        android:textColor="#ffffff"
+        />
+
+
+</LinearLayout>

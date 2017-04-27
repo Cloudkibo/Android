@@ -244,6 +244,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_BROADCAST_LIST = "CREATE TABLE BROADCAST_LIST ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "uniqueid TEXT, "
+                + "date_creation DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
                 + "name TEXT "
                 + ")";
         db.execSQL(CREATE_BROADCAST_LIST);
@@ -352,6 +353,35 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         db.execSQL(deleteQuery);
         db.close();
+    }
+
+    public JSONArray getBroadCastLists() throws JSONException{
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT uniqueid, date_creation, name from BROADCAST_LIST";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        //Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("uniqueid", cursor.getString(0));
+                contact.put("date_creation", cursor.getString(1));
+                contact.put("name", cursor.getString(2));
+                groups.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return groups;
+
     }
 
     public void createFilesInfo(String unique_id, String file_name, String file_size, String file_type, String file_ext, String path) {

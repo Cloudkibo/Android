@@ -100,6 +100,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 	private ArrayList<String> contact_phone = new ArrayList<String>();
 	DatabaseHandler db;
 	JSONArray groups;
+	JSONArray lists;
 	public static int totalCount = 0;
 	EditText editsearch;
 	LinearLayout search_view;
@@ -316,6 +317,17 @@ public class ChatList extends CustomFragment implements IFragmentName
 //			Intent i = new Intent(getActivity().getApplicationContext(), Settings.class);
 //			i.putExtra("token", authtoken);
 //			startActivity(i);
+		} else if(id ==  R.id.broadcast) {
+			CreateBroadCastList_A bListFrag = new CreateBroadCastList_A();
+			Bundle bundle = new Bundle();
+			bundle.putString("authToken", authtoken);
+			bListFrag.setArguments(bundle);
+
+			getFragmentManager().beginTransaction()
+					.replace(R.id.content_frame, bListFrag, "BroadCastListFragmentTag").addToBackStack("BroadCast")
+					.commit();
+			return true;
+
 		}
 
 		return super.onOptionsItemSelected(item);
@@ -414,6 +426,8 @@ public class ChatList extends CustomFragment implements IFragmentName
 //					JSONArray chats = db.getChatList();
 //			JSONArray groups = db.getAllGroups();
 					groups = db.getGroupChatList();//db.getMyGroups(db.getUserDetails().get("phone"));
+					lists = db.getBroadCastLists();
+
 
 					//groups = UserFunctions.sortJSONArray(groups, "group_name");
 					//chats = UserFunctions.sortJSONArray(chats, "display_name");
@@ -446,6 +460,21 @@ public class ChatList extends CustomFragment implements IFragmentName
 								Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date_creation")),
 								R.drawable.user1, false,
 								true, 0, row.getString("last_sender")).setProfileImage(null));
+
+
+					}
+					totalCount = totalCount + lists.length();
+					for (int i=0; i < lists.length(); i++) {
+						JSONObject row = lists.getJSONObject(i);
+
+						//if (row.getInt("isArchived") == 0) {
+						chatList1.add(new ChatItem(
+								row.getString("name"),
+								row.getString("uniqueid"),
+								"List Demo Message",
+								Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date_creation")),
+								R.drawable.user1, false,
+								true, 0, "List last sender").setProfileImage(null));
 
 
 					}
