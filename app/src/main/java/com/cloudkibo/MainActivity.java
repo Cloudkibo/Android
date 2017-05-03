@@ -1144,6 +1144,10 @@ public class MainActivity extends CustomActivity
         return super.onKeyDown(keyCode, event);
     }
 
+    public void checkOnlineStatus(){
+        socketService.askFriendsOnlineStatus();
+    }
+
     private ServiceConnection socketConnection = new ServiceConnection() {
 
         @Override
@@ -1166,12 +1170,50 @@ public class MainActivity extends CustomActivity
 
                 @Override
                 public void receiveSocketArray(String type, final JSONArray body) {
+                    final JSONArray contacts = body;
+                    IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+                    if(myFragment.getFragmentName().equals("GroupChat")){
+                        final GroupChat myGroupChatListFragment = (GroupChat) myFragment;
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+
+                                myGroupChatListFragment.setOnlineContacts(body);
+
+                            }
+                        });
+                    }
+
 
                 }
 
                 @Override
-                public void receiveSocketJson(String type, final JSONObject body) {
+                public void receiveSocketJson(final String type, final JSONObject body) {
                     // todo update this for desktop app notifications coming from socketservice.java
+
+                    //working to check offline
+
+                    IFragmentName myFragment = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+
+                        if (myFragment.getFragmentName().equals("GroupChat")) {
+                            final GroupChat myGroupChatListFragment = (GroupChat) myFragment;
+                            runOnUiThread(new Runnable() {
+                            @Override
+                                public void run() {
+                                    if(type.equals("offline")){
+                                        myGroupChatListFragment.lastSeenStatus();
+                                    } else if(type.equals("online")){
+                                        JSONArray contact = new JSONArray();
+                                        contact.put(body);
+                                        myGroupChatListFragment.setOnlineContacts(contact);
+                                    }
+                                }
+                            });
+                        }
+
+
+
                 }
 
             });

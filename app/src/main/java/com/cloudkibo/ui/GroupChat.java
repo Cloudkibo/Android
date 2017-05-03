@@ -118,6 +118,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 	/** The Editext to compose the message. */
 	private EditText txt;
+    JSONArray onlineContacts;
 
 	private String authtoken;
 
@@ -267,7 +268,9 @@ public class GroupChat extends CustomFragment implements IFragmentName
             }
         });
 
-		lastSeenStatus();
+
+        MainActivity act2 = (MainActivity)getActivity();
+        act2.checkOnlineStatus();
 
 
         return v;
@@ -309,6 +312,27 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 		}.execute();
 	}
+
+    public void setOnlineContacts(JSONArray body){
+        onlineContacts = body;
+        for(int i=0; i<onlineContacts.length(); i++){
+            try {
+                JSONObject cntct = onlineContacts.getJSONObject(i);
+                if(cntct.getString("phone").equals(contactPhone)){
+                    lastSeen = "Online";
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        if(lastSeen.equals("Online")){
+            if(getActivity() != null)
+                getActivity().invalidateOptionsMenu();
+        } else {
+            lastSeenStatus();
+        }
+    }
 
 	@Override
 	public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
