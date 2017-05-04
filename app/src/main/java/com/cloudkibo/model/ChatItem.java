@@ -28,6 +28,7 @@ public class ChatItem
 	/** The is group. */
 	private boolean isGroup;
 	private boolean isArchived;
+	private boolean isBroadCast;
 
 	private String contact_id;
 
@@ -55,7 +56,8 @@ public class ChatItem
 	 *            the is group
 	 */
 	public ChatItem(String name, String title, String msg, String date,
-			int icon, boolean online, boolean isGroup, int pending, String lastSender)
+			int icon, boolean online, boolean isGroup, int pending, String lastSender,
+					boolean isBroadCast)
 	{
 		this.name = name;
 		this.date = date;
@@ -67,6 +69,7 @@ public class ChatItem
 		this.pendingMsgs = pending;
 		this.isArchived=false;
 		this.lastSender = lastSender;
+		this.isBroadCast = isBroadCast;
 	}
 
 	public ChatItem setProfileImage(String profileimg){
@@ -220,6 +223,10 @@ public class ChatItem
 	public boolean isGroup()
 	{
 		return this.isGroup;
+	}
+
+	public boolean isBroadCast() {
+		return this.isBroadCast;
 	}
 
 	/**

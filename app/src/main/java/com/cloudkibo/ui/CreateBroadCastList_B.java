@@ -26,6 +26,7 @@ import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.CircleTransform;
 import com.cloudkibo.library.UserFunctions;
+import com.cloudkibo.library.Utility;
 import com.cloudkibo.model.ContactItem;
 import com.cloudkibo.utils.IFragmentName;
 
@@ -105,8 +106,9 @@ public class CreateBroadCastList_B extends CustomFragment implements IFragmentNa
                 uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
                 uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
                 Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
-                //// TODO: 4/26/17 Add link to broadcast chat group table
-                //db.addGroupMessage(group_id,message,member_phone,member_name,uniqueid, "log");
+
+                db.addBroadCastChat("", member_phone, member_name, message,
+                        Utility.getCurrentTimeInISO(), "sent", uniqueid, "log", "", bList_id);
 
                 addMembers(adapter.getPhones());
                 // // TODO: 4/26/17 add link to broadcast list fragment
@@ -116,9 +118,9 @@ public class CreateBroadCastList_B extends CustomFragment implements IFragmentNa
 //                args.putString("list_name", list_name);
 //                args.putString("authtoken", authtoken);
 //                nextFrag.setArguments(args);
-//                temp.getFragmentManager().beginTransaction()
-//                        .replace(R.id.content_frame, nextFrag,null)
-////                        .addToBackStack(group_name)
+//                getFragmentManager().beginTransaction()
+//                        .replace(R.id.content_frame, nextFrag, "groupChatFragmentTag")
+//                        .addToBackStack(null)
 //                        .commit();
             }
         });
@@ -165,6 +167,7 @@ public class CreateBroadCastList_B extends CustomFragment implements IFragmentNa
             Toast.makeText(getContext(), phones.get(i) + "Added", Toast.LENGTH_SHORT).show();
         }
         if(MainActivity.isVisible) {
+            // todo do the broadcast work on desktop app as well
             MainActivity.mainActivity.refreshGroupsOnDesktop();
         }
     }

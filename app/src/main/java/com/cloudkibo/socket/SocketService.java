@@ -142,7 +142,7 @@ public class SocketService extends Service {
             socket.emit("platform_room_message", payload);//new JSONArray().put(message));
             // todo remove this, only for test
             //sendByteData();
-            sendGroupChatListToDesktop();
+            //sendGroupChatListToDesktop();
         } catch (JSONException e) {
             e.printStackTrace();
         }

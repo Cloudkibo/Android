@@ -28,9 +28,11 @@ import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
@@ -92,16 +94,20 @@ import static com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData;
 
 public class BroadCastChat extends CustomFragment implements IFragmentName {
 
+    /** The Conversation list. */
     private ArrayList<Conversation> convList;
+    public ArrayList<Conversation> backupList = new ArrayList<Conversation>();
+
+    /** The chat adapter. */
     private ChatAdapter adp;
+
+    /** The Editext to compose the message. */
     private EditText txt;
 
     private String authtoken;
 
     private HashMap<String, String> user;
 
-    String list_name;
-    String bList_id;
     private String tempCameraCaptureHolderString;
 
     View view;
@@ -112,7 +118,8 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
     LinearLayout mRevealView;
     Boolean attachmentViewHidden = true;
 
-
+    String list_name;
+    String bList_id;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -131,38 +138,11 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
         mRevealView = (LinearLayout) v.findViewById(R.id.reveal_items);
         mRevealView.setVisibility(View.GONE);
 
-//        if(contactName.equals(contactPhone)){
-//            LinearLayout tabs = (LinearLayout) v.findViewById(R.id.newContactOptionsBtns);
-//            tabs.setVisibility(View.VISIBLE);
-//            Button tab1 = (Button) v.findViewById(R.id.tab1);
-//            tab1.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    JSONObject body = new JSONObject();
-//                    try {
-//                        body.put("phone", contactPhone);
-//                        Utility.blockContact(getActivity().getApplicationContext(), body, authtoken);
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                        Utility.sendLogToServer(getActivity().getApplicationContext(), "Block Contact failed on android in GroupChat");
-//                    }
-//                }
-//            });
-//            Button tab2 = (Button) v.findViewById(R.id.tab2);
-//            tab2.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    MainActivity act1 = (MainActivity) getActivity();
-//                    act1.createContact(contactPhone);
-//                }
-//            });
-//        }
-
         DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
 
         user = db.getUserDetails();
 
-        //loadConversationList();
+        loadConversationList();
 
         ListView list = (ListView) v.findViewById(R.id.list);
         adp = new ChatAdapter();
@@ -224,7 +204,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
             public void afterTextChanged(Editable editable) {
 
                 String text = editsearch.getText().toString().toLowerCase(Locale.getDefault());
-                //adp.filter(text);
+                adp.filter(text);
 
             }
         });
@@ -238,20 +218,13 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                 search_view = (LinearLayout) v.findViewById(R.id.search_view);
                 search_view.setVisibility(View.GONE);
                 editsearch.setText("");
-                //adp.filter("");
+                adp.filter("");
             }
         });
-
-        //lastSeenStatus();
 
 
         return v;
     }
-
-
-
-
-    /** attachment work starts **/
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -260,7 +233,9 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
             menu.findItem(R.id.settings).setVisible(false);
             menu.findItem(R.id.connect_to_desktop).setVisible(false);
         }
-        inflater.inflate(R.menu.groupchat, menu);  // Use filter.xml from step 1
+        inflater.inflate(R.menu.chat, menu);  // Use filter.xml from step 1
+//		getActivity().getActionBar().setSubtitle("Last seen on: ");
+        //Utility.getLastSeenStatus(getActivity().getApplicationContext(), contactPhone, authtoken, getActivity().getActionBar());
         ActionBar actionBar = getActivity().getActionBar();
         actionBar.setDisplayShowCustomEnabled(true);
 
@@ -268,8 +243,17 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
         View v = inflator.inflate(R.layout.custom_imageview, null);
         ImageView search_button = (ImageView) v.findViewById(R.id.imageView4);
         ImageView attach_button = (ImageView) v.findViewById(R.id.imageView5);
-
+        TextView lstSeen = (TextView) v.findViewById(R.id.lastSeen);
+        TextView chatTitle = (TextView) v.findViewById(R.id.chatTitle);
+        TextView title = (TextView) v.findViewById(R.id.title);
+        title.setVisibility(View.GONE);
         attach_button.setVisibility(View.VISIBLE);
+
+        try{
+            chatTitle.setText(list_name);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
 
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -348,7 +332,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                         public void onClick(View view) {
                             animator_reverse.start();
                             MainActivity act2 = (MainActivity)getActivity();
-                            act2.uploadChatAttachment("document", "group");
+                            act2.uploadChatAttachment("document", "not_group"); // TODO MUST DO ATTACHMENT WORK HERE
                         }
                     });
                     sendAudio.setOnClickListener(new View.OnClickListener() {
@@ -356,7 +340,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                         public void onClick(View view) {
                             animator_reverse.start();
                             MainActivity act2 = (MainActivity)getActivity();
-                            act2.uploadChatAttachment("audio", "group");
+                            act2.uploadChatAttachment("audio", "not_group");
                         }
                     });
                     sendVideo.setOnClickListener(new View.OnClickListener() {
@@ -364,7 +348,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                         public void onClick(View view) {
                             animator_reverse.start();
                             MainActivity act2 = (MainActivity)getActivity();
-                            act2.uploadChatAttachment("video", "group");
+                            act2.uploadChatAttachment("video", "not_group");
                         }
                     });
                     sendContact.setOnClickListener(new View.OnClickListener() {
@@ -429,7 +413,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                                 });
                                 anim.start();
                                 MainActivity act2 = (MainActivity)getActivity();
-                                act2.uploadChatAttachment("document", "group");
+                                act2.uploadChatAttachment("document", "not_group");
                             }
                         });
                         sendAudio.setOnClickListener(new View.OnClickListener() {
@@ -446,7 +430,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                                 });
                                 anim.start();
                                 MainActivity act2 = (MainActivity)getActivity();
-                                act2.uploadChatAttachment("audio", "group");
+                                act2.uploadChatAttachment("audio", "not_group");
                             }
                         });
                         sendVideo.setOnClickListener(new View.OnClickListener() {
@@ -463,7 +447,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                                 });
                                 anim.start();
                                 MainActivity act2 = (MainActivity)getActivity();
-                                act2.uploadChatAttachment("video", "group");
+                                act2.uploadChatAttachment("video", "not_group");
                             }
                         });
                         sendContact.setOnClickListener(new View.OnClickListener() {
@@ -525,9 +509,11 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
             }
         });
         actionBar.setCustomView(v);
+        super.onCreateOptionsMenu(menu, inflater);
 
     }
 
+    // TODO MUST DO ATTACHMENT WORK HERE
     private void sendImageSelected() {
         final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
 
@@ -545,7 +531,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                     }
                 } else if (options[item].equals("Choose from Gallery")) {
                     MainActivity act3 = (MainActivity)getActivity();
-                    act3.uploadChatAttachment("image", "group");
+                    act3.uploadChatAttachment("image", "not_group");
                 } else if (options[item].equals(R.string.cancel)) {
                     dialog.dismiss();
                 }
@@ -554,26 +540,40 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
         builder.show();
     }
 
-    public void uploadImageFromCamera(){
-        String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
-        uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
-        uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        File folder= getExternalStoragePublicDirForImages(getString(R.string.app_name));
-        File f = new File(folder, uniqueid +".jpg");
-        tempCameraCaptureHolderString = f.getPath();
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-        getActivity().startActivityForResult(intent, 152);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        // TODO THIS SHOULD HAS ITS OWN MENU ITEMS
+//        if(id == R.id.callMenu){
+//            MainActivity act1 = (MainActivity)getActivity();
+//
+//            act1.callThisPerson(contactPhone,
+//                    contactName);
+//            return true;
+//        }
+//        if(id == R.id.blockThisContact){
+//            JSONObject body = new JSONObject();
+//            try {
+//                body.put("phone", contactPhone);
+//                Utility.blockContact(getActivity().getApplicationContext(), body, authtoken);
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//                Utility.sendLogToServer(getActivity().getApplicationContext(), "Block Contact failed on android in GroupChat");
+//            }
+//        }
+
+        return super.onOptionsItemSelected(item);
     }
 
+    // TODO MUST DO ATTACHMENT WORK HERE
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // check whether the result is ok
-        Log.i(TAG, "onActivityResult: Location");
+
         if (resultCode == Activity.RESULT_OK) {
             // Check for the request code, we might be usign multiple startActivityForReslut
             switch (requestCode) {
-                case 0123:
+                case 129:
                     Cursor cursor = null;
                     try {
                         String phoneNo = null ;
@@ -593,7 +593,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                         e.printStackTrace();
                     }
                     break;
-                case 0141:
+                case 141:
                     Place place = PlacePicker.getPlace(data, MainActivity.mainActivity);
                     String placename = String.format("%s", place.getName());
                     String latitude = String.valueOf(place.getLatLng().latitude);
@@ -623,14 +623,42 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                         e.printStackTrace();
                     }
                     break;
-                default:
-                    Toast.makeText(getContext(), "Could not get the contact you selected", Toast.LENGTH_LONG).show();
             }
         } else {
             Log.e("MainActivity", "Failed to pick contact");
         }
 
 //        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    // TODO MUST DO ATTACHMENT WORK HERE
+    public void uploadImageFromCamera(){
+        String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+        uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+        uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        File folder= getExternalStoragePublicDirForImages(getString(R.string.app_name));
+        File f = new File(folder, uniqueid +".jpg");
+        tempCameraCaptureHolderString = f.getPath();
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+        getActivity().startActivityForResult(intent, 152);
+    }
+
+    /* (non-Javadoc)
+     * @see com.socialshare.custom.CustomFragment#onClick(android.view.View)
+     */
+    @Override
+    public void onClick(View v)
+    {
+        super.onClick(v);
+        if (v.getId() == R.id.btnSend)
+        {
+            sendMessage();
+//            DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+//            db.unArchive(contactPhone);
+
+        }
+
     }
 
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
@@ -649,65 +677,100 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
         }
     }
 
-    public void sendMessage(EditText my_message){
-        String message = my_message.getText().toString();
-        if(message.trim().equals("")){
-            return;
-        }
-        DatabaseHandler db = new DatabaseHandler(getContext());
-        GroupUtility groupUtility = new GroupUtility(getContext());
-        String msg_unique_id = groupUtility.sendGroupMessage(group_id, message, authtoken, "chat");
-        messages.add(message);
-        names.add("");
+    public boolean onContextItemSelected(MenuItem item){
 
-        try {
-            convList.add(new Conversation(message, db.getUserDetails().get("phone"), true,"", msg_unique_id, db.getGroupMessageStatus(msg_unique_id, db.getUserDetails().get("phone")).getJSONObject(0).getString("status"), "chat"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 
-        String []links = Utility.extractLinks(message);
+        // TODO THIS SHOULD BE FOR BROADCAST, COMMENTED CODE IS FOR ONE TO ONE
+//        if(item.getTitle() == getString(R.string.common_message_info)){
+//
+//            MessageInfo mInfoFrag = new MessageInfo();
+//            Bundle bundle = new Bundle();
+//
+//            bundle.putString("authtoken",authtoken);
+//            bundle.putString("message",convList.get(info.position).getMsg());
+//            bundle.putString("status",convList.get(info.position).getStatus());
+//            bundle.putString("date",convList.get(info.position).getDate());
+//
+//            mInfoFrag.setArguments(bundle);
+//            getFragmentManager().beginTransaction()
+//                    .replace(R.id.content_frame, mInfoFrag, "messageInfoFragmentTag")
+//                    .addToBackStack("Message Info")
+//                    .commit();
+//        }
+//        if(item.getTitle() == getString(R.string.common_remove_message)){
+//            DatabaseHandler db = new DatabaseHandler(getContext());
+//            db.deleteNormalChatMessage(convList.get(info.position).getUniqueid());
+//            loadConversationList();
+//        }
 
-        if(links.length > 0) {
-            Utility.getURLInfo(getActivity().getApplicationContext(), links[0], msg_unique_id, true);
-        }
-
-        groupAdapter.notifyDataSetChanged();
-        my_message.setText("");
+        return true;
     }
 
+    private void sendMessage()
+    {
+        try {
+            if (txt.length() == 0)
+                return;
+
+            String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+            uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+            uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+
+            InputMethodManager imm = (InputMethodManager) getActivity()
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(txt.getWindowToken(), 0);
+
+            String messageString = txt.getText().toString();
+
+            DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+            try {
+                JSONArray listMembers = db.getBroadCastListMembers(bList_id);
+                for(int i=0; i<listMembers.length(); i++) {
+                    db.addChat(listMembers.getJSONObject(i).getString("phone"), user.get("phone"),
+                            user.get("display_name"), messageString, Utility.getCurrentTimeInISO(),
+                            "pending", uniqueid, "chat", "");
+                }
+            }catch(JSONException ee) {
+                ee.printStackTrace();
+            }
+
+            convList.add(new Conversation(messageString,
+                    Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()),
+                    true, true, "pending", uniqueid, "chat", ""));
+            totalCount = convList.size();
+            adp.notifyDataSetChanged();
+
+            sendMessageUsingAPI(messageString, uniqueid, "chat", "");
+
+            String []links = Utility.extractLinks(messageString);
+
+            if(links.length > 0) {
+                Utility.getURLInfo(getActivity().getApplicationContext(), links[0], uniqueid, false);
+            }
+
+            txt.setText(null);
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
+    }
+
+    // TODO MUST DO FILE ATTACHMENT IN THIS
     public void sendFileAttachment(final String uniqueid, final String fileType)
     {
         try {
 
-            final DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+            DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
             final JSONObject fileInfo = db.getFilesInfo(uniqueid);
 
-            db.addGroupMessage(group_id,fileInfo.getString("file_name"), db.getUserDetails().get("phone"),"", uniqueid, fileType);
-            try {
-                JSONArray group_members = db.getGroupMembers(group_id);
-                for (int i = 0; i < group_members.length(); i++)
-                {
-                    JSONObject member = group_members.getJSONObject(i);
-                    db.addGroupChatStatus(uniqueid, "pending", member.getString("phone"));
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
+                    fileInfo.getString("file_name"), Utility.getCurrentTimeInISO(), "pending", uniqueid, "file",
+                    fileType);
 
-            messages.add(fileInfo.getString("file_name"));
-            names.add("");
-
-            try {
-                convList.add(new Conversation(fileInfo.getString("file_name"),
-                        db.getUserDetails().get("phone"), true,"",
-                        uniqueid,
-                        db.getGroupMessageStatus(uniqueid, db.getUserDetails().get("phone"))
-                                .getJSONObject(0).getString("status"), "contact").setFile_uri(fileInfo.getString("path")));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            groupAdapter.notifyDataSetChanged();
+            convList.add(new Conversation(fileInfo.getString("file_name"),
+                    Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()),
+                    true, true, "pending", uniqueid, "file", fileType).setFile_uri(fileInfo.getString("path")));
+            adp.notifyDataSetChanged();
 
             final int id = 102;
 
@@ -722,7 +785,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
 
             UserFunctions userFunctions = new UserFunctions(getActivity().getApplicationContext());
             Ion.with(getActivity().getApplicationContext())
-                    .load(userFunctions.getBaseURL() + "/api/filetransfersgroup/upload")
+                    .load(userFunctions.getBaseURL() + "/api/filetransfers/upload")
                     .progressHandler(new ProgressCallback() {
                         @Override
                         public void onProgress(long downloaded, long total) {
@@ -737,13 +800,12 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                         }
                     })
                     .setHeader("kibo-token", authtoken)
-                    .setMultipartParameter("file_type", fileType)
-                    .setMultipartParameter("from", db.getUserDetails().get("phone"))
-                    .setMultipartParameter("group_unique_id", group_id)
-                    .setMultipartParameter("total_members", Integer.toString(db.getGroupMembers(group_id).length()))
+                    .setMultipartParameter("filetype", fileType)
+                    .setMultipartParameter("from", user.get("phone"))
+                    .setMultipartParameter("to", contactPhone)
                     .setMultipartParameter("uniqueid", uniqueid)
-                    .setMultipartParameter("file_name", fileInfo.getString("file_name"))
-                    .setMultipartParameter("file_size", fileInfo.getString("file_size"))
+                    .setMultipartParameter("filename", fileInfo.getString("file_name"))
+                    .setMultipartParameter("filesize", fileInfo.getString("file_size"))
                     .setMultipartFile("file", FileUtils.getExtension(fileInfo.getString("path")), new File(fileInfo.getString("path")))
                     .asJsonObject()
                     .setCallback(new FutureCallback<JsonObject>() {
@@ -751,48 +813,11 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                         public void onCompleted(Exception e, JsonObject result) {
                             // do stuff with the result or error
                             if(e == null) {
-                                if (MainActivity.isVisible)
-                                    MainActivity.mainActivity.ToastNotify2("Uploaded the file to server.");
-                                new AsyncTask<String, String, JSONObject>() {
-
-                                    @Override
-                                    protected JSONObject doInBackground(String... args) {
-                                        String msg = "";
-                                        try{
-                                            msg = fileInfo.getString("file_name");
-                                        } catch (JSONException e55) {
-                                            e55.printStackTrace();
-                                        }
-                                        UserFunctions user = new UserFunctions(getActivity().getApplicationContext());
-                                        return user.sendGroupChat(group_id,db.getUserDetails().get("phone"),fileType,msg,db.getUserDetails().get("display_name"),uniqueid, authtoken);
-                                    }
-
-                                    @Override
-                                    protected void onPostExecute(JSONObject row) {
-                                        if(!row.optString("group_unique_id").equals("")){
-                                            try {
-                                                JSONArray group_members = db.getGroupMembers(group_id);
-                                                for (int i = 0; i < group_members.length(); i++)
-                                                {
-                                                    JSONObject member = group_members.getJSONObject(i);
-                                                    db.updateGroupChatStatus(uniqueid, "sent", member.getString("phone"));
-                                                }
-                                            } catch (JSONException e) {
-                                                e.printStackTrace();
-                                            }
-                                            if(MainActivity.isVisible) {
-                                                MainActivity.mainActivity.updateGroupUIChat();
-                                            }
-                                        }else if(row.optString("Error").equals("No Internet")){
-                                            // todo good for debug but remove in release
-                                            //sendNotification("No Internet Connection", "Message will be sent as soon as the device gets connected to internet");
-                                        }else{
-                                            // todo good for debug but remove in release
-                                            //sendNotification("Failed to Send Message", "Oops message was not sent due to some reason");
-                                        }
-                                    }
-
-                                }.execute();
+                                try {
+                                    if (MainActivity.isVisible)
+                                        MainActivity.mainActivity.ToastNotify2("Uploaded the file to server.");
+                                    sendMessageUsingAPI(fileInfo.getString("file_name"), uniqueid, "file", fileType);
+                                }catch (JSONException ee){ ee.printStackTrace(); }
                             }
                             else {
                                 if(MainActivity.isVisible)
@@ -801,298 +826,12 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                             }
                         }
                     });
-        }  catch (JSONException e) {
+        } catch (ParseException e){
             e.printStackTrace();
-        }
-    }
-
-    public void sendContact(String display_name, String phone, String contact_image){
-        String message = display_name + ":" + phone;
-        DatabaseHandler db = new DatabaseHandler(getContext());
-        GroupUtility groupUtility = new GroupUtility(getContext());
-        String msg_unique_id = groupUtility.sendGroupMessage(group_id, message, authtoken, "contact");
-        messages.add(message);
-        names.add("");
-
-        try {
-            convList.add(new Conversation(message, db.getUserDetails().get("phone"), true,"", msg_unique_id, db.getGroupMessageStatus(msg_unique_id, db.getUserDetails().get("phone")).getJSONObject(0).getString("status"), "contact").setContact_image(contact_image));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        groupAdapter.notifyDataSetChanged();
-    }
-
-
-    private void sendLocation(String latitude, String longitude)
-    {
-        try {
-            String messageString = latitude + ":" + longitude;
-            DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-            GroupUtility groupUtility = new GroupUtility(getContext());
-            String msg_unique_id = groupUtility.sendGroupMessage(group_id, messageString, authtoken, "location");
-            messages.add(messageString);
-            names.add("");
-
-            convList.add(new Conversation(messageString, db.getUserDetails().get("phone"), true,"", msg_unique_id, db.getGroupMessageStatus(msg_unique_id, db.getUserDetails().get("phone")).getJSONObject(0).getString("status"), "location"));
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        groupAdapter.notifyDataSetChanged();
-    }
-
-    public void populateMessages(){
-        DatabaseHandler db = new DatabaseHandler(getContext());
-        messages.clear();
-        names.clear();
-        convList.clear();
-        try {
-            JSONArray msgs = db.getGroupMessages(group_id);
-            for (int i = 0; i < msgs.length(); i++) {
-                final JSONObject row = msgs.getJSONObject(i);
-                messages.add(msgs.getJSONObject(i).get("msg").toString());
-                names.add(msgs.getJSONObject(i).get("from_fullname").toString());
-                String message = msgs.getJSONObject(i).get("msg").toString();
-                String from = msgs.getJSONObject(i).get("from").toString();
-                String date = msgs.getJSONObject(i).get("date").toString();
-                String unique_id = msgs.getJSONObject(i).get("unique_id").toString();
-                String type = msgs.getJSONObject(i).get("type").toString();
-                boolean isSent = false;
-                if(db.getUserDetails().get("phone").equals(from)){
-                    isSent = true;
-                    from = "You";
-                }
-                String display_name = db.getDisplayName(from);
-                if(!display_name.equals("")){
-                    from = display_name;
-                }
-                final String tmpFrom = from;
-                JSONArray msgStatus = db.getGroupMessageStatusSeen(unique_id);
-                String status = "";
-//                if(msgStatus.length() != 0){
-//                    status = msgStatus.getJSONObject(0).getString("status");
-//                }
-
-                if(msgStatus.length() >= db.getGroupMembers(group_id).length() - 1){
-                    status = "seen";
-                }
-                else if(db.getGroupMessageStatusDelivered(unique_id).length() >= db.getGroupMembers(group_id).length() - 1){
-                    status = "delivered";
-                }
-                else if(db.getGroupMessageStatusPending(unique_id).length() >= db.getGroupMembers(group_id).length() - 1){
-                    status = "pending";
-//                    String temp = db.getGroupMessageStatus(unique_id, db.getUserDetails().get("phone")).getJSONObject(0).getString("status");
-//                    Toast.makeText(getContext(), temp, Toast.LENGTH_LONG).show();
-                }
-                else {
-                    status = "sent";
-                }
-
-                if(!from.equals("You")){
-                    JSONArray arrayForMyStatus = db.getGroupMessageStatusDelivered(unique_id);
-                    for( int k=0; k<arrayForMyStatus.length(); k++ ) {
-                        JSONObject jsonForMyStatus = arrayForMyStatus.getJSONObject(k);
-                        if(jsonForMyStatus.getString("status").equals("delivered")){
-                            final String uniqueIdTemp = unique_id;
-                            new AsyncTask<String, String, JSONObject>() {
-                                @Override
-                                protected JSONObject doInBackground(String... args) {
-                                    UserFunctions userFunctions = new UserFunctions(getActivity().getApplicationContext());
-                                    updateChatStatus(uniqueIdTemp, "seen");
-                                    addChatHistorySync(uniqueIdTemp, tmpFrom);
-                                    return userFunctions.updateGroupChatStatusToSeen(uniqueIdTemp, authtoken);
-                                }
-                                @Override
-                                protected void onPostExecute(JSONObject row) {
-                                    if(row != null){
-                                        if(row.has("status")) {
-                                            resetSpecificChatHistorySync(uniqueIdTemp);
-                                            updateChatStatus(uniqueIdTemp, "seen");
-                                        }
-                                    }
-                                }
-                            }.execute();
-                        }
-                    }
-                }
-
-                Conversation conv = new Conversation(message, from, isSent, date, unique_id, status, type);
-
-                if(conv.getType().equals("image") || conv.getType().equals("document") ||
-                        conv.getType().equals("audio") || conv.getType().equals("video")) {
-
-                    if(from.equals("You")){
-                        JSONObject fileInfo = db.getFilesInfo(unique_id);
-                        String path = "";
-                        try {
-                            if (fileInfo.has("path")) path = fileInfo.getString("path");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        conv.setFile_uri(path);
-                    } else {
-                        JSONObject fileInfo = db.getFilesInfo(unique_id);
-                        String path = "";
-                        try {
-                            if (fileInfo.has("path")) path = fileInfo.getString("path");
-                            if (fileInfo.getString("file_size").equals("notDownloaded")) {
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                                    // todo check if we need this really or not. This might be irritating to user
-                                    Utility.sendNotification(getActivity().getApplicationContext(), "Storage Permissions", "This conversation contains file attachments to be downloaded. Please give storage permission from settings and come back.");
-                                } else {
-                                    downloadPendingFile(row);
-                                }
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        conv.setFile_uri(path);
-                    }
-
-                } else if(row.getString("type").equals("link")){
-                    JSONObject fileInfo = db.getLinksInfo(row.getString("uniqueid"));
-                    try {
-                        conv.setLinkInfo(fileInfo.getString("link"), fileInfo.getString("title"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-
-                    String[] links = Utility.extractLinks(message);
-
-                    if (links.length > 0) {
-                        Utility.getURLInfo(getActivity().getApplicationContext(), links[0], unique_id, true);
-                    }
-                }
-
-                convList.add(conv);
-
-            }
-
-            if(groupAdapter != null && lv != null){
-                groupAdapter.notifyDataSetChanged();
-//                lv.smoothScrollToPosition(lv.getCount()+1);
-            }
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
-
-    public void downloadPendingFile(final JSONObject row) {
-        try {
-            final int id = 101;
-
-            final NotificationManager mNotifyManager =
-                    (NotificationManager) getActivity().getApplicationContext()
-                            .getSystemService(Context.NOTIFICATION_SERVICE);
-            final android.support.v4.app.NotificationCompat.Builder mBuilder =
-                    new NotificationCompat.Builder(getActivity().getApplicationContext());
-            mBuilder.setContentTitle("Downloading attachment")
-                    .setContentText("Download in progress")
-                    .setSmallIcon(R.drawable.icon);
-
-            final UserFunctions userFunctions = new UserFunctions(getActivity().getApplicationContext());
-
-            Ion.with(getActivity().getApplicationContext())
-                    .load(userFunctions.getBaseURL() + "/api/filetransfersgroup/download")
-                    .progressHandler(new ProgressCallback() {
-                        @Override
-                        public void onProgress(long downloaded, long total) {
-                            mBuilder.setProgress((int) total, (int) downloaded,
-                                    false);
-                            if (downloaded < total) {
-                                mBuilder.setContentText("Download in progress: " +
-                                        ((downloaded / total) * 100) + "%");
-                            } else {
-                                mBuilder.setContentText("Downloaded file attachment");
-                            }
-                            mNotifyManager.notify(id, mBuilder.build());
-                        }
-                    })
-                    .setHeader("kibo-token", authtoken)
-                    .setBodyParameter("uniqueid", row.getString("unique_id"))
-                    .write(new File(getActivity().getApplicationContext().getFilesDir().getPath() + "" + row.getString("unique_id")))
-                    .setCallback(new FutureCallback<File>() {
-                        @Override
-                        public void onCompleted(Exception e, File file) {
-                            // download done...
-                            // do stuff with the File or error
-
-                            try {
-                                DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-                                File folder = getExternalStoragePublicDirForImages(getActivity().getString(R.string.app_name));
-                                if (row.getString("type").equals("document")) {
-                                    folder = getExternalStoragePublicDirForDocuments(getActivity().getString(R.string.app_name));
-                                }
-                                if (row.getString("type").equals("audio")) {
-                                    folder = getExternalStoragePublicDirForDownloads(getActivity().getString(R.string.app_name));
-                                }
-                                if (row.getString("type").equals("video")) {
-                                    folder = getExternalStoragePublicDirForDownloads(getActivity().getString(R.string.app_name));
-                                }
-                                FileOutputStream outputStream;
-                                outputStream = new FileOutputStream(folder.getPath() + "/" + row.getString("msg"));
-                                outputStream.write(com.cloudkibo.webrtc.filesharing.Utility.convertFileToByteArray(file));
-                                outputStream.close();
-
-                                JSONObject fileMetaData = getFileMetaData(folder.getPath() + "/" + row.getString("msg"));
-                                db.createFilesInfoGroup(group_id, row.getString("unique_id"),
-                                        fileMetaData.getString("name"),
-                                        fileMetaData.getString("size"),
-                                        row.getString("type"),
-                                        fileMetaData.getString("filetype"), folder.getPath() + "/" + row.getString("msg"));
-
-                                updateFileDownloaded(row.getString("unique_id"));
-
-                                final AccessToken accessToken = AccountKit.getCurrentAccessToken();
-
-                                new AsyncTask<String, String, JSONObject>() {
-                                    @Override
-                                    protected JSONObject doInBackground(String... args) {
-                                        try {
-                                            UserFunctions userFunctions1 = new UserFunctions(getActivity().getApplicationContext());
-                                            return userFunctions1.confirmFileDownloadGroup(row.getString("unique_id"), accessToken.getToken());
-                                        } catch (JSONException e5) {
-                                            e5.printStackTrace();
-                                        }
-                                        return null;
-                                    }
-
-                                    @Override
-                                    protected void onPostExecute(JSONObject row) {
-                                        if (row != null) {
-                                            // todo see if server couldn't get the confirmation
-                                        }
-                                    }
-                                }.execute();
-
-                                file.delete();
-
-                                Log.d("chat attachment", "Downloaded file attachment");
-
-                            } catch (IOException e2) {
-                                e2.printStackTrace();
-                            } catch (JSONException e3) {
-                                e3.printStackTrace();
-                            }
-                        }
-                    });
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    /** end attachment work */
-
-
-
-
-
-
-
 
     private class ChatAdapter extends BaseAdapter
     {
@@ -1487,32 +1226,32 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
             return v;
         }
 
-        // Filter Class
-//        public void filter(String charText) {
-//            charText = charText.toLowerCase(Locale.getDefault());
-////            if(backupList.size() < totalCount) {
-////                backupList.addAll(convList);
-////            }
-//            backupList.clear();
-//            loadChatFromDatabase();
-//            backupList.addAll(convList);
-//            convList.clear();
-//            if (charText.length() == 0) {
-//                convList.addAll(backupList);
-//            } else {
-//                for (Conversation conv : backupList) {
-//                    if (conv.getMsg().toLowerCase(Locale.getDefault())
-//                            .contains(charText)) {
-//                        convList.add(conv);
-//                    }
-//                }
+       //  Filter Class
+        public void filter(String charText) {
+            charText = charText.toLowerCase(Locale.getDefault());
+//            if(backupList.size() < totalCount) {
+//                backupList.addAll(convList);
 //            }
-////            Set<Conversation> duplicate = new HashSet<Conversation>(convList);
-////            convList.clear();
-////            convList.addAll(new ArrayList<Conversation>(duplicate));
-//
-//            notifyDataSetChanged();
-//        }
+            backupList.clear();
+            loadChatFromDatabase();
+            backupList.addAll(convList);
+            convList.clear();
+            if (charText.length() == 0) {
+                convList.addAll(backupList);
+            } else {
+                for (Conversation conv : backupList) {
+                    if (conv.getMsg().toLowerCase(Locale.getDefault())
+                            .contains(charText)) {
+                        convList.add(conv);
+                    }
+                }
+            }
+//            Set<Conversation> duplicate = new HashSet<Conversation>(convList);
+//            convList.clear();
+//            convList.addAll(new ArrayList<Conversation>(duplicate));
+
+            notifyDataSetChanged();
+        }
 
     }
 

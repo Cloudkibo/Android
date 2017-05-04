@@ -79,6 +79,7 @@ public class UserFunctions {
     private String confirmFileDownloadURL;
     private String confirmFileDownloadGroupURL;
     private String blockContactURL;
+    private String sendBroadCastURL;
     private String unBlockContactURL;
     private String syncURL;
     private String syncDownWardURL;
@@ -149,6 +150,7 @@ public class UserFunctions {
         unBlockContactURL =       baseURL + "/api/contactslist/unblockContact";
         syncURL =                 baseURL + "/api/sync/upwardSync";
         syncDownWardURL =         baseURL + "/api/sync/downwardSync";
+        sendBroadCastURL =        baseURL + "/api/userchat/sendbroadcast";
 
         connection = new ConnectionManager();
     }
@@ -330,6 +332,10 @@ public class UserFunctions {
         }
         JSONObject response = connection.sendObjectToServer(sendChatURL, authtoken, params);
         return response;
+    }
+
+    public JSONObject sendBroadCastMessageToServer(JSONObject data, String authtoken){
+        return connection.sendJSONObjectToServer(sendBroadCastURL, authtoken, data);
     }
 
     public JSONObject blockContact(JSONObject data, String authtoken){

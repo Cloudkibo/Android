@@ -147,7 +147,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 					getFragmentManager().beginTransaction()
 							.replace(R.id.content_frame, groupChatFragment, "groupChatFragmentTag")
 							.addToBackStack(chatList.get(pos).getName()).commit();
-				}else{
+				} else if (!item.isGroup()) {
 					GroupChat groupChatFragment = new GroupChat();
 					bundle.putString("contactusername", chatList.get(pos).getName());
 					bundle.putString("contactphone", chatList.get(pos).getTitle());
@@ -155,6 +155,15 @@ public class ChatList extends CustomFragment implements IFragmentName
 					groupChatFragment.setArguments(bundle);
 					getFragmentManager().beginTransaction()
 							.replace(R.id.content_frame, groupChatFragment, "groupChatFragmentTag")
+							.addToBackStack(chatList.get(pos).getName()).commit();
+				} else if(item.isBroadCast()) {
+					BroadCastChat broadCastChatFragment = new BroadCastChat();
+					bundle.putString("list_name", chatList.get(pos).getName());
+					bundle.putString("bList_id", chatList.get(pos).getTitle());
+					bundle.putString("authtoken", authtoken);
+					broadCastChatFragment.setArguments(bundle);
+					getFragmentManager().beginTransaction()
+							.replace(R.id.content_frame, broadCastChatFragment, "groupChatFragmentTag")
 							.addToBackStack(chatList.get(pos).getName()).commit();
 				}
 			}
@@ -343,7 +352,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 		final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuinfo;
 		int position = info.position;
 		ChatItem item = (ChatItem) chatList.get(position);
-		if (!item.isGroup()) {
+		if (!item.isGroup() && !item.isBroadCast()) {
 			menu.add(0, v.getId(), 0, getString(R.string.block));
 		}
 
@@ -364,12 +373,15 @@ public class ChatList extends CustomFragment implements IFragmentName
 					chatList.remove(info.position);
 					if(MainActivity.isVisible)
 						MainActivity.mainActivity.sendArchiveInfoToDesktop(cItem.getTitle(), "Yes");
-				} else {
+				} else if(!cItem.isGroup()) {
 					db.setArchive(cItem.getTitle());
 					Toast.makeText(getContext(), cItem.getTitle() , Toast.LENGTH_SHORT).show();
 					chatList.remove(info.position);
 					if(MainActivity.isVisible)
 						MainActivity.mainActivity.sendArchiveInfoToDesktop(cItem.getTitle(), "Yes");
+				} else if(cItem.isBroadCast()) {
+					// todo logic for broadcast
+
 				}
 
 				if (adp != null) {
@@ -426,7 +438,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 //					JSONArray chats = db.getChatList();
 //			JSONArray groups = db.getAllGroups();
 					groups = db.getGroupChatList();//db.getMyGroups(db.getUserDetails().get("phone"));
-					lists = db.getBroadCastLists();
+					lists = db.getBroadCastChatList();
 
 
 					//groups = UserFunctions.sortJSONArray(groups, "group_name");
@@ -443,11 +455,12 @@ public class ChatList extends CustomFragment implements IFragmentName
 								row.getString("msg"),
 								Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
 								R.drawable.user1, false,
-								false, Integer.parseInt(row.getString("pendingMsgs")), "").setProfileImage(image));
+								false, Integer.parseInt(row.getString("pendingMsgs")), "", false).setProfileImage(image));
 
 						//}
 						contact_phone.add(row.getString("contact_phone"));
 					}
+
 					totalCount = totalCount + groups.length();
 					for (int i=0; i < groups.length(); i++) {
 						JSONObject row = groups.getJSONObject(i);
@@ -459,10 +472,9 @@ public class ChatList extends CustomFragment implements IFragmentName
 								row.getString("msg"),
 								Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date_creation")),
 								R.drawable.user1, false,
-								true, 0, row.getString("last_sender")).setProfileImage(null));
-
-
+								true, 0, row.getString("last_sender"), false).setProfileImage(null));
 					}
+
 					totalCount = totalCount + lists.length();
 					for (int i=0; i < lists.length(); i++) {
 						JSONObject row = lists.getJSONObject(i);
@@ -470,13 +482,11 @@ public class ChatList extends CustomFragment implements IFragmentName
 						//if (row.getInt("isArchived") == 0) {
 						chatList1.add(new ChatItem(
 								row.getString("name"),
-								row.getString("uniqueid"),
-								"List Demo Message",
-								Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date_creation")),
+								row.getString("unique_id"),
+								row.getString("msg"),
+								Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
 								R.drawable.user1, false,
-								true, 0, "List last sender").setProfileImage(null));
-
-
+								false, 0, "", true).setProfileImage(null));
 					}
 
 				} catch(JSONException e){

@@ -786,8 +786,6 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			loadConversationList();
 		}
 
-
-
 		return true;
 	}
 
@@ -1040,6 +1038,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				}
 
 				return userFunction.sendChatMessageToServer(message, authtoken);
+
 			}
 
 			@Override

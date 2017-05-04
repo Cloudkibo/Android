@@ -262,6 +262,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
                 return false;
             }
         });
+
         registerForContextMenu(lv);
 
         getActivity().getActionBar().setSubtitle(Html.fromHtml("<font color='#ffffff'>"+getMembersName(group_id)+"</font>"));
