@@ -499,6 +499,51 @@ public class SocketService extends Service {
                     sendChatListToDesktop();
                 }
 
+            }).on("offline", new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+                    try {
+                        JSONObject contact = new JSONObject(args[0].toString());
+                        Log.e("SocketServiceTag", contact.toString());
+                        mListener.receiveSocketJson("offline", contact);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+            }).on("online", new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+                    try {
+                        JSONObject contact = new JSONObject(args[0].toString());
+                        Log.e("SocketServiceTag", contact.toString());
+                        mListener.receiveSocketJson("online", contact);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+            }).on("theseareonline", new Emitter.Listener() {
+
+                @Override
+                public void call(Object... args) {
+                    try {
+                        JSONArray contacts = new JSONArray(args[0].toString());
+
+                        Log.e("SocketServiceTag", args[0].toString());
+                        mListener.receiveSocketArray("theseareonline", contacts);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
             }).on("platform_room_message", new Emitter.Listener() {
 
                 @Override

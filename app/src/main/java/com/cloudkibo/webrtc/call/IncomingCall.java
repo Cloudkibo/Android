@@ -19,7 +19,9 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -52,6 +54,9 @@ public class IncomingCall extends CustomActivity {
 
     Ringtone r;
 
+    //To get the lock on CPU (waking up device from sleep)
+    private PowerManager.WakeLock wl;
+
     @SuppressWarnings("unchecked")
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -69,10 +74,28 @@ public class IncomingCall extends CustomActivity {
         startService(i);
         bindService(i, socketConnection, Context.BIND_AUTO_CREATE);
 
+
+        //Acquiring the lock (waking up device from sleep)
+        PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+        wl = pm.newWakeLock(PowerManager.FULL_WAKE_LOCK, "My Tag");
+        wl.acquire();
+
         try {
             Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
             r = RingtoneManager.getRingtone(getApplicationContext(), notification);
             r.play();
+
+            //This will wake up device.
+            this.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN |
+                            WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                            WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                            WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN |
+                            WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD |
+                            WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |
+                            WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -127,6 +150,13 @@ public class IncomingCall extends CustomActivity {
         }
 
         super.onDestroy();
+    }
+
+    protected void onStop() {
+        super.onStop();
+
+        //This lock must be released once the activity has stoped working
+        wl.release();
     }
 
     private ServiceConnection socketConnection = new ServiceConnection() {
