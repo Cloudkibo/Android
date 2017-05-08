@@ -222,7 +222,6 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
             }
         });
 
-
         return v;
     }
 
@@ -332,7 +331,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                         public void onClick(View view) {
                             animator_reverse.start();
                             MainActivity act2 = (MainActivity)getActivity();
-                            act2.uploadChatAttachment("document", "not_group"); // TODO MUST DO ATTACHMENT WORK HERE
+                            act2.uploadChatAttachment("document", "broadcast");
                         }
                     });
                     sendAudio.setOnClickListener(new View.OnClickListener() {
@@ -340,7 +339,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                         public void onClick(View view) {
                             animator_reverse.start();
                             MainActivity act2 = (MainActivity)getActivity();
-                            act2.uploadChatAttachment("audio", "not_group");
+                            act2.uploadChatAttachment("audio", "broadcast");
                         }
                     });
                     sendVideo.setOnClickListener(new View.OnClickListener() {
@@ -348,7 +347,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                         public void onClick(View view) {
                             animator_reverse.start();
                             MainActivity act2 = (MainActivity)getActivity();
-                            act2.uploadChatAttachment("video", "not_group");
+                            act2.uploadChatAttachment("video", "broadcast");
                         }
                     });
                     sendContact.setOnClickListener(new View.OnClickListener() {
@@ -357,7 +356,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                             animator_reverse.start();
                             Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
                                     ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-                            getActivity().startActivityForResult(contactPickerIntent, 129);
+                            getActivity().startActivityForResult(contactPickerIntent, 8129);
                         }
                     });
                     sendLocation.setOnClickListener(new View.OnClickListener() {
@@ -367,7 +366,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                             PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
                             try {
-                                getActivity().startActivityForResult(builder.build(MainActivity.mainActivity), 141);
+                                getActivity().startActivityForResult(builder.build(MainActivity.mainActivity), 8141);
                             } catch (GooglePlayServicesRepairableException e) {
                                 e.printStackTrace();
                             } catch (GooglePlayServicesNotAvailableException e) {
@@ -413,7 +412,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                                 });
                                 anim.start();
                                 MainActivity act2 = (MainActivity)getActivity();
-                                act2.uploadChatAttachment("document", "not_group");
+                                act2.uploadChatAttachment("document", "broadcast");
                             }
                         });
                         sendAudio.setOnClickListener(new View.OnClickListener() {
@@ -430,7 +429,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                                 });
                                 anim.start();
                                 MainActivity act2 = (MainActivity)getActivity();
-                                act2.uploadChatAttachment("audio", "not_group");
+                                act2.uploadChatAttachment("audio", "broadcast");
                             }
                         });
                         sendVideo.setOnClickListener(new View.OnClickListener() {
@@ -447,7 +446,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                                 });
                                 anim.start();
                                 MainActivity act2 = (MainActivity)getActivity();
-                                act2.uploadChatAttachment("video", "not_group");
+                                act2.uploadChatAttachment("video", "broadcast");
                             }
                         });
                         sendContact.setOnClickListener(new View.OnClickListener() {
@@ -465,7 +464,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                                 anim.start();
                                 Intent contactPickerIntent = new Intent(Intent.ACTION_PICK,
                                         ContactsContract.CommonDataKinds.Phone.CONTENT_URI);
-                                getActivity().startActivityForResult(contactPickerIntent, 129);
+                                getActivity().startActivityForResult(contactPickerIntent, 8129);
                             }
                         });
                         sendLocation.setOnClickListener(new View.OnClickListener() {
@@ -484,7 +483,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                                 PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 
                                 try {
-                                    getActivity().startActivityForResult(builder.build(MainActivity.mainActivity), 141);
+                                    getActivity().startActivityForResult(builder.build(MainActivity.mainActivity), 8141);
                                 } catch (GooglePlayServicesRepairableException e) {
                                     e.printStackTrace();
                                 } catch (GooglePlayServicesNotAvailableException e) {
@@ -513,7 +512,6 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
 
     }
 
-    // TODO MUST DO ATTACHMENT WORK HERE
     private void sendImageSelected() {
         final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
 
@@ -531,7 +529,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                     }
                 } else if (options[item].equals("Choose from Gallery")) {
                     MainActivity act3 = (MainActivity)getActivity();
-                    act3.uploadChatAttachment("image", "not_group");
+                    act3.uploadChatAttachment("image", "broadcast");
                 } else if (options[item].equals(R.string.cancel)) {
                     dialog.dismiss();
                 }
@@ -565,7 +563,6 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
         return super.onOptionsItemSelected(item);
     }
 
-    // TODO MUST DO ATTACHMENT WORK HERE
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         // check whether the result is ok
@@ -573,7 +570,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
         if (resultCode == Activity.RESULT_OK) {
             // Check for the request code, we might be usign multiple startActivityForReslut
             switch (requestCode) {
-                case 129:
+                case 8129:
                     Cursor cursor = null;
                     try {
                         String phoneNo = null ;
@@ -593,7 +590,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                         e.printStackTrace();
                     }
                     break;
-                case 141:
+                case 8141:
                     Place place = PlacePicker.getPlace(data, MainActivity.mainActivity);
                     String placename = String.format("%s", place.getName());
                     String latitude = String.valueOf(place.getLatLng().latitude);
@@ -601,7 +598,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                     String address = String.format("%s", place.getAddress());
                     sendLocation(latitude, longitude);
                     break;
-                case 152:
+                case 8152:
                     String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
                     uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
                     uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
@@ -627,11 +624,9 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
         } else {
             Log.e("MainActivity", "Failed to pick contact");
         }
-
 //        super.onActivityResult(requestCode, resultCode, data);
     }
 
-    // TODO MUST DO ATTACHMENT WORK HERE
     public void uploadImageFromCamera(){
         String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
         uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
@@ -641,7 +636,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
         File f = new File(folder, uniqueid +".jpg");
         tempCameraCaptureHolderString = f.getPath();
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
-        getActivity().startActivityForResult(intent, 152);
+        getActivity().startActivityForResult(intent, 8152);
     }
 
     /* (non-Javadoc)
@@ -727,9 +722,9 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
             try {
                 JSONArray listMembers = db.getBroadCastListMembers(bList_id);
                 for(int i=0; i<listMembers.length(); i++) {
-                    db.addChat(listMembers.getJSONObject(i).getString("phone"), user.get("phone"),
+                    db.addBroadCastChat(listMembers.getJSONObject(i).getString("phone"), user.get("phone"),
                             user.get("display_name"), messageString, Utility.getCurrentTimeInISO(),
-                            "pending", uniqueid, "chat", "");
+                            "pending", uniqueid, "chat", "", bList_id);
                 }
             }catch(JSONException ee) {
                 ee.printStackTrace();
@@ -741,7 +736,11 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
             totalCount = convList.size();
             adp.notifyDataSetChanged();
 
-            sendMessageUsingAPI(messageString, uniqueid, "chat", "");
+            try {
+                sendMessageUsingAPI(messageString, uniqueid, "chat", "", db.getBroadCastListMembers(bList_id).toString());
+            }catch(JSONException ee){
+                ee.printStackTrace();
+            }
 
             String []links = Utility.extractLinks(messageString);
 
@@ -755,7 +754,6 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
         }
     }
 
-    // TODO MUST DO FILE ATTACHMENT IN THIS
     public void sendFileAttachment(final String uniqueid, final String fileType)
     {
         try {
@@ -763,9 +761,12 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
             DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
             final JSONObject fileInfo = db.getFilesInfo(uniqueid);
 
-            db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
-                    fileInfo.getString("file_name"), Utility.getCurrentTimeInISO(), "pending", uniqueid, "file",
-                    fileType);
+            JSONArray listMembers = db.getBroadCastListMembers(bList_id);
+            for(int i=0; i<listMembers.length(); i++) {
+                db.addBroadCastChat(listMembers.getJSONObject(i).getString("phone"), user.get("phone"), user.get("display_name"),
+                        fileInfo.getString("file_name"), Utility.getCurrentTimeInISO(), "pending", uniqueid, "file",
+                        fileType, bList_id);
+            }
 
             convList.add(new Conversation(fileInfo.getString("file_name"),
                     Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()),
@@ -785,7 +786,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
 
             UserFunctions userFunctions = new UserFunctions(getActivity().getApplicationContext());
             Ion.with(getActivity().getApplicationContext())
-                    .load(userFunctions.getBaseURL() + "/api/filetransfers/upload")
+                    .load(userFunctions.getBaseURL() + "/api/broadcastfile/upload")
                     .progressHandler(new ProgressCallback() {
                         @Override
                         public void onProgress(long downloaded, long total) {
@@ -802,7 +803,7 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                     .setHeader("kibo-token", authtoken)
                     .setMultipartParameter("filetype", fileType)
                     .setMultipartParameter("from", user.get("phone"))
-                    .setMultipartParameter("to", contactPhone)
+                    .setMultipartParameter("total_members", Integer.toString(listMembers.length()))
                     .setMultipartParameter("uniqueid", uniqueid)
                     .setMultipartParameter("filename", fileInfo.getString("file_name"))
                     .setMultipartParameter("filesize", fileInfo.getString("file_size"))
@@ -814,10 +815,17 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                             // do stuff with the result or error
                             if(e == null) {
                                 try {
-                                    if (MainActivity.isVisible)
+
+                                    if (MainActivity.isVisible) {
+                                        DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
                                         MainActivity.mainActivity.ToastNotify2("Uploaded the file to server.");
-                                    sendMessageUsingAPI(fileInfo.getString("file_name"), uniqueid, "file", fileType);
-                                }catch (JSONException ee){ ee.printStackTrace(); }
+                                        sendMessageUsingAPI(fileInfo.getString("file_name"), uniqueid,
+                                                "broadcast_file", fileType, db.getBroadCastListMembers(bList_id).toString());
+                                    }
+
+                                } catch (JSONException ee){
+                                    ee.printStackTrace();
+                                }
                             }
                             else {
                                 if(MainActivity.isVisible)
@@ -829,6 +837,206 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
         } catch (ParseException e){
             e.printStackTrace();
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendContact(String display_name, String phone, String contact_image)
+    {
+        try {
+
+            String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+            uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+            uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+
+            String messageString = display_name + ":" + phone;
+
+            DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+            JSONArray listMembers = db.getBroadCastListMembers(bList_id);
+            for(int i=0; i<listMembers.length(); i++) {
+                db.addBroadCastChat(listMembers.getJSONObject(i).getString("phone"), user.get("phone"), user.get("display_name"),
+                        messageString, Utility.getCurrentTimeInISO(), "pending", uniqueid, "contact",
+                        "", bList_id);
+            }
+
+            convList.add(new Conversation(messageString,
+                    Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()),
+                    true, true, "pending", uniqueid, "contact", "").setContact_image(contact_image));
+            adp.notifyDataSetChanged();
+
+            sendMessageUsingAPI(messageString, uniqueid, "contact", "", db.getBroadCastListMembers(bList_id).toString());
+
+            txt.setText(null);
+        } catch (ParseException e){
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendLocation(String latitude, String longitude)
+    {
+        try {
+
+            String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+            uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+            uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+
+            String messageString = latitude + ":" + longitude;
+
+            DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+            JSONArray listMembers = db.getBroadCastListMembers(bList_id);
+            for(int i=0; i<listMembers.length(); i++) {
+                db.addBroadCastChat(listMembers.getJSONObject(i).getString("phone"), user.get("phone"), user.get("display_name"),
+                        messageString, Utility.getCurrentTimeInISO(), "pending", uniqueid, "location",
+                        "", bList_id);
+            }
+
+            convList.add(new Conversation(messageString,
+                    Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()),
+                    true, true, "pending", uniqueid, "location", ""));
+
+            adp.notifyDataSetChanged();
+
+            sendMessageUsingAPI(messageString, uniqueid, "location", "", db.getBroadCastListMembers(bList_id).toString());
+
+            txt.setText(null);
+        } catch (ParseException e){
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendMessageUsingAPI(final String msg, final String uniqueid, final String type,
+                                    final String file_type, final String list_members){
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunction = new UserFunctions(getActivity().getApplicationContext());
+                JSONObject message = new JSONObject();
+
+                try {
+                    JSONArray listMembers = new JSONArray(list_members);
+                    JSONArray members = new JSONArray();
+                    for(int i=0; i<listMembers.length(); i++) {
+                        members.put(listMembers.getJSONObject(i).getString("phone"));
+                    }
+                    message.put("from", user.get("phone"));
+                    message.put("to", members);
+                    message.put("fromFullName", user.get("display_name"));
+                    message.put("msg", msg);
+                    message.put("date", Utility.getCurrentTimeInISO());
+                    message.put("uniqueid", uniqueid);
+                    message.put("type", type);
+                    message.put("file_type", file_type);
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+
+                return userFunction.sendBroadCastMessageToServer(message, authtoken);
+
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                if (row != null) {
+                    if(row.has("status")){
+                        //updateChatStatus(row.getString("status"), row.getString("uniqueid"));
+                        //updateStatusSentMessage(row.getString("status"), row.getString("uniqueid"));
+                    }
+                }
+            }
+
+        }.execute();
+    }
+
+    public void updateStatusSentMessage(String status, String uniqueid){
+        for(int i=convList.size()-1; i>-1; i--){
+            if(convList.get(i).getUniqueid().equals(uniqueid)){
+                convList.get(i).setStatus(status);
+                break;
+            }
+        }
+        adp.notifyDataSetChanged();
+    }
+
+    public void updateMessageForLink(String uniqueid, String link, String link_title) {
+        for(int i=convList.size()-1; i>-1; i--){
+            if(convList.get(i).getUniqueid().equals(uniqueid)){
+                convList.get(i).setType("link");
+                convList.get(i).setLinkInfo(link, link_title);
+                break;
+            }
+        }
+        adp.notifyDataSetChanged();
+    }
+
+
+    public void loadConversationList()
+    {
+        convList = new ArrayList<Conversation>();
+
+        loadChatFromDatabase();
+
+    }
+
+    public void loadChatFromDatabase(){
+        DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+
+        try {
+
+            JSONArray jsonA = db.getBroadCastChat(bList_id);
+
+            ArrayList<Conversation> chatList1 = new ArrayList<Conversation>();
+
+            for (int i=0; i < jsonA.length(); i++) {
+                JSONObject row = jsonA.getJSONObject(i);
+
+                Conversation conversation = null;
+                conversation = new Conversation(
+                        row.getString("msg"),
+                        Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
+                        true, true, row.getString("status"), row.getString("uniqueid"),
+                        row.has("type") ? row.getString("type") : "",
+                        row.has("file_type") ? row.getString("file_type") : "");
+                if (row.has("type")) {
+                    if(row.getString("type").equals("file")){
+                        JSONObject fileInfo = db.getFilesInfo(row.getString("uniqueid"));
+                        String path = "";
+                        try {
+                            if (fileInfo.has("path")) path = fileInfo.getString("path");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        conversation.setFile_uri(path);
+                    }
+                    if(row.getString("type").equals("link")){
+                        JSONObject fileInfo = db.getLinksInfo(row.getString("uniqueid"));
+                        try {
+                            conversation.setLinkInfo(fileInfo.getString("link"), fileInfo.getString("title"));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+                chatList1.add(conversation);
+
+            }
+
+            convList.clear();
+
+            convList.addAll(chatList1);
+            totalCount = convList.size();
+
+            if(adp != null)
+                adp.notifyDataSetChanged();
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }
@@ -1187,6 +1395,15 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
                 msgView.setText(c.getMsg());
 
                 return  v;
+            }
+
+            if(c.getType().equals("log")){
+                v = LayoutInflater.from(getActivity()).inflate(
+                        R.layout.chat_item_log, null);
+                TextView lbl = (TextView) v.findViewById(R.id.log);
+                lbl.setText(c.getMsg());
+
+                return v;
             }
 
             if (c.isSent()) {

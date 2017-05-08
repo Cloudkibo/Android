@@ -11,7 +11,6 @@ import java.util.Map;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.app.NotificationManager;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -44,7 +43,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager.OnBackStackChangedListener;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -79,6 +77,7 @@ import com.cloudkibo.socket.SocketService;
 import com.cloudkibo.socket.SocketService.SocketBinder;
 import com.cloudkibo.ui.AboutChat;
 import com.cloudkibo.ui.AddMembers;
+import com.cloudkibo.ui.BroadCastChat;
 import com.cloudkibo.ui.CallHistory;
 import com.cloudkibo.ui.ChatList;
 import com.cloudkibo.ui.ContactList;
@@ -709,10 +708,10 @@ public class MainActivity extends CustomActivity
     }
 
     String attachmentType = "";
-    String attachmentInGroup = "";
-    public void uploadChatAttachment(String type, String is_group){
+    String attachmentPlace = "";
+    public void uploadChatAttachment(String type, String place){
         attachmentType = type;
-        attachmentInGroup = is_group;
+        attachmentPlace = place;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 101);
             //After this point you wait for callback in onRequestPermissionsResult(int, String[], int[]) overriden method
@@ -808,7 +807,7 @@ public class MainActivity extends CustomActivity
 
                                     DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 
-                                    if(attachmentInGroup.equals("group")) {
+                                    if(attachmentPlace.equals("group")) {
 
                                         IFragmentName myFragment1 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
                                         if (myFragment1 == null) return;
@@ -829,6 +828,23 @@ public class MainActivity extends CustomActivity
                                             myGroupChatListFragment.sendFileAttachment(uniqueid, fileType);
                                         }
 
+                                    } else if(attachmentPlace.equals("broadcast")) {
+
+                                        db.createFilesInfo(uniqueid,
+                                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
+                                                        .getString("name"),
+                                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
+                                                        .getString("size"),
+                                                fileType,
+                                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(selectedFilePath)
+                                                        .getString("filetype"), selectedFilePath);
+
+                                        IFragmentName myFragment1 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                                        if (myFragment1 == null) return;
+                                        if (myFragment1.getFragmentName().equals("Broadcast Chat")) {
+                                            final BroadCastChat myGroupChatListFragment = (BroadCastChat) myFragment1;
+                                            myGroupChatListFragment.sendFileAttachment(uniqueid, fileType);
+                                        }
                                     } else {
 
                                         db.createFilesInfo(uniqueid,
@@ -968,6 +984,30 @@ public class MainActivity extends CustomActivity
                 if(myFragment3.getFragmentName().equals("GroupChat")){
                     final GroupChat myGroupChatListFragment = (GroupChat) myFragment3;
                     myGroupChatListFragment.onActivityResult(requestCode,  resultCode, data);
+                }
+                break;
+            case 8129:
+                IFragmentName myFragment11 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if(myFragment11 == null) return;
+                if(myFragment11.getFragmentName().equals("Broadcast Chat")){
+                    final BroadCastChat myBroadCastChatListFragment = (BroadCastChat) myFragment11;
+                    myBroadCastChatListFragment.onActivityResult(requestCode,  resultCode, data);
+                }
+                break;
+            case 8141:
+                IFragmentName myFragment21 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if(myFragment21 == null) return;
+                if(myFragment21.getFragmentName().equals("Broadcast Chat")){
+                    final BroadCastChat myBroadCastChatListFragment = (BroadCastChat) myFragment21;
+                    myBroadCastChatListFragment.onActivityResult(requestCode,  resultCode, data);
+                }
+                break;
+            case 8152:
+                IFragmentName myFragment31 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if(myFragment31 == null) return;
+                if(myFragment31.getFragmentName().equals("Broadcast Chat")){
+                    final BroadCastChat myBroadCastChatListFragment = (BroadCastChat) myFragment31;
+                    myBroadCastChatListFragment.onActivityResult(requestCode,  resultCode, data);
                 }
                 break;
 

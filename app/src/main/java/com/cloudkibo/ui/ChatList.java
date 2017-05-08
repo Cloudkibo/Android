@@ -147,7 +147,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 					getFragmentManager().beginTransaction()
 							.replace(R.id.content_frame, groupChatFragment, "groupChatFragmentTag")
 							.addToBackStack(chatList.get(pos).getName()).commit();
-				} else if (!item.isGroup()) {
+				} else if (!item.isGroup() && !item.isBroadCast()) {
 					GroupChat groupChatFragment = new GroupChat();
 					bundle.putString("contactusername", chatList.get(pos).getName());
 					bundle.putString("contactphone", chatList.get(pos).getTitle());

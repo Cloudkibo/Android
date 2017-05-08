@@ -2470,6 +2470,43 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return chats;
     }
 
+    public JSONArray getBroadCastChat(String uniqueid) throws JSONException {
+        JSONArray chats = new JSONArray();
+        String selectQuery = "SELECT toperson, fromperson, fromFullName, msg, date, status, type, file_type," +
+                " uniqueid, broadcast_id FROM " + UserChat.TABLE_USERCHAT + " WHERE "+
+                " broadcast_id='"+ uniqueid +"' group by uniqueid order by date";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put(UserChat.USERCHAT_TO, cursor.getString(0));
+                contact.put(UserChat.USERCHAT_FROM, cursor.getString(1));
+                contact.put(UserChat.USERCHAT_FROM_FULLNAME, cursor.getString(2));
+                contact.put(UserChat.USERCHAT_MSG, cursor.getString(3));
+                contact.put(UserChat.USERCHAT_DATE, cursor.getString(4));
+                contact.put("status", cursor.getString(5));
+                contact.put("type", cursor.getString(6));
+                contact.put("file_type", cursor.getString(7));
+                contact.put("uniqueid", cursor.getString(8));
+                contact.put("broadcast_id", cursor.getString(9));
+
+                chats.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return chats;
+    }
+
     // note don't use this, it seems incorrect
     public JSONArray getChat() throws JSONException {
         JSONArray chats = new JSONArray();

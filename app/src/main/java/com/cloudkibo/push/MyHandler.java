@@ -199,7 +199,8 @@ public class MyHandler extends NotificationsHandler {
                     }
                     return ;
                 } else if(payload.getString("type").equals("chat") || payload.getString("type").equals("contact")
-                        || payload.getString("type").equals("location") || payload.getString("type").equals("file")) {
+                        || payload.getString("type").equals("location") || payload.getString("type").equals("file")
+                        || payload.getString("type").equals("broadcast_file")) {
 
                     // don't accept anything from contact who is blocked
                     if(payload.has("senderId")){
@@ -325,7 +326,7 @@ public class MyHandler extends NotificationsHandler {
                                 row.getString("msg"), row.getString("date_server_received"),
                                 "delivered",
                                 row.has("uniqueid") ? row.getString("uniqueid") : "",
-                                row.has("type") ? row.getString("type") : "",
+                                (row.getString("type").equals("file") || row.getString("type").equals("broadcast_file")) ? "file" : row.getString("type"),
                                 row.has("file_type") ? row.getString("file_type") : "");
 
                         Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" got the message using API and saved to Database: "+ row.toString());
@@ -347,7 +348,7 @@ public class MyHandler extends NotificationsHandler {
                             }
                         }
 
-                        if (row.getString("type").equals("file")) {
+                        if (row.getString("type").equals("file") || row.getString("type").equals("broadcast_file")) {
                             final JSONObject rowTemp = row;
                             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ctx.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                                 Utility.sendNotification(ctx, "KiboChat", "File attachment was not downloaded in background due to permission. Please go to settings to allow this app to store files on storage.");
@@ -367,9 +368,14 @@ public class MyHandler extends NotificationsHandler {
                                         .setContentText("Download in progress")
                                         .setSmallIcon(R.drawable.icon);
 
+                                String urlToDownload = "";
+                                if (row.getString("type").equals("file"))
+                                    urlToDownload = "/api/filetransfers/download";
+                                else
+                                    urlToDownload = "/api/broadcastfile/download";
                                 final UserFunctions userFunctions = new UserFunctions(ctx.getApplicationContext());
                                 Ion.with(ctx.getApplicationContext())
-                                        .load(userFunctions.getBaseURL() + "/api/filetransfers/download")
+                                        .load(userFunctions.getBaseURL() + urlToDownload)
                                         .progressHandler(new ProgressCallback() {
                                             @Override
                                             public void onProgress(long downloaded, long total) {
@@ -425,8 +431,10 @@ public class MyHandler extends NotificationsHandler {
                                                         @Override
                                                         protected JSONObject doInBackground(String... args) {
                                                             try {
-                                                                UserFunctions userFunctions1 = new UserFunctions(ctx.getApplicationContext());
-                                                                return userFunctions.confirmFileDownload(rowTemp.getString("uniqueid"), accessToken.getToken());
+                                                                if (rowTemp.getString("type").equals("file"))
+                                                                    return userFunctions.confirmFileDownload(rowTemp.getString("uniqueid"), accessToken.getToken());
+                                                                else
+                                                                    return userFunctions.confirmFileDownloadBroadCast(rowTemp.getString("uniqueid"), accessToken.getToken());
                                                             } catch (JSONException e5){
                                                                 e5.printStackTrace();
                                                             }

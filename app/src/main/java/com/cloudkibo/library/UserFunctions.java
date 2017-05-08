@@ -77,6 +77,7 @@ public class UserFunctions {
     private String updateMemberRole;
     private String lastSeenStatus;
     private String confirmFileDownloadURL;
+    private String confirmFileDownloadBroadCastURL;
     private String confirmFileDownloadGroupURL;
     private String blockContactURL;
     private String sendBroadCastURL;
@@ -145,6 +146,7 @@ public class UserFunctions {
         updateMemberRole =        baseURL + "/api/groupmessaginguser/updateRole";
         lastSeenStatus =          baseURL + "/api/users/getUserInfo";
         confirmFileDownloadURL =  baseURL + "/api/filetransfers/confirmdownload";
+        confirmFileDownloadBroadCastURL =  baseURL + "/api/broadcastfile/confirmdownload";
         confirmFileDownloadGroupURL =  baseURL + "/api/filetransfersgroup/confirmdownload";
         blockContactURL =         baseURL + "/api/contactslist/blockContact";
         unBlockContactURL =       baseURL + "/api/contactslist/unblockContact";
@@ -412,6 +414,14 @@ public class UserFunctions {
 
         params.add(new BasicNameValuePair("uniqueid", chat_unique_id));
         JSONObject response = connection.sendObjectToServer(confirmFileDownloadURL, authtoken, params);
+        return response;
+    }
+
+    public JSONObject confirmFileDownloadBroadCast(String chat_unique_id,  String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("uniqueid", chat_unique_id));
+        JSONObject response = connection.sendObjectToServer(confirmFileDownloadBroadCastURL, authtoken, params);
         return response;
     }
 
