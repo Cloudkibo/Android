@@ -40,6 +40,8 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
     private ChatAdapter adp;
     private String authToken;
 
+    JSONArray lists;
+
 
 
 
@@ -79,7 +81,7 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
                             .replace(R.id.content_frame, groupChatFragment, "groupChatFragmentTag")
                             .addToBackStack(archivedChats.get(pos).getName()).commit();
                 }
-                else{
+                else if (!item.isGroup() && !item.isBroadCast()) {
                     GroupChat groupChatFragment = new GroupChat();
                     bundle.putString("contactusername", archivedChats.get(pos).getName());
                     bundle.putString("contactphone", archivedChats.get(pos).getTitle());
@@ -90,6 +92,15 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
                             .addToBackStack(archivedChats.get(pos).getName()).commit();
 
 
+                } else if(item.isBroadCast()) {
+                    BroadCastChat broadCastChatFragment = new BroadCastChat();
+                    bundle.putString("list_name", archivedChats.get(pos).getName());
+                    bundle.putString("bList_id", archivedChats.get(pos).getTitle());
+                    bundle.putString("authtoken", authToken);
+                    broadCastChatFragment.setArguments(bundle);
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, broadCastChatFragment, "groupChatFragmentTag")
+                            .addToBackStack(archivedChats.get(pos).getName()).commit();
                 }
 
             }
@@ -163,11 +174,20 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
                         MainActivity.mainActivity.sendArchiveInfoToDesktop(cItem.getTitle(), "No");
 
                 }else{
-                    db.unArchive(cItem.getTitle());
-                    Toast.makeText(getContext(), cItem.getTitle() , Toast.LENGTH_SHORT).show();
-                    archivedChats.remove(info.position);
-                    if(MainActivity.isVisible)
-                        MainActivity.mainActivity.sendArchiveInfoToDesktop(cItem.getTitle(), "No");
+                    if(cItem.isBroadCast()){
+                        db.unArchiveBroadcast(cItem.getTitle());
+                        Toast.makeText(getContext(),cItem.getTitle(),Toast.LENGTH_SHORT).show();
+                        archivedChats.remove(info.position);
+                        if(MainActivity.isVisible)
+                            MainActivity.mainActivity.sendArchiveInfoToDesktop(cItem.getTitle(), "No");
+
+                    } else {
+                        db.unArchive(cItem.getTitle());
+                        Toast.makeText(getContext(), cItem.getTitle(), Toast.LENGTH_SHORT).show();
+                        archivedChats.remove(info.position);
+                        if (MainActivity.isVisible)
+                            MainActivity.mainActivity.sendArchiveInfoToDesktop(cItem.getTitle(), "No");
+                    }
                 }
 
                 if (adp != null) {
@@ -195,6 +215,7 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
             JSONArray chats = db.getArchivedChatList();
 //			JSONArray groups = db.getAllGroups();
             JSONArray groups = db.getMyArchivedGroups(db.getUserDetails().get("phone"));
+            lists = db.getArchivedBroadCastChatList();
             for (int i=0; i < chats.length(); i++) {
                 JSONObject row = chats.getJSONObject(i);
 
@@ -221,6 +242,19 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
                         R.drawable.user1, false,
                         true, 0, "", false));
 
+            }
+
+            for (int i=0; i < lists.length(); i++) {
+                JSONObject row = lists.getJSONObject(i);
+
+                //if (row.getInt("isArchived") == 0) {
+                chatList1.add(new ChatItem(
+                        row.getString("name"),
+                        row.getString("unique_id"),
+                        row.getString("msg"),
+                        Utility.convertDateToLocalTimeZoneAndReadable(row.getString("date")),
+                        R.drawable.user1, false,
+                        false, 0, "", true).setProfileImage(null));
             }
 
 

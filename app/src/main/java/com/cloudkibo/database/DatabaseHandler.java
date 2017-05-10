@@ -1964,6 +1964,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void setArchiveBroadcast(String bListID) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String updateQuery = "UPDATE " + UserChat.TABLE_USERCHAT +
+                " SET isArchived="+ 1 +" WHERE broadcast_id='"+bListID+"'";
+
+        try {
+            db.execSQL(updateQuery);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        db.close();
+    }
+
     public void setArchiveGroup(String unique_id) {
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -1990,6 +2006,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         String updateQuery = "UPDATE " + UserChat.TABLE_USERCHAT +
                 " SET isArchived="+ 0 +" WHERE contact_phone='"+contactPhone+"'";
+
+        try {
+            db.execSQL(updateQuery);
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        db.close();
+    }
+
+    public void unArchiveBroadcast(String bListID) {
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        String updateQuery = "UPDATE " + UserChat.TABLE_USERCHAT +
+                " SET isArchived="+ 0 +" WHERE broadcast_id='"+bListID+"'";
 
         try {
             db.execSQL(updateQuery);
@@ -2819,6 +2851,43 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return chats;
     }
 
+    public JSONArray getArchivedBroadCastChatList() throws JSONException {
+        HashMap<String, String> userDetail = getUserDetails();
+        JSONArray chats = new JSONArray();
+        String selectQuery =
+                " SELECT "+ UserChat.USERCHAT_DATE +", broadcast_id, " + UserChat.USERCHAT_MSG
+                        +" FROM " + UserChat.TABLE_USERCHAT
+                        +" WHERE isArchived=1 AND is_broadcast='true'"
+                        +" GROUP BY broadcast_id ORDER BY "+ UserChat.USERCHAT_DATE + " DESC";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+                JSONArray broadcastInfo = getBroadCastList(cursor.getString(1));
+                JSONArray lastMessage = getLastMessageInBroadCastChat(cursor.getString(1));
+
+                JSONObject contact = new JSONObject();
+                contact.put("date", cursor.getString(0));
+                contact.put("unique_id", cursor.getString(1));
+                contact.put("name", broadcastInfo.getJSONObject(0).getString("name"));
+                contact.put("msg", lastMessage.getJSONObject(0).getString("msg"));
+                //contact.put("msg", cursor.getString(2));
+
+                chats.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return chats;
+    }
+
     public JSONArray getGroupChatList() throws JSONException {
         HashMap<String, String> userDetail = getUserDetails();
         JSONArray chats = new JSONArray();
@@ -2873,7 +2942,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String selectQuery =
                 " SELECT "+ UserChat.USERCHAT_DATE +", contact_phone, " + UserChat.USERCHAT_MSG
                         +" FROM " + UserChat.TABLE_USERCHAT
-                        +" WHERE isArchived=1"
+                        +" WHERE isArchived=1 AND is_broadcast='false'"
                         +" GROUP BY contact_phone ORDER BY "+ UserChat.USERCHAT_DATE + " DESC";
 
         SQLiteDatabase db = this.getReadableDatabase();
