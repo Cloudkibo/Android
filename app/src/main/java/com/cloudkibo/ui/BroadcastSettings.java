@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -45,7 +46,8 @@ public class BroadcastSettings extends CustomFragment implements IFragmentName {
     LayoutInflater inflater;
     ImageButton btnSelectIcon;
     Button delete_list;
-    TextView name;
+    Button submit;
+    EditText newName;
     View view;
     String list_name;
 
@@ -69,7 +71,10 @@ public class BroadcastSettings extends CustomFragment implements IFragmentName {
 
 
         delete_list = (Button) vg.findViewById(R.id.delete_list);
-
+        submit = (Button) vg.findViewById(R.id.newName);
+        newName = (EditText) vg.findViewById(R.id.new_name);
+        newName.setVisibility(View.GONE);
+        submit.setVisibility(View.GONE);
 
 
         delete_list.setOnClickListener(new View.OnClickListener() {
@@ -78,6 +83,22 @@ public class BroadcastSettings extends CustomFragment implements IFragmentName {
                 // TODO: 5/10/17 Add code to delete list
                 Toast.makeText(getContext(), "Delete clicked", Toast.LENGTH_SHORT).show();
                 deleteList(bList_id);
+            }
+        });
+
+        submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(newName.getText().toString().equals("")) {
+                    Toast.makeText(getContext(), "Please give some name", Toast.LENGTH_SHORT).show();
+
+                }
+                else{
+                    DatabaseHandler db = new DatabaseHandler(getContext());
+                    db.updateBroadCastListName(bList_id, newName.getText().toString());
+                    gotoChatList();
+                }
             }
         });
 
@@ -107,6 +128,8 @@ public class BroadcastSettings extends CustomFragment implements IFragmentName {
         if(id == R.id.listNameChange){
             // TODO: 5/10/17 Add code to change list name
             Toast.makeText(getContext(), "Change name clicked", Toast.LENGTH_SHORT).show();
+            newName.setVisibility(View.VISIBLE);
+            submit.setVisibility(View.VISIBLE);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -124,6 +147,14 @@ public class BroadcastSettings extends CustomFragment implements IFragmentName {
 //        Bundle args = new Bundle();
 //        args.putString("group_id", group_id);
 //        nextFrag.setArguments(args);
+        this.getFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, nextFrag,null)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    public void gotoChatList(){
+        ChatList nextFrag= new ChatList();
         this.getFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, nextFrag,null)
                 .addToBackStack(null)
