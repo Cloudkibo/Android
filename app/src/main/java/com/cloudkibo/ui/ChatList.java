@@ -374,14 +374,21 @@ public class ChatList extends CustomFragment implements IFragmentName
 					if(MainActivity.isVisible)
 						MainActivity.mainActivity.sendArchiveInfoToDesktop(cItem.getTitle(), "Yes");
 				} else if(!cItem.isGroup()) {
-					db.setArchive(cItem.getTitle());
-					Toast.makeText(getContext(), cItem.getTitle() , Toast.LENGTH_SHORT).show();
-					chatList.remove(info.position);
-					if(MainActivity.isVisible)
-						MainActivity.mainActivity.sendArchiveInfoToDesktop(cItem.getTitle(), "Yes");
-				} else if(cItem.isBroadCast()) {
-					// todo logic for broadcast
+					if(cItem.isBroadCast()) {
+						// todo logic for broadcast
+						db.setArchiveBroadcast(cItem.getTitle());
+						Toast.makeText(getContext(),cItem.getTitle(),Toast.LENGTH_SHORT).show();
+						chatList.remove(info.position);
+						if(MainActivity.isVisible)
+							MainActivity.mainActivity.sendArchiveInfoToDesktop(cItem.getTitle(), "Yes");
 
+					} else {
+						db.setArchive(cItem.getTitle());
+						Toast.makeText(getContext(), cItem.getTitle(), Toast.LENGTH_SHORT).show();
+						chatList.remove(info.position);
+						if (MainActivity.isVisible)
+							MainActivity.mainActivity.sendArchiveInfoToDesktop(cItem.getTitle(), "Yes");
+					}
 				}
 
 				if (adp != null) {

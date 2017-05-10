@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/new_name"
+            android:layout_toLeftOf="@+id/newName"
+            android:padding="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/newName"
+            android:background="@drawable/rounded_button"
+            android:text="Submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#90C43E"
+            android:textColor="#ffffff"
+            android:layout_margin="5dp"
+            android:layout_alignParentRight="true"/>
+
+        <Button
+            android:id="@+id/delete_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_button"
+            android:text="Delete List"
+            android:backgroundTint="#90C43E"
+            android:textColor="#ffffff"
+            android:layout_margin="5dp"
+            android:layout_gravity="bottom"
+            android:layout_alignParentBottom="true"
+        />
+    </RelativeLayout>
+
+</LinearLayout>
