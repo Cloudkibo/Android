@@ -320,11 +320,19 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public void DeleteBroadCastList(String unique_id){
 
         removeAllMembersOfBroadCastList(unique_id);
+        deleteListInNormalChat(unique_id);
 
         SQLiteDatabase db = this.getWritableDatabase();
         String deleteQuery = "DELETE FROM BROADCAST_LIST WHERE uniqueid='"+ unique_id +"'";
-
         db.execSQL(deleteQuery);
+        db.close();
+    }
+
+    public void deleteListInNormalChat(String unique_id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put("is_broadcast", false); //setting is_archived to false from true, in chatlist
+        db.update(UserChat.TABLE_USERCHAT, args,"broadcast_id='"+unique_id+"'", null);
         db.close();
     }
 

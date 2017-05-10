@@ -231,8 +231,9 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
             menu.findItem(R.id.archived).setVisible(false);
             menu.findItem(R.id.settings).setVisible(false);
             menu.findItem(R.id.connect_to_desktop).setVisible(false);
+            menu.findItem(R.id.broadcast).setVisible(false);
         }
-        inflater.inflate(R.menu.chat, menu);  // Use filter.xml from step 1
+        inflater.inflate(R.menu.broadcast, menu);  // Use filter.xml from step 1
 //		getActivity().getActionBar().setSubtitle("Last seen on: ");
         //Utility.getLastSeenStatus(getActivity().getApplicationContext(), contactPhone, authtoken, getActivity().getActionBar());
         ActionBar actionBar = getActivity().getActionBar();
@@ -542,13 +543,21 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
         // TODO THIS SHOULD HAS ITS OWN MENU ITEMS
-//        if(id == R.id.callMenu){
-//            MainActivity act1 = (MainActivity)getActivity();
-//
-//            act1.callThisPerson(contactPhone,
-//                    contactName);
-//            return true;
-//        }
+        if(id == R.id.settings){
+            Toast.makeText(getContext(), "Settings clicked", Toast.LENGTH_SHORT).show();
+            BroadcastSettings bSettings = new BroadcastSettings();
+
+            Bundle bundle = new Bundle();
+            bundle.putString("bList_id", bList_id);
+            bundle.putString("list_name", list_name);
+
+            bSettings.setArguments(bundle);
+
+            this.getFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, bSettings,null)
+                    .addToBackStack(null)
+                    .commit();
+        }
 //        if(id == R.id.blockThisContact){
 //            JSONObject body = new JSONObject();
 //            try {

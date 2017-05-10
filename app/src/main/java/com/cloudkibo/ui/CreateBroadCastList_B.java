@@ -112,16 +112,15 @@ public class CreateBroadCastList_B extends CustomFragment implements IFragmentNa
 
                 addMembers(adapter.getPhones());
                 // // TODO: 4/26/17 add link to broadcast list fragment
-//                BroadCastChat nextFrag= new BroadCastChat();
-//                Bundle args = new Bundle();
-//                args.putString("bList_id", bList_id);
-//                args.putString("list_name", list_name);
-//                args.putString("authtoken", authtoken);
-//                nextFrag.setArguments(args);
-//                getFragmentManager().beginTransaction()
-//                        .replace(R.id.content_frame, nextFrag, "groupChatFragmentTag")
-//                        .addToBackStack(null)
-//                        .commit();
+                BroadCastChat nextFrag= new BroadCastChat();
+                Bundle args = new Bundle();
+                args.putString("bList_id", bList_id);
+                args.putString("list_name", list_name);
+                nextFrag.setArguments(args);
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.content_frame, nextFrag, "groupChatFragmentTag")
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
