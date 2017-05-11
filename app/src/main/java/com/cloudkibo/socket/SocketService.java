@@ -142,7 +142,7 @@ public class SocketService extends Service {
             socket.emit("platform_room_message", payload);//new JSONArray().put(message));
             // todo remove this, only for test
             //sendByteData();
-            //sendGroupChatListToDesktop();
+            sendGroupChatListToDesktop();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -555,7 +555,13 @@ public class SocketService extends Service {
 
                         DatabaseHandler db = new DatabaseHandler(getApplicationContext());
 
-                        if(payload.getString("type").equals("new_message_sent")){
+                        if (payload.getString("type").equals("loading_conversation")) {
+
+                            JSONObject row = payload.getJSONObject("data");
+
+                            sendConversationToDesktop(user.get("phone"), row.getString("phone"));
+
+                        } else if(payload.getString("type").equals("new_message_sent")){
                             // desktop app is trying to send data
 
                             JSONObject row = payload.getJSONObject("data");

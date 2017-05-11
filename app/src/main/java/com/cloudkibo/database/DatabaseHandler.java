@@ -1509,6 +1509,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 contact.put("isAdmin", cursor.getString(1));
                 contact.put("date_joined", cursor.getString(2));
                 contact.put("display_name", cursor.getString(3));
+                contact.put("group_id", group_id);
                 contacts.put(contact);
                 cursor.moveToNext();
             }
