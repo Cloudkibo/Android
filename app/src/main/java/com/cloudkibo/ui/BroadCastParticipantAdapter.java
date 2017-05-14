@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,16 +20,16 @@ import com.facebook.accountkit.AccountKit;
 import org.json.JSONArray;
 import org.json.JSONException;
 
-public class CustomParticipantAdapter extends BaseAdapter{
+public class BroadCastParticipantAdapter extends BaseAdapter{
     JSONArray members;
     Context context;
-    String group_id;
+    String bList_id;
     private static LayoutInflater inflater=null;
-    public CustomParticipantAdapter(LayoutInflater inflater, JSONArray members, Context context, String group_id) {
+    public BroadCastParticipantAdapter(LayoutInflater inflater, JSONArray members, Context context, String bList_id) {
         this.members = members;
         this.inflater = inflater;
         this.context = context;
-        this.group_id = group_id;
+        this.bList_id = bList_id;
         AccountKit.initialize(context.getApplicationContext());
     }
     @Override
@@ -59,8 +58,7 @@ public class CustomParticipantAdapter extends BaseAdapter{
         View rowView;
         rowView = inflater.inflate(R.layout.participant, null);
         holder.name=(TextView) rowView.findViewById(R.id.name);
-        holder.isAdmin=(TextView) rowView.findViewById(R.id.isAdmin);
-//        holder.tv.setText(result[position]);
+
         try {
             DatabaseHandler db = new DatabaseHandler(context);
             if(!members.getJSONObject(position).has("display_name")){
@@ -74,9 +72,6 @@ public class CustomParticipantAdapter extends BaseAdapter{
                 holder.name.setText(members.getJSONObject(position).getString("display_name"));
             }
 
-            if(members.getJSONObject(position).getString("isAdmin").equals("1")){
-                holder.isAdmin.setVisibility(View.VISIBLE);
-            }
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -84,12 +79,7 @@ public class CustomParticipantAdapter extends BaseAdapter{
         rowView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                GroupUtility groupUtility = new GroupUtility(context);
-                if(!groupUtility.isAdmin(group_id)){
-                    return;
-                }
-
-                final CharSequence[] items = {"Make Admin", "Demote Admin", "Remove from group"};
+                final CharSequence[] items = {"Remove from list"};
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
                 builder.setTitle("Member Status");
@@ -103,18 +93,8 @@ public class CustomParticipantAdapter extends BaseAdapter{
                         try {
                             if(which == 0) {
 
-                                groupUtility.makeAdmin(group_id, members.getJSONObject(position).getString("phone"),"Yes",accessToken.getToken());
+                                db.removeBroadCastListMember(bList_id, members.getJSONObject(position).getString("phone"));
                                 updateData(db);
-                            } else if (which == 1){
-
-                                  groupUtility.demoteAdmin(group_id, members.getJSONObject(position).getString("phone"),"No",accessToken.getToken());
-                                  updateData(db);
-                            } else if (which == 2) {
-                                if(members.getJSONObject(position).getString("isAdmin").equals("1") && groupUtility.adminCount(group_id) <= 1){
-                                    Toast.makeText(context, context.getString(R.string.group_utility_member_leave_admin_prompt) +": " + groupUtility.adminCount(group_id), Toast.LENGTH_LONG ).show();
-                                }else{
-                                groupUtility.removeMember(group_id, members.getJSONObject(position).getString("phone"), accessToken.getToken());
-                                updateData(db);}
                             }
 
                         } catch (JSONException e) {
@@ -138,7 +118,7 @@ public class CustomParticipantAdapter extends BaseAdapter{
 
     public JSONArray getMembers(DatabaseHandler db){
         try {
-            JSONArray members = db.getGroupMembers(group_id);
+            JSONArray members = db.getBroadCastListMembers(bList_id);
 //            members.put(db.getMyDetailsInGroup(bList_id));
             return  members;
         } catch (JSONException e) {

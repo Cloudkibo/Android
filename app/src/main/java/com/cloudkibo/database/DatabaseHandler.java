@@ -426,7 +426,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public JSONArray getBroadCastListMembers(String unique_id) throws JSONException {
         JSONArray groups = new JSONArray();
 
-        String selectQuery = "SELECT uniqueid, phone from BROADCAST_MEMBER WHERE uniqueid='"+ unique_id +"'";
+        String selectQuery = "SELECT uniqueid, BROADCAST_MEMBER.phone, display_name from BROADCAST_MEMBER LEFT JOIN contacts ON contacts.phone = BROADCAST_MEMBER.phone WHERE uniqueid='"+ unique_id +"'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);
@@ -439,6 +439,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 JSONObject contact = new JSONObject();
                 contact.put("uniqueid", cursor.getString(0));
                 contact.put("phone", cursor.getString(1));
+                contact.put("display_name", cursor.getString(2));
                 groups.put(contact);
 
                 cursor.moveToNext();
@@ -449,6 +450,39 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // return user
         return groups;
 
+    }
+
+    public JSONArray getMembersNotInBroadcast(String broadcast_id) throws JSONException {
+        JSONArray contacts = new JSONArray();
+        String selectQuery = "SELECT * FROM contacts where on_cloudkibo='true' AND contacts.phone NOT IN (SELECT phone FROM BROADCAST_MEMBER where uniqueid='"+ broadcast_id + "')";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                //contact.put(Contacts.CONTACT_FIRSTNAME, cursor.getString(1));
+                //contact.put(Contacts.CONTACT_LASTNAME, cursor.getString(2));
+                contact.put(Contacts.CONTACT_PHONE, cursor.getString(1));
+                contact.put("display_name", cursor.getString(2));
+                contact.put(Contacts.CONTACT_UID, cursor.getString(3));
+                contact.put(Contacts.SHARED_DETAILS, cursor.getString(4));
+                contact.put(Contacts.CONTACT_STATUS, cursor.getString(5));
+                contact.put("on_cloudkibo", cursor.getString(6));
+
+                contacts.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return contacts;
     }
 
     public void createFilesInfo(String unique_id, String file_name, String file_size, String file_type, String file_ext, String path) {
@@ -1527,6 +1561,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // return user
         return contacts;
     }
+
+
 
     public JSONArray getMembersNotInGroup(String group_id) throws JSONException {
         JSONArray contacts = new JSONArray();

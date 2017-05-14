@@ -74,7 +74,7 @@ public class ArchivedChat extends CustomFragment implements IFragmentName {
                 ChatItem item = (ChatItem) archivedChats.get(pos);
                 if(item.isGroup()){
                     GroupChatUI groupChatFragment = new GroupChatUI();
-                    bundle.putString("group_id", archivedChats.get(pos).getTitle());
+                    bundle.putString("bList_id", archivedChats.get(pos).getTitle());
                     bundle.putString("authtoken", authToken);
                     groupChatFragment.setArguments(bundle);
                     getFragmentManager().beginTransaction()

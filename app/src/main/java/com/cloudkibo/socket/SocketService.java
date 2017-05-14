@@ -141,8 +141,8 @@ public class SocketService extends Service {
 
             socket.emit("platform_room_message", payload);//new JSONArray().put(message));
             // todo remove this, only for test
-            //sendByteData();
-            sendGroupChatListToDesktop();
+            sendByteData();
+            //sendGroupChatListToDesktop();
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -152,7 +152,9 @@ public class SocketService extends Service {
     public void sendByteData(){
         try {
 
-            File file = new File("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20170307-WA0000.jpg");
+            //File file = new File("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20170511-WA0000.jpg");
+            File file = new File("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20170416-WA0001.jpg");
+            //File file = new File("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20170508-WA0000.jpg");
 
             int CHUNK_SIZE = 16000;//32000;//16000;
             int sizeOfFileToSend = (int)file.length();
@@ -163,12 +165,16 @@ public class SocketService extends Service {
                     .Utility.convertFileToByteArray(file);
 
             if (file.length() < CHUNK_SIZE) {
+                numberOfChunksInFileToSend = 1;
 
                 JSONObject filePayload = new JSONObject();
                 filePayload.put("chunk", chunks);
                 filePayload.put("unique_id", "ABABABABABABABA");
+                filePayload.put("chunk_id", numberOfChunksSent+1);
+                filePayload.put("total_chunks", numberOfChunksInFileToSend);
 
-                socket.emit("platform_room_message", filePayload);
+                sendFileChunkToDesktop(filePayload);
+                //socket.emit("platform_room_message", filePayload);
             } else {
                 while (numberOfChunksSent <= numberOfChunksInFileToSend) {
 
@@ -191,8 +197,11 @@ public class SocketService extends Service {
                     JSONObject filePayload = new JSONObject();
                     filePayload.put("chunk", byteBuffer.array());
                     filePayload.put("unique_id", "ABABABABABABABA");
+                    filePayload.put("chunk_id", numberOfChunksSent+1);
+                    filePayload.put("total_chunks", numberOfChunksInFileToSend);
 
-                    socket.emit("platform_room_message", filePayload);
+                    sendFileChunkToDesktop(filePayload);
+                    //socket.emit("platform_room_message", filePayload);
 
                     numberOfChunksSent++;
                 }

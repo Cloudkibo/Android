@@ -3,9 +3,6 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -25,7 +22,39 @@
             android:backgroundTint="#90C43E"
             android:textColor="#ffffff"
             android:layout_margin="5dp"
-            android:layout_alignParentRight="true"/>
+            android:layout_alignParentRight="true" />
+
+        <Button
+            android:id="@+id/add_members"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_button"
+            android:text="Add Members"
+            android:backgroundTint="#90C43E"
+            android:textColor="#ffffff"
+            android:layout_marginTop="60dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/group_utility_group_participants"
+            android:textColor="#000000"
+            android:layout_marginTop="110dp"
+            android:textSize="20dp"/>
+
+        <ListView
+            android:id="@+id/listView"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="5dp"
+            android:layout_marginTop="140dp"
+            android:layout_marginBottom="70dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            >
+        </ListView>
 
         <Button
             android:id="@+id/delete_list"

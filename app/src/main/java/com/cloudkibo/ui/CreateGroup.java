@@ -96,7 +96,7 @@ public class CreateGroup extends CustomFragment implements IFragmentName
         Bundle args = getArguments();
 
         if (args  != null){
-            group_id = args.getString("group_id");
+            group_id = args.getString("bList_id");
             group_name = args.getString("group_name");
             unique_id = args.getString("unique_id");
             Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
@@ -117,9 +117,9 @@ public class CreateGroup extends CustomFragment implements IFragmentName
         next.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //String group_id = randomString(10);
+                //String bList_id = randomString(10);
                 //Toast.makeText(getContext(), "Group Name: " + group_name.getText().toString(), Toast.LENGTH_LONG).show();
-                //db.createGroup(group_id, group_name.getText().toString(), 0);
+                //db.createGroup(bList_id, group_name.getText().toString(), 0);
 
                 if(adapter.getPhones().size() <= 0){
                     Toast.makeText(getContext(), "Please select atleast one group member", Toast.LENGTH_LONG).show();
@@ -143,7 +143,7 @@ public class CreateGroup extends CustomFragment implements IFragmentName
                 act1.uploadIcon(group_id);
                 GroupChatUI nextFrag= new GroupChatUI();
                 Bundle args = new Bundle();
-                args.putString("group_id", group_id);
+                args.putString("bList_id", group_id);
                 args.putString("group_name", group_name);
                 nextFrag.setArguments(args);
                 temp.getFragmentManager().beginTransaction()
@@ -161,12 +161,12 @@ public class CreateGroup extends CustomFragment implements IFragmentName
 //        create_group.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View view) {
-//                String group_id = randomString(10);
+//                String bList_id = randomString(10);
 //                Toast.makeText(getContext(), "Group Name: " + group_name.getText().toString(), Toast.LENGTH_LONG).show();
-//                db.createGroup(group_id, group_name.getText().toString(), 0);
+//                db.createGroup(bList_id, group_name.getText().toString(), 0);
 //                AddMembers nextFrag= new AddMembers();
 //                Bundle args = new Bundle();
-//                args.putString("group_id", group_id);
+//                args.putString("bList_id", bList_id);
 //                args.putString("group_name", group_name.getText().toString());
 //                nextFrag.setArguments(args);
 //                temp.getFragmentManager().beginTransaction()

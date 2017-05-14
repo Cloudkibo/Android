@@ -25,8 +25,10 @@ import android.widget.Toast;
 import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
+import com.cloudkibo.database.CloudKiboDatabaseContract;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.library.GroupUtility;
+import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.utils.IFragmentName;
 
 import org.json.JSONArray;
@@ -47,6 +49,7 @@ public class BroadcastSettings extends CustomFragment implements IFragmentName {
     ImageButton btnSelectIcon;
     Button delete_list;
     Button submit;
+    Button add_members;
     EditText newName;
     View view;
     String list_name;
@@ -63,19 +66,21 @@ public class BroadcastSettings extends CustomFragment implements IFragmentName {
         this.inflater = inflater;
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         Bundle args = getArguments();
+
         if (args  != null){
             bList_id = args.getString("bList_id");
             list_name = args.getString("list_name");
         }
 
-
-
         delete_list = (Button) vg.findViewById(R.id.delete_list);
         submit = (Button) vg.findViewById(R.id.newName);
+        add_members = (Button) vg.findViewById(R.id.add_members);
         newName = (EditText) vg.findViewById(R.id.new_name);
         newName.setVisibility(View.GONE);
         submit.setVisibility(View.GONE);
 
+        participants = getMembers();
+        lv.setAdapter(new BroadCastParticipantAdapter(inflater, participants, getContext(),bList_id));
 
         delete_list.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +97,6 @@ public class BroadcastSettings extends CustomFragment implements IFragmentName {
 
                 if(newName.getText().toString().equals("")) {
                     Toast.makeText(getContext(), "Please give some name", Toast.LENGTH_SHORT).show();
-
                 }
                 else{
                     DatabaseHandler db = new DatabaseHandler(getContext());
@@ -102,8 +106,28 @@ public class BroadcastSettings extends CustomFragment implements IFragmentName {
             }
         });
 
-        return vg;
+        add_members.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final CharSequence[] items = getAddtionalMembers();
+                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                builder.setTitle(getString(R.string.group_utility_member_add));
+                builder.setItems(items, new DialogInterface.OnClickListener() {
 
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        DatabaseHandler db = new DatabaseHandler(getContext());
+                        db.addBroadCastListMember(bList_id, phoneList[which]);
+                        lv.setAdapter(new CustomParticipantAdapter(inflater, getMembers(), getContext(),bList_id));
+                        dialog.cancel();
+                    }
+                });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
+
+        return vg;
     }
 
     @Override
@@ -119,7 +143,6 @@ public class BroadcastSettings extends CustomFragment implements IFragmentName {
         ActionBar actionBar = getActivity().getActionBar();
         actionBar.setTitle(list_name.toUpperCase());
         actionBar.setDisplayShowCustomEnabled(false); // Use filter.xml from step 1
-
     }
 
     @Override
@@ -145,7 +168,7 @@ public class BroadcastSettings extends CustomFragment implements IFragmentName {
         db.DeleteBroadCastList(bList_id);
         ChatList nextFrag= new ChatList();
 //        Bundle args = new Bundle();
-//        args.putString("group_id", group_id);
+//        args.putString("bList_id", bList_id);
 //        nextFrag.setArguments(args);
         this.getFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, nextFrag,null)
@@ -161,9 +184,64 @@ public class BroadcastSettings extends CustomFragment implements IFragmentName {
                 .commit();
     }
 
+    public JSONArray getMembers(){
+
+        String names[];
+        DatabaseHandler db = new DatabaseHandler(getContext());
+
+        try {
+            participants = new JSONArray();
+            participants = db.getBroadCastListMembers(bList_id);
+            names = new String[participants.length()];
+            for(int i = 0; i < participants.length(); i++)
+            {
+                if(!participants.getJSONObject(i).has("display_name")){
+                    names[i] = "Anonymous";
+                }else {
+                    names[i] = participants.getJSONObject(i).getString("display_name");
+                }
+                if(participants.getJSONObject(i).getString("phone").toString().equals(db.getUserDetails().get("phone"))){
+                    names[i] = db.getUserDetails().get("display_name");
+                }
+            }
+            if(lv != null){
+                BroadCastParticipantAdapter customParticipantAdapter = new BroadCastParticipantAdapter(inflater, participants,getContext(), bList_id);
+                lv.setAdapter(customParticipantAdapter);
+                customParticipantAdapter.notifyDataSetChanged();
+            }
+            return  participants;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return new JSONArray();
+    }
+
+    public CharSequence[] getAddtionalMembers(){
 
 
+        DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
 
+        try {
+
+            JSONArray jsonA = db.getMembersNotInBroadcast(bList_id);
+
+            jsonA = UserFunctions.sortJSONArrayIgnoreCase(jsonA, "display_name");
+
+            contactList = new String[jsonA.length()];
+            phoneList  = new String[jsonA.length()];
+
+            //This loop adds contacts to the display list which are on cloudkibo
+            for (int i=0; i < jsonA.length(); i++) {
+                JSONObject row = jsonA.getJSONObject(i);
+                contactList[i] = row.getString("display_name");
+                phoneList[i] = row.getString(CloudKiboDatabaseContract.Contacts.CONTACT_PHONE);
+            }
+            return contactList;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
     @Override
     public String getFragmentName() {
@@ -174,4 +252,5 @@ public class BroadcastSettings extends CustomFragment implements IFragmentName {
     public String getFragmentContactPhone() {
         return "About Chat";
     }
+
 }

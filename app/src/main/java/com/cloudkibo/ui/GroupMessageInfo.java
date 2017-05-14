@@ -55,7 +55,7 @@ public class GroupMessageInfo extends CustomFragment implements IFragmentName {
         Bundle args = getArguments();
         if (args  != null){
             authtoken = args.getString("authtoken");
-            group_id = args.getString("group_id");
+            group_id = args.getString("bList_id");
             message_id = args.getString("message_id");
             message = args.getString("message");
         }
@@ -90,7 +90,7 @@ public class GroupMessageInfo extends CustomFragment implements IFragmentName {
 
         Bundle args = getArguments();
         if (args  != null){
-            group_id = args.getString("group_id");
+            group_id = args.getString("bList_id");
         }
 
         String names[];
@@ -99,7 +99,7 @@ public class GroupMessageInfo extends CustomFragment implements IFragmentName {
         try {
             participants = new JSONArray();
             participants = db.getGroupMembers(group_id);
-//           participants.put(db.getMyDetailsInGroup(group_id));
+//           participants.put(db.getMyDetailsInGroup(bList_id));
 
 //           Toast.makeText(getContext(), "Custom Members "+participants.toString(), Toast.LENGTH_LONG).show();
             names = new String[participants.length()];
@@ -139,7 +139,7 @@ public class GroupMessageInfo extends CustomFragment implements IFragmentName {
         try {
             status = new JSONArray();
             status = db.getGroupMessageStatus(group_id);
-//           participants.put(db.getMyDetailsInGroup(group_id));
+//           participants.put(db.getMyDetailsInGroup(bList_id));
 
 //           Toast.makeText(getContext(), "Custom Members "+participants.toString(), Toast.LENGTH_LONG).show();
 
@@ -160,7 +160,7 @@ public class GroupMessageInfo extends CustomFragment implements IFragmentName {
     public void setGroupInfo(View v){
         Bundle args = getArguments();
         if (args  != null){
-            group_id = args.getString("group_id");
+            group_id = args.getString("bList_id");
         }
         // Toast.makeText(getContext(), "Group In function", Toast.LENGTH_LONG).show();
 

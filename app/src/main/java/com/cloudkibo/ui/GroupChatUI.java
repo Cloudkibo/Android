@@ -144,7 +144,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
 //        Button settings = (Button) v.findViewById(R.id.setting);
         Bundle args = getArguments();
         if (args  != null){
-            group_id = args.getString("group_id");
+            group_id = args.getString("bList_id");
             group_name = args.getString("group_name");
         }
 
@@ -247,7 +247,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
 //            public void onClick(View view) {
 //                GroupSetting nextFrag= new GroupSetting();
 //                Bundle args = new Bundle();
-//                args.putString("group_id", group_id);
+//                args.putString("bList_id", bList_id);
 //                nextFrag.setArguments(args);
 //                temp.getFragmentManager().beginTransaction()
 //                        .replace(R.id.content_frame, nextFrag,null)
@@ -619,7 +619,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
             final GroupChatUI temp = this;
             GroupSetting nextFrag= new GroupSetting();
             Bundle args = new Bundle();
-            args.putString("group_id", group_id);
+            args.putString("bList_id", group_id);
             nextFrag.setArguments(args);
             temp.getFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, nextFrag,null)
@@ -757,7 +757,7 @@ public class GroupChatUI extends CustomFragment implements IFragmentName
 
             bundle.putString("authtoken",authtoken);
             bundle.putString("message",convList.get(info.position).getMsg());
-            bundle.putString("group_id", group_id);
+            bundle.putString("bList_id", group_id);
             bundle.putString("message_id",convList.get(info.position).getUniqueid());
 
             mInfoFrag.setArguments(bundle);

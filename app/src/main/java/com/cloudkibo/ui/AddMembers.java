@@ -95,9 +95,9 @@ public class AddMembers extends CustomFragment implements IFragmentName
 //        Bundle args = getArguments();
 //
 //        if (args  != null){
-//            group_id = args.getString("group_id");
+//            bList_id = args.getString("bList_id");
 //            group_name = args.getString("group_name");
-//            Toast.makeText(getContext(), group_id, Toast.LENGTH_LONG).show();
+//            Toast.makeText(getContext(), bList_id, Toast.LENGTH_LONG).show();
 //        }
 
         create_button.setOnClickListener(new View.OnClickListener() {
@@ -111,7 +111,7 @@ public class AddMembers extends CustomFragment implements IFragmentName
                 else {
                     group_id = randomString(10);
                     //Toast.makeText(getContext(), "Group Name: " + group_name.getText().toString(), Toast.LENGTH_LONG).show();
-                    //db.createGroup(group_id, group_name.getText().toString(), 0);
+                    //db.createGroup(bList_id, group_name.getText().toString(), 0);
 
 //                    String message = "You created group " + group_name.getText().toString();
 //                    String member_name = db.getUserDetails().get("display_name");
@@ -120,13 +120,13 @@ public class AddMembers extends CustomFragment implements IFragmentName
                     uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
                     uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
                     //Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
-                    //db.addGroupMessage(group_id, message, member_phone, member_name, uniqueid, "log");
+                    //db.addGroupMessage(bList_id, message, member_phone, member_name, uniqueid, "log");
 
 
 //                addMembers(selected_contacts);
                     CreateGroup nextFrag = new CreateGroup();
                     Bundle args = new Bundle();
-                    args.putString("group_id", group_id);
+                    args.putString("bList_id", group_id);
                     args.putString("group_name", group_name.getText().toString());
                     args.putString("unique_id", uniqueid);
                     nextFrag.setArguments(args);
@@ -139,15 +139,15 @@ public class AddMembers extends CustomFragment implements IFragmentName
         });
 
 //                try {
-//                  Toast.makeText(getContext(), "Total Members are: " + db.getGroupMembers(group_id).length(), Toast.LENGTH_LONG).show();
+//                  Toast.makeText(getContext(), "Total Members are: " + db.getGroupMembers(bList_id).length(), Toast.LENGTH_LONG).show();
 //                } catch (JSONException e) {
 //                    e.printStackTrace();
 //                }
 //
-//                createGroupOnServer(group_name.getText().toString(), group_id,authtoken);
+//                createGroupOnServer(group_name.getText().toString(), bList_id,authtoken);
 //                GroupChatUI nextFrag= new GroupChatUI();
 //                Bundle args = new Bundle();
-//                args.putString("group_id", group_id);
+//                args.putString("bList_id", bList_id);
 //                nextFrag.setArguments(args);
 //                temp.getFragmentManager().beginTransaction()
 //                        .replace(R.id.content_frame, nextFrag,null)

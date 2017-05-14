@@ -140,7 +140,7 @@ public class ChatList extends CustomFragment implements IFragmentName
 				ChatItem item = (ChatItem) chatList.get(pos);
 				if(item.isGroup()){
 					GroupChatUI groupChatFragment = new GroupChatUI();
-					bundle.putString("group_id", chatList.get(pos).getTitle());
+					bundle.putString("bList_id", chatList.get(pos).getTitle());
 					bundle.putString("group_name", chatList.get(pos).getName());
 					bundle.putString("authtoken", authtoken);
 					groupChatFragment.setArguments(bundle);

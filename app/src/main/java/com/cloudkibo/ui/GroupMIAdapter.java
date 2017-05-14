@@ -117,7 +117,7 @@ public class GroupMIAdapter extends BaseAdapter {
     public JSONArray getMembers(DatabaseHandler db){
         try {
             JSONArray members = db.getGroupMembers(group_id);
-//            members.put(db.getMyDetailsInGroup(group_id));
+//            members.put(db.getMyDetailsInGroup(bList_id));
             return  members;
         } catch (JSONException e) {
             e.printStackTrace();

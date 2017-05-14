@@ -92,7 +92,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         loadDisplayImage();
         Bundle args = getArguments();
         if (args  != null){
-            group_id = args.getString("group_id");
+            group_id = args.getString("bList_id");
         }
         leave_group = (Button) footer.findViewById(R.id.leave_group);
   //      btnSelectIcon = (ImageButton) v.findViewById(R.id.selectIconBtn);
@@ -161,7 +161,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
 //            @Override
 //            public void onClick(View view) {
 //                MainActivity act1 = (MainActivity)getActivity();
-//                act1.uploadIcon(group_id);
+//                act1.uploadIcon(bList_id);
 //            }
 //        });
 
@@ -260,7 +260,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
 
        Bundle args = getArguments();
        if (args  != null){
-           group_id = args.getString("group_id");
+           group_id = args.getString("bList_id");
        }
 
        String names[];
@@ -301,13 +301,13 @@ public class GroupSetting extends CustomFragment implements IFragmentName
     public void setGroupInfo(View v){
         Bundle args = getArguments();
         if (args  != null){
-            group_id = args.getString("group_id");
+            group_id = args.getString("bList_id");
         }
 
         DatabaseHandler db = new DatabaseHandler(getContext());
         try {
             JSONObject group_info = db.getGroupInfo(group_id);
-//            Toast.makeText(getContext(), "Group Name is: " + group_info.toString() + " and group id is: " + group_id, Toast.LENGTH_LONG).show();
+//            Toast.makeText(getContext(), "Group Name is: " + group_info.toString() + " and group id is: " + bList_id, Toast.LENGTH_LONG).show();
 //            ((TextView)v.findViewById(R.id.group_name)).setText(group_info.getString("group_name"));
 //            ((TextView)v.findViewById(R.id.creation_date)).setText(group_info.getString("date_creation"));
 
@@ -377,7 +377,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         groupUtility.leaveGroup(group_id, db.getUserDetails().get("phone"), authtoken);
         ChatList nextFrag= new ChatList();
 //        Bundle args = new Bundle();
-//        args.putString("group_id", group_id);
+//        args.putString("bList_id", bList_id);
 //        nextFrag.setArguments(args);
         this.getFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, nextFrag,null)
