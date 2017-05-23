@@ -156,6 +156,8 @@ public class SocketService extends Service {
             File file = new File("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20170416-WA0001.jpg");
             //File file = new File("/storage/emulated/0/WhatsApp/Media/WhatsApp Images/IMG-20170508-WA0000.jpg");
 
+            //File file = new File("/storage/emulated/0/Android/media/com.google.android.talk/Notifications/hangouts_message.ogg");
+
             int CHUNK_SIZE = 16000;//32000;//16000;
             int sizeOfFileToSend = (int)file.length();
             int numberOfChunksInFileToSend = (int) Math.ceil(sizeOfFileToSend / CHUNK_SIZE);
@@ -485,14 +487,16 @@ public class SocketService extends Service {
 
                     try {
 
-                        JSONObject userInfo = new JSONObject();
-                        userInfo.put("phone", user.get("phone"));
-                        userInfo.put("_id", user.get("_id"));
+                        if(user != null) {
+                            JSONObject userInfo = new JSONObject();
+                            userInfo.put("phone", user.get("phone"));
+                            userInfo.put("_id", user.get("_id"));
 
-                        message.put("user", userInfo);
-                        message.put("room", room);
+                            message.put("user", userInfo);
+                            message.put("room", room);
 
-                        socket.emit("join global chatroom", message);//new JSONArray().put(message));
+                            socket.emit("join global chatroom", message);//new JSONArray().put(message));
+                        }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -528,9 +532,11 @@ public class SocketService extends Service {
                 @Override
                 public void call(Object... args) {
                     try {
-                        JSONObject contact = new JSONObject(args[0].toString());
-                        Log.e("SocketServiceTag", contact.toString());
-                        mListener.receiveSocketJson("online", contact);
+                        if(!isAppSentToBackground(getApplicationContext())) {
+                            JSONObject contact = new JSONObject(args[0].toString());
+                            Log.e("SocketServiceTag", contact.toString());
+                            mListener.receiveSocketJson("online", contact);
+                        }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -543,10 +549,12 @@ public class SocketService extends Service {
                 @Override
                 public void call(Object... args) {
                     try {
-                        JSONArray contacts = new JSONArray(args[0].toString());
+                        if(!isAppSentToBackground(getApplicationContext())) {
+                            JSONArray contacts = new JSONArray(args[0].toString());
 
-                        Log.e("SocketServiceTag", args[0].toString());
-                        mListener.receiveSocketArray("theseareonline", contacts);
+                            Log.e("SocketServiceTag", args[0].toString());
+                            mListener.receiveSocketArray("theseareonline", contacts);
+                        }
 
                     } catch (JSONException e) {
                         e.printStackTrace();

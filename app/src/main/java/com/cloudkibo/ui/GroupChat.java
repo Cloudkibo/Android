@@ -137,6 +137,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
     LinearLayout mRevealView;
     Boolean attachmentViewHidden = true;
 
+    Context ctx;
+
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
 	 */
@@ -147,6 +149,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		final View v = inflater.inflate(R.layout.group_chat, null);
 		view = v;
 		setHasOptionsMenu(true);
+
+        ctx = getActivity().getApplicationContext();
 
 		contactName = this.getArguments().getString("contactusername");
 
@@ -167,10 +171,10 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					JSONObject body = new JSONObject();
 					try {
 						body.put("phone", contactPhone);
-						Utility.blockContact(getActivity().getApplicationContext(), body, authtoken);
+						Utility.blockContact(ctx, body, authtoken);
 					} catch (JSONException e) {
 						e.printStackTrace();
-						Utility.sendLogToServer(getActivity().getApplicationContext(), "Block Contact failed on android in GroupChat");
+						Utility.sendLogToServer(ctx, "Block Contact failed on android in GroupChat");
 					}
 				}
 			});
@@ -184,7 +188,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			});
 		}
 
-		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+		DatabaseHandler db = new DatabaseHandler(ctx);
 
 		user = db.getUserDetails();
 
@@ -281,8 +285,8 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			@Override
 			protected JSONObject doInBackground(String... args) {
-				UserFunctions userFunctions = new UserFunctions(getActivity().getApplicationContext());
-				return userFunctions.getUserStatus(contactPhone, authtoken);
+                UserFunctions userFunctions = new UserFunctions(ctx);
+                return userFunctions.getUserStatus(contactPhone, authtoken);
 			}
 
 			@Override
@@ -344,7 +348,6 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		inflater.inflate(R.menu.chat, menu);  // Use filter.xml from step 1
 //		getActivity().getActionBar().setSubtitle("Last seen on: ");
 		//Utility.getLastSeenStatus(getActivity().getApplicationContext(), contactPhone, authtoken, getActivity().getActionBar());
-		Toast.makeText(getActivity().getApplicationContext(),lastSeen, Toast.LENGTH_SHORT).show();
 		ActionBar actionBar = getActivity().getActionBar();
 		actionBar.setDisplayShowCustomEnabled(true);
 
@@ -664,10 +667,10 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			JSONObject body = new JSONObject();
 			try {
 				body.put("phone", contactPhone);
-				Utility.blockContact(getActivity().getApplicationContext(), body, authtoken);
+				Utility.blockContact(ctx, body, authtoken);
 			} catch (JSONException e) {
 				e.printStackTrace();
-				Utility.sendLogToServer(getActivity().getApplicationContext(), "Block Contact failed on android in GroupChat");
+				Utility.sendLogToServer(ctx, "Block Contact failed on android in GroupChat");
 			}
 		}
 
@@ -715,7 +718,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 					uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
 
 					try {
-						DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+						DatabaseHandler db = new DatabaseHandler(ctx);
 						db.createFilesInfo(uniqueid,
 								com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(tempCameraCaptureHolderString)
 										.getString("name"),
@@ -724,7 +727,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 								"image",
 								com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(tempCameraCaptureHolderString)
 										.getString("filetype"), tempCameraCaptureHolderString);
-						MediaScannerConnection.scanFile(getActivity().getApplicationContext(), new String[] { tempCameraCaptureHolderString }, new String[] { "image/jpeg" }, null);
+						MediaScannerConnection.scanFile(ctx, new String[] { tempCameraCaptureHolderString }, new String[] { "image/jpeg" }, null);
 						tempCameraCaptureHolderString = "";
 						sendFileAttachment(uniqueid, "image");
 					} catch (JSONException e){
@@ -761,7 +764,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 		if (v.getId() == R.id.btnSend)
 		{
 			sendMessage();
-			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			DatabaseHandler db = new DatabaseHandler(ctx);
 			db.unArchive(contactPhone);
 
 		}
@@ -829,7 +832,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			String messageString = txt.getText().toString();
 
-			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			DatabaseHandler db = new DatabaseHandler(ctx);
 			db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
 					messageString, Utility.getCurrentTimeInISO(), "pending", uniqueid, "chat", "");
 
@@ -844,7 +847,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
             String []links = Utility.extractLinks(messageString);
 
             if(links.length > 0) {
-                Utility.getURLInfo(getActivity().getApplicationContext(), links[0], uniqueid, false);
+                Utility.getURLInfo(ctx, links[0], uniqueid, false);
             }
 
 			txt.setText(null);
@@ -857,7 +860,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	{
 		try {
 
-			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			DatabaseHandler db = new DatabaseHandler(ctx);
 			final JSONObject fileInfo = db.getFilesInfo(uniqueid);
 
 			db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
@@ -872,16 +875,15 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			final int id = 102;
 
 			final NotificationManager mNotifyManager =
-					(NotificationManager) getActivity().getApplicationContext()
-							.getSystemService(Context.NOTIFICATION_SERVICE);
+					(NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 			final android.support.v4.app.NotificationCompat.Builder mBuilder =
-					new NotificationCompat.Builder(getActivity().getApplicationContext());
+					new NotificationCompat.Builder(ctx);
 			mBuilder.setContentTitle("Uploading attachment")
 					.setContentText("Upload in progress")
 					.setSmallIcon(R.drawable.icon);
 
-			UserFunctions userFunctions = new UserFunctions(getActivity().getApplicationContext());
-			Ion.with(getActivity().getApplicationContext())
+			UserFunctions userFunctions = new UserFunctions(ctx);
+			Ion.with(ctx)
 					.load(userFunctions.getBaseURL() + "/api/filetransfers/upload")
 					.progressHandler(new ProgressCallback() {
 						@Override
@@ -940,7 +942,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			String messageString = display_name + ":" + phone;
 
-			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			DatabaseHandler db = new DatabaseHandler(ctx);
 			db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
 					messageString, Utility.getCurrentTimeInISO(), "pending", uniqueid, "contact", "");
 
@@ -967,7 +969,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			String messageString = latitude + ":" + longitude;
 
-			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			DatabaseHandler db = new DatabaseHandler(ctx);
 			db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
 					messageString, Utility.getCurrentTimeInISO(), "pending", uniqueid, "location", "");
 
@@ -989,7 +991,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 		try {
 
-			final MediaPlayer mp = MediaPlayer.create(getActivity().getApplicationContext(), R.raw.bell);
+			final MediaPlayer mp = MediaPlayer.create(ctx, R.raw.bell);
 			mp.start();
 
 			convList.add(new Conversation(msg, Utility.convertDateToLocalTimeZoneAndReadable(date), false, true, "seen", uniqueid, type, file_type));
@@ -999,7 +1001,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
             String []links = Utility.extractLinks(msg);
 
             if(links.length > 0) {
-                Utility.getURLInfo(getActivity().getApplicationContext(), links[0], uniqueid, false);
+                Utility.getURLInfo(ctx, links[0], uniqueid, false);
             }
 
 			updateChatStatus("seen", uniqueid);
@@ -1023,7 +1025,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	}
 
 	public void updateFileDownloaded(String uniqueid){
-		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+		DatabaseHandler db = new DatabaseHandler(ctx);
 		JSONObject fileInfo = db.getFilesInfo(uniqueid);
 		String path = "";
 		try {
@@ -1045,7 +1047,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			@Override
 			protected JSONObject doInBackground(String... args) {
-				UserFunctions userFunction = new UserFunctions(getActivity().getApplicationContext());
+				UserFunctions userFunction = new UserFunctions(ctx);
 				JSONObject message = new JSONObject();
 
 				try {
@@ -1090,7 +1092,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 			@Override
 			protected JSONObject doInBackground(String... args) {
-				UserFunctions userFunction = new UserFunctions(getActivity().getApplicationContext());
+				UserFunctions userFunction = new UserFunctions(ctx);
 				JSONObject message = new JSONObject();
 
 				try {
@@ -1148,7 +1150,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 	public void updateChatStatus(String status, String uniqueid){
 		try {
-			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			DatabaseHandler db = new DatabaseHandler(ctx);
 			db.updateChat(status, uniqueid);
 		} catch (NullPointerException e){
 			e.printStackTrace();
@@ -1157,7 +1159,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 	public void resetSpecificChatHistorySync(String uniqueid){
 		try {
-			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			DatabaseHandler db = new DatabaseHandler(ctx);
 			db.resetSpecificChatHistorySync(uniqueid);
 		} catch (NullPointerException e){
 			e.printStackTrace();
@@ -1166,7 +1168,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 	public void addChatHistorySync(String uniqueid, String from){
 		try {
-			DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+			DatabaseHandler db = new DatabaseHandler(ctx);
 			db.addChatSyncHistory("seen", uniqueid, from);
 		} catch (NullPointerException e){
 			e.printStackTrace();
@@ -1193,7 +1195,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 	}
 
 	public void loadChatFromDatabase(){
-		DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
+		DatabaseHandler db = new DatabaseHandler(ctx);
 
 		try {
 
@@ -1250,7 +1252,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 								if (fileInfo.getString("file_size").equals("notDownloaded")) {
 									if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getActivity().checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 										// todo check if we need this really or not. This might be irritating to user
-										Utility.sendNotification(getActivity().getApplicationContext(), "Storage Permissions", "This conversation contains file attachments to be downloaded. Please give storage permission from settings and come back.");
+										Utility.sendNotification(ctx, "Storage Permissions", "This conversation contains file attachments to be downloaded. Please give storage permission from settings and come back.");
 									} else {
 										downloadPendingFile(row);
 									}
@@ -1306,16 +1308,15 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			final int id = 101;
 
 			final NotificationManager mNotifyManager =
-					(NotificationManager) getActivity().getApplicationContext()
-							.getSystemService(Context.NOTIFICATION_SERVICE);
+					(NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
 			final android.support.v4.app.NotificationCompat.Builder mBuilder =
-					new NotificationCompat.Builder(getActivity().getApplicationContext());
+					new NotificationCompat.Builder(ctx);
 			mBuilder.setContentTitle("Downloading attachment")
 					.setContentText("Download in progress")
 					.setSmallIcon(R.drawable.icon);
 			final UserFunctions userFunctions = new UserFunctions(getActivity().
 					getApplicationContext());
-			Ion.with(getActivity().getApplicationContext())
+			Ion.with(ctx)
 					.load(userFunctions.getBaseURL() + "/api/filetransfers/download")
 					.setHeader("kibo-token", authtoken)
 					.progressHandler(new ProgressCallback() {
@@ -1341,8 +1342,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 							// do stuff with the File or error
 
 							try {
-								DatabaseHandler db = new DatabaseHandler(getActivity()
-										.getApplicationContext());
+								DatabaseHandler db = new DatabaseHandler(ctx);
 								File folder = getExternalStoragePublicDirForImages(getActivity().getString(R.string.app_name));
 								if (row.getString("file_type").equals("document")) {
 									folder = getExternalStoragePublicDirForDocuments(getActivity().getString(R.string.app_name));
@@ -1376,7 +1376,6 @@ public class GroupChat extends CustomFragment implements IFragmentName
 									@Override
 									protected JSONObject doInBackground(String... args) {
 										try {
-											UserFunctions userFunctions1 = new UserFunctions(getActivity().getApplicationContext());
 											return userFunctions.confirmFileDownload(row.getString("uniqueid"), authtoken);
 										} catch (JSONException e5) {
 											e5.printStackTrace();
