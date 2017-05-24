@@ -2617,6 +2617,34 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return chats;
     }
 
+    public JSONArray getBroadcastMessageStatus(String message_id, String phone) throws JSONException {
+        JSONArray chats = new JSONArray();
+        String selectQuery = "SELECT id, status FROM " + UserChat.TABLE_USERCHAT +" where uniqueid='"+ message_id +"' AND toperson='"+phone+"'";
+
+
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("status", cursor.getString(1));
+
+                chats.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return chats;
+    }
+
     public JSONArray getSpecificChat(String uniqueid) throws JSONException {
         JSONArray chats = new JSONArray();
         String selectQuery = "SELECT id, toperson FROM " + UserChat.TABLE_USERCHAT +" where uniqueid='"+ uniqueid +"'";
