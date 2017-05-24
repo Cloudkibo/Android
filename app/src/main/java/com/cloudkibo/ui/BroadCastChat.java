@@ -686,27 +686,28 @@ public class BroadCastChat extends CustomFragment implements IFragmentName {
         final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 
         // TODO THIS SHOULD BE FOR BROADCAST, COMMENTED CODE IS FOR ONE TO ONE
-//        if(item.getTitle() == getString(R.string.common_message_info)){
-//
-//            MessageInfo mInfoFrag = new MessageInfo();
-//            Bundle bundle = new Bundle();
-//
-//            bundle.putString("authtoken",authtoken);
-//            bundle.putString("message",convList.get(info.position).getMsg());
-//            bundle.putString("status",convList.get(info.position).getStatus());
-//            bundle.putString("date",convList.get(info.position).getDate());
-//
-//            mInfoFrag.setArguments(bundle);
-//            getFragmentManager().beginTransaction()
-//                    .replace(R.id.content_frame, mInfoFrag, "messageInfoFragmentTag")
-//                    .addToBackStack("Message Info")
-//                    .commit();
-//        }
-//        if(item.getTitle() == getString(R.string.common_remove_message)){
-//            DatabaseHandler db = new DatabaseHandler(getContext());
-//            db.deleteNormalChatMessage(convList.get(info.position).getUniqueid());
-//            loadConversationList();
-//        }
+        if(item.getTitle() == getString(R.string.common_message_info)){
+
+            BroadcastMessageInfo mInfoFrag = new BroadcastMessageInfo();
+            Bundle bundle = new Bundle();
+
+            bundle.putString("authtoken",authtoken);
+            bundle.putString("message",convList.get(info.position).getMsg());
+            bundle.putString("bList_id",bList_id);
+            bundle.putString("message_id",convList.get(info.position).getUniqueid());
+            bundle.putString("list_name",list_name);
+
+            mInfoFrag.setArguments(bundle);
+            getFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, mInfoFrag, null)
+                    .addToBackStack("Message Info")
+                    .commit();
+        }
+        if(item.getTitle() == getString(R.string.common_remove_message)){
+            DatabaseHandler db = new DatabaseHandler(getContext());
+            db.deleteNormalChatMessage(convList.get(info.position).getUniqueid());
+            loadConversationList();
+        }
 
         return true;
     }
