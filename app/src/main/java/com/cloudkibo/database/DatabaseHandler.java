@@ -258,6 +258,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + ")";
         db.execSQL(CREATE_BROADCAST_MEMBER);
 
+        String CREATE_DAYSTATUS_INFO = "CREATE TABLE DAYSTATUS_INFO ("
+                + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + "uniqueid TEXT, "
+                + "file_type TEXT, " //either image or video
+                + "label TEXT, "
+                + "upload_date DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
+                + "file_name TEXT, "
+                + "file_size INTEGER, "
+                + "uploaded_by TEXT, "
+                + "file_path TEXT, " //uploaded by will not be needed on clientside
+                + ")";
+        db.execSQL(CREATE_DAYSTATUS_INFO);
+
+        String CREATE_DAYSTATUS_UPDATE = "CREATE TABLE DAYSTATUS_UPDATE ("
+                + "uniqueid TEXT, " //It will be same as the uniqueid of status in status_info
+                + "upload_date DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
+                + "uploaded_by TEXT, "
+                + "contact TEXT "
+                + ")";
+        db.execSQL(CREATE_DAYSTATUS_UPDATE);
+
     }
 
 
@@ -293,8 +314,152 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS LINKSINFO");
         db.execSQL("DROP TABLE IF EXISTS BROADCAST_LIST");
         db.execSQL("DROP TABLE IF EXISTS BROADCAST_MEMBER");
+        db.execSQL("DROP TABLE IF EXISTS DAYSTATUS_INFO");
+        db.execSQL("DROP TABLE IF EXISTS DAYSTATUS_UPDATE");
         // Create tables again
         onCreate(db);
+    }
+
+    public void createDaystatusInfo(String unique_id, String file_type, String label, String file_name, String file_path, int file_size, String uploaded_by ){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("uniqueid", unique_id);
+        values.put("file_type", file_type);
+        values.put("label", label);
+        values.put("file_name", file_name);
+        values.put("file_path", file_path);
+        values.put("files_size", file_size);
+        values.put("uploaded_by", uploaded_by);
+
+        //Inserting Row
+        db.insert("DAYSTATUS_INFO", null, values);
+
+        db.close();
+    }
+
+    public void deleteDaystatus(String unique_id){
+
+        deleteInDayUpdate(unique_id);
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String deleteQuery = "DELETE FROM DAYSTATUS_INFO WHERE uniqueid='"+ unique_id +"'";
+        db.execSQL(deleteQuery);
+        db.close();
+    }
+
+    public void deleteInDayUpdate(String unique_id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String deleteQuery = "DELETE FROM DAYSTATUS_UPDATE WHERE uniqueid='"+ unique_id +"'";
+
+        db.execSQL(deleteQuery);
+        db.close();
+    }
+
+    public void updateDayStatus(String unique_id, String contact, String uploaded_by){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("uniqueid", unique_id);
+        values.put("contact", contact);
+        values.put("uploaded_by", uploaded_by);
+
+        db.insert("DAYSTATUS_UPDATE", null, values);
+        db.close();
+    }
+
+    public JSONArray getAllDayStatus() throws JSONException {
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT uniqueid, upload_date, label, file_name, file_path, uploaded_by from DAYSTATUS_INFO";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        //Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("uniqueid", cursor.getString(0));
+                contact.put("upload_date", cursor.getString(1));
+                contact.put("label", cursor.getString(2));
+                contact.put("file_name", cursor.getString(3));
+                contact.put("file_path", cursor.getString(4));
+                contact.put("uploaded_by", cursor.getString(5));
+                groups.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return groups;
+
+    }
+
+    public JSONArray getSpecificDayStatus(String unique_id) throws JSONException {
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT uniqueid, upload_date, label, file_name, file_path, uploaded_by from DAYSTATUS_INFO WHERE uniqueid='"+ unique_id +"'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        //Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("uniqueid", cursor.getString(0));
+                contact.put("upload_date", cursor.getString(1));
+                contact.put("label", cursor.getString(2));
+                contact.put("file_name", cursor.getString(3));
+                contact.put("file_path", cursor.getString(4));
+                contact.put("uploaded_by", cursor.getString(5));
+                groups.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return groups;
+
+    }
+
+    public JSONArray getDayStatusUpdate(String unique_id) throws JSONException {
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT uniqueid, upload_date, uploaded_by, contact from DAYSTATUS_UPDATE WHERE uniqueid='"+ unique_id +"'";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        //Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("uniqueid", cursor.getString(0));
+                contact.put("upload_date", cursor.getString(1));
+                contact.put("uploaded_by", cursor.getString(2));
+                contact.put("contact", cursor.getString(2));
+                groups.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return groups;
+
     }
 
     public void createBroadcastList(String unique_id, String name) {
