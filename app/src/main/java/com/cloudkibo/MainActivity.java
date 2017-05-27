@@ -82,6 +82,7 @@ import com.cloudkibo.ui.CallHistory;
 import com.cloudkibo.ui.ChatList;
 import com.cloudkibo.ui.ContactList;
 import com.cloudkibo.ui.ContactListPending;
+import com.cloudkibo.ui.DayStatus;
 import com.cloudkibo.ui.GroupChat;
 import com.cloudkibo.ui.GroupChatUI;
 import com.cloudkibo.ui.GroupSetting;
@@ -530,6 +531,7 @@ public class MainActivity extends CustomActivity
         ArrayList<Data> al = new ArrayList<Data>();
         al.add(new Data(getString(R.string.side_menu_chat), null, R.drawable.ic_chat));
         al.add(new Data(getString(R.string.side_menu_contacts), null, R.drawable.ic_notes));
+        al.add(new Data("Status", null, R.drawable.ic_chat));
         al.add(new Data(getString(R.string.side_menu_create_group), null, R.drawable.ic_about));
         al.add(new Data("Invite", null, R.drawable.ic_notes));
         al.add(new Data(getString(R.string.side_menu_calls_history), null, android.R.drawable.sym_action_call));
@@ -561,15 +563,19 @@ public class MainActivity extends CustomActivity
             title = getString(R.string.side_menu_contacts);
             f = new ContactList();
         }
-        else if(pos == 5){
+        else if(pos == 3){
+            title = getString(R.string.day_status);
+            f = new DayStatus();
+        }
+        else if(pos == 6){
             title = getString(R.string.side_menu_calls_history);
             f = new CallHistory();
         }
-        else if(pos == 4){
+        else if(pos == 5){
             title = getString(R.string.side_menu_contacts_invite);
             f = new ContactListPending();
         }
-        else if(pos == 3){
+        else if(pos == 4){
             title = getString(R.string.side_menu_create_group);
             f = new AddMembers();
         }
@@ -619,7 +625,7 @@ public class MainActivity extends CustomActivity
 
             alertD.show();
         }
-        else if (pos == 6)
+        else if (pos == 7)
         {
             title = getString(R.string.side_menu_about);
             f = new AboutChat();

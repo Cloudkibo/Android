@@ -63,6 +63,7 @@
     <string name="side_menu_chat">Chat</string>
     <string name="side_menu_contacts">Contacts</string>
     <string name="side_menu_calls_history">Calls History</string>
+    <string name="day_status">Status</string>
     <string name="side_menu_contacts_invite">Invite Contacts</string>
     <string name="side_menu_create_group">Create Group</string>
     <string name="side_menu_about">KiboChat</string>

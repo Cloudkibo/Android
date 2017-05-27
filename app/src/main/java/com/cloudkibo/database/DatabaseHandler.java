@@ -267,7 +267,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "file_name TEXT, "
                 + "file_size INTEGER, "
                 + "uploaded_by TEXT, "
-                + "file_path TEXT, " //uploaded by will not be needed on clientside
+                + "file_path TEXT " //uploaded by will not be needed on clientside
                 + ")";
         db.execSQL(CREATE_DAYSTATUS_INFO);
 
