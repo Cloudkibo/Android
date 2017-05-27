@@ -14,5 +14,11 @@
         app:showAsAction="ifRoom"
         android:title="@string/block"
         />
+    <item
+        android:id="@+id/muteThisContact"
+        android:icon="@android:drawable/ic_dialog_map"
+        app:showAsAction="ifRoom"
+        android:title="Mute"
+        />
 
 </menu>

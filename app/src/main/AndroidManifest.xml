@@ -227,6 +227,10 @@
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false" />
         <service
+            android:name=".ui.MuteSchedulerService"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:exported="false" />
+        <service
             android:name=".webrtc.conference.FileTransferService"
             android:enabled="true"
             android:exported="true" />

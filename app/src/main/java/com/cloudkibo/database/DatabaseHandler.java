@@ -78,6 +78,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + Contacts.CONTACT_STATUS + " TEXT,"
                 + "on_cloudkibo" + " TEXT,"
                 + "image_uri TEXT DEFAULT NULL,"
+                + "is_mute" + " TEXT DEFAULT 'false',"
                 + "blocked_me" + " TEXT DEFAULT 'false'," // possible values : "true" or "false"
                 + "blocked_by_me" + " TEXT DEFAULT 'false' " // possible values : "true" or "false"
                 + ")";
@@ -97,7 +98,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "isArchived" + " INTEGER DEFAULT 0 , "
                 + "broadcast_id" + " TEXT," // possible values : "true" or "false"
                 + "is_broadcast" + " TEXT DEFAULT 'false'," // possible values : "true" or "false"
-                + "contact_phone" + " TEXT "+ ")";
+                + "contact_phone" + " TEXT "
+                + ")";
         db.execSQL(CREATE_USERCHAT_TABLE);
 
         String CREATE_CALL_HISTORY_TABLE = "CREATE TABLE call_history ("
@@ -319,6 +321,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Create tables again
         onCreate(db);
     }
+
+
 
     public void createDaystatusInfo(String unique_id, String file_type, String label, String file_name, String file_path, int file_size, String uploaded_by ){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -1581,6 +1585,50 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
         // return user
         return false;
+    }
+
+    public boolean isMuteContact(String contact) throws JSONException {
+        String selectQuery = "SELECT is_mute FROM contacts WHERE phone ='"+ contact +"'" ;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        // Move to first row
+        boolean state = true;
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                if(cursor.getString(0).equals("false")){
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return state;
+    }
+
+
+
+    public void muteContact(String contact){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put("is_mute", "true");
+        db.update(Contacts.TABLE_CONTACTS, args, "phone='"+contact+"'", null);
+
+        db.close();
+    }
+
+    public void unMuteContact(String contact){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues args = new ContentValues();
+        args.put("is_mute", "false");
+        db.update(Contacts.TABLE_CONTACTS, args, "phone='"+contact+"'", null);
+
+        db.close();
     }
 
     public void muteGroup(String group_id){

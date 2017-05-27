@@ -1608,16 +1608,18 @@ public class MainActivity extends CustomActivity
                         senderName = body.getString("from");
                     }
 
-                    (new GroupUtility(getApplicationContext())).sendNotification(senderName, subMsg);
+                    if(!db.isMuteContact(body.getString("from"))) {
+                        (new GroupUtility(getApplicationContext())).sendNotification(senderName, subMsg);
 
-                    Utility.sendLogToServer(getApplicationContext(), ""+ body.getString("to") +" is going to show notification and chime for message because user is on other chat screen in app");
+                        Utility.sendLogToServer(getApplicationContext(), "" + body.getString("to") + " is going to show notification and chime for message because user is on other chat screen in app");
 
-                    try {
-                        Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                        Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                        r.play();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+                        try {
+                            Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+                            Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
+                            r.play();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
 
@@ -1634,15 +1636,15 @@ public class MainActivity extends CustomActivity
                 String senderName = "";
 
                 JSONArray contactInAddressBook = db.getSpecificContact(body.getString("from"));
-                if(contactInAddressBook.length() > 0) {
+                if (contactInAddressBook.length() > 0) {
                     senderName = contactInAddressBook.getJSONObject(0).getString("display_name");
                 } else {
                     senderName = body.getString("from");
                 }
+                if (!db.isMuteContact(body.getString("from"))){
+                    (new GroupUtility(getApplicationContext())).sendNotification(senderName, subMsg);
 
-                (new GroupUtility(getApplicationContext())).sendNotification(senderName, subMsg);
-
-                Utility.sendLogToServer(getApplicationContext(), ""+ body.getString("to") +" is going to show notification and chime for message because user is on conversations list screen in app");
+                Utility.sendLogToServer(getApplicationContext(), "" + body.getString("to") + " is going to show notification and chime for message because user is on conversations list screen in app");
 
                 try {
                     Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -1651,6 +1653,7 @@ public class MainActivity extends CustomActivity
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+            }
 
                 if(myFragment.getFragmentName().equals("ChatList")){
                     final ChatList myChatListFragment = (ChatList) myFragment;
