@@ -12,6 +12,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 
@@ -26,7 +27,11 @@ import android.app.ActionBar;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.NotificationManager;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,6 +43,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
@@ -65,6 +71,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,6 +80,7 @@ import com.bumptech.glide.Glide;
 import com.cloudkibo.MainActivity;
 //import com.cloudkibo.R;
 import com.cloudkibo.R;
+import com.cloudkibo.backup.JobSchedulerService;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
 import com.cloudkibo.file.filechooser.utils.FileUtils;
@@ -138,6 +147,14 @@ public class GroupChat extends CustomFragment implements IFragmentName
     Boolean attachmentViewHidden = true;
 
     Context ctx;
+    private static int kJobId = 0;
+    String mute_selected_option = "Never";
+    String [] mute_options = new String[]{"Never", "Hourly", "Daily", "Weekly", "Monthly"};
+    final static int MINUTELY = 60 * 1000;
+    final static int HOURLY = 60 * MINUTELY;
+    final static int DAILY = 24 * HOURLY;
+    final static int WEEKLY = 7 * DAILY;
+    final static int MONTHLY = 4 * WEEKLY;
 
 	/* (non-Javadoc)
 	 * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -344,6 +361,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			menu.findItem(R.id.archived).setVisible(false);
 			menu.findItem(R.id.settings).setVisible(false);
 			menu.findItem(R.id.connect_to_desktop).setVisible(false);
+            menu.findItem(R.id.broadcast).setVisible(false);
 		}
 		inflater.inflate(R.menu.chat, menu);  // Use filter.xml from step 1
 //		getActivity().getActionBar().setSubtitle("Last seen on: ");
@@ -674,8 +692,89 @@ public class GroupChat extends CustomFragment implements IFragmentName
 			}
 		}
 
+        if(id == R.id.muteThisContact){
+            Toast.makeText(getContext(), "Mute clicked", Toast.LENGTH_SHORT).show();
+            showMuteDialog();
+        }
+
 		return super.onOptionsItemSelected(item);
 	}
+
+    private void showMuteDialog() {
+
+        // custom dialog
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setTitle("Mute Contact");
+        dialog.setContentView(R.layout.drive_backup_dialog);
+
+        List<String> stringList=new ArrayList<>();  // here is list
+        for (int i=0; i<mute_options.length; i++){
+            stringList.add(mute_options[i]);
+        }
+
+        final RadioGroup rg = (RadioGroup) dialog.findViewById(R.id.radio_group);
+        Button cancel = (Button) dialog.findViewById(R.id.cancel_drive_backup_dialog);
+        for(int i=0;i<stringList.size();i++){
+            RadioButton rb=new RadioButton(MainActivity.mainActivity); // dynamically creating RadioButton and adding to RadioGroup.
+            rb.setText(stringList.get(i));
+            rb.setPadding(20,20,20,20);
+            rg.addView(rb);
+            if(stringList.get(i).equals(mute_selected_option)){
+                rb.setChecked(true);
+            }
+
+        }
+        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // checkedId is the RadioButton selected
+                RadioButton radioButton = (RadioButton) rg.findViewById(checkedId);
+                if(!mute_selected_option.equals(radioButton.getText().toString())) {
+                    String newOption = radioButton.getText().toString();
+                    Toast.makeText(getContext(), "Muted", Toast.LENGTH_SHORT).show();
+                    DatabaseHandler db = new DatabaseHandler(getContext());
+                    db.muteContact(contactPhone);
+                    startJobServiceForOneTimeOnly(newOption);
+                }
+                dialog.cancel();
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+            }
+        });
+
+        dialog.show();
+
+    }
+
+    public void startJobServiceForOneTimeOnly(String period){
+        ComponentName mServiceComponent = new ComponentName(getContext(), MuteSchedulerService.class);
+        JobInfo.Builder builder = new JobInfo.Builder(kJobId++, mServiceComponent);
+        //builder.setMinimumLatency(60 * 1000); // wait at least
+        if(period.equals("Daily")){
+            builder.setMinimumLatency(DAILY); // maximum delay
+        } else if(period.equals("Hourly")){
+            builder.setMinimumLatency(HOURLY); // maximum delay
+        } else if(period.equals("Weekly")){
+            builder.setMinimumLatency(WEEKLY); // maximum delay
+        } else if(period.equals("Monthly")){
+            builder.setMinimumLatency(MONTHLY); // maximum delay
+        }
+
+
+        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED); // todo change according to selected value - require unmetered network
+        //builder.setRequiresDeviceIdle(true); // device should be idle
+        builder.setRequiresCharging(false);// we don't care if the device is charging or not
+        PersistableBundle bundle = new PersistableBundle();
+        bundle.putString("contactPhone", contactPhone);
+        builder.setExtras(bundle);
+        JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(builder.build());
+    }
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {

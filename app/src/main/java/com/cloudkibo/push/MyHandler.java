@@ -342,7 +342,8 @@ public class MyHandler extends NotificationsHandler {
                             } else {
                                 displayName = row.getString("from");
                             }
-                            Utility.sendNotification(ctx, displayName, row.getString("msg"));
+                            if(!db.isMuteContact(row.getString("from")))
+                                Utility.sendNotification(ctx, displayName, row.getString("msg"));
                             if(socketService.isPlatformConnected()){
                                 socketService.sendNewArrivedChatToDesktop(row);
                             }
