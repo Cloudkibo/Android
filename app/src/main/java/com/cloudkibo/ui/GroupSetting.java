@@ -217,7 +217,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
 
         // custom dialog
         final Dialog dialog = new Dialog(getContext());
-        dialog.setTitle("Mute Contact");
+        dialog.setTitle("Mute Group");
         dialog.setContentView(R.layout.drive_backup_dialog);
 
         List<String> stringList=new ArrayList<>();  // here is list
