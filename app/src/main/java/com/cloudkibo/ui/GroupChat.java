@@ -771,6 +771,7 @@ public class GroupChat extends CustomFragment implements IFragmentName
         builder.setRequiresCharging(false);// we don't care if the device is charging or not
         PersistableBundle bundle = new PersistableBundle();
         bundle.putString("contactPhone", contactPhone);
+        bundle.putString("chatType", "onetoone");
         builder.setExtras(bundle);
         JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
         jobScheduler.schedule(builder.build());

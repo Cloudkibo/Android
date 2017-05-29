@@ -1,12 +1,17 @@
 package com.cloudkibo.ui;
 
 import android.app.AlertDialog;
+import android.app.Dialog;
+import android.app.job.JobInfo;
+import android.app.job.JobScheduler;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +25,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,6 +55,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -73,6 +82,16 @@ public class GroupSetting extends CustomFragment implements IFragmentName
     ImageButton btnSelectIcon;
     Button leave_group;
     View view;
+    Switch muteSwitch;
+
+    private static int kJobId = 0;
+    String mute_selected_option = "Never";
+    String [] mute_options = new String[]{"Never", "Hourly", "Daily", "Weekly", "Monthly"};
+    final static int MINUTELY = 60 * 1000;
+    final static int HOURLY = 60 * MINUTELY;
+    final static int DAILY = 24 * HOURLY;
+    final static int WEEKLY = 7 * DAILY;
+    final static int MONTHLY = 4 * WEEKLY;
 
     /* (non-Javadoc)
      * @see android.support.v4.app.Fragment#onCreateView(android.view.LayoutInflater, android.view.ViewGroup, android.os.Bundle)
@@ -98,7 +117,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
   //      btnSelectIcon = (ImageButton) v.findViewById(R.id.selectIconBtn);
         GroupUtility groupUtility = new GroupUtility(getContext());
 
-        Switch muteSwitch = (Switch) v.findViewById(R.id.switch1);
+        muteSwitch = (Switch) v.findViewById(R.id.switch1);
         if(!groupUtility.isMember(group_id)){
             leave_group.setVisibility(View.INVISIBLE);
             muteSwitch.setVisibility(View.INVISIBLE);
@@ -181,8 +200,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(b){
-                    DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
-                    db.muteGroup(group_id);
+                    showMuteDialog();
                 } else {
                     DatabaseHandler db = new DatabaseHandler(getActivity().getApplicationContext());
                     db.unmuteGroup(group_id);
@@ -192,6 +210,86 @@ public class GroupSetting extends CustomFragment implements IFragmentName
 
 
         return vg;
+    }
+
+
+    private void showMuteDialog() {
+
+        // custom dialog
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setTitle("Mute Contact");
+        dialog.setContentView(R.layout.drive_backup_dialog);
+
+        List<String> stringList=new ArrayList<>();  // here is list
+        for (int i=0; i<mute_options.length; i++){
+            stringList.add(mute_options[i]);
+        }
+
+        final RadioGroup rg = (RadioGroup) dialog.findViewById(R.id.radio_group);
+        Button cancel = (Button) dialog.findViewById(R.id.cancel_drive_backup_dialog);
+        for(int i=0;i<stringList.size();i++){
+            RadioButton rb=new RadioButton(MainActivity.mainActivity); // dynamically creating RadioButton and adding to RadioGroup.
+            rb.setText(stringList.get(i));
+            rb.setPadding(20,20,20,20);
+            rg.addView(rb);
+            if(stringList.get(i).equals(mute_selected_option)){
+                rb.setChecked(true);
+            }
+
+        }
+        rg.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                // checkedId is the RadioButton selected
+                RadioButton radioButton = (RadioButton) rg.findViewById(checkedId);
+                if(!mute_selected_option.equals(radioButton.getText().toString())) {
+                    String newOption = radioButton.getText().toString();
+                    Toast.makeText(getContext(), "Muted", Toast.LENGTH_SHORT).show();
+                    DatabaseHandler db = new DatabaseHandler(getContext());
+                    db.muteGroup(group_id);
+                    startJobServiceForOneTimeOnly(newOption);
+                }
+                dialog.cancel();
+            }
+        });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.cancel();
+                muteSwitch.setChecked(false);
+            }
+        });
+
+        dialog.show();
+
+    }
+
+
+    public void startJobServiceForOneTimeOnly(String period){
+        ComponentName mServiceComponent = new ComponentName(getContext(), MuteSchedulerService.class);
+        JobInfo.Builder builder = new JobInfo.Builder(kJobId++, mServiceComponent);
+        //builder.setMinimumLatency(60 * 1000); // wait at least
+        if(period.equals("Daily")){
+            builder.setMinimumLatency(10*1000); // maximum delay
+        } else if(period.equals("Hourly")){
+            builder.setMinimumLatency(HOURLY); // maximum delay
+        } else if(period.equals("Weekly")){
+            builder.setMinimumLatency(WEEKLY); // maximum delay
+        } else if(period.equals("Monthly")){
+            builder.setMinimumLatency(MONTHLY); // maximum delay
+        }
+
+
+        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED); // todo change according to selected value - require unmetered network
+        //builder.setRequiresDeviceIdle(true); // device should be idle
+        builder.setRequiresCharging(false);// we don't care if the device is charging or not
+        PersistableBundle bundle = new PersistableBundle();
+        bundle.putString("groupid", group_id);
+        bundle.putString("chatType", "groupchat");
+        builder.setExtras(bundle);
+        JobScheduler jobScheduler = (JobScheduler) getContext().getSystemService(Context.JOB_SCHEDULER_SERVICE);
+        jobScheduler.schedule(builder.build());
     }
 
 
