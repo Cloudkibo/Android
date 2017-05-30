@@ -271,7 +271,7 @@ public class GroupSetting extends CustomFragment implements IFragmentName
         JobInfo.Builder builder = new JobInfo.Builder(kJobId++, mServiceComponent);
         //builder.setMinimumLatency(60 * 1000); // wait at least
         if(period.equals("Daily")){
-            builder.setMinimumLatency(10*1000); // maximum delay
+            builder.setMinimumLatency(DAILY); // maximum delay
         } else if(period.equals("Hourly")){
             builder.setMinimumLatency(HOURLY); // maximum delay
         } else if(period.equals("Weekly")){
