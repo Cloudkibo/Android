@@ -17,16 +17,31 @@ public class MuteSchedulerService extends JobService {
     @Override
     public boolean onStartJob(JobParameters jobParameters) {
         db = new DatabaseHandler(this);
-        final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.bell);
-        mp.start();
+        String chatType = jobParameters.getExtras().getString("chatType");
 
-        String contactPhone = jobParameters.getExtras().getString("contactPhone");
+        if (chatType.equals("onetoone")) {
 
-        Toast.makeText(getApplicationContext(), contactPhone, Toast.LENGTH_SHORT).show();
+            final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.bell);
+            mp.start();
+
+            String contactPhone = jobParameters.getExtras().getString("contactPhone");
+
+            Toast.makeText(getApplicationContext(), contactPhone, Toast.LENGTH_SHORT).show();
+
+            db.unMuteContact(contactPhone);
+        } else if(chatType.equals("groupchat")){
+            final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.bell);
+            mp.start();
+
+            String groupid = jobParameters.getExtras().getString("groupid");
+            Toast.makeText(getApplicationContext(), groupid, Toast.LENGTH_SHORT).show();
+
+            db.unmuteGroup(groupid);
+        }
 
 
 
-        db.unMuteContact(contactPhone);
+
 
 
 
