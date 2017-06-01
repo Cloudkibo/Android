@@ -2,27 +2,39 @@ package com.cloudkibo.ui;
 
 
 import android.app.ActionBar;
+import android.content.Context;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
+import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.library.UserFunctions;
+import com.cloudkibo.library.Utility;
 import com.cloudkibo.utils.IFragmentName;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Date;
+import java.util.HashMap;
 
 public class DayStatusView extends CustomFragment implements IFragmentName{
     String authtoken;
+    String contactPhone; //whose status we are viewing
+    String statusID; //of status we are viewing
+    Context ctx;
+    private HashMap<String, String> user;
     LayoutInflater inflater;
     EditText replyMessage;
     Button send;
@@ -37,10 +49,15 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
         View v = inflater.inflate(R.layout.daystatus_view, null);
         this.inflater = inflater;
         setHasOptionsMenu(true);
+        ctx = getActivity().getApplicationContext();
+        DatabaseHandler db = new DatabaseHandler(ctx);
+        user = db.getUserDetails();
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         Bundle args = getArguments();
         if (args  != null){
             // TODO: 5/27/17 get arguments from fragment it is called in
+            contactPhone = args.getString("contactPhone");
+            statusID = args.getString("statusID");
         }
 
         replyMessage = (EditText) v.findViewById(R.id.replyMsg);
@@ -84,6 +101,10 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
             public void onClick(View view) {
                 // TODO: 5/30/17 Add logic to send reply
                 Toast.makeText(getContext(), "reply status clicked", Toast.LENGTH_SHORT).show();
+                //Call sendMessage() below here.
+                InputMethodManager imm = (InputMethodManager) getActivity()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(replyMessage.getWindowToken(), 0);
             }
         });
 
@@ -107,6 +128,84 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
         ActionBar actionBar = getActivity().getActionBar();
         actionBar.setDisplayShowCustomEnabled(false);
     }
+
+    private void sendMessage()
+    {
+        if (replyMessage.length() == 0)
+            return;
+
+        String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+        uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+        uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+
+        InputMethodManager imm = (InputMethodManager) getActivity()
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(replyMessage.getWindowToken(), 0);
+
+        String messageString = replyMessage.getText().toString();
+
+        DatabaseHandler db = new DatabaseHandler(ctx);
+        db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
+                messageString, Utility.getCurrentTimeInISO(), "pending", uniqueid, "day_status_chat", statusID);
+
+
+        sendMessageUsingAPI(messageString, uniqueid, "day_status_chat", statusID);
+
+        replyMessage.setText(null);
+    }
+
+    public void sendMessageUsingAPI(final String msg, final String uniqueid, final String type, final String file_type){
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunction = new UserFunctions(ctx);
+                JSONObject message = new JSONObject();
+
+                try {
+                    message.put("from", user.get("phone"));
+                    message.put("to", contactPhone);
+                    message.put("fromFullName", user.get("display_name"));
+                    message.put("msg", msg);
+                    message.put("date", Utility.getCurrentTimeInISO());
+                    message.put("uniqueid", uniqueid);
+                    message.put("type", type);
+                    message.put("file_type", file_type);
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+
+                return userFunction.sendChatMessageToServer(message, authtoken);
+
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+                try {
+
+                    if (row != null) {
+                        if(row.has("status")){
+                            updateChatStatus(row.getString("status"), row.getString("uniqueid"));
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }.execute();
+    }
+
+    public void updateChatStatus(String status, String uniqueid){
+        try {
+            DatabaseHandler db = new DatabaseHandler(ctx);
+            db.updateChat(status, uniqueid);
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public String getFragmentName() {
