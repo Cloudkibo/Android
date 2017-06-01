@@ -27,6 +27,7 @@ public class DayStatus extends CustomFragment implements IFragmentName {
     {
         View v = inflater.inflate(R.layout.day_status_screen, null);
         this.inflater = inflater;
+        setHasOptionsMenu(true);
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         Bundle args = getArguments();
         if (args  != null){
@@ -39,6 +40,12 @@ public class DayStatus extends CustomFragment implements IFragmentName {
             public void onClick(View view) {
                 // TODO: 5/27/17 add logic to create day status
                 Toast.makeText(getContext(), "Action Button clicked", Toast.LENGTH_SHORT).show();
+                DayStatusView demo = new DayStatusView();
+
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.content_frame, demo, "dayStatusViewTag")
+                        .addToBackStack("View Status")
+                        .commit();
             }
         });
 
@@ -62,7 +69,7 @@ public class DayStatus extends CustomFragment implements IFragmentName {
         }
         menu.clear();
         inflater.inflate(R.menu.newchat, menu);  // Use filter.xml from step 1
-        getActivity().getActionBar().setSubtitle("Day Status");
+        getActivity().getActionBar().setSubtitle(null);
         ActionBar actionBar = getActivity().getActionBar();
         actionBar.setDisplayShowCustomEnabled(false);
     }
