@@ -14,6 +14,9 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cloudkibo.R;
@@ -25,6 +28,7 @@ import com.cloudkibo.utils.IFragmentName;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -37,13 +41,16 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
     private HashMap<String, String> user;
     LayoutInflater inflater;
     EditText replyMessage;
+    TextView totalViewer;
+    Button buttonDelete;
     Button send;
+    LinearLayout deleteLayout;
 
     int down = 0;
     int up = 500000;
 
     @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState)
     {
         View v = inflater.inflate(R.layout.daystatus_view, null);
@@ -54,6 +61,7 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
         user = db.getUserDetails();
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         Bundle args = getArguments();
+        contactPhone = user.get("phone"); // only for testing purposes
         if (args  != null){
             // TODO: 5/27/17 get arguments from fragment it is called in
             contactPhone = args.getString("contactPhone");
@@ -62,8 +70,16 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
 
         replyMessage = (EditText) v.findViewById(R.id.replyMsg);
         send = (Button) v.findViewById(R.id.btnSend);
+        deleteLayout = (LinearLayout) v.findViewById(R.id.deleteLayout);
+        totalViewer = (TextView) v.findViewById(R.id.totalViewer);
+        buttonDelete = (Button) v.findViewById(R.id.btnDel);
+
         replyMessage.setVisibility(View.GONE);
         send.setVisibility(View.GONE);
+        deleteLayout.setVisibility(View.GONE);
+
+
+        totalViewer.setText(totalViewer.getText()+" 0");
 
         //To enable swipe motion
         v.setOnTouchListener(new View.OnTouchListener() {
@@ -80,12 +96,19 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
                 if(down > up) {
                     Toast.makeText(getContext(), "swipe up" + down + " " + up, Toast.LENGTH_SHORT).show();
 
-                    replyMessage.setVisibility(View.VISIBLE);
-                    send.setVisibility(View.VISIBLE);
-                    replyMessage.requestFocus();
+                    //condition to check if own status is opened or of a contact's
+                    if(contactPhone.equals(user.get("phone"))) {
+                        deleteLayout.setVisibility(View.VISIBLE);
 
-                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getContext().INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(replyMessage, InputMethodManager.SHOW_IMPLICIT);
+
+                    } else {
+                        replyMessage.setVisibility(View.VISIBLE);
+                        send.setVisibility(View.VISIBLE);
+                        replyMessage.requestFocus();
+
+                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getContext().INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(replyMessage, InputMethodManager.SHOW_IMPLICIT);
+                    }
 
                     down = 0;
                     up = 500000;
@@ -108,6 +131,16 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
             }
         });
 
+        buttonDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: 6/1/17 Call db method to delete the status.
+                Toast.makeText(getContext(), "Delete button clicked", Toast.LENGTH_SHORT).show();
+//                DatabaseHandler db = new DatabaseHandler(ctx);
+//                db.deleteDaystatus(statusID);
+            }
+        });
+
 
 
         return v;
@@ -123,7 +156,10 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
             menu.findItem(R.id.connect_to_desktop).setVisible(false);
             menu.findItem(R.id.broadcast).setVisible(false);
         }
-        inflater.inflate(R.menu.daystatus, menu);  // Use filter.xml from step 1
+        if(contactPhone.equals(user.get("phone")))
+            inflater.inflate(R.menu.newchat, menu);  // Use filter.xml from step 1
+        else
+            inflater.inflate(R.menu.daystatus, menu);
         getActivity().getActionBar().setSubtitle(null);    // TODO: 5/30/17 add the person name, whose status is opened
         ActionBar actionBar = getActivity().getActionBar();
         actionBar.setDisplayShowCustomEnabled(false);

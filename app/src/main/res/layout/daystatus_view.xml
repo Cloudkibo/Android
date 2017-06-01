@@ -42,6 +42,65 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="10dp"
+            android:layout_gravity="bottom"
+            android:id="@+id/deleteLayout">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:background="@drawable/layoutbg"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+                <TextView
+                    android:layout_width="400px"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="Viewed by"
+                    android:textColor="@color/white"
+                    android:id="@+id/totalViewer"
+                    android:gravity="bottom"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/btnDel"
+                    style="@style/btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="10dp"
+                    android:background="@drawable/ic_delete"
+                    android:gravity="bottom"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:background="@drawable/shape"
+                android:id="@+id/viewerList">
+
+                <include
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    layout="@layout/group_setting" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
     </FrameLayout>
 
 </LinearLayout>
