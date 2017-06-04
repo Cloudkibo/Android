@@ -38,6 +38,15 @@ public class MuteSchedulerService extends JobService {
 
             db.unmuteGroup(groupid);
         }
+        
+        if(chatType.equals("remove")){
+            final MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.bell);
+            mp.start();
+            String groupid = jobParameters.getExtras().getString("uniqueid");
+            Toast.makeText(getApplicationContext(), groupid, Toast.LENGTH_SHORT).show();
+
+            // TODO: 6/4/17 Call db method to remove from  table
+        }
 
 
 
