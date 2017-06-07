@@ -73,16 +73,15 @@ public class DayStatus extends CustomFragment implements IFragmentName {
         createStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: 5/27/17 add logic to create day status
                 Toast.makeText(getContext(), "Action Button clicked", Toast.LENGTH_SHORT).show();
-//                DayStatusView demo = new DayStatusView();
-//
-//                getFragmentManager().beginTransaction()
-//                        .replace(R.id.content_frame, demo, "dayStatusViewTag")
-//                        .addToBackStack("View Status")
-//                        .commit();
+                DayStatusView demo = new DayStatusView();
 
-                sendImageSelected();
+                getFragmentManager().beginTransaction()
+                        .replace(R.id.content_frame, demo, "dayStatusViewTag")
+                        .addToBackStack("View Status")
+                        .commit();
+
+                //sendImageSelected();
 
             }
         });
@@ -158,11 +157,12 @@ public class DayStatus extends CustomFragment implements IFragmentName {
                     DatabaseHandler db = new DatabaseHandler(ctx);
                         Toast.makeText(ctx, name , Toast.LENGTH_SHORT).show();
                     // TODO: 6/4/17 Add the image info into dayastatus table
+
                         MediaScannerConnection.scanFile(ctx, new String[] { tempCameraCaptureHolderString }, new String[] { "image/jpeg" }, null);
                         tempCameraCaptureHolderString = "";
                         //sendFileAttachment(uniqueid, "image"); // TODO: 6/4/17 method to upload the status to server
 
-                    // TODO: 6/4/17 Add code to autoremove the status
+
                     startJobServiceForOneTimeOnly(uniqueid);
 
                     break;
@@ -183,7 +183,7 @@ public class DayStatus extends CustomFragment implements IFragmentName {
 
 
 
-        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED); // todo change according to selected value - require unmetered network
+        builder.setRequiredNetworkType(JobInfo.NETWORK_TYPE_UNMETERED);
         //builder.setRequiresDeviceIdle(true); // device should be idle
         builder.setRequiresCharging(false);// we don't care if the device is charging or not
         PersistableBundle bundle = new PersistableBundle();

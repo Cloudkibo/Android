@@ -5,6 +5,7 @@ import android.app.ActionBar;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -45,9 +47,12 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
     Button buttonDelete;
     Button send;
     LinearLayout deleteLayout;
+    ProgressBar pb;
 
     int down = 0;
     int up = 500000;
+    int progressStatus;
+    boolean signalPB = true;
 
     @Override
     public View onCreateView(final LayoutInflater inflater, final ViewGroup container,
@@ -61,6 +66,8 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
         user = db.getUserDetails();
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         Bundle args = getArguments();
+
+        final Handler handler = new Handler();
         contactPhone = user.get("phone"); // only for testing purposes
         if (args  != null){
             // TODO: 5/27/17 get arguments from fragment it is called in
@@ -70,6 +77,7 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
 
         replyMessage = (EditText) v.findViewById(R.id.replyMsg);
         send = (Button) v.findViewById(R.id.btnSend);
+        pb = (ProgressBar) v.findViewById(R.id.pb);
         deleteLayout = (LinearLayout) v.findViewById(R.id.deleteLayout);
         totalViewer = (TextView) v.findViewById(R.id.totalViewer);
         buttonDelete = (Button) v.findViewById(R.id.btnDel);
@@ -80,6 +88,41 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
 
 
         totalViewer.setText(totalViewer.getText()+" 0");
+        progressStatus = 0;
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(progressStatus < 100){
+                    // Update the progress status
+                    if(signalPB)
+                        progressStatus +=1;
+
+                    // Try to sleep the thread for 20 milliseconds
+                    try{
+                        Thread.sleep(20);
+                    }catch(InterruptedException e){
+                        e.printStackTrace();
+                    }
+
+                    // Update the progress bar
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            pb.setProgress(progressStatus);
+                        }
+                    });
+                }
+                if(progressStatus == 100 ){
+                    DayStatus goback = new DayStatus();
+
+                    getFragmentManager().beginTransaction()
+                            .replace(R.id.content_frame, goback, "dayStatusTag")
+                            .addToBackStack("Day Status")
+                            .commit();
+                }
+            }
+        }).start(); // Start the operation
 
         //To enable swipe motion
         v.setOnTouchListener(new View.OnTouchListener() {
@@ -97,7 +140,7 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
                     Toast.makeText(getContext(), "swipe up" + down + " " + up, Toast.LENGTH_SHORT).show();
 
                     //condition to check if own status is opened or of a contact's
-                    if(contactPhone.equals(user.get("phone"))) {
+                    if(!contactPhone.equals(user.get("phone"))) {
                         deleteLayout.setVisibility(View.VISIBLE);
 
 
@@ -108,6 +151,7 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
 
                         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(getContext().INPUT_METHOD_SERVICE);
                         imm.showSoftInput(replyMessage, InputMethodManager.SHOW_IMPLICIT);
+                        signalPB = false;
                     }
 
                     down = 0;
@@ -122,19 +166,20 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: 5/30/17 Add logic to send reply
+
                 Toast.makeText(getContext(), "reply status clicked", Toast.LENGTH_SHORT).show();
-                //Call sendMessage() below here.
                 InputMethodManager imm = (InputMethodManager) getActivity()
                         .getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(replyMessage.getWindowToken(), 0);
+                signalPB = true;
+                //sendMessage();
             }
         });
 
         buttonDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: 6/1/17 Call db method to delete the status.
+
                 Toast.makeText(getContext(), "Delete button clicked", Toast.LENGTH_SHORT).show();
 //                DatabaseHandler db = new DatabaseHandler(ctx);
 //                db.deleteDaystatus(statusID);
