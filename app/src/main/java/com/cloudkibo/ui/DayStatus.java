@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.NotificationManager;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -20,6 +21,7 @@ import android.os.PersistableBundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,14 +35,26 @@ import com.cloudkibo.MainActivity;
 import com.cloudkibo.R;
 import com.cloudkibo.custom.CustomFragment;
 import com.cloudkibo.database.DatabaseHandler;
+import com.cloudkibo.file.filechooser.utils.FileUtils;
+import com.cloudkibo.library.UserFunctions;
+import com.cloudkibo.library.Utility;
+import com.cloudkibo.model.Conversation;
 import com.cloudkibo.utils.IFragmentName;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.ProgressCallback;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
+import java.text.ParseException;
 import java.util.Date;
+import java.util.HashMap;
 
 import static com.cloudkibo.file.filechooser.utils.FileUtils.getExternalStoragePublicDirForImages;
 
@@ -48,7 +62,9 @@ public class DayStatus extends CustomFragment implements IFragmentName {
     String authtoken;
     ListView lv;
     LayoutInflater inflater;
+    JSONArray members;
     private String tempCameraCaptureHolderString;
+    private HashMap<String, String> user;
     Context ctx;
     private static int kJobId = 0;
     final static int MINUTELY = 60 * 1000;
@@ -64,6 +80,8 @@ public class DayStatus extends CustomFragment implements IFragmentName {
         setHasOptionsMenu(true);
         authtoken = getActivity().getIntent().getExtras().getString("authtoken");
         ctx = getActivity().getApplicationContext();
+        DatabaseHandler db = new DatabaseHandler(getContext());
+        user = db.getUserDetails();
         Bundle args = getArguments();
         if (args  != null){
             // TODO: 5/27/17 get arguments from fragment it is called in
@@ -89,8 +107,8 @@ public class DayStatus extends CustomFragment implements IFragmentName {
         lv=(ListView) v.findViewById(R.id.listView);
 
 
-        // TODO: 5/27/17 set Adapter for ListView here. 
-
+        // TODO: 5/27/17 fetch members into members JSONArray.
+        lv.setAdapter(new CustomDayStatusAdapter(inflater, members, getContext()));
 
         return v;
 
@@ -209,7 +227,67 @@ public class DayStatus extends CustomFragment implements IFragmentName {
         actionBar.setDisplayShowCustomEnabled(false);
     }
 
-    // TODO: 5/27/17 Retrieve statuses from db and render on screen via  custom adapter 
+    public void sendFileAttachment(final String uniqueid, final String fileType)
+    {
+        try {
+            DatabaseHandler db = new DatabaseHandler(ctx);
+            final JSONObject fileInfo = db.getFilesInfo(uniqueid);
+
+
+            final int id = 102;
+
+            final NotificationManager mNotifyManager =
+                    (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+            final android.support.v4.app.NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(ctx);
+            mBuilder.setContentTitle("Uploading attachment")
+                    .setContentText("Upload in progress")
+                    .setSmallIcon(R.drawable.icon);
+
+            UserFunctions userFunctions = new UserFunctions(ctx);
+            Ion.with(ctx)
+                    .load(userFunctions.getBaseURL() + "/api/daystatus/create")
+                    .progressHandler(new ProgressCallback() {
+                        @Override
+                        public void onProgress(long downloaded, long total) {
+                            mBuilder.setProgress((int) total, (int) downloaded, false);
+                            if(downloaded < total) {
+                                mBuilder.setContentText("Upload in progress: "+
+                                        ((downloaded / total) * 100) +"%");
+                            } else {
+                                mBuilder.setContentText("Uploaded file attachment");
+                            }
+                            mNotifyManager.notify(id, mBuilder.build());
+                        }
+                    }) //replace the arguments with the status file parameters
+                    .setHeader("kibo-token", authtoken)
+                    .setMultipartParameter("filetype", fileType)
+                    .setMultipartParameter("from", user.get("phone"))
+                    .setMultipartParameter("uniqueid", uniqueid)
+                    .setMultipartParameter("filename", fileInfo.getString("file_name"))
+                    .setMultipartParameter("filesize", fileInfo.getString("file_size"))
+                    .setMultipartFile("file", FileUtils.getExtension(fileInfo.getString("path")), new File(fileInfo.getString("path")))
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+                            // do stuff with the result or error
+                            if(e == null) {
+                                if (MainActivity.isVisible)
+                                    MainActivity.mainActivity.ToastNotify2("Uploaded the file to server.");
+                                //sendMessageUsingAPI(fileInfo.getString("file_name"), uniqueid, "file", fileType); What does this do?
+                            }
+                            else {
+                                if(MainActivity.isVisible)
+                                    MainActivity.mainActivity.ToastNotify2("Some error has occurred or Internet not available. Please try later.");
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public String getFragmentName() {

@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ import com.cloudkibo.library.UserFunctions;
 import com.cloudkibo.library.Utility;
 import com.cloudkibo.utils.IFragmentName;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
@@ -40,12 +42,14 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
     String contactPhone; //whose status we are viewing
     String statusID; //of status we are viewing
     Context ctx;
+    JSONArray viewers;
     private HashMap<String, String> user;
     LayoutInflater inflater;
     EditText replyMessage;
     TextView totalViewer;
     Button buttonDelete;
     Button send;
+    ListView lv;
     LinearLayout deleteLayout;
     ProgressBar pb;
 
@@ -78,6 +82,7 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
         replyMessage = (EditText) v.findViewById(R.id.replyMsg);
         send = (Button) v.findViewById(R.id.btnSend);
         pb = (ProgressBar) v.findViewById(R.id.pb);
+        lv = (ListView) v.findViewById(R.id.listView);
         deleteLayout = (LinearLayout) v.findViewById(R.id.deleteLayout);
         totalViewer = (TextView) v.findViewById(R.id.totalViewer);
         buttonDelete = (Button) v.findViewById(R.id.btnDel);
@@ -89,6 +94,7 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
 
         totalViewer.setText(totalViewer.getText()+" 0");
         progressStatus = 0;
+        lv.setAdapter(new CustomDayStatusAdapter(inflater, viewers, getContext(), statusID));
 
         new Thread(new Runnable() {
             @Override
@@ -186,7 +192,7 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
             }
         });
 
-
+        // TODO: 6/11/17 set viewers JSONArray by fetching from database 
 
         return v;
 
