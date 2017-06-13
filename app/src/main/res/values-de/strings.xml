@@ -111,4 +111,5 @@
     <string name="menu_connect_to_desktop">Verbinden Sie mit der Desktop App</string>
     <string name="menu_search_chats">Chats suchen</string>
     <string name="prompt_connect_desktop">Geben Sie die ID ein, die auf der Desktop-App angezeigt wird</string>
+    <string name="day_status">Status</string>
 </resources>

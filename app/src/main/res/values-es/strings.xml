@@ -111,4 +111,5 @@
     <string name="menu_connect_to_desktop">Acceder a la aplicación de escritorio</string>
     <string name="menu_search_chats">Buscar chats</string>
     <string name="prompt_connect_desktop">Introduce el ID que aparece en la aplicación de escritorio</string>
+    <string name="day_status">Estado</string>
 </resources>
