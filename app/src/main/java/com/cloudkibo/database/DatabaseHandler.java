@@ -267,7 +267,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "label TEXT, "
                 + "upload_date DATETIME DEFAULT (DATETIME(CURRENT_TIMESTAMP, 'LOCALTIME')), "
                 + "file_name TEXT, "
-                + "file_size INTEGER, "
+                + "file_size TEXT, "
                 + "uploaded_by TEXT, "
                 + "file_path TEXT " //uploaded by will not be needed on clientside
                 + ")";
@@ -324,7 +324,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
 
 
-    public void createDaystatusInfo(String unique_id, String file_type, String label, String file_name, String file_path, int file_size, String uploaded_by ){
+    public void createDaystatusInfo(String unique_id, String file_type, String label, String file_name, String file_path, String file_size, String uploaded_by ){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
 
@@ -333,7 +333,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put("label", label);
         values.put("file_name", file_name);
         values.put("file_path", file_path);
-        values.put("files_size", file_size);
+        values.put("file_size", file_size);
         values.put("uploaded_by", uploaded_by);
 
         //Inserting Row
@@ -375,7 +375,39 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     public JSONArray getAllDayStatus() throws JSONException {
         JSONArray groups = new JSONArray();
 
-        String selectQuery = "SELECT uniqueid, upload_date, label, file_name, file_path, uploaded_by from DAYSTATUS_INFO";
+        String selectQuery = "SELECT uniqueid, upload_date, label, file_name, file_path, uploaded_by from DAYSTATUS_INFO LEFT JOIN contacts ON contacts.phone = uploaded_by GROUP BY uploaded_by ORDER BY upload_date DESC";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        //Move to first row
+        cursor.moveToFirst();
+        if(cursor.getCount() > 0){
+
+            while (cursor.isAfterLast() != true) {
+
+                JSONObject contact = new JSONObject();
+                contact.put("uniqueid", cursor.getString(0));
+                contact.put("upload_date", cursor.getString(1));
+                contact.put("label", cursor.getString(2));
+                contact.put("file_name", cursor.getString(3));
+                contact.put("file_path", cursor.getString(4));
+                contact.put("uploaded_by", cursor.getString(5));
+                groups.put(contact);
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        // return user
+        return groups;
+
+    }
+
+    public JSONArray getSpecificContactDayStatus(String uploadedBy) throws JSONException {
+        JSONArray groups = new JSONArray();
+
+        String selectQuery = "SELECT uniqueid, upload_date, label, file_name, file_path, uploaded_by from DAYSTATUS_INFO WHERE uploaded_by='"+ uploadedBy +"'";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(selectQuery, null);

@@ -937,9 +937,9 @@ public class KiboSyncService extends Service {
         for (int i = 0; i < result.length(); i++) {
             try {
                 JSONObject row = result.getJSONObject(i);
-                db.createDaystatusInfo(row.getString("uniqueid"), row.getString("file_type"),
-                        row.getString("label"), row.getString("file_name"), "", row.getInt("file_size"),
-                        row.getString("uploadedBy"));
+//                db.createDaystatusInfo(row.getString("uniqueid"), row.getString("file_type"),
+//                        row.getString("label"), row.getString("file_name"), "", row.getString("file_size"),
+//                        row.getString("uploadedBy"));
 
                 /** todo @asadbintahir please write the download media logic here. I am leaving it
                  here because you would write the download media logic in push notification place
