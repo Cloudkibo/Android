@@ -23,11 +23,14 @@ import android.provider.MediaStore;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -66,6 +69,7 @@ public class DayStatus extends CustomFragment implements IFragmentName {
     private String tempCameraCaptureHolderString;
     private HashMap<String, String> user;
     Context ctx;
+    CustomDayStatusAdapter adp;
     private static int kJobId = 0;
     final static int MINUTELY = 60 * 1000;
     final static int HOURLY = 60 * MINUTELY;
@@ -92,26 +96,84 @@ public class DayStatus extends CustomFragment implements IFragmentName {
             @Override
             public void onClick(View view) {
                 Toast.makeText(getContext(), "Action Button clicked", Toast.LENGTH_SHORT).show();
-                DayStatusView demo = new DayStatusView();
+//                DayStatusView demo = new DayStatusView();
+//
+//                getFragmentManager().beginTransaction()
+//                        .replace(R.id.content_frame, demo, "dayStatusViewTag")
+//                        .addToBackStack("View Status")
+//                        .commit();
 
-                getFragmentManager().beginTransaction()
-                        .replace(R.id.content_frame, demo, "dayStatusViewTag")
-                        .addToBackStack("View Status")
-                        .commit();
-
-                //sendImageSelected();
+                sendImageSelected();
 
             }
         });
 
         lv=(ListView) v.findViewById(R.id.listView);
 
+        try {
+            members = db.getAllDayStatus();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-        // TODO: 5/27/17 fetch members into members JSONArray.
-        lv.setAdapter(new CustomDayStatusAdapter(inflater, members, getContext()));
+        adp = new CustomDayStatusAdapter(inflater, members, getContext());
+        lv.setAdapter(adp);
+        registerForContextMenu(lv);
+
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                JSONObject obj = null;
+                try {
+                    obj = members.getJSONObject(i);
+                    String uploadedBy = obj.getString("uploaded_by");
+
+                    DayStatusView demo = new DayStatusView();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("contactPhone", uploadedBy);
+                    demo.setArguments(bundle);
+
+                    getFragmentManager().beginTransaction()
+                        .replace(R.id.content_frame, demo, "dayStatusViewTag")
+                        .addToBackStack("View Status")
+                        .commit();
+
+
+                    Toast.makeText(ctx, uploadedBy, Toast.LENGTH_SHORT).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         return v;
 
+    }
+
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuinfo){
+        super.onCreateContextMenu(menu, v, menuinfo);
+
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuinfo;
+
+        if(true){
+            menu.setHeaderTitle("Mute Status from this");
+            menu.add(0, v.getId(), 0, "Mute");
+        } else {
+            menu.setHeaderTitle(getString(R.string.common_select_action));
+            menu.add(0, v.getId(), 0, getString(R.string.common_remove_message));
+        }
+    }
+
+    public boolean onContextItemSelected(MenuItem item){
+
+        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+
+        if(item.getTitle() == "Mute"){
+
+            Toast.makeText(ctx, "Mute clicked", Toast.LENGTH_SHORT).show();
+        }
+
+        return true;
     }
 
     private void sendImageSelected() {
@@ -174,11 +236,24 @@ public class DayStatus extends CustomFragment implements IFragmentName {
 
                     DatabaseHandler db = new DatabaseHandler(ctx);
                         Toast.makeText(ctx, name , Toast.LENGTH_SHORT).show();
-                    // TODO: 6/4/17 Add the image info into dayastatus table
+                    try {
+                        db.createDaystatusInfo(uniqueid,
+                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(tempCameraCaptureHolderString)
+                                        .getString("filetype"),
+                                name, //temp label
+                                name,
+                                tempCameraCaptureHolderString,
+                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(tempCameraCaptureHolderString)
+                                        .getString("size"),
+                                user.get("phone"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                         MediaScannerConnection.scanFile(ctx, new String[] { tempCameraCaptureHolderString }, new String[] { "image/jpeg" }, null);
+                        String imageP = tempCameraCaptureHolderString;
                         tempCameraCaptureHolderString = "";
-                        //sendFileAttachment(uniqueid, "image"); // TODO: 6/4/17 method to upload the status to server
+                        //sendFileAttachment(uniqueid, imageP);
 
 
                     startJobServiceForOneTimeOnly(uniqueid);
@@ -227,12 +302,9 @@ public class DayStatus extends CustomFragment implements IFragmentName {
         actionBar.setDisplayShowCustomEnabled(false);
     }
 
-    public void sendFileAttachment(final String uniqueid, final String fileType)
+    public void sendFileAttachment(final String uniqueid, final String filePath)
     {
         try {
-            DatabaseHandler db = new DatabaseHandler(ctx);
-            final JSONObject fileInfo = db.getFilesInfo(uniqueid);
-
 
             final int id = 102;
 
@@ -240,11 +312,17 @@ public class DayStatus extends CustomFragment implements IFragmentName {
                     (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
             final android.support.v4.app.NotificationCompat.Builder mBuilder =
                     new NotificationCompat.Builder(ctx);
-            mBuilder.setContentTitle("Uploading attachment")
+            mBuilder.setContentTitle("Uploading status")
                     .setContentText("Upload in progress")
                     .setSmallIcon(R.drawable.icon);
 
             UserFunctions userFunctions = new UserFunctions(ctx);
+            String name = com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(filePath)
+                    .getString("name");
+            String size = com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(filePath)
+                    .getString("size");
+            String type = com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(filePath)
+                    .getString("filetype");
             Ion.with(ctx)
                     .load(userFunctions.getBaseURL() + "/api/daystatus/create")
                     .progressHandler(new ProgressCallback() {
@@ -255,18 +333,20 @@ public class DayStatus extends CustomFragment implements IFragmentName {
                                 mBuilder.setContentText("Upload in progress: "+
                                         ((downloaded / total) * 100) +"%");
                             } else {
-                                mBuilder.setContentText("Uploaded file attachment");
+                                mBuilder.setContentText("Uploaded daystatus");
                             }
                             mNotifyManager.notify(id, mBuilder.build());
                         }
-                    }) //replace the arguments with the status file parameters
+                    })
                     .setHeader("kibo-token", authtoken)
-                    .setMultipartParameter("filetype", fileType)
-                    .setMultipartParameter("from", user.get("phone"))
+                    .setMultipartParameter("date", Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()))
                     .setMultipartParameter("uniqueid", uniqueid)
-                    .setMultipartParameter("filename", fileInfo.getString("file_name"))
-                    .setMultipartParameter("filesize", fileInfo.getString("file_size"))
-                    .setMultipartFile("file", FileUtils.getExtension(fileInfo.getString("path")), new File(fileInfo.getString("path")))
+                    .setMultipartParameter("file_name", name)
+                    .setMultipartParameter("file_size", size)
+                    .setMultipartParameter("label", "label")
+                    .setMultipartParameter("file_type", type)
+                    .setMultipartParameter("from", user.get("phone"))
+                    .setMultipartFile("file", FileUtils.getExtension(filePath), new File(filePath))
                     .asJsonObject()
                     .setCallback(new FutureCallback<JsonObject>() {
                         @Override
@@ -285,6 +365,8 @@ public class DayStatus extends CustomFragment implements IFragmentName {
                         }
                     });
         } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }

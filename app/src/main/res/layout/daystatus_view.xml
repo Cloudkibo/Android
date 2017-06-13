@@ -20,8 +20,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitCenter"
-        android:id="@+id/statusImg"
-        android:src="@drawable/avatar2"/>
+        android:id="@+id/statusImg"/>
 
         <LinearLayout
             android:layout_width="match_parent"
