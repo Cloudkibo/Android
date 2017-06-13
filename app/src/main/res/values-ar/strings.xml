@@ -111,4 +111,5 @@
     <string name="menu_connect_to_desktop">الاتصال التطبيقات المكتبية</string>
     <string name="menu_search_chats">البحث دردشات</string>
     <string name="prompt_connect_desktop">أدخل معرف يظهر على سطح المكتب التطبيق</string>
+    <string name="day_status">الحالة</string>
 </resources>

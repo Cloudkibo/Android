@@ -111,4 +111,5 @@
     <string name="menu_connect_to_desktop">Connexion à l\'application Google Desktop</string>
     <string name="menu_search_chats">Rechercher Chats</string>
     <string name="prompt_connect_desktop">Entrez l\'ID indiqué sur l\'application Bureau</string>
+    <string name="day_status">Statut</string>
 </resources>

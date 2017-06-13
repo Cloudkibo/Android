@@ -111,4 +111,5 @@
     <string name="menu_connect_to_desktop">ڈیسک ٹاپ اپلی کیشن سے رابطہ قائم کریں</string>
     <string name="menu_search_chats">تلاش کریں چیٹس</string>
     <string name="prompt_connect_desktop">ID ڈیسک ٹاپ اپلی کیشن پر دکھایا درج کریں</string>
+    <string name="day_status">سٹیٹس</string>
 </resources>
