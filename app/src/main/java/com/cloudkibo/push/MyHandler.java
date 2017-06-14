@@ -82,6 +82,16 @@ public class MyHandler extends NotificationsHandler {
                     db.contactJoinedKiboChat(newUser.getString("phone"));
                 }
 
+                if(payload.getString("type").equals("status:new_status_added")){
+                    Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" gets push notification payload of new daystatus creation");
+
+                    loadSpecificDaystatusFromServer(payload.getString("uniqueid"));
+
+                    if(MainActivity.isVisible){
+                        // TODO: 6/14/17 Handle on fragments
+                    }
+                }
+
                 // don't accept anything from contact who is blocked
                 if(payload.has("senderId") && !payload.getString("type").equals("group:chat_received")){
                     DatabaseHandler db = new DatabaseHandler(ctx);
@@ -290,6 +300,155 @@ public class MyHandler extends NotificationsHandler {
             // socketService.setSocketIOConfig();
         }
     };
+
+
+    private void loadSpecificDaystatusFromServer(final String uniqueid) {
+
+        final AccessToken accessToken = AccountKit.getCurrentAccessToken();
+
+        Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" is going to fetch the daystatus media.");
+        if (accessToken == null) {
+            Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" could not get the message using API as Facebook accountkit did not give auth token.");
+            return ;
+        }
+
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunction = new UserFunctions(ctx.getApplicationContext());
+                return userFunction.getDaystatusInfo(uniqueid, accessToken.getToken());
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+
+                if (row != null) {
+
+                    DatabaseHandler db = new DatabaseHandler(
+                            ctx.getApplicationContext());
+
+                    Log.i("MyHandler", row.toString());
+                    //sendNotification("Single Chat Received", row.toString());
+                    try {
+                        row = row.getJSONObject("data");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        db.createDaystatusInfo(
+                                uniqueid,
+                                row.getString("file_type"),
+                                row.getString("label"),
+                                row.getString("file_name"),
+                                "",
+                                row.getString("file_size"),
+                                row.getString("uploadedBy")
+                        );
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" got the daystatus info and saved to Database: "+ row.toString());
+
+                    if (MainActivity.isVisible) {
+                        // TODO: 6/14/17 handel incoming info
+                    }
+
+
+                        final JSONObject rowTemp = row;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ctx.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                            Utility.sendNotification(ctx, "KiboChat", "Daystatus was not downloaded in background due to permission. Please go to settings to allow this app to store files on storage.");
+
+                        } else {
+
+                            final int id = 101;
+
+                            final NotificationManager mNotifyManager =
+                                    (NotificationManager) ctx.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                            final android.support.v4.app.NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(ctx.getApplicationContext());
+                            mBuilder.setContentTitle("Downloading daystatus")
+                                    .setContentText("Download in progress")
+                                    .setSmallIcon(R.drawable.icon);
+
+                            String urlToDownload = "/api/daystatus/getMedia";
+                            final UserFunctions userFunctions = new UserFunctions(ctx.getApplicationContext());
+                            Ion.with(ctx.getApplicationContext())
+                                    .load(userFunctions.getBaseURL() + urlToDownload)
+                                    .progressHandler(new ProgressCallback() {
+                                        @Override
+                                        public void onProgress(long downloaded, long total) {
+                                            mBuilder.setProgress((int) total, (int) downloaded,
+                                                    false);
+                                            if(downloaded < total) {
+                                                mBuilder.setContentText("Download in progress: "+
+                                                        ((downloaded / total) * 100) +"%");
+                                            } else {
+                                                mBuilder.setContentText("Downloaded daystatus");
+                                            }
+                                            mNotifyManager.notify(id, mBuilder.build());
+                                        }
+                                    })
+                                    .setHeader("kibo-token", accessToken.getToken())
+                                    .setBodyParameter("uniqueid", uniqueid)
+                                    .write(new File(ctx.getApplicationContext().getFilesDir().getPath() + "" + uniqueid))
+                                    .setCallback(new FutureCallback<File>() {
+                                        @Override
+                                        public void onCompleted(Exception e, File file) {
+                                            // download done...
+                                            // do stuff with the File or error
+
+                                            try {
+                                                DatabaseHandler db = new DatabaseHandler(ctx.getApplicationContext());
+                                                File folder= getExternalStoragePublicDirForImages(ctx.getString(R.string.app_name));
+
+                                                JSONObject fileMetaData = getFileMetaData(folder.getPath() +"/"+ uniqueid);
+
+                                                FileOutputStream outputStream;
+                                                try {
+                                                    outputStream = new FileOutputStream(folder.getPath() +"/"+ uniqueid+rowTemp.getString("file_type"));
+                                                    outputStream.write(com.cloudkibo.webrtc.filesharing.Utility.convertFileToByteArray(file));
+                                                    outputStream.close();
+                                                } catch (JSONException e1) {
+                                                    e1.printStackTrace();
+                                                }
+
+
+
+                                                    db.updatePathDaystatus(uniqueid,
+                                                            folder.getPath() +"/"+ uniqueid+rowTemp.getString("file_type"));
+
+                                                if (MainActivity.isVisible) {
+                                                    //MainActivity.mainActivity.handleDownloadedFile(rowTemp);
+                                                }
+
+                                                file.delete();
+
+                                                Log.d("day status", "Downloaded day status");
+
+                                            }catch (IOException e2){
+                                                e2.printStackTrace();
+                                            } catch (JSONException e1) {
+                                                e1.printStackTrace();
+                                            }
+
+
+                                        }
+                                    });
+                        }
+
+
+
+                } else {
+                    Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" did not get day status. SERVER gave NULL");
+                }
+            }
+
+        }.execute();
+
+    }
+
 
     private void loadSpecificChatFromServer(final String uniqueid) {
 

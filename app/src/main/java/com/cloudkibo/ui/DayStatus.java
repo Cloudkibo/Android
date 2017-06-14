@@ -236,24 +236,24 @@ public class DayStatus extends CustomFragment implements IFragmentName {
 
                     DatabaseHandler db = new DatabaseHandler(ctx);
                         Toast.makeText(ctx, name , Toast.LENGTH_SHORT).show();
-                    try {
-                        db.createDaystatusInfo(uniqueid,
-                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(tempCameraCaptureHolderString)
-                                        .getString("filetype"),
-                                name, //temp label
-                                name,
-                                tempCameraCaptureHolderString,
-                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(tempCameraCaptureHolderString)
-                                        .getString("size"),
-                                user.get("phone"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        db.createDaystatusInfo(uniqueid,
+//                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(tempCameraCaptureHolderString)
+//                                        .getString("filetype"),
+//                                name, //temp label
+//                                name,
+//                                tempCameraCaptureHolderString,
+//                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(tempCameraCaptureHolderString)
+//                                        .getString("size"),
+//                                user.get("phone"));
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
 
                         MediaScannerConnection.scanFile(ctx, new String[] { tempCameraCaptureHolderString }, new String[] { "image/jpeg" }, null);
                         String imageP = tempCameraCaptureHolderString;
                         tempCameraCaptureHolderString = "";
-                        //sendFileAttachment(uniqueid, imageP);
+                        sendFileAttachment(uniqueid, imageP);
 
 
                     startJobServiceForOneTimeOnly(uniqueid);
@@ -317,7 +317,7 @@ public class DayStatus extends CustomFragment implements IFragmentName {
                     .setSmallIcon(R.drawable.icon);
 
             UserFunctions userFunctions = new UserFunctions(ctx);
-            String name = com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(filePath)
+            final String name = com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(filePath)
                     .getString("name");
             String size = com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(filePath)
                     .getString("size");
@@ -356,6 +356,22 @@ public class DayStatus extends CustomFragment implements IFragmentName {
                                 if (MainActivity.isVisible)
                                     MainActivity.mainActivity.ToastNotify2("Uploaded the file to server.");
                                 //sendMessageUsingAPI(fileInfo.getString("file_name"), uniqueid, "file", fileType); What does this do?
+
+                                    DatabaseHandler db = new DatabaseHandler(ctx);
+                                try {
+                                    db.createDaystatusInfo(uniqueid,
+                                            com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(filePath)
+                                                    .getString("filetype"),
+                                            name, //temp label
+                                            name,
+                                            filePath,
+                                            com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(filePath)
+                                                    .getString("size"),
+                                            user.get("phone"));
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+
                             }
                             else {
                                 if(MainActivity.isVisible)
