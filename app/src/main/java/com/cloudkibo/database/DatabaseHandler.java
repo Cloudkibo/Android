@@ -372,6 +372,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void updatePathDaystatus(String unique_id, String path){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put("file_path", path);
+
+        db.update("DAYSTATUS_INFO",values ,"uniqueid='"+unique_id+"'", null);
+        db.close();
+    }
+
     public JSONArray getAllDayStatus() throws JSONException {
         JSONArray groups = new JSONArray();
 

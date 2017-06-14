@@ -180,10 +180,12 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
                         if(statusNo == statuses.length()){
                             DayStatus goback = new DayStatus();
 
-                            getFragmentManager().beginTransaction()
-                                  .replace(R.id.content_frame, goback, "dayStatusTag")
-                                  .addToBackStack("Day Status")
-                                  .commit();
+                            if(getActivity() != null) {
+                                getFragmentManager().beginTransaction()
+                                        .replace(R.id.content_frame, goback, "dayStatusTag")
+                                        .addToBackStack("Day Status")
+                                        .commit();
+                            }
                             Thread.currentThread().interrupt();
                         }
                     }
