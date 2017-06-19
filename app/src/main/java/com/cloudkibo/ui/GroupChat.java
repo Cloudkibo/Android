@@ -829,7 +829,11 @@ public class GroupChat extends CustomFragment implements IFragmentName
 										.getString("filetype"), tempCameraCaptureHolderString);
 						MediaScannerConnection.scanFile(ctx, new String[] { tempCameraCaptureHolderString }, new String[] { "image/jpeg" }, null);
 						tempCameraCaptureHolderString = "";
-						sendFileAttachment(uniqueid, "image");
+
+						//sendFileAttachment(uniqueid, "image");
+
+                        gotoHolderFrag(uniqueid);
+
 					} catch (JSONException e){
 						e.printStackTrace();
 					}
@@ -841,6 +845,29 @@ public class GroupChat extends CustomFragment implements IFragmentName
 
 //        super.onActivityResult(requestCode, resultCode, data);
 	}
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        //No call for super().
+    }
+
+    public void gotoHolderFrag(String id){
+        FileAttachmentHolder holder = new FileAttachmentHolder();
+        Bundle bundle = new Bundle();
+
+        bundle.putString("authtoken", authtoken);
+        bundle.putString("clFragType", "GroupChat");
+        bundle.putString("ID", id);
+        bundle.putString("contactPhone", contactPhone);
+        bundle.putString("fType", "image");
+
+        holder.setArguments(bundle);
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, holder, "fileAttachmentHolderTag")
+                .addToBackStack("File Holder")
+                .commitAllowingStateLoss();
+    }
 
 	public void uploadImageFromCamera(){
 		String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
