@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitCenter"
+            android:src="@drawable/avatar2"
+            android:id="@+id/imageHolder"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:padding="@dimen/pad_5dp"
+            android:gravity="bottom">
+
+            <EditText
+                android:layout_width="400px"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:hint="@string/type_msg"
+                android:textColor="@color/white"
+                android:id="@+id/replyMsg"
+                android:gravity="bottom"/>
+
+            <Button
+                android:id="@+id/btnSend"
+                style="@style/btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/ic_send"
+                android:gravity="bottom"/>
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</LinearLayout>
