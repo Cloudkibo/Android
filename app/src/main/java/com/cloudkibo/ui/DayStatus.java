@@ -177,7 +177,7 @@ public class DayStatus extends CustomFragment implements IFragmentName {
     }
 
     private void sendImageSelected() {
-        final CharSequence[] options = { "Take Photo", "Choose from Gallery","Cancel" };
+        final CharSequence[] options = { "Take Photo","Record Video", "Choose from Gallery","Cancel" };
 
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.mainActivity);
 
@@ -196,10 +196,24 @@ public class DayStatus extends CustomFragment implements IFragmentName {
 //                    act3.uploadChatAttachment("image", "not_group");
                 } else if (options[item].equals(R.string.cancel)) {
                     dialog.dismiss();
+                } else if (options[item].equals("Record Video")) {
+                    uploadVideoFromCamera();
                 }
             }
         });
         builder.show();
+    }
+
+    public void uploadVideoFromCamera(){
+        String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+        uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+        uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+        Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        File folder= getExternalStoragePublicDirForImages(getString(R.string.app_name));
+        File f = new File(folder, uniqueid +".mp4");
+        tempCameraCaptureHolderString = f.getPath();
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(f));
+        getActivity().startActivityForResult(intent, 7153);
     }
 
 
@@ -257,6 +271,19 @@ public class DayStatus extends CustomFragment implements IFragmentName {
 
 
                     startJobServiceForOneTimeOnly(uniqueid);
+
+                    break;
+
+                case 7153:
+                    String myNa = "blank";
+                    try {
+                        myNa = com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(tempCameraCaptureHolderString)
+                                .getString("name");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    Toast.makeText(ctx, tempCameraCaptureHolderString , Toast.LENGTH_SHORT).show();
 
                     break;
             }
