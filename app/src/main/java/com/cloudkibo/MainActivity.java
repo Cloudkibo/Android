@@ -1000,6 +1000,14 @@ public class MainActivity extends CustomActivity
                     myDayStatusFragment.onActivityResult(requestCode,  resultCode, data);
                 }
                 break;
+            case 7153:
+                IFragmentName myFragment5 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                if(myFragment5 == null) return;
+                if(myFragment5.getFragmentName().equals("Day Status")){
+                    final DayStatus myDayStatusFragment = (DayStatus) myFragment5;
+                    myDayStatusFragment.onActivityResult(requestCode,  resultCode, data);
+                }
+                break;
             case 8129:
                 IFragmentName myFragment11 = (IFragmentName) getSupportFragmentManager().findFragmentById(R.id.content_frame);
                 if(myFragment11 == null) return;
