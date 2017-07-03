@@ -92,6 +92,13 @@ public class MyHandler extends NotificationsHandler {
                     }
                 }
 
+                if(payload.getString("type").equals("statuss:new_status_deleted")){
+                    Utility.sendLogToServer(ctx.getApplicationContext(), ""+ userDetail.get("phone") +" gets push notification payload of new daystatus deletion");
+
+                    DatabaseHandler db = new DatabaseHandler(ctx);
+                    db.deleteDaystatus(payload.getString(payload.getString("uniqueid")));
+                }
+
                 // don't accept anything from contact who is blocked
                 if(payload.has("senderId") && !payload.getString("type").equals("group:chat_received")){
                     DatabaseHandler db = new DatabaseHandler(ctx);

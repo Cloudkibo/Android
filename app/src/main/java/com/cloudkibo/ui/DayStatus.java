@@ -197,7 +197,7 @@ public class DayStatus extends CustomFragment implements IFragmentName {
                 } else if (options[item].equals(R.string.cancel)) {
                     dialog.dismiss();
                 } else if (options[item].equals("Record Video")) {
-                    uploadVideoFromCamera();
+                    //uploadVideoFromCamera();
                 }
             }
         });
@@ -250,19 +250,19 @@ public class DayStatus extends CustomFragment implements IFragmentName {
 
                     DatabaseHandler db = new DatabaseHandler(ctx);
                         Toast.makeText(ctx, name , Toast.LENGTH_SHORT).show();
-//                    try {
-//                        db.createDaystatusInfo(uniqueid,
-//                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(tempCameraCaptureHolderString)
-//                                        .getString("filetype"),
-//                                name, //temp label
-//                                name,
-//                                tempCameraCaptureHolderString,
-//                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(tempCameraCaptureHolderString)
-//                                        .getString("size"),
-//                                user.get("phone"));
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
+                    try {
+                        db.createDaystatusInfo(uniqueid,
+                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(tempCameraCaptureHolderString)
+                                        .getString("filetype"),
+                                name, //temp label
+                                name,
+                                tempCameraCaptureHolderString,
+                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(tempCameraCaptureHolderString)
+                                        .getString("size"),
+                                user.get("phone"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                         MediaScannerConnection.scanFile(ctx, new String[] { tempCameraCaptureHolderString }, new String[] { "image/jpeg" }, null);
                         String imageP = tempCameraCaptureHolderString;

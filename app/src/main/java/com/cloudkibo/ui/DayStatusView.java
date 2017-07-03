@@ -251,9 +251,28 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
             @Override
             public void onClick(View view) {
 
-                Toast.makeText(getContext(), "Delete button clicked", Toast.LENGTH_SHORT).show();
-//                DatabaseHandler db = new DatabaseHandler(ctx);
-//                db.deleteDaystatus(statusID);
+                try {
+
+                    sendDeleteUsingAPI(statuses.getJSONObject(statusNo).getString("uniqueid"));
+
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        });
+
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    sendMessage();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -261,6 +280,51 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
 
         return v;
 
+    }
+
+    //sending delete to server
+    public void sendDeleteUsingAPI(final String uniqueid){
+        new AsyncTask<String, String, JSONObject>() {
+
+            @Override
+            protected JSONObject doInBackground(String... args) {
+                UserFunctions userFunction = new UserFunctions(ctx);
+                JSONObject message = new JSONObject();
+
+                try {
+                    message.put("uniqueid", uniqueid);
+
+                } catch (JSONException e){
+                    e.printStackTrace();
+                }
+
+                return userFunction.deleteDayStatus(uniqueid, authtoken);
+
+            }
+
+            @Override
+            protected void onPostExecute(JSONObject row) {
+
+                if (row != null) {
+                    if(row.has("status")){
+                        db.deleteDaystatus(uniqueid);
+
+                        MainActivity.mainActivity.ToastNotify2("Status deleted");
+
+                        DayStatus goback = new DayStatus();
+
+                        if(getActivity() != null) {
+                            getFragmentManager().beginTransaction()
+                                    .replace(R.id.content_frame, goback, "dayStatusTag")
+                                    .addToBackStack("Day Status")
+                                    .commit();
+                        }
+                    }
+                }
+
+            }
+
+        }.execute();
     }
 
     public void loadStatusImage(JSONObject status) throws JSONException {
@@ -297,8 +361,7 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
         actionBar.setDisplayShowCustomEnabled(false);
     }
 
-    private void sendMessage()
-    {
+    private void sendMessage() throws JSONException {
         if (replyMessage.length() == 0)
             return;
 
@@ -314,7 +377,7 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
 
         DatabaseHandler db = new DatabaseHandler(ctx);
         db.addChat(contactPhone, user.get("phone"), user.get("display_name"),
-                messageString, Utility.getCurrentTimeInISO(), "pending", uniqueid, "day_status_chat", statusID);
+                messageString, Utility.getCurrentTimeInISO(), "pending", uniqueid, "day_status_chat", statuses.getJSONObject(statusNo).getString("uniqueid"));
 
 
         sendMessageUsingAPI(messageString, uniqueid, "day_status_chat", statusID);
@@ -354,6 +417,9 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
                     if (row != null) {
                         if(row.has("status")){
                             updateChatStatus(row.getString("status"), row.getString("uniqueid"));
+                            signalPB = true;
+                            replyMessage.setVisibility(View.GONE);
+                            send.setVisibility(View.GONE);
                         }
                     }
 

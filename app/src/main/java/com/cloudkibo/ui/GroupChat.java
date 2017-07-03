@@ -1754,6 +1754,54 @@ public class GroupChat extends CustomFragment implements IFragmentName
 				return  v;
 			}
 
+            if(c.getType().equals("day_status_chat")){
+                v = LayoutInflater.from(getActivity()).inflate(
+                        R.layout.chat_item_reply_daystatus, null);
+                String name = user.get("display_name");
+
+                TextView lbl = (TextView) v.findViewById(R.id.lblContactPhone);
+                if (c.isSuccess())
+                    lbl.setText(c.getStatus());
+                else
+                    lbl.setText("");
+                if (!c.isSent()) {
+                    v = LayoutInflater.from(getActivity()).inflate(
+                            R.layout.chat_item_reply_daystatus_received, null);
+                    name = contactName;
+                }
+
+                lbl = (TextView) v.findViewById(R.id.lblContactDisplayName);
+                DateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                DateFormat outputFormat = new SimpleDateFormat("MM/dd KK:mm a");
+                try {
+                    lbl.setText(outputFormat.format(inputFormat.parse(c.getDate())));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+                lbl = (TextView) v.findViewById(R.id.lblMessageText);
+                lbl.setText(c.getMsg());
+
+                ImageView container_image = (ImageView) v.findViewById(R.id.row_stamp);
+                final String uri ;
+                DatabaseHandler db = new DatabaseHandler(ctx);
+                try {
+                    JSONArray status = db.getSpecificDayStatus(c.getFile_type());
+                    uri = status.getJSONObject(0).getString("file_path");
+                    Glide
+                            .with(MainActivity.mainActivity)
+                            .load(status.getJSONObject(0).getString("file_path"))
+                            .thumbnail(0.1f)
+                            .centerCrop()
+                            .placeholder(R.drawable.avatar2)
+                            .into(container_image);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                return  v;
+            }
+
 			if(c.getFile_type().equals("document")){
 				v = LayoutInflater.from(getActivity()).inflate(
 						R.layout.chat_item_file, null);
