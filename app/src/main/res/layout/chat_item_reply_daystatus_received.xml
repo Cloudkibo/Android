@@ -60,15 +60,6 @@
                     android:textSize="@dimen/txt_13sp"
                     android:paddingRight="@dimen/pad_5dp"/>
 
-                <TextView
-                    android:id="@+id/lblContactPhone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="seen"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/txt_13sp"
-                    android:layout_gravity="right"
-                    android:gravity="right"/>
 
 
             </LinearLayout>

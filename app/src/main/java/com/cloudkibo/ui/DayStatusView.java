@@ -108,6 +108,7 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
         send = (Button) v.findViewById(R.id.btnSend);
         pb = (ProgressBar) v.findViewById(R.id.pb);
         lv = (ListView) v.findViewById(R.id.listView);
+        final TextView labelText = (TextView) v.findViewById(R.id.statusLabel);
         deleteLayout = (LinearLayout) v.findViewById(R.id.deleteLayout);
         totalViewer = (TextView) v.findViewById(R.id.totalViewer);
         buttonDelete = (Button) v.findViewById(R.id.btnDel);
@@ -141,6 +142,8 @@ public class DayStatusView extends CustomFragment implements IFragmentName{
                                         public void run() {
                                             try {
                                                 loadStatusImage(currentStatus);
+                                                labelText.setText(currentStatus.getString("label"));
+
                                             } catch (JSONException e) {
                                                 e.printStackTrace();
                                             }

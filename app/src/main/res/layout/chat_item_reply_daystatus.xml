@@ -20,20 +20,14 @@
             android:paddingTop="@dimen/pad_5dp"
             android:paddingBottom="@dimen/pad_5dp"
             android:layout_marginTop="10dp">
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right">
-
-                <ImageView
-                    android:id="@+id/row_stamp"
-                    android:contentDescription="Image"
-                    android:src="@drawable/avatar2"
-                    android:layout_marginBottom="@dimen/pad_5dp"
-                    android:layout_width="48dip"
-                    android:layout_height="48dip"/>
-
-            </LinearLayout>
+            <ImageView
+                android:id="@+id/row_stamp"
+                android:contentDescription="Image"
+                android:layout_margin="5dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="right"
+                android:src="@drawable/avatar2"/>
 
             <TextView
                 android:id="@+id/lblMessageText"
@@ -42,7 +36,6 @@
                 android:text="Message status"
                 android:textColor="@color/main_color_gray_dk"
                 android:textSize="@dimen/txt_13sp"/>
-
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -74,5 +67,4 @@
             </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
-
 </RelativeLayout>
