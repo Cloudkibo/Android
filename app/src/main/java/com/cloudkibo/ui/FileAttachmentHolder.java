@@ -37,6 +37,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.text.ParseException;
+import java.util.Date;
 import java.util.HashMap;
 
 public class FileAttachmentHolder extends CustomFragment implements IFragmentName {
@@ -45,6 +46,7 @@ public class FileAttachmentHolder extends CustomFragment implements IFragmentNam
     private String ID;
     private String contactPhone;
     private String fType;
+    private String fPath;
 
     private EditText inputMessage;
     private Button sendButton;
@@ -79,19 +81,16 @@ public class FileAttachmentHolder extends CustomFragment implements IFragmentNam
                 fType = args.getString("fType");
 
                 fileInfo= db.getFilesInfo(ID);
+                try {
+                    setImage(fileInfo.getString("path"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-        }
+            else {
+                fPath = args.getString("path");
 
-        if(fileInfo != null){
-            try {
-                Glide
-                        .with(MainActivity.mainActivity)
-                        .load(fileInfo.getString("path"))
-                        .thumbnail(0.1f)
-                        .centerCrop()
-                        .into(imageHolder);
-            } catch (JSONException e) {
-                e.printStackTrace();
+                setImage(fPath);
             }
         }
 
@@ -102,6 +101,10 @@ public class FileAttachmentHolder extends CustomFragment implements IFragmentNam
                     MainActivity.mainActivity.ToastNotify2("Send Button Clicked");
                     // TODO: 6/19/17 Ask sojharo about label end url, and then call the method 
                     //sendFileAttachment(ID, fType, inputMessage.getText().toString());
+                    if(clFragType.equals("DayStatus")){
+                        sendDayStatusAttachment(fPath, inputMessage.getText().toString());
+                    }
+
 
                 } else{
                     MainActivity.mainActivity.ToastNotify2("Please enter some text");
@@ -112,7 +115,18 @@ public class FileAttachmentHolder extends CustomFragment implements IFragmentNam
         return v;
     }
 
-    public void sendFileAttachment(final String uniqueid, final String fileType, String label)
+    public void setImage(String path){
+
+            Glide
+                    .with(MainActivity.mainActivity)
+                    .load(path)
+                    .thumbnail(0.1f)
+                    .centerCrop()
+                    .into(imageHolder);
+
+    }
+
+    public void sendMessageAttachment(final String uniqueid, final String fileType, String label)
     {
         try {
 
@@ -178,6 +192,107 @@ public class FileAttachmentHolder extends CustomFragment implements IFragmentNam
                         }
                     });
         } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void sendDayStatusAttachment(final String filePath, final String label)
+    {
+        try {
+
+            final int id = 102;
+
+            final NotificationManager mNotifyManager =
+                    (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+            final android.support.v4.app.NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(ctx);
+            mBuilder.setContentTitle("Uploading status")
+                    .setContentText("Upload in progress")
+                    .setSmallIcon(R.drawable.icon);
+
+            String uniqueid = Long.toHexString(Double.doubleToLongBits(Math.random()));
+            uniqueid += (new Date().getYear()) + "" + (new Date().getMonth()) + "" + (new Date().getDay());
+            uniqueid += (new Date().getHours()) + "" + (new Date().getMinutes()) + "" + (new Date().getSeconds());
+
+            final String tempID = uniqueid;
+
+            UserFunctions userFunctions = new UserFunctions(ctx);
+            final String name = com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(filePath)
+                    .getString("name");
+            String size = com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(filePath)
+                    .getString("size");
+            String type = com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(filePath)
+                    .getString("filetype");
+            final String finalUniqueid = uniqueid;
+            Ion.with(ctx)
+                    .load(userFunctions.getBaseURL() + "/api/daystatus/create")
+                    .progressHandler(new ProgressCallback() {
+                        @Override
+                        public void onProgress(long downloaded, long total) {
+                            mBuilder.setProgress((int) total, (int) downloaded, false);
+                            if(downloaded < total) {
+                                mBuilder.setContentText("Upload in progress: "+
+                                        ((downloaded / total) * 100) +"%");
+                            } else {
+                                mBuilder.setContentText("Uploaded daystatus");
+                            }
+                            mNotifyManager.notify(id, mBuilder.build());
+                        }
+                    })
+                    .setHeader("kibo-token", authtoken)
+                    .setMultipartParameter("date", Utility.convertDateToLocalTimeZoneAndReadable(Utility.getCurrentTimeInISO()))
+                    .setMultipartParameter("uniqueid", tempID)
+                    .setMultipartParameter("file_name", name)
+                    .setMultipartParameter("file_size", size)
+                    .setMultipartParameter("label", label)
+                    .setMultipartParameter("file_type", type)
+                    .setMultipartParameter("from", user.get("phone"))
+                    .setMultipartFile("file", FileUtils.getExtension(filePath), new File(filePath))
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+                            // do stuff with the result or error
+                            if(e == null) {
+                                if (MainActivity.isVisible)
+                                    MainActivity.mainActivity.ToastNotify2("Uploaded the file to server.");
+                                //sendMessageUsingAPI(fileInfo.getString("file_name"), uniqueid, "file", fileType); What does this do?
+
+                                DatabaseHandler db = new DatabaseHandler(ctx);
+                                try {
+                                    db.createDaystatusInfo(tempID,
+                                            com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(filePath)
+                                                    .getString("filetype"),
+                                            label, //temp label
+                                            name,
+                                            filePath,
+                                            com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(filePath)
+                                                    .getString("size"),
+                                            user.get("phone"));
+
+                                    DayStatus goback = new DayStatus();
+
+                                    if(getActivity() != null) {
+                                        getFragmentManager().beginTransaction()
+                                                .replace(R.id.content_frame, goback, "dayStatusTag")
+                                                .addToBackStack("Day Status")
+                                                .commit();
+                                    }
+                                } catch (JSONException e1) {
+                                    e1.printStackTrace();
+                                }
+
+                            }
+                            else {
+                                if(MainActivity.isVisible)
+                                    MainActivity.mainActivity.ToastNotify2("Some error has occurred or Internet not available. Please try later.");
+                                e.printStackTrace();
+                            }
+                        }
+                    });
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
             e.printStackTrace();
         }
     }

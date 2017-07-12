@@ -59,6 +59,7 @@ public class UserFunctions {
     private String getPartialChatURL;
     private String getSingleChatURL;
     private String getDaystatusInfoURL;
+    private String deleteDayStatusURL;
     private String checkSentChatStatus;
     private String getSingleGroupChatURL;
     private String sendLogURL;
@@ -129,6 +130,7 @@ public class UserFunctions {
         getPartialChatURL =       baseURL + "/api/userchat/partialchatsync";
         getSingleChatURL =        baseURL + "/api/userchat/getsinglechat";
         getDaystatusInfoURL =     baseURL + "/api/daystatus/getInfo";
+        deleteDayStatusURL =      baseURL + "/api/daystatus/delete";
         checkSentChatStatus =     baseURL + "/api/userchat/checkStatus";
         getSingleGroupChatURL =   baseURL + "/api/groupchat/fetchSingleChat";
         sendLogURL =              baseURL + "/api/users/log";
@@ -505,6 +507,13 @@ public class UserFunctions {
     }
 
     public JSONObject getDaystatusInfo(String id, String authtoken) {
+        List<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("uniqueid", id));
+        JSONObject response = connection.sendObjectToServer(getDaystatusInfoURL, authtoken, params);
+        return response;
+    }
+
+    public JSONObject deleteDayStatus(String id, String authtoken) {
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("uniqueid", id));
         JSONObject response = connection.sendObjectToServer(getDaystatusInfoURL, authtoken, params);

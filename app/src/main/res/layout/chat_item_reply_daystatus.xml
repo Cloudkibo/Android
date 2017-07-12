@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/sent_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginLeft="50dp"
+        >
+        <LinearLayout
+            android:id="@+id/v1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/chat_bubble_green"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:paddingTop="@dimen/pad_5dp"
+            android:paddingBottom="@dimen/pad_5dp"
+            android:layout_marginTop="10dp">
+            <ImageView
+                android:id="@+id/row_stamp"
+                android:contentDescription="Image"
+                android:layout_margin="5dp"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="right"
+                android:src="@drawable/avatar2"/>
+
+            <TextView
+                android:id="@+id/lblMessageText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Message status"
+                android:textColor="@color/main_color_gray_dk"
+                android:textSize="@dimen/txt_13sp"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="right"
+                android:paddingRight="5dp">
+
+                <TextView
+                    android:id="@+id/lblContactDisplayName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12:30 PM"
+                    android:textColor="@color/main_color_gray_dk"
+                    android:textSize="@dimen/txt_13sp"
+                    android:paddingRight="@dimen/pad_5dp"/>
+
+                <TextView
+                    android:id="@+id/lblContactPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="seen"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/txt_13sp"
+                    android:layout_gravity="right"
+                    android:gravity="right"/>
+
+
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

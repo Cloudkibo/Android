@@ -194,10 +194,11 @@ public class DayStatus extends CustomFragment implements IFragmentName {
                 } else if (options[item].equals("Choose from Gallery")) {
 //                    MainActivity act3 = (MainActivity)getActivity();
 //                    act3.uploadChatAttachment("image", "not_group");
+                    MainActivity.mainActivity.ToastNotify2("Call Image Chooser");
                 } else if (options[item].equals(R.string.cancel)) {
                     dialog.dismiss();
                 } else if (options[item].equals("Record Video")) {
-                    uploadVideoFromCamera();
+                    //uploadVideoFromCamera();
                 }
             }
         });
@@ -250,8 +251,7 @@ public class DayStatus extends CustomFragment implements IFragmentName {
 
                     DatabaseHandler db = new DatabaseHandler(ctx);
                         Toast.makeText(ctx, name , Toast.LENGTH_SHORT).show();
-//                    try {
-//                        db.createDaystatusInfo(uniqueid,
+                    //                        db.createDaystatusInfo(uniqueid,
 //                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(tempCameraCaptureHolderString)
 //                                        .getString("filetype"),
 //                                name, //temp label
@@ -260,14 +260,13 @@ public class DayStatus extends CustomFragment implements IFragmentName {
 //                                com.cloudkibo.webrtc.filesharing.Utility.getFileMetaData(tempCameraCaptureHolderString)
 //                                        .getString("size"),
 //                                user.get("phone"));
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
 
-                        MediaScannerConnection.scanFile(ctx, new String[] { tempCameraCaptureHolderString }, new String[] { "image/jpeg" }, null);
+                    MediaScannerConnection.scanFile(ctx, new String[] { tempCameraCaptureHolderString }, new String[] { "image/jpeg" }, null);
                         String imageP = tempCameraCaptureHolderString;
                         tempCameraCaptureHolderString = "";
-                        sendFileAttachment(uniqueid, imageP);
+                        //sendFileAttachment(uniqueid, imageP);
+                        gotoHolderFrag(imageP);
+
 
 
                     startJobServiceForOneTimeOnly(uniqueid);
@@ -284,6 +283,8 @@ public class DayStatus extends CustomFragment implements IFragmentName {
                     }
 
                     Toast.makeText(ctx, tempCameraCaptureHolderString , Toast.LENGTH_SHORT).show();
+                    gotoHolderFrag(tempCameraCaptureHolderString);
+                    tempCameraCaptureHolderString="";
 
                     break;
             }
@@ -292,6 +293,22 @@ public class DayStatus extends CustomFragment implements IFragmentName {
         }
 
 //        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void gotoHolderFrag(String path){
+        FileAttachmentHolder holder = new FileAttachmentHolder();
+        Bundle bundle = new Bundle();
+
+        bundle.putString("authtoken", authtoken);
+        bundle.putString("clFragType", "DayStatus");
+        bundle.putString("path", path);
+
+        holder.setArguments(bundle);
+
+        getFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, holder, "fileAttachmentHolderTag")
+                .addToBackStack("File Holder")
+                .commitAllowingStateLoss();
     }
 
     public void startJobServiceForOneTimeOnly(String uniqueid){
